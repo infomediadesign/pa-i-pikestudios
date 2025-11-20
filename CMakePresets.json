@@ -1,0 +1,39 @@
+{
+  "version": 3,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 70,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "root",
+      "displayName": "configuration",
+      "cmakeExecutable": "C:/Program Files/CMake/bin/cmake.exe",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "installDir": "${sourceDir}/install/${presetName}",
+      "hidden": true,
+      "architecture": {
+        "value": "x64",
+        "strategy": "external"
+      },
+      "generator": "Ninja"
+    },
+    {
+      "inherits": "root",
+      "name": "x64-ninja-debug",
+      "displayName": "x64 (Ninja) Debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "inherits": "root",
+      "name": "x64-ninja-release",
+      "displayName": "x64 (Ninja) Release",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    }
+  ]
+}
