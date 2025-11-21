@@ -21,3 +21,5 @@
 1. Use this template with the corresponding github button
 2. When configuring, CPM will clone raylib so this may take a while
 3. when using a code editor with clangd, compile once so the compile_commands.json is availible or clangd can't find the raylib header, then restart clangd
+
+Hallo!
