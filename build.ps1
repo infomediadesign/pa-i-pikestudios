@@ -5,6 +5,11 @@ elseif (Test-Path "$env:ProgramFiles(x86)\Git\bin") {
     $env:Path = "$env:ProgramFiles(x86)\Git\bin;$env:ProgramFiles(x86)\Git\mingw64\bin;" + $env:Path
 }
 
+if (Get-Command "ninja" -ErrorAction SilentlyContinue) {
+} else {
+	winget install Ninja-build.Ninja
+}
+
 try {
     sh.exe build.sh $args
 }
