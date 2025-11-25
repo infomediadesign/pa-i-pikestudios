@@ -3,7 +3,7 @@ function(raylib_imgui_setup_dependencies)
     FetchContent_Declare(
         ImGui
         GIT_REPOSITORY https://github.com/ocornut/imgui
-        GIT_TAG cb16be3a3fc1f9cd146ae24d52b615f8a05fa93d) # v1.90.9
+        GIT_TAG 3912b3d9a9c1b3f17431aebafd86d2f40ee6e59c)
 
     FetchContent_MakeAvailable(ImGui)
     FetchContent_GetProperties(ImGui SOURCE_DIR IMGUI_DIR)
@@ -24,7 +24,7 @@ function(raylib_imgui_setup_dependencies)
     FetchContent_Declare(
         rlImGui
         GIT_REPOSITORY https://github.com/raylib-extras/rlImGui
-        GIT_TAG d765c1ef3d37cf939f88aaa272a59a2713d654c9)
+        GIT_TAG 4d8a61842903978bc42adf3347cd34f4e6524efc)
     FetchContent_MakeAvailable(rlImGui)
     FetchContent_GetProperties(rlImGui SOURCE_DIR RLIMGUI_DIR)
 

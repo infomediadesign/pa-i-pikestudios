@@ -6,30 +6,23 @@
 
 #include <random>
 
-float gen_rand()
-{
-	std::random_device rd;
-	std::mt19937 gen(rd());
-	std::uniform_int_distribution<> distr(300, 500);
-
-	return distr(gen);
-}
+#include <PSCore/utils.h>
 
 struct Ball
 {
 	Vector2 pos;
-	Vector2 vel{gen_rand(), gen_rand()};
+	Vector2 vel{(float)PSUtils::gen_rand(300, 500), (float)PSUtils::gen_rand(300, 500)};
 };
 
 int main(void)
 {
 	float ballRad = 30;
-	int number = 1;
+	int number	  = 1;
 
 	float deltaTime		 = 0.0f;
 	float currentTime	 = GetTime();
 	float updateDrawTime = 0.0f, previousTime = 0.0f, waitTime = 0.0f;
-	
+
 	int targetFPS	  = 0;
 	float timeCounter = 0.0f;
 
@@ -37,6 +30,11 @@ int main(void)
 	rlImGuiSetup(true);
 
 	std::vector<Ball> balls;
+
+#ifdef IMGUI_HAS_DOCK
+	ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+	ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+#endif
 
 	while ( !WindowShouldClose() ) {
 
@@ -62,12 +60,19 @@ int main(void)
 
 #ifdef _DEBUG
 		rlImGuiBeginDelta(deltaTime);
+
+#ifdef IMGUI_HAS_DOCK
+		ImGui::DockSpaceOverViewport(
+				0, NULL, ImGuiDockNodeFlags_PassthruCentralNode
+		); // set ImGuiDockNodeFlags_PassthruCentralNode so that we can see the raylib contents behind the dockspace
+#endif
+
 		ImGui::Begin("Game Debug");
 		ImGui::Text("%s", TextFormat("CURRENT FPS: %i", (int) (1.0f / deltaTime)));
 		ImGui::Text("%s", TextFormat("CURRENT BALLS: %i", (int) (balls.size())));
 
 		ImGui::SliderInt("Balls Nuber", &number, 1, 20);
-		
+
 		if ( ImGui::Button("Spawn Ball", {100, 20}) ) {
 			for ( int i = 0; i < number; i++ ) {
 				balls.push_back({20, 20});
@@ -76,6 +81,13 @@ int main(void)
 		}
 
 		ImGui::SliderInt("Frame Rate Limit", &targetFPS, 0, 500);
+
+		// Update and Render additional Platform Windows
+		if ( ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable ) {
+			ImGui::UpdatePlatformWindows();
+			ImGui::RenderPlatformWindowsDefault();
+			// TODO for OpenGL: restore current GL context.
+		}
 
 		ImGui::End();
 		rlImGuiEnd();

@@ -10,7 +10,11 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
 	raylib
 	rlimgui
 	spdlog::spdlog_header_only
-	#raylib_imgui_compiler_flags
+
+	PSCore
 )
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE SPDLOG_FMT_EXTERNAL)
+
+
+add_subdirectory(core)
