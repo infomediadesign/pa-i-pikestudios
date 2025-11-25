@@ -18,9 +18,16 @@
 	
 ### Building
 
-- Open the repo in a windows developer powershell
+#### Build script
+
+>[!NOTE]
+>Make shure the sh.exe is in PATH
+
+double click the build.cmd
 
 #### Manual
+
+- Open the repo in a windows developer powershell
 
 ```powershell
 cmake --preset="x64-ninja-debug"
