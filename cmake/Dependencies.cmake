@@ -1,3 +1,6 @@
+
+find_package(OpenGL COMPONENTS OpenGL)
+
 function(raylib_imgui_setup_dependencies)
     message(STATUS "Include Dear ImGui")
     FetchContent_Declare(
@@ -14,11 +17,10 @@ function(raylib_imgui_setup_dependencies)
         ${imgui_SOURCE_DIR}/imgui_draw.cpp
         ${imgui_SOURCE_DIR}/imgui_widgets.cpp
         ${imgui_SOURCE_DIR}/imgui_tables.cpp)
-    target_include_directories(imgui INTERFACE ${imgui_SOURCE_DIR})
+    target_include_directories(imgui INTERFACE ${imgui_SOURCE_DIR} ${imgui_SOURCE_DIR}/backends)
 
     message(STATUS "Include spdlog")
-    cpmaddpackage("gh:gabime/spdlog#27cb4c76708608465c413f6d0e6b8d99a4d84302"
-    )# v1.14.1
+    cpmaddpackage("gh:gabime/spdlog#27cb4c76708608465c413f6d0e6b8d99a4d84302")# v1.14.1
 
     message(STATUS "Include rlImGui")
     FetchContent_Declare(

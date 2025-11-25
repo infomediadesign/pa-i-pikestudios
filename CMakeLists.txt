@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 4.0)
 include(cmake/Config.cmake)
 
-project(template VERSION 0.0.1 DESCRIPTION "A Template")
+project(FortunasEcho VERSION 0.0.1 DESCRIPTION "A Template")
 
 set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${PROJECT_SOURCE_DIR}/cmake")
 

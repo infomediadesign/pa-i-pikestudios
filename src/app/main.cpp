@@ -4,14 +4,14 @@
 #include <rlImGui.h>
 #include <vector>
 
-#include <random>
-
 #include <PSCore/utils.h>
+
+#include "winglviewporthooks.h"
 
 struct Ball
 {
 	Vector2 pos;
-	Vector2 vel{(float)PSUtils::gen_rand(300, 500), (float)PSUtils::gen_rand(300, 500)};
+	Vector2 vel{(float) PSUtils::gen_rand(300, 500), (float) PSUtils::gen_rand(300, 500)};
 };
 
 int main(void)
@@ -26,16 +26,30 @@ int main(void)
 	int targetFPS	  = 0;
 	float timeCounter = 0.0f;
 
-	InitWindow(1440, 780, "Main");
+	InitWindow(1440, 780, "Fortunas Echo");
 	rlImGuiSetup(true);
 
 	std::vector<Ball> balls;
 
+	auto& io = ImGui::GetIO();
+	
 #ifdef IMGUI_HAS_DOCK
-	ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-	ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+	// io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 #endif
 
+	// if ( io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable ) {
+	// 	ImGuiPlatformIO& platform_io = ImGui::GetPlatformIO();
+	// 	IM_ASSERT(platform_io.Renderer_CreateWindow == NULL);
+	// 	IM_ASSERT(platform_io.Renderer_DestroyWindow == NULL);
+	// 	IM_ASSERT(platform_io.Renderer_SwapBuffers == NULL);
+	// 	IM_ASSERT(platform_io.Platform_RenderWindow == NULL);
+	// 	platform_io.Renderer_CreateWindow  = GLHooks::Hook_Renderer_CreateWindow;
+	// 	platform_io.Renderer_DestroyWindow = GLHooks::Hook_Renderer_DestroyWindow;
+	// 	platform_io.Renderer_SwapBuffers   = GLHooks::Hook_Renderer_SwapBuffers;
+	// 	platform_io.Platform_RenderWindow  = GLHooks::Hook_Platform_RenderWindow;
+	// }
+	
 	while ( !WindowShouldClose() ) {
 
 		timeCounter += deltaTime;
@@ -58,7 +72,6 @@ int main(void)
 			DrawCircleV(ball.pos, ballRad, RED);
 		}
 
-#ifdef _DEBUG
 		rlImGuiBeginDelta(deltaTime);
 
 #ifdef IMGUI_HAS_DOCK
@@ -82,16 +95,15 @@ int main(void)
 
 		ImGui::SliderInt("Frame Rate Limit", &targetFPS, 0, 500);
 
-		// Update and Render additional Platform Windows
-		if ( ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable ) {
-			ImGui::UpdatePlatformWindows();
-			ImGui::RenderPlatformWindowsDefault();
-			// TODO for OpenGL: restore current GL context.
-		}
+		// // Update and Render additional Platform Windows
+		// if ( ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable ) {
+		// 	ImGui::UpdatePlatformWindows();
+		// 	ImGui::RenderPlatformWindowsDefault();
+		// 	// TODO for OpenGL: restore current GL context.
+		// }
 
 		ImGui::End();
 		rlImGuiEnd();
-#endif
 
 		EndDrawing();
 

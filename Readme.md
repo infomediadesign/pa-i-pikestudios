@@ -3,7 +3,7 @@
  <a href="#"><img src="https://img.shields.io/badge/CMake-%23eb2633.svg?style=for-the-badge&logo=cmake&logoColor=white"/></a>
 </p>
 
-# Mango
+# Fortunas Echo
 
 # Build instructions
 
