@@ -1,0 +1,98 @@
+#include <memory>
+#include <pscore/application.h>
+#include <raylib.h>
+
+using PSCore::Application;
+static Application* g_app = nullptr;
+
+class PSCore::ApplicationPriv
+{
+	friend class Application;
+	bool m_running = false;
+
+	float deltaTime		 = 0.0f;
+	float currentTime	 = GetTime();
+	float updateDrawTime = 0.0f, previousTime = 0.0f, waitTime = 0.0f;
+
+	int targetFPS	  = 0;
+	float timeCounter = 0.0f;
+	
+	void calc_delta_t(){
+		currentTime	   = GetTime();
+		updateDrawTime = currentTime - previousTime;
+
+		if ( targetFPS > 0 ) // We want a fixed frame rate
+		{
+			waitTime = (1.0f / targetFPS) - updateDrawTime;
+			if ( waitTime > 0.0 ) {
+				WaitTime(float{waitTime});
+				currentTime = GetTime();
+				deltaTime	= float{(currentTime - previousTime)};
+			}
+		} else
+			deltaTime = float{updateDrawTime};
+	}
+};
+
+Application::Application(const AppSpec& spec)
+{
+	_p = std::make_unique<ApplicationPriv>();
+	
+	g_app = this;
+	
+	InitWindow(spec.size.x, spec.size.y, spec.title);
+
+	// Other Application init stuff
+}
+
+Application::~Application()
+{
+	CloseWindow();
+}
+
+void Application::run()
+{
+	_p->m_running = true;
+
+	while ( _p->m_running ) {
+		_p->timeCounter += _p->deltaTime;
+
+		PollInputEvents();
+
+		if(WindowShouldClose()){
+			stop();
+			break;
+		}
+		
+		_p->calc_delta_t();
+
+		// for ( const std::unique_ptr<PSInterfaces::Layer>& layer: m_layer_stack )
+		// 	layer->on_update(_p->deltaTime);
+		// 
+		// TODO: This is a temp fix for an invalidated iterator
+		int lenght = m_layer_stack.size();
+		for (int i = 0; i < lenght; ++i)
+			if (i < m_layer_stack.size())
+				m_layer_stack.at(i)->on_update(_p->deltaTime);
+
+		BeginDrawing();
+		ClearBackground(BLANK);
+		
+		for ( const std::unique_ptr<PSInterfaces::Layer>& layer: m_layer_stack )
+			layer->on_render(_p->deltaTime);
+		
+		EndDrawing();
+		SwapScreenBuffer();
+		
+		_p->previousTime = _p->currentTime;
+	}
+}
+
+void Application::stop() {
+	_p->m_running = false;
+}
+
+Application* Application::get()
+{
+	return g_app;
+}

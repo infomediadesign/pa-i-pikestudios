@@ -1,10 +1,15 @@
-set(HEADER_FILES
-	include/PSCore/utils.h
+file(GLOB_RECURSE HEADER_FILES
+     "./*.h"
 )
 
-set(SOURCE_FILES
-	utils.cpp
+file(GLOB_RECURSE SOURCE_FILES
+     "./*.cpp"
 )
 
 add_library(PSCore STATIC ${SOURCE_FILES} ${HEADER_FILES}) # TODO: Build this as a shared lib
 target_include_directories(PSCore PUBLIC include)
+target_link_libraries(PSCore PRIVATE 
+	EnTT::EnTT
+	raylib
+	OpenGL::GL
+)

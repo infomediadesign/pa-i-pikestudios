@@ -4,17 +4,20 @@ endif()
 
 set(SOURCE_FILES
 	main.cpp
+	debuglayer.cpp
+	applayer.cpp
 	#winglviewporthooks.cpp
 )
 
 set(HEADER_FILES
 	#winglviewporthooks.h
+	debuglayer.cpp
+	applayer.h
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES} ${app_icon})
 
 target_link_libraries(${PROJECT_NAME} PUBLIC
-	raylib
 	EnTT::EnTT
 	imgui
 	raylib
