@@ -23,8 +23,6 @@ include(cmake/CPM.cmake)
 CPMAddPackage("gh:raysan5/raylib#5.5")
 CPMAddPackage("gh:skypjack/entt@3.15.0")
 
-Rawr
-
 include(cmake/Dependencies.cmake)
 raylib_imgui_setup_dependencies()
  
