@@ -31,7 +31,7 @@ void PSInterfaces::IMovable::set_rot(const int rot)
 	m_rot = rot;
 };
 
-void PSInterfaces::IMovable::move(const int dt)
+void PSInterfaces::IMovable::move(const float dt)
 {
 	m_pos.x += m_vel.x * dt;
 	m_pos.y += m_vel.y * dt;

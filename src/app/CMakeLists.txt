@@ -6,13 +6,15 @@ set(SOURCE_FILES
 	main.cpp
 	debuglayer.cpp
 	applayer.cpp
+	pauselayer.cpp
 	#winglviewporthooks.cpp
 )
 
 set(HEADER_FILES
 	#winglviewporthooks.h
-	debuglayer.cpp
+	debuglayer.h
 	applayer.h
+	pauselayer.h
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES} ${app_icon})

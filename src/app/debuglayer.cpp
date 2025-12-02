@@ -1,5 +1,6 @@
 #include "debuglayer.h"
 
+#include <cstdint>
 #include <imgui.h>
 #include <rlImGui.h>
 
@@ -10,11 +11,11 @@ DebugLayer::DebugLayer()
 
 DebugLayer::~DebugLayer(){}
 
-void DebugLayer::on_update(const int dt)
+void DebugLayer::on_update(const float dt)
 {
 }
 
-void DebugLayer::on_render(const int dt)
+void DebugLayer::on_render(const float dt)
 {
 	rlImGuiBeginDelta(dt);
 
@@ -25,7 +26,7 @@ void DebugLayer::on_render(const int dt)
 #endif
 
 	ImGui::Begin("Game Debug");
-	ImGui::Text("%s", TextFormat("CURRENT FPS: %i", static_cast<int>(1.0f / dt)));
+	ImGui::Text("%s", TextFormat("CURRENT FPS: %i", static_cast<int64_t>(1.0f / dt)));
 	ImGui::End();
 
 	rlImGuiEnd();
