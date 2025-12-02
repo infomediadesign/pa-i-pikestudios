@@ -1,3 +1,4 @@
+#include <iostream>
 #include <memory>
 #include <pscore/application.h>
 #include <raylib.h>
@@ -16,8 +17,9 @@ class PSCore::ApplicationPriv
 
 	int targetFPS	  = 0;
 	float timeCounter = 0.0f;
-	
-	void calc_delta_t(){
+
+	void calc_delta_t()
+	{
 		currentTime	   = GetTime();
 		updateDrawTime = currentTime - previousTime;
 
@@ -30,16 +32,18 @@ class PSCore::ApplicationPriv
 				deltaTime	= float{(currentTime - previousTime)};
 			}
 		} else
-			deltaTime = float{updateDrawTime};
+			deltaTime = updateDrawTime;
 	}
 };
 
 Application::Application(const AppSpec& spec)
 {
 	_p = std::make_unique<ApplicationPriv>();
-	
+
 	g_app = this;
 	
+	SetExitKey(KEY_DELETE);
+
 	InitWindow(spec.size.x, spec.size.y, spec.title);
 
 	// Other Application init stuff
@@ -59,36 +63,36 @@ void Application::run()
 
 		PollInputEvents();
 
-		if(WindowShouldClose()){
+		if ( WindowShouldClose() ) {
 			stop();
 			break;
 		}
-		
-		_p->calc_delta_t();
 
 		// for ( const std::unique_ptr<PSInterfaces::Layer>& layer: m_layer_stack )
 		// 	layer->on_update(_p->deltaTime);
-		// 
+		//
 		// TODO: This is a temp fix for an invalidated iterator
 		int lenght = m_layer_stack.size();
-		for (int i = 0; i < lenght; ++i)
-			if (i < m_layer_stack.size())
+		for ( int i = 0; i < lenght; ++i )
+			if ( i < m_layer_stack.size() )
 				m_layer_stack.at(i)->on_update(_p->deltaTime);
 
 		BeginDrawing();
 		ClearBackground(BLANK);
-		
+
 		for ( const std::unique_ptr<PSInterfaces::Layer>& layer: m_layer_stack )
 			layer->on_render(_p->deltaTime);
-		
+
 		EndDrawing();
 		SwapScreenBuffer();
 		
+		_p->calc_delta_t();
 		_p->previousTime = _p->currentTime;
 	}
 }
 
-void Application::stop() {
+void Application::stop()
+{
 	_p->m_running = false;
 }
 

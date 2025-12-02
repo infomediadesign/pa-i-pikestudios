@@ -2,20 +2,49 @@
 
 #include <raylib.h>
 namespace PSInterfaces {
+
+	/*! @brief Interface class for movable entities
+	 *
+	 */
 	class IMovable
 	{
 	public:
 		~IMovable() = default;
 
+		/*!
+		 *
+		 */
 		Vector2 pos();
+
+		/*!
+		 *
+		 */
 		Vector2 vel();
+
+		/*!
+		 *
+		 */
 		int rot();
 
+		/*!
+		 *
+		 */
 		void set_pos(const Vector2& pos);
+
+		/*!
+		 *
+		 */
 		void set_vel(const Vector2& vel);
+
+		/*!
+		 *
+		 */
 		void set_rot(const int rot);
 
-		void move(const int dt);
+		/*!
+		 *
+		 */
+		virtual void move(const float dt);
 
 	protected:
 		Vector2 m_pos;

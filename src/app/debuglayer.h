@@ -8,8 +8,8 @@ class DebugLayer : public PSInterfaces::Layer
 	DebugLayer();
 	~DebugLayer();
 	
-	void on_update(const int dt) override;
-	void on_render(const int dt) override;
+	void on_update(const float dt) override;
+	void on_render(const float dt) override;
 	
 	private:
 	
