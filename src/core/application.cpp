@@ -41,12 +41,10 @@ Application::Application(const AppSpec& spec)
 	_p = std::make_unique<ApplicationPriv>();
 
 	g_app = this;
-	
-	SetExitKey(KEY_DELETE);
 
 	InitWindow(spec.size.x, spec.size.y, spec.title);
 
-	// Other Application init stuff
+	SetExitKey(KEY_NULL);
 }
 
 Application::~Application()

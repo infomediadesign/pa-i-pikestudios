@@ -76,7 +76,7 @@ void AppLayer::on_update(const float dt)
 				app->push_layer<DebugLayer>();
 		}
 
-		if ( IsKeyPressed(KEY_F1) ) {
+		if ( IsKeyPressed(KEY_ESCAPE) ) {
 			if ( app->get_layer<PauseLayer>() ) {
 				app->pop_layer<PauseLayer>();
 				if ( auto app_layer = app->get_layer<AppLayer>() )
