@@ -1,7 +1,7 @@
-#include <iostream>
 #include <memory>
 #include <pscore/application.h>
 #include <raylib.h>
+#include <stdexcept>
 
 using PSCore::Application;
 static Application* g_app = nullptr;
@@ -66,24 +66,21 @@ void Application::run()
 			break;
 		}
 
-		// for ( const std::unique_ptr<PSInterfaces::Layer>& layer: m_layer_stack )
-		// 	layer->on_update(_p->deltaTime);
-		//
-		// TODO: This is a temp fix for an invalidated iterator
-		int lenght = m_layer_stack.size();
-		for ( int i = 0; i < lenght; ++i )
-			if ( i < m_layer_stack.size() )
+		try {
+			for ( int i = 0; i < m_layer_stack.size(); ++i )
 				m_layer_stack.at(i)->on_update(_p->deltaTime);
+		} catch ( std::out_of_range e ) {
+		}
 
 		BeginDrawing();
 		ClearBackground(BLANK);
 
 		for ( const std::unique_ptr<PSInterfaces::Layer>& layer: m_layer_stack )
-			layer->on_render(_p->deltaTime);
+			layer->on_render();
 
 		EndDrawing();
 		SwapScreenBuffer();
-		
+
 		_p->calc_delta_t();
 		_p->previousTime = _p->currentTime;
 	}

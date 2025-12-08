@@ -59,6 +59,6 @@ void AppLayer::on_update(const float dt)
 
 }
 
-void AppLayer::on_render(const float dt)
+void AppLayer::on_render()
 {
 }

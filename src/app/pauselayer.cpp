@@ -7,7 +7,7 @@ PauseLayer::PauseLayer()
 {
 }
 
-void PauseLayer::on_render(const float dt)
+void PauseLayer::on_render()
 {
 	Color btn_clr;
 	switch ( m_current_quit_state ) {

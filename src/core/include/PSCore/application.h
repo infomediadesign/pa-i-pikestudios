@@ -8,6 +8,9 @@
 
 namespace PSCore {
 
+	template<typename TL>
+	concept ILayerDerived = std::is_base_of_v<PSInterfaces::Layer, TL>;
+	
 	class ApplicationPriv;
 	class Application
 	{
@@ -23,16 +26,14 @@ namespace PSCore {
 		~Application();
 
 		static Application* get();
-
-		template<typename TL>
-			requires(std::is_base_of_v<PSInterfaces::Layer, TL>)
+		
+		template<ILayerDerived TL>
 		void push_layer()
 		{
 			m_layer_stack.push_back(std::make_unique<TL>());
 		};
 
-		template<typename TL>
-			requires(std::is_base_of_v<PSInterfaces::Layer, TL>)
+		template<ILayerDerived TL>
 		TL* get_layer()
 		{
 			for ( const auto& layer: m_layer_stack ) {
@@ -42,8 +43,7 @@ namespace PSCore {
 			return nullptr;
 		}
 
-		template<typename TL>
-			requires(std::is_base_of_v<PSInterfaces::Layer, TL>)
+		template<ILayerDerived TL>
 		void pop_layer()
 		{
 			for (auto itr = m_layer_stack.begin(); itr != m_layer_stack.end();) {

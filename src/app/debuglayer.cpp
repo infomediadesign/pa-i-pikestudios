@@ -9,13 +9,11 @@ DebugLayer::DebugLayer()
 	rlImGuiSetup(true);
 }
 
-DebugLayer::~DebugLayer(){}
-
-void DebugLayer::on_update(const float dt)
+DebugLayer::~DebugLayer()
 {
 }
 
-void DebugLayer::on_render(const float dt)
+void DebugLayer::on_update(const float dt)
 {
 	rlImGuiBeginDelta(dt);
 
@@ -30,4 +28,8 @@ void DebugLayer::on_render(const float dt)
 	ImGui::End();
 
 	rlImGuiEnd();
+}
+
+void DebugLayer::on_render()
+{
 }

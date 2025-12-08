@@ -11,7 +11,7 @@ public:
 	~AppLayer() override;
 
 	void on_update(const float dt) override;
-	void on_render(const float dt) override;
+	void on_render() override;
 
 private:
 	std::unique_ptr<AppLayerPriv> _p;
