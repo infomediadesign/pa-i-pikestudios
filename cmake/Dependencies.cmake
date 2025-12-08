@@ -1,0 +1,36 @@
+
+find_package(OpenGL COMPONENTS OpenGL)
+
+function(raylib_imgui_setup_dependencies)
+    message(STATUS "Include Dear ImGui")
+    FetchContent_Declare(
+        ImGui
+        GIT_REPOSITORY https://github.com/ocornut/imgui
+        GIT_TAG 3912b3d9a9c1b3f17431aebafd86d2f40ee6e59c)
+
+    FetchContent_MakeAvailable(ImGui)
+    FetchContent_GetProperties(ImGui SOURCE_DIR IMGUI_DIR)
+
+    add_library(
+        imgui STATIC
+        ${imgui_SOURCE_DIR}/imgui.cpp
+        ${imgui_SOURCE_DIR}/imgui_draw.cpp
+        ${imgui_SOURCE_DIR}/imgui_widgets.cpp
+        ${imgui_SOURCE_DIR}/imgui_tables.cpp)
+    target_include_directories(imgui INTERFACE ${imgui_SOURCE_DIR} ${imgui_SOURCE_DIR}/backends)
+
+    message(STATUS "Include spdlog")
+    cpmaddpackage("gh:gabime/spdlog#27cb4c76708608465c413f6d0e6b8d99a4d84302")# v1.14.1
+
+    message(STATUS "Include rlImGui")
+    FetchContent_Declare(
+        rlImGui
+        GIT_REPOSITORY https://github.com/raylib-extras/rlImGui
+        GIT_TAG 4d8a61842903978bc42adf3347cd34f4e6524efc)
+    FetchContent_MakeAvailable(rlImGui)
+    FetchContent_GetProperties(rlImGui SOURCE_DIR RLIMGUI_DIR)
+
+    add_library(rlimgui STATIC ${rlimgui_SOURCE_DIR}/rlImgui.cpp)
+    target_link_libraries(rlimgui PRIVATE imgui raylib)
+    target_include_directories(rlimgui INTERFACE ${rlimgui_SOURCE_DIR})
+endfunction()

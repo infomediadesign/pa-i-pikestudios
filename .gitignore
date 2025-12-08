@@ -1,5 +1,6 @@
-*build*
+*build/
 .idea
 *cache*
 compile_commands.json
 *.user
+imgui.ini

@@ -3,23 +3,38 @@
  <a href="#"><img src="https://img.shields.io/badge/CMake-%23eb2633.svg?style=for-the-badge&logo=cmake&logoColor=white"/></a>
 </p>
 
-# A repository used as a starting point to work with raylib
+# Fortunas Echo
 
-> [!NOTE]
-> Mainly for personal use, I don't stop anyone from using it, but I don't guarantee that it will work.
+# Build instructions
 
-> [!NOTE]
-> I will only do this for windows as my uni forces windows
+## Windows
 
-## Prerequisites
-- CMake installed
+### Prerequisites
+
+- CMake > v4
+- Internet
+- Compiler that support c++23
 - MSVC installed
-- When using cpack
-    - Innosetup installed
+	
+### Building
 
-## Usage
-1. Use this template with the corresponding github button
-2. When configuring, CPM will clone raylib so this may take a while
-3. when using a code editor with clangd, compile once so the compile_commands.json is availible or clangd can't find the raylib header, then restart clangd
+#### Build script
 
-Hallo N
+>[!NOTE]
+>Make shure the sh.exe is in PATH
+
+double click the build.cmd
+
+#### Manual
+
+- Open the repo in a windows developer powershell
+
+```powershell
+cmake --preset="x64-ninja-debug"
+```
+```powershell
+cd .\build\x64-ninja-debug\
+```
+```powershell
+cmake --build ./
+```
