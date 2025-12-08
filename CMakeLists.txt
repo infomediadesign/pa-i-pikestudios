@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 4.0)
-include(cmake/Config.cmake)
 
 project(FortunasEcho VERSION 0.0.1 DESCRIPTION "A Template")
+include(cmake/Config.cmake)
 
 set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${PROJECT_SOURCE_DIR}/cmake")
 
@@ -36,3 +36,5 @@ install(TARGETS ${PROJECT_NAME}
 				LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
 				RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
+
+include(cmake/Package.cmake)
