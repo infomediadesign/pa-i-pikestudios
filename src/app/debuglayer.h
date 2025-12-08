@@ -12,5 +12,5 @@ class DebugLayer : public PSInterfaces::Layer
 	void on_render() override;
 	
 	private:
-	
+	float m_dt = 0;
 };
