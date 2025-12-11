@@ -43,3 +43,21 @@ void Player::move(const float dt)
 	m_pos.x += m_vel.x * dt;
 	m_pos.y += m_vel.y * dt;
 }
+
+void Player::set_texture_value()
+{
+	// WIP
+
+	m_texture = LoadTexture("ressources/SpaceShip.png");
+	m_textures_in_image = 5;
+	m_rotation_offset = 90;
+	m_source = {0,0, (float)m_texture.width/m_textures_in_image, (float)m_texture.height};
+	m_origin = {(float)m_texture.width/(2*m_textures_in_image), (float)m_texture.height/2};
+}
+
+
+void Player::render()
+{
+	m_dest = {m_pos.x, m_pos.y, (float)m_texture.width/m_textures_in_image, (float)m_texture.height};
+	DrawTexturePro(m_texture, m_source, m_dest, m_origin, m_rot+m_rotation_offset, WHITE);
+}
