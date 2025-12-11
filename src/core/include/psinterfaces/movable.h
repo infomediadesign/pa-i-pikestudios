@@ -24,7 +24,7 @@ namespace PSInterfaces {
 		/*!
 		 *
 		 */
-		int rot();
+		float rot();
 
 		/*!
 		 *
@@ -39,7 +39,7 @@ namespace PSInterfaces {
 		/*!
 		 *
 		 */
-		void set_rot(const int rot);
+		void set_rot(const float rot);
 
 		/*!
 		 *
@@ -49,6 +49,6 @@ namespace PSInterfaces {
 	protected:
 		Vector2 m_pos;
 		Vector2 m_vel;
-		int m_rot;
+		float m_rot;
 	};
 } // namespace PSInterfaces

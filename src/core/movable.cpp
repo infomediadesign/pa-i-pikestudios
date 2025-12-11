@@ -11,7 +11,7 @@ Vector2 PSInterfaces::IMovable::vel()
 	return m_vel;
 }
 
-int PSInterfaces::IMovable::rot()
+float PSInterfaces::IMovable::rot()
 {
 	return m_rot;
 }
@@ -26,7 +26,7 @@ void PSInterfaces::IMovable::set_vel(const Vector2& vel)
 	m_vel = vel;
 };
 
-void PSInterfaces::IMovable::set_rot(const int rot)
+void PSInterfaces::IMovable::set_rot(const float rot)
 {
 	m_rot = rot;
 };

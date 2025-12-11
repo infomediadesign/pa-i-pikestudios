@@ -14,6 +14,8 @@
 #include <iostream>
 #include <string>
 
+#include "psinterfaces/movable.h"
+
 int main(void)
 {
 	PSCore::Application::AppSpec spec{"Fortunas Echo", {1440, 780}};

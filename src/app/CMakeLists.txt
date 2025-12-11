@@ -15,6 +15,8 @@ set(HEADER_FILES
 	debuglayer.h
 	applayer.h
 	pauselayer.h
+		player.cpp
+		player.h
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES} ${app_icon})
