@@ -48,7 +48,7 @@ void Player::set_texture_value()
 {
 	// WIP
 
-	m_texture = LoadTexture("ressources/SpaceShip.png");
+	m_texture = LoadTexture("src/app/SpaceShip.png");
 	m_textures_in_image = 5;
 	m_rotation_offset = 90;
 	m_source = {0,0, (float)m_texture.width/m_textures_in_image, (float)m_texture.height};
