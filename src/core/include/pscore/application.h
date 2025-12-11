@@ -10,7 +10,7 @@ namespace PSCore {
 
 	template<typename TL>
 	concept ILayerDerived = std::is_base_of_v<PSInterfaces::Layer, TL>;
-	
+
 	class ApplicationPriv;
 	class Application
 	{
@@ -26,11 +26,12 @@ namespace PSCore {
 		~Application();
 
 		static Application* get();
-		
+
 		template<ILayerDerived TL>
 		void push_layer()
 		{
-			m_layer_stack.push_back(std::make_unique<TL>());
+			if ( !get_layer<TL>() )
+				m_layer_stack.push_back(std::make_unique<TL>());
 		};
 
 		template<ILayerDerived TL>
@@ -46,7 +47,7 @@ namespace PSCore {
 		template<ILayerDerived TL>
 		void pop_layer()
 		{
-			for (auto itr = m_layer_stack.begin(); itr != m_layer_stack.end();) {
+			for ( auto itr = m_layer_stack.begin(); itr != m_layer_stack.end(); ) {
 				if ( auto casted = dynamic_cast<TL*>(itr->get()) )
 					itr = m_layer_stack.erase(itr);
 				else

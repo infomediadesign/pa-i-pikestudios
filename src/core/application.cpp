@@ -34,6 +34,11 @@ class PSCore::ApplicationPriv
 		} else
 			deltaTime = updateDrawTime;
 	}
+	
+	void handle_global_inputs() {
+		if (IsKeyPressed(KEY_F11))
+			ToggleBorderlessWindowed();
+	}
 };
 
 Application::Application(const AppSpec& spec)
@@ -41,6 +46,8 @@ Application::Application(const AppSpec& spec)
 	_p = std::make_unique<ApplicationPriv>();
 
 	g_app = this;
+	
+	SetConfigFlags(FLAG_WINDOW_RESIZABLE);
 
 	InitWindow(spec.size.x, spec.size.y, spec.title);
 
@@ -60,6 +67,7 @@ void Application::run()
 		_p->timeCounter += _p->deltaTime;
 
 		PollInputEvents();
+		_p->handle_global_inputs();
 
 		if ( WindowShouldClose() ) {
 			stop();
@@ -67,7 +75,7 @@ void Application::run()
 		}
 
 		try {
-			for ( int i = 0; i < m_layer_stack.size(); ++i )
+			for ( int i = 0; i < m_layer_stack.size(); i++ )
 				m_layer_stack.at(i)->on_update(_p->deltaTime);
 		} catch ( std::out_of_range e ) {
 		}
