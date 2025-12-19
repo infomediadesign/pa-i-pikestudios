@@ -6,9 +6,9 @@
 class Player : public PSInterfaces::IMovable, PSInterfaces::IRenderable
 {
 public:
-	Player();
+	Player(){};
 
-	~Player();
+	~Player() = default;
 
 	float target_velocity();
 
