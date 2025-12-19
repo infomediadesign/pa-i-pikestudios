@@ -1,14 +1,14 @@
 #pragma once
-#include <psinterfaces/movable.h>
+
+#include <psinterfaces/entity.h>
 #include <psinterfaces/renderable.h>
 
+#include <raylib.h>
 
-class Player : public PSInterfaces::IMovable, PSInterfaces::IRenderable
+class Player : public PSInterfaces::IRenderable
 {
 public:
 	Player();
-
-	~Player();
 
 	float target_velocity();
 
@@ -20,7 +20,7 @@ public:
 
 	void set_interpolation_values(const float& acceleration_fade, const float& deceleration_fade, const float& rotation_fade);
 
-	void move(const float dt) override;
+	void update(const float dt) override;
 
 	void set_texture_value();
 
@@ -39,4 +39,8 @@ private:
 	Rectangle m_source;
 	Rectangle m_dest;
 	Vector2 m_origin;
+	
+	float m_rot;
+	Vector2 m_vel;
+	Vector2 m_pos;
 };

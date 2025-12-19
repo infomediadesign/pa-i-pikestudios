@@ -1,6 +1,20 @@
 #include "player.h"
+#include <iostream>
+#include <raylib.h>
 
+#include "pscore/application.h"
 #include "raymath.h"
+
+Player::Player() {
+	
+	// WARNING: THIS IS ONLY FOR TESTING
+	m_pos = {GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f};
+	m_rot = 0;
+	set_texture_value();
+	//
+	
+	PSCore::Application::get()->register_entity(this);
+}
 
 float Player::target_velocity()
 {
@@ -29,7 +43,7 @@ void Player::set_interpolation_values(const float& acceleration_fade, const floa
 	m_rotation_fade = rotation_fade;
 }
 
-void Player::move(const float dt)
+void Player::update(const float dt)
 {
 	m_rot = m_rot + (m_target_rotation - m_rot) * (m_rotation_fade * dt);
 
@@ -48,7 +62,7 @@ void Player::set_texture_value()
 {
 	// WIP
 
-	m_texture = LoadTexture("src/app/SpaceShip.png");
+	m_texture = LoadTexture("ressources/SpaceShip.png");
 	m_textures_in_image = 5;
 	m_rotation_offset = 90;
 	m_source = {0,0, (float)m_texture.width/m_textures_in_image, (float)m_texture.height};
