@@ -7,6 +7,7 @@
 #include <deque>
 #include <entt/entity/fwd.hpp>
 #include <iostream>
+#include <map>
 #include <memory>
 #include <pscore/application.h>
 #include <raylib.h>
@@ -44,9 +45,8 @@ class AppLayerPriv
 			}
 		}
 	}
-	
-	
-	
+
+
 	std::deque<Vector2> spline_points;
 };
 
@@ -83,39 +83,65 @@ void AppLayer::on_render()
 
 		return {x * tile_size, y * tile_size};
 	};
-	
-	const auto gen_tip = [] (const Vector2& point) -> Vector2 {
-		bool x_is_smaller = point.x < point.y;
-		int smaller = x_is_smaller ? point.x : point.y;
-		
-		float start_coord = PSUtils::gen_rand(smaller - 3, smaller + 3);
-		Vector2 start_point = x_is_smaller ? Vector2{0, start_coord} : Vector2{start_coord, 0};
-		
-		return start_point;
+
+	enum MapEdge {
+		Left = 0,
+		Right,
+
+		Top,
+		Bottom
+	};
+
+	const auto gen_tip = [tile_size]() -> Vector2 {
+		static MapEdge map_edge;
+
+		MapEdge rand_map_edge = static_cast<MapEdge>(PSUtils::gen_rand(MapEdge::Left, MapEdge::Bottom));
+		if ( rand_map_edge == map_edge )
+			map_edge = static_cast<MapEdge>(PSUtils::clamp_with_overflow<int>(0, MapEdge::Bottom, map_edge + 1));
+		else
+			map_edge = rand_map_edge;
+
+		float x, y;
+		switch ( map_edge ) {
+			case Left:
+				x = 0;
+				y = PSUtils::gen_rand(3, (GetScreenHeight() / tile_size) - 3);
+				break;
+			case Right:
+				x = GetScreenWidth() / tile_size;
+				y = PSUtils::gen_rand(3, (GetScreenHeight() / tile_size) - 3);
+				break;
+			case Top:
+				x = PSUtils::gen_rand(3, (GetScreenHeight() / tile_size) - 3);
+				y = 0;
+				break;
+			case Bottom:
+				x = PSUtils::gen_rand(3, (GetScreenHeight() / tile_size) - 3);
+				y = GetScreenHeight() / tile_size;
+		}
+
+		return {x * tile_size, y * tile_size};
 	};
 
 	auto& spline_points = _p->spline_points;
 	if ( IsKeyPressed(KEY_S) ) {
 		spline_points.clear();
-		
-		for ( int i = 0; i < 3; i++ )
+
+		for ( int i = 0; i < 1; i++ )
 			spline_points.push_back(gen_rand_anchor());
-		
-		const Vector2& first = gen_tip(spline_points.front());
-		
+
+		const Vector2& first = gen_tip();
 		spline_points.push_front(first);
 		spline_points.push_front(first);
-		
-		
-		const Vector2& last = gen_tip(spline_points.back());
-		
+
+		const Vector2& last = gen_tip();
 		spline_points.push_back(last);
 		spline_points.push_back(last);
 	}
-	
-	if (spline_points.size() == 0)
+
+	if ( spline_points.size() == 0 )
 		return;
-	
+
 	for ( int i = 0; i < spline_points.size(); i++ ) {
 		DrawRectangle(spline_points.at(i).x, spline_points.at(i).y, tile_size, tile_size, BLUE);
 		DrawText(TextFormat("%i", i), spline_points.at(i).x + 3, spline_points.at(i).y + 3, 6, WHITE);
@@ -123,6 +149,6 @@ void AppLayer::on_render()
 
 	Vector2* arr = new Vector2[spline_points.size()];
 	std::copy(spline_points.begin(), spline_points.end(), arr);
-	
+
 	DrawSplineCatmullRom(arr, spline_points.size(), 3, RED);
 }
