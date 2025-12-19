@@ -1,7 +1,9 @@
 #pragma once
 
+#include <psinterfaces/entity.h>
+
 namespace PSInterfaces {
-	class IRenderable
+	class IRenderable : public virtual PSInterfaces::IEntity
 	{
 	public:
 		~IRenderable() = default;
