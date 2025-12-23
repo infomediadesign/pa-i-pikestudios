@@ -28,6 +28,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
 	OpenGL::GL
 
 	PSCore
+	CMathExtension
 )
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE SPDLOG_FMT_EXTERNAL)
