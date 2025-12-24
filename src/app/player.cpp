@@ -12,7 +12,9 @@ Player::Player() {
 	m_max_velocity = 600;
 	m_rotation = 0;
 	set_interpolation_values(6, 2, 4, 1500, 0.3);
-	set_texture_value(LoadTexture("ressources/SpaceShip.png"), 5, 90, 0.5);
+	set_texture_values(LoadTexture("ressources/SpaceShip.png"), 5, 90, 0.5);
+	Test = LoadTexture("ressources/SpaceShip.png");
+	//set_animation_values(2,{1,4},10);
 	//
 	
 	PSCore::Application::get()->register_entity(this);
@@ -55,6 +57,9 @@ void Player::set_position(const Vector2& position)
 
 void Player::set_velocity(const Vector2& velocity)
 {
+	//Check if the input Velocity is in range of the Max Velocity
+	//and set the Velocity and Target Velocity to the input Velocity if the check is True
+	//or if the check is False it's set to Max Velocity
 	m_velocity = Vector2Length(velocity) <= m_max_velocity ? velocity : Vector2Scale(Vector2Normalize(velocity), m_max_velocity);
 	m_target_velocity = Vector2Length(velocity) <= m_max_velocity ? Vector2Length(velocity) : m_max_velocity;
 }
@@ -91,15 +96,21 @@ void Player::set_interpolation_values(const float& acceleration_fade, const floa
 
 void Player::movement_calculation(const float& dt)
 {
-	m_rotation = m_rotation + (m_target_rotation - m_rotation) * fminf((m_rotation_fade * dt), 1);
+	//Linear Interpolation form Rotation to Target Rotation with a regression of Rotation and a static Alpha
+	//which ends in an exponential approximation to calculate the rotation
+	m_rotation = m_rotation + (m_target_rotation - m_rotation) * fmaxf(0, fminf((m_rotation_fade * dt), 1));
 
+	//Check if the Velocity should increase or decrease and uses right the Linear Interpolation form Velocity to Target Velocity with a regression of Velocity
+	//and a static Alpha which ends in an exponential approximation to calculate the Value of the Velocity
 	float velocity_value = (m_target_velocity - Vector2Length(m_velocity)) > 0
-	? Vector2Length(m_velocity) + (m_target_velocity - Vector2Length(m_velocity)) * fminf((m_acceleration_fade * dt), 1)
-	: Vector2Length(m_velocity) + (m_target_velocity - Vector2Length(m_velocity)) * fminf((m_deceleration_fade * dt), 1);
+	? Vector2Length(m_velocity) + (m_target_velocity - Vector2Length(m_velocity)) * fmaxf(0, fminf((m_acceleration_fade * dt), 1))
+	: Vector2Length(m_velocity) + (m_target_velocity - Vector2Length(m_velocity)) * fmaxf(0, fminf((m_deceleration_fade * dt), 1));
 
+	//Calculate with the Velocity Value and the Rotation the actual 2 Dimensional Velocity
 	m_velocity.x = velocity_value * cos(m_rotation * DEG2RAD);
 	m_velocity.y = velocity_value * sin(m_rotation * DEG2RAD);
 
+	//Update Position based on Velocity
 	m_position.x += m_velocity.x * dt;
 	m_position.y += m_velocity.y * dt;
 }
@@ -107,6 +118,7 @@ void Player::movement_calculation(const float& dt)
 
 void Player::update(const float dt)
 {
+	//Input Functions to set Target Velocity and Target Rotation
 	if (IsKeyDown(KEY_W)) m_target_velocity += m_target_velocity < m_max_velocity ? m_input_velocity_multiplier  * dt : 0;
 	if (IsKeyDown(KEY_S)) m_target_velocity -= m_target_velocity > 0 ? m_input_velocity_multiplier * dt : 0;
 	if (IsKeyDown(KEY_D) && Vector2Length(m_velocity) > 1) m_target_rotation += m_input_rotation_multiplier * Vector2Length(m_velocity) * dt;
@@ -115,7 +127,7 @@ void Player::update(const float dt)
 	movement_calculation(dt);
 }
 
-void Player::set_texture_value(const Texture2D& texture, const float& textures_in_image, const float& rotation_offset, const float& base_scale)
+void Player::set_texture_values(const Texture2D& texture, const float& textures_in_image, const float& rotation_offset, const float& base_scale)
 {
 	m_texture = texture;
 	m_textures_in_image = textures_in_image;
@@ -123,11 +135,19 @@ void Player::set_texture_value(const Texture2D& texture, const float& textures_i
 	m_base_scale = base_scale;
 }
 
+void Player::set_animation_values(const int& animation_count, const std::valarray<int>& sprite_sheet, const float& animation_speed)
+{
+	m_animation_count = animation_count;
+	m_sprite_sheet.resize(animation_count);
+	m_sprite_sheet = sprite_sheet;
+	m_animation_speed = animation_speed;
+}
 
 void Player::render()
 {
-	m_source = {0,0, (float)m_texture.width / m_textures_in_image, (float)m_texture.height};
+	m_source = {0,0, (float)m_texture.width / 1, (float)m_texture.height / 1};
 	m_dest = {m_position.x, m_position.y, m_source.width * m_base_scale, m_source.height * m_base_scale};
 	m_origin = {m_dest.width / 2, m_dest.height / 2};
 	DrawTexturePro(m_texture, m_source, m_dest, m_origin, m_rotation + m_rotation_offset, WHITE);
+
 }

@@ -4,6 +4,7 @@
 #include <psinterfaces/renderable.h>
 
 #include <raylib.h>
+#include <valarray>
 
 class Player : public PSInterfaces::IRenderable
 {
@@ -40,7 +41,9 @@ public:
 
 	void update(const float dt) override;
 
-	void set_texture_value(const Texture2D& texture, const float& textures_in_image, const float& rotation_offset, const float& base_scale);
+	void set_texture_values(const Texture2D& texture, const float& textures_in_image, const float& rotation_offset, const float& base_scale);
+
+	void set_animation_values(const int& animation_count, const std::valarray<int>& sprite_sheet, const float& animation_speed);
 
 	void render() override;
 
@@ -69,4 +72,11 @@ private:
 	Rectangle m_dest = {0};
 	Vector2 m_origin = {0};
 
+	int m_animation_count = 1;
+	std::valarray<int> m_sprite_sheet = {1,1};
+    float m_animation_speed = 1;
+
+	float m_frame_counter = 0;
+	int m_animation_frame = 0;
+	Texture2D Test;
 };
