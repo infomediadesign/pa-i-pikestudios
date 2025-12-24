@@ -41,9 +41,9 @@ public:
 
 	void update(const float dt) override;
 
-	void set_texture_values(const Texture2D& texture, const float& textures_in_image, const float& rotation_offset, const float& base_scale);
+	void set_texture_values(const Texture2D& texture, const float& rotation_offset, const float& base_scale);
 
-	void set_animation_values(const int& animation_count, const std::valarray<int>& sprite_sheet, const float& animation_speed);
+	void set_animation_values(const int& animation_max_count, const std::valarray<int>& sprite_sheet, const float& animation_speed);
 
 	void render() override;
 
@@ -65,18 +65,16 @@ private:
 
 	//Variables for Texture Rendering
 	Texture2D m_texture = {0};
-	float m_textures_in_image = 1; //For one dimensional Texture with Animation
 	float m_rotation_offset = 0;
 	float m_base_scale = 1;
 	Rectangle m_source = {0};
 	Rectangle m_dest = {0};
 	Vector2 m_origin = {0};
 
-	int m_animation_count = 1;
 	std::valarray<int> m_sprite_sheet = {1,1};
     float m_animation_speed = 1;
 
 	float m_frame_counter = 0;
-	int m_animation_frame = 0;
-	Texture2D Test;
+	float m_animation_count = 0;
+	float m_animation_frame = 0;
 };

@@ -12,9 +12,8 @@ Player::Player() {
 	m_max_velocity = 600;
 	m_rotation = 0;
 	set_interpolation_values(6, 2, 4, 1500, 0.3);
-	set_texture_values(LoadTexture("ressources/SpaceShip.png"), 5, 90, 0.5);
-	Test = LoadTexture("ressources/SpaceShip.png");
-	//set_animation_values(2,{1,4},10);
+	set_texture_values(LoadTexture("ressources/SpaceShipSpriteSheet.png"), 90, 4);
+	set_animation_values(2,{1,4},4);
 	//
 	
 	PSCore::Application::get()->register_entity(this);
@@ -125,29 +124,44 @@ void Player::update(const float dt)
 	if (IsKeyDown(KEY_A) && Vector2Length(m_velocity) > 1) m_target_rotation -= m_input_rotation_multiplier * Vector2Length(m_velocity) * dt;
 
 	movement_calculation(dt);
+
+	//Animation Calculation
+
+	if ( Vector2Length(m_velocity) >= 1 && m_animation_count == 0) {
+		m_animation_count = 1;
+		m_animation_frame = 0;
+	}
+	if ( Vector2Length(m_velocity) < 1 && m_animation_count == 1) {
+		m_animation_count = 0;
+		m_animation_frame = 0;
+	}
+
+	m_frame_counter++;
+	if ( m_frame_counter >= 1 / (dt * m_animation_speed) ) {
+		m_frame_counter = 0;
+		m_animation_frame++;
+		if ( m_animation_frame >= round(Lerp(0, m_sprite_sheet[m_animation_count], Vector2Length(m_velocity) / m_max_velocity)) ) m_animation_frame = 0;
+	}
 }
 
-void Player::set_texture_values(const Texture2D& texture, const float& textures_in_image, const float& rotation_offset, const float& base_scale)
+void Player::set_texture_values(const Texture2D& texture, const float& rotation_offset, const float& base_scale)
 {
 	m_texture = texture;
-	m_textures_in_image = textures_in_image;
 	m_rotation_offset = rotation_offset;
 	m_base_scale = base_scale;
 }
 
-void Player::set_animation_values(const int& animation_count, const std::valarray<int>& sprite_sheet, const float& animation_speed)
+void Player::set_animation_values(const int& animation_max_count, const std::valarray<int>& sprite_sheet, const float& animation_speed)
 {
-	m_animation_count = animation_count;
-	m_sprite_sheet.resize(animation_count);
+	m_sprite_sheet.resize(animation_max_count);
 	m_sprite_sheet = sprite_sheet;
 	m_animation_speed = animation_speed;
 }
 
 void Player::render()
 {
-	m_source = {0,0, (float)m_texture.width / 1, (float)m_texture.height / 1};
+	m_source = {m_animation_frame * (float)m_texture.width / m_sprite_sheet.max(),m_animation_count * (float)m_texture.height / m_sprite_sheet.size(), (float)m_texture.width / m_sprite_sheet.max(), (float)m_texture.height / m_sprite_sheet.size()};
 	m_dest = {m_position.x, m_position.y, m_source.width * m_base_scale, m_source.height * m_base_scale};
 	m_origin = {m_dest.width / 2, m_dest.height / 2};
 	DrawTexturePro(m_texture, m_source, m_dest, m_origin, m_rotation + m_rotation_offset, WHITE);
-
 }
