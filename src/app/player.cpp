@@ -2,13 +2,12 @@
 #include <iostream>
 #include <raylib.h>
 
-#include "pscore/application.h"
-#include "raymath.h"
+#include <pscore/application.h>
+#include <raymath.h>
 
-#ifndef calculation_velocity_min
-#define calculation_velocity_min 1
+#ifndef CALCULATION_VELOCITY_MIN
+#define CALCULATION_VELOCITY_MIN 1
 #endif
-
 
 Player::Player()
 {
@@ -134,10 +133,10 @@ void Player::update(const float dt)
 	if ( IsKeyDown(KEY_S) ) {
 		m_target_velocity -= m_target_velocity > 0 ? m_input_velocity_multiplier * dt : 0;
 	}
-	if ( IsKeyDown(KEY_D) && Vector2Length(m_velocity) > calculation_velocity_min ) {
+	if ( IsKeyDown(KEY_D) && Vector2Length(m_velocity) > CALCULATION_VELOCITY_MIN ) {
 		m_target_rotation += m_input_rotation_multiplier * Vector2Length(m_velocity) * dt;
 	}
-	if ( IsKeyDown(KEY_A) && Vector2Length(m_velocity) > calculation_velocity_min ) {
+	if ( IsKeyDown(KEY_A) && Vector2Length(m_velocity) > CALCULATION_VELOCITY_MIN ) {
 		m_target_rotation -= m_input_rotation_multiplier * Vector2Length(m_velocity) * dt;
 	}
 
@@ -164,11 +163,11 @@ void Player::set_animation_values(const int& animation_max_count, const std::val
 
 void Player::calculate_animation(const float& dt)
 {
-	if ( Vector2Length(m_velocity) >= calculation_velocity_min && m_animation_count == 0 ) {
+	if ( Vector2Length(m_velocity) >= CALCULATION_VELOCITY_MIN && m_animation_count == 0 ) {
 		m_animation_count = 1;
 		m_animation_frame = 0;
 	}
-	if ( Vector2Length(m_velocity) < calculation_velocity_min && m_animation_count == 1 ) {
+	if ( Vector2Length(m_velocity) < CALCULATION_VELOCITY_MIN && m_animation_count == 1 ) {
 		m_animation_count = 0;
 		m_animation_frame = 0;
 	}
