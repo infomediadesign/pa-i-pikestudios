@@ -2,19 +2,12 @@ if (WIN32)
 	set(app_icon "${PROJECT_SOURCE_DIR}/ressources/appIcon.rc")
 endif()
 
-set(SOURCE_FILES
-	main.cpp
-	debuglayer.cpp
-	applayer.cpp
-	pauselayer.cpp
-	#winglviewporthooks.cpp
+file(GLOB_RECURSE HEADER_FILES
+     "./*.h"
 )
 
-set(HEADER_FILES
-	#winglviewporthooks.h
-	debuglayer.h
-	applayer.h
-	pauselayer.h
+file(GLOB_RECURSE SOURCE_FILES
+     "./*.cpp"
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES} ${app_icon})
