@@ -1,5 +1,4 @@
 #include "player.h"
-#include <iostream>
 #include <raylib.h>
 
 #include <pscore/application.h>
@@ -21,7 +20,7 @@ Player::Player()
 	set_animation_values(2, {1, 4}, 4);
 	//
 
-	PSCore::Application::get()->register_entity(this);
+	gApp()->register_entity(this);
 }
 
 Vector2 Player::position()

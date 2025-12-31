@@ -16,7 +16,7 @@ namespace PSCore {
 	class Application
 	{
 	public:
-		typedef Vector2 WindowSize;
+		using WindowSize = Vector2;
 		struct AppSpec
 		{
 			const char* title;
@@ -78,3 +78,5 @@ namespace PSCore {
 		std::vector<PSInterfaces::IEntity*> m_entity_registry;
 	};
 } // namespace PSCore
+
+constexpr auto gApp = PSCore::Application::get;

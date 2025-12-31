@@ -40,6 +40,12 @@ class PSCore::ApplicationPriv
 #ifdef _WIN32
 			ToggleBorderlessWindowed();
 #elif unix
+			int display = GetCurrentMonitor();
+			if ( IsWindowFullscreen() )
+				SetWindowSize(GetScreenWidth(), GetScreenHeight());
+			else
+				SetWindowSize(GetMonitorWidth(display), GetMonitorHeight(display));
+
 			ToggleFullscreen();
 #endif
 		}
@@ -49,6 +55,8 @@ class PSCore::ApplicationPriv
 Application::Application(const AppSpec& spec)
 {
 	_p = std::make_unique<ApplicationPriv>();
+
+	SetConfigFlags(FLAG_WINDOW_RESIZABLE);
 
 	g_app = this;
 
