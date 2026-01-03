@@ -1,4 +1,3 @@
-#include <coordinatesystem.h>
 #include <pscore/application.h>
 #include <psinterfaces/layer.h>
 #include "applayer.h"
