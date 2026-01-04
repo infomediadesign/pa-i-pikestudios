@@ -1,5 +1,7 @@
 #pragma once
 
+#ifdef _WIN32
+
 #include <cstdint>
 #include <imgui.h>
 
@@ -29,3 +31,5 @@ namespace GLHooks {
 	void Hook_Renderer_SwapBuffers(ImGuiViewport* viewport, void*);
 
 } // namespace GLHooks
+
+#endif

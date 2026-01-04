@@ -1,5 +1,7 @@
 #include "winglviewporthooks.h"
 
+#ifdef _WIN32
+
 #include <windows.h>
 #include <tchar.h>
 #include <imgui_impl_opengl3.h>
@@ -13,7 +15,7 @@ static int g_Height;
 bool GLHooks::CreateDeviceWGL(std::uintptr_t hWnd, WGL_WindowData* data)
 {
 	HWND l_hWnd = reinterpret_cast<HWND>(hWnd);
-	
+
 	HDC hDc					  = ::GetDC(l_hWnd);
 	PIXELFORMATDESCRIPTOR pfd = {0};
 	pfd.nSize				  = sizeof(pfd);
@@ -72,3 +74,5 @@ void GLHooks::Hook_Renderer_SwapBuffers(ImGuiViewport* viewport, void*)
 	if ( WGL_WindowData* data = (WGL_WindowData*) viewport->RendererUserData )
 		::SwapBuffers(data->hDC);
 }
+
+#endif

@@ -20,7 +20,7 @@ function(raylib_imgui_setup_dependencies)
     target_include_directories(imgui INTERFACE ${imgui_SOURCE_DIR} ${imgui_SOURCE_DIR}/backends)
 
     message(STATUS "Include spdlog")
-    cpmaddpackage("gh:gabime/spdlog#27cb4c76708608465c413f6d0e6b8d99a4d84302")# v1.14.1
+    cpmaddpackage("gh:gabime/spdlog#27cb4c76708608465c413f6d0e6b8d99a4d84302") # v1.14.1
 
     message(STATUS "Include rlImGui")
     FetchContent_Declare(
@@ -30,7 +30,7 @@ function(raylib_imgui_setup_dependencies)
     FetchContent_MakeAvailable(rlImGui)
     FetchContent_GetProperties(rlImGui SOURCE_DIR RLIMGUI_DIR)
 
-    add_library(rlimgui STATIC ${rlimgui_SOURCE_DIR}/rlImgui.cpp)
+    add_library(rlimgui STATIC ${rlimgui_SOURCE_DIR}/rlImGui.cpp)
     target_link_libraries(rlimgui PRIVATE imgui raylib)
     target_include_directories(rlimgui INTERFACE ${rlimgui_SOURCE_DIR})
 endfunction()

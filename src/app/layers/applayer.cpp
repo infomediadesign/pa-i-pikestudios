@@ -8,17 +8,20 @@
 #include <pscore/application.h>
 #include <raylib.h>
 
-#include <psinterfaces/movable.h>
 #include <psinterfaces/renderable.h>
 
 #include <entt/entt.hpp>
 #include <thread>
 #include <vector>
 
+#include <entities/player.h>
+
 class AppLayerPriv
 {
 	friend class AppLayer;
 
+	// WARNING: DO NOT DO THIS.. this is only a temporary solution to try things out. A layer should not be responsible for entites
+	Player* player = new Player();
 };
 
 AppLayer::AppLayer()
@@ -28,6 +31,7 @@ AppLayer::AppLayer()
 
 AppLayer::~AppLayer()
 {
+	delete _p->player;
 }
 
 void AppLayer::on_update(const float dt)
@@ -57,8 +61,16 @@ void AppLayer::on_update(const float dt)
 	if ( !active )
 		return;
 
+	for ( auto entity : PSCore::Application::get()->entities() ) {
+		entity->update(dt);
+	}
 }
 
 void AppLayer::on_render()
 {
+	for ( auto entity : PSCore::Application::get()->entities() ) {
+		if ( auto renderable = dynamic_cast<PSInterfaces::IRenderable*>(entity)) {
+			renderable->render();
+		}
+	}
 }

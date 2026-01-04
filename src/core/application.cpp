@@ -1,4 +1,3 @@
-#include <memory>
 #include <pscore/application.h>
 #include <raylib.h>
 #include <stdexcept>
@@ -34,11 +33,30 @@ class PSCore::ApplicationPriv
 		} else
 			deltaTime = updateDrawTime;
 	}
+
+	void handle_global_inputs()
+	{
+		if ( IsKeyPressed(KEY_F11) ) {
+#ifdef _WIN32
+			ToggleBorderlessWindowed();
+#elif defined unix
+			int display = GetCurrentMonitor();
+			if ( IsWindowFullscreen() )
+				SetWindowSize(GetScreenWidth(), GetScreenHeight());
+			else
+				SetWindowSize(GetMonitorWidth(display), GetMonitorHeight(display));
+
+			ToggleFullscreen();
+#endif
+		}
+	}
 };
 
 Application::Application(const AppSpec& spec)
 {
 	_p = std::make_unique<ApplicationPriv>();
+
+	SetConfigFlags(FLAG_WINDOW_RESIZABLE);
 
 	g_app = this;
 
@@ -60,6 +78,8 @@ void Application::run()
 		_p->timeCounter += _p->deltaTime;
 
 		PollInputEvents();
+
+		_p->handle_global_inputs();
 
 		if ( WindowShouldClose() ) {
 			stop();

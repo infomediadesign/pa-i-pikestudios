@@ -1,6 +1,6 @@
 #include <pscore/application.h>
 #include <psinterfaces/layer.h>
-#include "applayer.h"
+#include <layers/applayer.h>
 
 // TODO fully implement multi viewports
 // #include "winglviewporthooks.h"
