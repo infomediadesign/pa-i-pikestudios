@@ -14,7 +14,7 @@
 #include <thread>
 #include <vector>
 
-#include "player.h"
+#include <entities/player.h>
 
 class AppLayerPriv
 {

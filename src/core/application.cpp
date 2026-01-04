@@ -39,7 +39,7 @@ class PSCore::ApplicationPriv
 		if ( IsKeyPressed(KEY_F11) ) {
 #ifdef _WIN32
 			ToggleBorderlessWindowed();
-#elif unix
+#elif defined unix
 			int display = GetCurrentMonitor();
 			if ( IsWindowFullscreen() )
 				SetWindowSize(GetScreenWidth(), GetScreenHeight());
