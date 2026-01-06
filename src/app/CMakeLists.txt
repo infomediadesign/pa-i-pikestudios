@@ -20,7 +20,8 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
  spdlog::spdlog_header_only
  OpenGL::GL
 
- PSCore
+	PSCore
+	CMathExtension
 )
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE SPDLOG_FMT_EXTERNAL)
