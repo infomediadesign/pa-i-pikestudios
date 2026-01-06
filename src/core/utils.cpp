@@ -109,7 +109,7 @@ void PSUtils::DrawTextBoxedSelectable(
 				bool isGlyphSelected = false;
 				if ( (selectStart >= 0) && (k >= selectStart) && (k < (selectStart + selectLength)) ) {
 					DrawRectangleRec(
-							(Rectangle) {rec.x + textOffsetX - 1, rec.y + textOffsetY, glyphWidth, (float) font.baseSize * scaleFactor},
+							{rec.x + textOffsetX - 1, rec.y + textOffsetY, glyphWidth, (float) font.baseSize * scaleFactor},
 							selectBackTint
 					);
 					isGlyphSelected = true;
@@ -118,7 +118,7 @@ void PSUtils::DrawTextBoxedSelectable(
 				// Draw current character glyph
 				if ( (codepoint != ' ') && (codepoint != '\t') ) {
 					DrawTextCodepoint(
-							font, codepoint, (Vector2) {rec.x + textOffsetX, rec.y + textOffsetY}, fontSize, isGlyphSelected ? selectTint : tint
+							font, codepoint, {rec.x + textOffsetX, rec.y + textOffsetY}, fontSize, isGlyphSelected ? selectTint : tint
 					);
 				}
 			}
