@@ -8,13 +8,7 @@ namespace PSUtils {
 	// General
 	int gen_rand(const int min, const int max);
 
-	// Debug
-	template<typename VAL>
-		requires(std::is_arithmetic_v<VAL>)
-	void d_expose(const VAL* val)
-	{
-		
-	}
+	
 
 	// Raylib specific
 	void DrawTextBoxedSelectable(

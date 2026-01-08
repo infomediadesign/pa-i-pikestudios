@@ -86,6 +86,13 @@ void Application::run()
 			break;
 		}
 
+		for ( auto itr = m_entity_registry.begin(); itr != m_entity_registry.end(); ) {
+			if ( auto r_locked = itr->lock() ) {
+				++itr;
+			} else  // entity is expired; we dont need it
+				itr = m_entity_registry.erase(itr);
+		}
+
 		try {
 			for ( int i = 0; i < m_layer_stack.size(); ++i )
 				m_layer_stack.at(i)->on_update(_p->deltaTime);

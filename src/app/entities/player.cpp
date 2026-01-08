@@ -19,8 +19,6 @@ Player::Player()
 	set_texture_values(LoadTexture("ressources/SpaceShipSpriteSheet.png"), 90, 4);
 	set_animation_values(2, {1, 4}, 4);
 	//
-
-	gApp()->register_entity(this);
 }
 
 Vector2 Player::position()

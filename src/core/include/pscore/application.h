@@ -59,14 +59,14 @@ namespace PSCore {
 		void stop();
 
 		template<typename E>
-			requires std::is_pointer_v<E>
-		void register_entity(E e)
+			requires std::is_base_of_v<PSInterfaces::IEntity, E>
+		void register_entity(std::shared_ptr<E> e)
 		{
-			if ( auto entity = dynamic_cast<PSInterfaces::IEntity*>(e) )
-				m_entity_registry.push_back(entity);
+			if ( auto entity = dynamic_cast<PSInterfaces::IEntity*>(e.get()) )
+				m_entity_registry.push_back(e);
 		};
 
-		const std::vector<PSInterfaces::IEntity*> entities() const
+		std::vector<std::weak_ptr<PSInterfaces::IEntity>> entities() const
 		{
 			return m_entity_registry;
 		}
@@ -75,7 +75,7 @@ namespace PSCore {
 		std::unique_ptr<ApplicationPriv> _p;
 		std::vector<std::unique_ptr<PSInterfaces::Layer>> m_layer_stack;
 
-		std::vector<PSInterfaces::IEntity*> m_entity_registry;
+		std::vector<std::weak_ptr<PSInterfaces::IEntity>> m_entity_registry;
 	};
 } // namespace PSCore
 

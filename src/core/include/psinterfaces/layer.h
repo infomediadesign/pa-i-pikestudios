@@ -1,5 +1,8 @@
 #pragma once
 
+#include <memory>
+#include <pscore/renderer.h>
+
 namespace PSInterfaces {
 	class Layer
 	{
@@ -22,5 +25,6 @@ namespace PSInterfaces {
 
 	protected:
 		bool active = true;
+		std::unique_ptr<PSCore::Renderer> renderer_ = std::make_unique<PSCore::Renderer>();
 	};
 } // namespace PSInterfaces
