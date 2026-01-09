@@ -21,17 +21,19 @@ class AppLayerPriv
 	friend class AppLayer;
 
 	// WARNING: DO NOT DO THIS.. this is only a temporary solution to try things out. A layer should not be responsible for entites
-	Player* player = new Player();
+	std::shared_ptr<Player> player = std::make_shared<Player>();
 };
 
 AppLayer::AppLayer()
 {
 	_p = std::make_unique<AppLayerPriv>();
+
+	gApp()->register_entity(_p->player);
+	renderer_->submit_renderable<Player>(_p->player);
 }
 
 AppLayer::~AppLayer()
 {
-	delete _p->player;
 }
 
 void AppLayer::on_update(const float dt)
@@ -61,16 +63,14 @@ void AppLayer::on_update(const float dt)
 	if ( !active )
 		return;
 
-	for ( auto entity : PSCore::Application::get()->entities() ) {
-		entity->update(dt);
+	for ( auto entity: PSCore::Application::get()->entities() ) {
+		if ( auto locked_entity = entity.lock() )
+			locked_entity->update(dt);
 	}
 }
 
 void AppLayer::on_render()
 {
-	for ( auto entity : PSCore::Application::get()->entities() ) {
-		if ( auto renderable = dynamic_cast<PSInterfaces::IRenderable*>(entity)) {
-			renderable->render();
-		}
-	}
+	if ( renderer_ )
+		renderer_->render();
 }
