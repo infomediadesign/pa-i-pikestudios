@@ -1,6 +1,9 @@
+#include <chrono>
+#include <functional>
 #include <pscore/application.h>
 #include <raylib.h>
 #include <stdexcept>
+#include <string>
 
 using PSCore::Application;
 static Application* g_app = nullptr;
@@ -50,6 +53,39 @@ class PSCore::ApplicationPriv
 #endif
 		}
 	}
+
+	static void print_log_prefix(int type)
+	{
+		{ // Print current time stamp
+			using namespace std::chrono;
+			auto local = zoned_time{current_zone(), system_clock::now()};
+			std::cout << local;
+		}
+
+		switch ( type ) {
+			case LOG_INFO:
+				std::cout << (" [INFO] : ");
+				break;
+			case LOG_ERROR:
+				std::cout << (" [ERROR]: ");
+				break;
+			case LOG_WARNING:
+				std::cout << (" [WARN] : ");
+				break;
+			case LOG_DEBUG:
+				std::cout << (" [DEBUG]: ");
+				break;
+			default:
+				break;
+		}
+	}
+
+	static void log_callback(int type, const char* text, va_list args)
+	{
+		print_log_prefix(type);
+		vprintf(text, args);
+		std::cout << std::endl;
+	}
 };
 
 Application::Application(const AppSpec& spec)
@@ -57,10 +93,12 @@ Application::Application(const AppSpec& spec)
 	_p = std::make_unique<ApplicationPriv>();
 
 	SetConfigFlags(FLAG_WINDOW_RESIZABLE);
+	SetTraceLogCallback(_p->log_callback);
 
 	g_app = this;
 
 	InitWindow(spec.size.x, spec.size.y, spec.title);
+	PS_LOG(LOG_WARNING, "lol");
 
 	SetExitKey(KEY_NULL);
 }
@@ -89,7 +127,7 @@ void Application::run()
 		for ( auto itr = m_entity_registry.begin(); itr != m_entity_registry.end(); ) {
 			if ( auto r_locked = itr->lock() ) {
 				++itr;
-			} else  // entity is expired; we dont need it
+			} else // entity is expired; we dont need it
 				itr = m_entity_registry.erase(itr);
 		}
 
@@ -121,4 +159,15 @@ void Application::stop()
 Application* Application::get()
 {
 	return g_app;
+}
+
+std::vector<std::weak_ptr<PSInterfaces::IEntity>> PSCore::Application::entities() const
+{
+	return m_entity_registry;
+}
+
+void Application::log(TraceLogLevel type, const char* text) const
+{
+	_p->print_log_prefix(type);
+	std::cout << text << std::endl;
 }

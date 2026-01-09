@@ -66,10 +66,9 @@ namespace PSCore {
 				m_entity_registry.push_back(e);
 		};
 
-		std::vector<std::weak_ptr<PSInterfaces::IEntity>> entities() const
-		{
-			return m_entity_registry;
-		}
+		std::vector<std::weak_ptr<PSInterfaces::IEntity>> entities() const;
+
+		void log(TraceLogLevel type, const char* text) const;
 
 	private:
 		std::unique_ptr<ApplicationPriv> _p;
@@ -80,3 +79,6 @@ namespace PSCore {
 } // namespace PSCore
 
 constexpr auto gApp = PSCore::Application::get;
+
+#define PS_LOG(log_level, msg) gApp()->log(log_level, std::string( std::string(__FILE__) \
+								+ " LINE: " + std::to_string(__LINE__) + " MSG: " + msg ).data() );
