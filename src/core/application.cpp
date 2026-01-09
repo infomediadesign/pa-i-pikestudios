@@ -25,6 +25,7 @@ class PSCore::ApplicationPriv
 		currentTime	   = GetTime();
 		updateDrawTime = currentTime - previousTime;
 
+		// calculate the delta time
 		if ( targetFPS > 0 ) // We want a fixed frame rate
 		{
 			waitTime = (1.0f / targetFPS) - updateDrawTime;
@@ -39,10 +40,11 @@ class PSCore::ApplicationPriv
 
 	void handle_global_inputs()
 	{
+		// Toggle fullscreen on f11
 		if ( IsKeyPressed(KEY_F11) ) {
-#ifdef _WIN32
+#ifdef _WIN32 // on modern windows a "borderless" fullscreen is better
 			ToggleBorderlessWindowed();
-#elif defined unix
+#elif defined unix // on linux the default fullscreen behavior works just fine
 			int display = GetCurrentMonitor();
 			if ( IsWindowFullscreen() )
 				SetWindowSize(GetScreenWidth(), GetScreenHeight());
@@ -62,7 +64,7 @@ class PSCore::ApplicationPriv
 			std::cout << local;
 		}
 
-		switch ( type ) {
+		switch ( type ) { // Print the log level
 			case LOG_INFO:
 				std::cout << (" [INFO] : ");
 				break;
@@ -80,6 +82,7 @@ class PSCore::ApplicationPriv
 		}
 	}
 
+	// used as the log callback for raylib
 	static void log_callback(int type, const char* text, va_list args)
 	{
 		print_log_prefix(type);
@@ -92,15 +95,16 @@ Application::Application(const AppSpec& spec)
 {
 	_p = std::make_unique<ApplicationPriv>();
 
+	// Init
 	SetConfigFlags(FLAG_WINDOW_RESIZABLE);
 	SetTraceLogCallback(_p->log_callback);
 
 	g_app = this;
 
 	InitWindow(spec.size.x, spec.size.y, spec.title);
-	PS_LOG(LOG_WARNING, "lol");
 
 	SetExitKey(KEY_NULL);
+	//
 }
 
 Application::~Application()
@@ -112,6 +116,7 @@ void Application::run()
 {
 	_p->m_running = true;
 
+	// main event loop
 	while ( _p->m_running ) {
 		_p->timeCounter += _p->deltaTime;
 
@@ -124,6 +129,7 @@ void Application::run()
 			break;
 		}
 
+		// temporary fix for invalidated entities
 		for ( auto itr = m_entity_registry.begin(); itr != m_entity_registry.end(); ) {
 			if ( auto r_locked = itr->lock() ) {
 				++itr;
@@ -131,7 +137,7 @@ void Application::run()
 				itr = m_entity_registry.erase(itr);
 		}
 
-		try {
+		try { // call the update of every layer
 			for ( int i = 0; i < m_layer_stack.size(); ++i )
 				m_layer_stack.at(i)->on_update(_p->deltaTime);
 		} catch ( std::out_of_range e ) {
@@ -140,6 +146,7 @@ void Application::run()
 		BeginDrawing();
 		ClearBackground(BLANK);
 
+		// call render of every layer
 		for ( const std::unique_ptr<PSInterfaces::Layer>& layer: m_layer_stack )
 			layer->on_render();
 

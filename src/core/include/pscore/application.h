@@ -1,11 +1,11 @@
 #pragma once
 
 #include <memory>
+#include <psinterfaces/entity.h>
 #include <psinterfaces/layer.h>
 #include <raylib.h>
 #include <type_traits>
 #include <vector>
-#include "psinterfaces/entity.h"
 
 namespace PSCore {
 
@@ -28,12 +28,18 @@ namespace PSCore {
 
 		static Application* get();
 
+		/*!
+		 * @brief pushes a Layer of type T to the layer stack
+		 */
 		template<ILayerDerived TL>
 		void push_layer()
 		{
 			m_layer_stack.push_back(std::make_unique<TL>());
 		};
 
+		/*!
+		 * @brief returns an instance to a layer of type T or a nullptr
+		 */
 		template<ILayerDerived TL>
 		TL* get_layer()
 		{
@@ -44,6 +50,9 @@ namespace PSCore {
 			return nullptr;
 		}
 
+		/*!
+		 * @brief removes every occourence of type T from the layer stack
+		 */
 		template<ILayerDerived TL>
 		void pop_layer()
 		{
@@ -55,9 +64,20 @@ namespace PSCore {
 			}
 		};
 
-		void run();
+		/*!
+		 * @brief starts the update/render loop
+		 */
+		[[noreturn]] void run();
+
+		/*!
+		 * @brief stops the applikation
+		 */
 		void stop();
 
+		/*!
+		 * @brief registers an entity to the applikation
+		 * @param a shared pointer to an entity derived class
+		 */
 		template<typename E>
 			requires std::is_base_of_v<PSInterfaces::IEntity, E>
 		void register_entity(std::shared_ptr<E> e)
@@ -66,8 +86,17 @@ namespace PSCore {
 				m_entity_registry.push_back(e);
 		};
 
+		/*!
+		 * @brief returns a list of weak_ptr of all registered entiteies
+		 * @return the list of registere entities
+		 */
 		std::vector<std::weak_ptr<PSInterfaces::IEntity>> entities() const;
 
+		/*!
+		 * @brief prints a log message, use the PS_LOG macro instead
+		 * @param type: a loglevel
+		 * @param text: the log message
+		 */
 		void log(TraceLogLevel type, const char* text) const;
 
 	private:
@@ -80,5 +109,5 @@ namespace PSCore {
 
 constexpr auto gApp = PSCore::Application::get;
 
-#define PS_LOG(log_level, msg) gApp()->log(log_level, std::string( std::string(__FILE__) \
-								+ " LINE: " + std::to_string(__LINE__) + " MSG: " + msg ).data() );
+#define PS_LOG(log_level, msg)                                                                                                                       \
+	gApp()->log(log_level, std::string(std::string(__FILE__) + " LINE: " + std::to_string(__LINE__) + " MSG: " + msg).data());

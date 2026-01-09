@@ -1,14 +1,19 @@
 #pragma once
 
 #include <raylib.h>
-#include <type_traits>
 
 namespace PSUtils {
 
 	// General
+
+	/*!
+	 * @brief Generates a random number between min and max
+	 * @param min: the minimum value
+	 * @param max: the maximum value
+	 */
 	int gen_rand(const int min, const int max);
 
-	
+
 
 	// Raylib specific
 	void DrawTextBoxedSelectable(
