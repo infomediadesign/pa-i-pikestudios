@@ -13,11 +13,9 @@ file(GLOB_RECURSE SOURCE_FILES
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES} ${app_icon})
 
 target_link_libraries(${PROJECT_NAME} PUBLIC
- EnTT::EnTT
  imgui
  raylib
  rlimgui
- spdlog::spdlog_header_only
  OpenGL::GL
 
 	PSCore

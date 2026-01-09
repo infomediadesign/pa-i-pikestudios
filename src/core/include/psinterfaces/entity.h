@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include "psinterfaces/events.h"
+#include <psinterfaces/events.h>
 
 namespace PSInterfaces {
 

@@ -2,7 +2,6 @@
 #include "debuglayer.h"
 #include "pauselayer.h"
 
-#include <entt/entity/fwd.hpp>
 #include <iostream>
 #include <memory>
 #include <pscore/application.h>
@@ -10,7 +9,6 @@
 
 #include <psinterfaces/renderable.h>
 
-#include <entt/entt.hpp>
 #include <thread>
 #include <vector>
 

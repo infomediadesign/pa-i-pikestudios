@@ -20,12 +20,9 @@ add_compile_definitions(SUPPORT_CUSTOM_FRAME_CONTROL=1)
 
 include(cmake/CPM.cmake)
 
-CPMAddPackage("gh:raysan5/raylib#5.5")
-CPMAddPackage("gh:skypjack/entt@3.15.0")
-
 include(cmake/Dependencies.cmake)
 raylib_imgui_setup_dependencies()
- 
+
 add_subdirectory(src)
 
 file(COPY "${CMAKE_CURRENT_LIST_DIR}/ressources" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
