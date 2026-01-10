@@ -4,6 +4,7 @@ var hierarchy =
     [ "PSCore::Application", "classPSCore_1_1Application.html", null ],
     [ "PSCore::ApplicationPriv", "classPSCore_1_1ApplicationPriv.html", null ],
     [ "PSCore::Application::AppSpec", "structPSCore_1_1Application_1_1AppSpec.html", null ],
+    [ "PSCore::DeltaTimeManager", "classPSCore_1_1DeltaTimeManager.html", null ],
     [ "PSInterfaces::Events::Event", "structPSInterfaces_1_1Events_1_1Event.html", null ],
     [ "PSInterfaces::IEntity", "classPSInterfaces_1_1IEntity.html", [
       [ "PSInterfaces::IRenderable", "classPSInterfaces_1_1IRenderable.html", [

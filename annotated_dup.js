@@ -3,6 +3,7 @@ var annotated_dup =
     [ "PSCore", null, [
       [ "Application", "classPSCore_1_1Application.html", "classPSCore_1_1Application" ],
       [ "ApplicationPriv", "classPSCore_1_1ApplicationPriv.html", null ],
+      [ "DeltaTimeManager", "classPSCore_1_1DeltaTimeManager.html", "classPSCore_1_1DeltaTimeManager" ],
       [ "Renderer", "classPSCore_1_1Renderer.html", "classPSCore_1_1Renderer" ]
     ] ],
     [ "PSInterfaces", null, [
