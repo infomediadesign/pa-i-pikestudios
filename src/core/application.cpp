@@ -1,9 +1,10 @@
 #include <chrono>
-#include <functional>
+#include <memory>
 #include <pscore/application.h>
+#include <pscore/time.h>
 #include <raylib.h>
 #include <stdexcept>
-#include <string>
+
 
 using PSCore::Application;
 static Application* g_app = nullptr;
@@ -12,31 +13,6 @@ class PSCore::ApplicationPriv
 {
 	friend class Application;
 	bool m_running = false;
-
-	float deltaTime		 = 0.0f;
-	float currentTime	 = GetTime();
-	float updateDrawTime = 0.0f, previousTime = 0.0f, waitTime = 0.0f;
-
-	int targetFPS	  = 0;
-	float timeCounter = 0.0f;
-
-	void calc_delta_t()
-	{
-		currentTime	   = GetTime();
-		updateDrawTime = currentTime - previousTime;
-
-		// calculate the delta time
-		if ( targetFPS > 0 ) // We want a fixed frame rate
-		{
-			waitTime = (1.0f / targetFPS) - updateDrawTime;
-			if ( waitTime > 0.0 ) {
-				WaitTime(float{waitTime});
-				currentTime = GetTime();
-				deltaTime	= float{(currentTime - previousTime)};
-			}
-		} else
-			deltaTime = updateDrawTime;
-	}
 
 	void handle_global_inputs()
 	{
@@ -89,6 +65,8 @@ class PSCore::ApplicationPriv
 		vprintf(text, args);
 		std::cout << std::endl;
 	}
+
+	std::unique_ptr<PSCore::DeltaTimeManager> m_time_manager = std::make_unique<PSCore::DeltaTimeManager>();
 };
 
 Application::Application(const AppSpec& spec)
@@ -118,8 +96,6 @@ void Application::run()
 
 	// main event loop
 	while ( _p->m_running ) {
-		_p->timeCounter += _p->deltaTime;
-
 		PollInputEvents();
 
 		_p->handle_global_inputs();
@@ -139,7 +115,7 @@ void Application::run()
 
 		try { // call the update of every layer
 			for ( int i = 0; i < m_layer_stack.size(); ++i )
-				m_layer_stack.at(i)->on_update(_p->deltaTime);
+				m_layer_stack.at(i)->on_update(_p->m_time_manager->delta_t().count());
 		} catch ( std::out_of_range e ) {
 		}
 
@@ -153,8 +129,7 @@ void Application::run()
 		EndDrawing();
 		SwapScreenBuffer();
 
-		_p->calc_delta_t();
-		_p->previousTime = _p->currentTime;
+		_p->m_time_manager->calc_delta_t();
 	}
 }
 

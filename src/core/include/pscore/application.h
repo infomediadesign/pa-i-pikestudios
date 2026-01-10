@@ -67,7 +67,7 @@ namespace PSCore {
 		/*!
 		 * @brief starts the update/render loop
 		 */
-		[[noreturn]] void run();
+		void run();
 
 		/*!
 		 * @brief stops the applikation
