@@ -125,26 +125,21 @@ void Player::calculate_movement(const float& dt)
 
 void Player::update(const float dt)
 {
-
-	//Deubg inputs
-	if ( IsKeyPressed(KEY_G) ) {
-		if ( auto app_layer = gApp()->get_layer<AppLayer>() ) {
-			app_layer->spawn_player({static_cast<float>(GetScreenWidth()) / 2, static_cast<float>(GetScreenHeight()) / 2});
+	if ( !m_is_klone ) 
+	{
+		// Input Functions to set Target Velocity and Target Rotation
+		if ( IsKeyDown(KEY_W) ) {
+			m_target_velocity += m_target_velocity < m_max_velocity ? m_input_velocity_multiplier * dt : 0;
 		}
-	}
-	
-	// Input Functions to set Target Velocity and Target Rotation
-	if ( IsKeyDown(KEY_W) ) {
-		m_target_velocity += m_target_velocity < m_max_velocity ? m_input_velocity_multiplier * dt : 0;
-	}
-	if ( IsKeyDown(KEY_S) ) {
-		m_target_velocity -= m_target_velocity > 0 ? m_input_velocity_multiplier * dt : 0;
-	}
-	if ( IsKeyDown(KEY_D) && Vector2Length(m_velocity) > CALCULATION_VELOCITY_MIN ) {
-		m_target_rotation += m_input_rotation_multiplier * Vector2Length(m_velocity) * dt;
-	}
-	if ( IsKeyDown(KEY_A) && Vector2Length(m_velocity) > CALCULATION_VELOCITY_MIN ) {
-		m_target_rotation -= m_input_rotation_multiplier * Vector2Length(m_velocity) * dt;
+		if ( IsKeyDown(KEY_S) ) {
+			m_target_velocity -= m_target_velocity > 0 ? m_input_velocity_multiplier * dt : 0;
+		}
+		if ( IsKeyDown(KEY_D) && Vector2Length(m_velocity) > CALCULATION_VELOCITY_MIN ) {
+			m_target_rotation += m_input_rotation_multiplier * Vector2Length(m_velocity) * dt;
+		}
+		if ( IsKeyDown(KEY_A) && Vector2Length(m_velocity) > CALCULATION_VELOCITY_MIN ) {
+			m_target_rotation -= m_input_rotation_multiplier * Vector2Length(m_velocity) * dt;
+		}
 	}
 
 	calculate_movement(dt);
@@ -219,4 +214,15 @@ void Player::set_border_collision_active_vertical(bool active)
 bool Player::get_border_collision_active_vertical() const
 {
 	return m_border_collision_active_vertical;
+}
+
+bool Player::set_is_klone(bool active)
+{
+	m_is_klone = active;
+	return m_is_klone;
+}
+
+bool Player::get_is_klone() const
+{
+	return m_is_klone;
 }

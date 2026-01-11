@@ -27,7 +27,6 @@ AppLayer::AppLayer()
 {
 	_p = std::make_unique<AppLayerPriv>();
 
-	// Initialen Player erstellen und speichern
 	auto initial_player = std::make_shared<Player>();
 	_p->players.push_back(initial_player);
 
@@ -54,6 +53,19 @@ void AppLayer::destroy_player(std::shared_ptr<Player> player)
 	gApp()->unregister_entity(player);
 	auto& players = _p->players;
 	players.erase(std::remove(players.begin(), players.end(), player), players.end());
+}
+
+void AppLayer::sync_player_entities()
+{
+	for ( size_t i = 0; i < _p->players.size(); i++ ) {
+		if ( i == 0 ) {
+			_p->players[i]->set_is_klone(false);
+		} else {
+			_p->players[i]->set_is_klone(true);
+			_p->players[i]->set_velocity(_p->players[0]->velocity());
+			_p->players[i]->set_rotation(_p->players[0]->rotation());
+		}
+	}
 }
 
 AppLayer::~AppLayer()
@@ -93,8 +105,10 @@ void AppLayer::on_update(const float dt)
 		if ( auto player = dynamic_cast<Player*>(entity.lock().get()) ) {
 			map_border_wrap_around(*player);
 		}
-		process_offscreen_entities();
 	}
+
+	sync_player_entities();
+	process_offscreen_entities();
 }
 
 void AppLayer::on_render()

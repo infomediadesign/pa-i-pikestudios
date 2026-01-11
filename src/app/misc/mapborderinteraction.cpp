@@ -21,7 +21,6 @@ void map_border_wrap_around(Player& player)
 
 		for ( auto& request: spawns ) {
 			spawn_new_player_at_opposite_border(request, appLayer);
-			printf("Spawned new player at opposite border\n");
 		}
 		spawns.clear();
 	}
@@ -40,7 +39,7 @@ void process_offscreen_entities()
 			if ( is_off_screen(*player) ) {
 				if ( appLayer ) {
 					appLayer->destroy_player(player);
-					printf("Destroyed offscreen player\n");
+					printf("Destroyed offscreen entity\n");
 				}
 			}
 		}
@@ -77,7 +76,7 @@ void spawn_new_player_at_opposite_border(const SpawnRequest& request, AppLayer* 
 	float halfW = request.width / 2.0f;
 	float halfH = request.height / 2.0f;
 
-	const float margin = 0.01f;
+	const float margin = 0.0f;
 
 	switch ( request.axis ) {
 		case LastCollisionAxis::Horizontal: {
@@ -105,9 +104,10 @@ void spawn_new_player_at_opposite_border(const SpawnRequest& request, AppLayer* 
 
 		newPlayer->set_border_collision_active_horizontal(true);
 		newPlayer->set_border_collision_active_vertical(true);
+		newPlayer->set_is_klone(true);
 		newPlayer->set_velocity(request.velocity);
 		newPlayer->set_rotation(request.rotation);
-		printf("Spawned new sprite at (%.2f, %.2f)\n", pos.x, pos.y);
+		printf("Spawned new player at (%.2f, %.2f)\n", pos.x, pos.y);
 	
 }
 
