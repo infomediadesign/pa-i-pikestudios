@@ -48,6 +48,14 @@ std::shared_ptr<Player> AppLayer::spawn_player(const Vector2& position)
 	return new_player;
 }
 
+void AppLayer::destroy_player(std::shared_ptr<Player> player)
+{
+	renderer_->remove_rendarble<Player>(player);
+	gApp()->unregister_entity(player);
+	auto& players = _p->players;
+	players.erase(std::remove(players.begin(), players.end(), player), players.end());
+}
+
 AppLayer::~AppLayer()
 {
 }

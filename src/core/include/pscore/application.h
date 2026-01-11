@@ -99,6 +99,27 @@ namespace PSCore {
 		 */
 		void log(TraceLogLevel type, const char* text) const;
 
+		/*!
+		 * @brief removes an entity from the registry
+		 * @param e: a shared pointer to an entity derived class
+		 */
+		template<typename E>
+			requires std::is_base_of_v<PSInterfaces::IEntity, E>
+		void unregister_entity(std::shared_ptr<E> e)
+		{
+			for ( auto itr = m_entity_registry.begin(); itr != m_entity_registry.end(); ) {
+				if ( auto locked = itr->lock() ) {
+					if ( locked.get() == e.get() ) {
+						itr = m_entity_registry.erase(itr);
+						return;
+					}
+					++itr;
+				} else {
+					itr = m_entity_registry.erase(itr);
+				}
+			}
+		}
+
 	private:
 		std::unique_ptr<ApplicationPriv> _p;
 		std::vector<std::unique_ptr<PSInterfaces::Layer>> m_layer_stack;

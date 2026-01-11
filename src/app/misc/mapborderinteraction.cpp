@@ -33,12 +33,15 @@ void process_offscreen_entities()
 		return;
 
 	auto app = PSCore::Application::get();
+	AppLayer* appLayer = app->get_layer<AppLayer>();
 
 	for ( auto entity: app->entities() ) {
 		if ( auto player = std::dynamic_pointer_cast<Player>(entity.lock()) ) {
 			if ( is_off_screen(*player) ) {
-				printf("player should be deleted\n");
-				// TODO: Implementiere Entity-Entfernung über Application
+				if ( appLayer ) {
+					appLayer->destroy_player(player);
+					printf("Destroyed offscreen player\n");
+				}
 			}
 		}
 	}

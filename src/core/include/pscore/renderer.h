@@ -56,7 +56,7 @@ namespace PSCore {
 				auto temp_renderable = itr->lock(); // create accses to the renderable for further use
 				if ( auto casted = dynamic_cast<T*>(temp_renderable.get()) ) {
 					// If the casted renderable is the one passed
-					if ( renderable.get == casted ) {
+					if ( renderable.get() == casted ) {
 						// remove the submitted event manager
 						temp_renderable->remove_event_manager(m_events.get());
 						// and remove it from the list

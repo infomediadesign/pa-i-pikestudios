@@ -15,8 +15,9 @@ public:
 	void on_update(const float dt) override;
 	void on_render() override;
 
-	// WARNING: DO NOT DO THIS.. this is only a temporary solution to try things out. A layer should not be responsible for entites
+	// Functions to spawn and destroy players
 	std::shared_ptr<Player> spawn_player(const Vector2& position);
+	void destroy_player(std::shared_ptr<Player> player);
 
 private:
 	std::unique_ptr<AppLayerPriv> _p;
