@@ -13,21 +13,39 @@
 #include <vector>
 
 #include <entities/player.h>
+#include <misc/mapborderinteraction.h>
 
 class AppLayerPriv
 {
 	friend class AppLayer;
 
 	// WARNING: DO NOT DO THIS.. this is only a temporary solution to try things out. A layer should not be responsible for entites
-	std::shared_ptr<Player> player = std::make_shared<Player>();
+	std::vector<std::shared_ptr<Player>> players;
 };
 
 AppLayer::AppLayer()
 {
 	_p = std::make_unique<AppLayerPriv>();
 
-	gApp()->register_entity(_p->player);
-	renderer_->submit_renderable<Player>(_p->player);
+	// Initialen Player erstellen und speichern
+	auto initial_player = std::make_shared<Player>();
+	_p->players.push_back(initial_player);
+
+	gApp()->register_entity(initial_player);
+	renderer_->submit_renderable<Player>(initial_player);
+}
+
+std::shared_ptr<Player> AppLayer::spawn_player(const Vector2& position)
+{
+	auto new_player = std::make_shared<Player>();
+	new_player->set_position(position);
+
+	_p->players.push_back(new_player);
+
+	gApp()->register_entity(new_player);
+	renderer_->submit_renderable<Player>(new_player);
+
+	return new_player;
 }
 
 AppLayer::~AppLayer()
@@ -64,6 +82,10 @@ void AppLayer::on_update(const float dt)
 	for ( auto entity: PSCore::Application::get()->entities() ) {
 		if ( auto locked_entity = entity.lock() )
 			locked_entity->update(dt);
+		if ( auto player = dynamic_cast<Player*>(entity.lock().get()) ) {
+			map_border_wrap_around(*player);
+		}
+		process_offscreen_entities();
 	}
 }
 

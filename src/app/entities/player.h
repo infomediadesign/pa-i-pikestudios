@@ -52,6 +52,21 @@ public:
 
 	void render() override;
 
+	// Borderinteration Variables and Methods
+	void set_border_collision_active_horizontal(bool active);
+	bool get_border_collision_active_horizontal() const;
+	void set_border_collision_active_vertical(bool active);
+	bool get_border_collision_active_vertical() const;
+
+	float get_dest_width() const
+	{
+		return m_dest.width;
+	}
+	float get_dest_height() const
+	{
+		return m_dest.height;
+	}
+
 private:
 	// Base Movement Variables
 	Vector2 m_position	 = {0};
@@ -84,4 +99,8 @@ private:
 	float m_frame_counter	= 0;
 	float m_animation_count = 0;
 	float m_animation_frame = 0;
+
+	// Variables for Borderinteration
+	bool m_border_collision_active_horizontal = false;
+	bool m_border_collision_active_vertical	  = false;
 };
