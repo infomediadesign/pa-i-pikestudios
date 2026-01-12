@@ -201,7 +201,7 @@ void Player::set_border_collision_active_horizontal(bool active)
 	m_border_collision_active_horizontal = active;
 }
 
-bool Player::get_border_collision_active_horizontal() const
+bool Player::border_collision_active_horizontal() const
 {
 	return m_border_collision_active_horizontal;
 }
@@ -211,7 +211,7 @@ void Player::set_border_collision_active_vertical(bool active)
 	m_border_collision_active_vertical = active;
 }
 
-bool Player::get_border_collision_active_vertical() const
+bool Player::border_collision_active_vertical() const
 {
 	return m_border_collision_active_vertical;
 }
@@ -222,7 +222,17 @@ bool Player::set_is_clone(bool active)
 	return m_is_clone;
 }
 
-bool Player::get_is_clone() const
+bool Player::is_clone() const
 {
 	return m_is_clone;
+}
+
+float Player::dest_width() const
+{
+	return m_dest.width;
+}
+
+float Player::dest_height() const
+{
+	return m_dest.height;
 }

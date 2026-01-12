@@ -10,7 +10,7 @@ file(GLOB_RECURSE SOURCE_FILES
      "./*.cpp"
 )
 
-add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES} ${app_icon} "misc/mapborderinteraction.h" "misc/mapborderinteraction.cpp")
+add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES} ${app_icon})
 
 target_link_libraries(${PROJECT_NAME} PUBLIC
  imgui

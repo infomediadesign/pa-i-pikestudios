@@ -100,15 +100,17 @@ void AppLayer::on_update(const float dt)
 		return;
 
 	for ( auto entity: PSCore::Application::get()->entities() ) {
-		if ( auto locked_entity = entity.lock() )
+		if ( auto locked_entity = entity.lock() ) {
 			locked_entity->update(dt);
-		if ( auto player = dynamic_cast<Player*>(entity.lock().get()) ) {
-			map_border_wrap_around(*player);
+
+			if ( auto player = dynamic_cast<Player*>(locked_entity.get()) ) {
+				map_border_wrap_around(*player);
+			}
 		}
 	}
 
 	sync_player_entities();
-	process_offscreen_entities();
+	process_off_screen_entities();
 }
 
 void AppLayer::on_render()

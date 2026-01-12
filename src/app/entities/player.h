@@ -54,20 +54,14 @@ public:
 
 	// Borderinteration Variables and Methods
 	void set_border_collision_active_horizontal(bool active);
-	bool get_border_collision_active_horizontal() const;
+	bool border_collision_active_horizontal() const;
 	void set_border_collision_active_vertical(bool active);
-	bool get_border_collision_active_vertical() const;
+	bool border_collision_active_vertical() const;
 	bool set_is_clone(bool active);
-	bool get_is_clone() const;
+	bool is_clone() const;
+	float dest_width() const;
+	float dest_height() const;
 
-	float get_dest_width() const
-	{
-		return m_dest.width;
-	}
-	float get_dest_height() const
-	{
-		return m_dest.height;
-	}
 
 private:
 	// Base Movement Variables
