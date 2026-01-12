@@ -125,7 +125,7 @@ void Player::calculate_movement(const float& dt)
 
 void Player::update(const float dt)
 {
-	if ( !m_is_klone ) 
+	if ( !m_is_clone ) 
 	{
 		// Input Functions to set Target Velocity and Target Rotation
 		if ( IsKeyDown(KEY_W) ) {
@@ -216,13 +216,13 @@ bool Player::get_border_collision_active_vertical() const
 	return m_border_collision_active_vertical;
 }
 
-bool Player::set_is_klone(bool active)
+bool Player::set_is_clone(bool active)
 {
-	m_is_klone = active;
-	return m_is_klone;
+	m_is_clone = active;
+	return m_is_clone;
 }
 
-bool Player::get_is_klone() const
+bool Player::get_is_clone() const
 {
-	return m_is_klone;
+	return m_is_clone;
 }

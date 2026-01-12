@@ -59,9 +59,9 @@ void AppLayer::sync_player_entities()
 {
 	for ( size_t i = 0; i < _p->players.size(); i++ ) {
 		if ( i == 0 ) {
-			_p->players[i]->set_is_klone(false);
+			_p->players[i]->set_is_clone(false);
 		} else {
-			_p->players[i]->set_is_klone(true);
+			_p->players[i]->set_is_clone(true);
 			_p->players[i]->set_velocity(_p->players[0]->velocity());
 			_p->players[i]->set_rotation(_p->players[0]->rotation());
 		}

@@ -57,8 +57,8 @@ public:
 	bool get_border_collision_active_horizontal() const;
 	void set_border_collision_active_vertical(bool active);
 	bool get_border_collision_active_vertical() const;
-	bool set_is_klone(bool active);
-	bool get_is_klone() const;
+	bool set_is_clone(bool active);
+	bool get_is_clone() const;
 
 	float get_dest_width() const
 	{
@@ -105,5 +105,5 @@ private:
 	// Variables for Borderinteration
 	bool m_border_collision_active_horizontal = false;
 	bool m_border_collision_active_vertical	  = false;
-	bool m_is_klone							  = false;
+	bool m_is_clone							  = false;
 };
