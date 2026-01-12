@@ -104,13 +104,13 @@ void AppLayer::on_update(const float dt)
 			locked_entity->update(dt);
 
 			if ( auto player = dynamic_cast<Player*>(locked_entity.get()) ) {
-				map_border_wrap_around(*player);
+				misc::map::map_border_wrap_around(*player);
 			}
 		}
 	}
 
 	sync_player_entities();
-	process_off_screen_entities();
+	misc::map::process_off_screen_entities();
 }
 
 void AppLayer::on_render()
