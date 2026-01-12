@@ -181,21 +181,41 @@ $(document).ready(function(){initNavTree('application_8h_source.html',''); initR
 <div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span> </div>
 <div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classPSCore_1_1Application.html#acd8087b11723daecdbd8248f4fee9f69">log</a>(TraceLogLevel type, <span class="keyword">const</span> <span class="keywordtype">char</span>* text) <span class="keyword">const</span>;</div>
 <div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span> </div>
-<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>    <span class="keyword">private</span>:</div>
-<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>        std::unique_ptr&lt;ApplicationPriv&gt; _p;</div>
-<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>        std::vector&lt;std::unique_ptr&lt;PSInterfaces::Layer&gt;&gt; m_layer_stack;</div>
-<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span> </div>
-<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>        std::vector&lt;std::weak_ptr&lt;PSInterfaces::IEntity&gt;&gt; m_entity_registry;</div>
-<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>    };</div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>        <span class="keyword">template</span>&lt;<span class="keyword">typename</span> E&gt;</div>
+<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>            <span class="keyword">requires</span> std::is_base_of_v&lt;PSInterfaces::IEntity, E&gt;</div>
+<div class="foldopen" id="foldopen00108" data-start="{" data-end="}">
+<div class="line"><a id="l00108" name="l00108"></a><span class="lineno"><a class="line" href="classPSCore_1_1Application.html#a669c90f37b98862a6c134d7100974272">  108</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classPSCore_1_1Application.html#a669c90f37b98862a6c134d7100974272">unregister_entity</a>(std::shared_ptr&lt;E&gt; e)</div>
+<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>        {</div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>            <span class="keywordflow">for</span> ( <span class="keyword">auto</span> itr = m_entity_registry.begin(); itr != m_entity_registry.end(); ) {</div>
+<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>                <span class="keywordflow">if</span> ( <span class="keyword">auto</span> locked = itr-&gt;lock() ) {</div>
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>                    <span class="keywordflow">if</span> ( locked.get() == e.get() ) {</div>
+<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>                        itr = m_entity_registry.erase(itr);</div>
+<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span>                        <span class="keywordflow">return</span>;</div>
+<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span>                    }</div>
+<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span>                    ++itr;</div>
+<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span>                } <span class="keywordflow">else</span> {</div>
+<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span>                    itr = m_entity_registry.erase(itr);</div>
+<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span>                }</div>
+<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span>            }</div>
+<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span>        }</div>
 </div>
-<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>} <span class="comment">// namespace PSCore</span></div>
-<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span> </div>
-<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span><span class="keyword">constexpr</span> <span class="keyword">auto</span> gApp = PSCore::Application::get;</div>
-<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span> </div>
-<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span><span class="preprocessor">#define PS_LOG(log_level, msg)                                                                                                                       \</span></div>
-<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span><span class="preprocessor">    gApp()-&gt;log(log_level, std::string(std::string(__FILE__) + &quot; LINE: &quot; + std::to_string(__LINE__) + &quot; MSG: &quot; + msg).data());</span></div>
+<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span> </div>
+<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span>    <span class="keyword">private</span>:</div>
+<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span>        std::unique_ptr&lt;ApplicationPriv&gt; _p;</div>
+<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span>        std::vector&lt;std::unique_ptr&lt;PSInterfaces::Layer&gt;&gt; m_layer_stack;</div>
+<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span> </div>
+<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span>        std::vector&lt;std::weak_ptr&lt;PSInterfaces::IEntity&gt;&gt; m_entity_registry;</div>
+<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span>    };</div>
+</div>
+<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span>} <span class="comment">// namespace PSCore</span></div>
+<div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span> </div>
+<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span><span class="keyword">constexpr</span> <span class="keyword">auto</span> gApp = PSCore::Application::get;</div>
+<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span> </div>
+<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span><span class="preprocessor">#define PS_LOG(log_level, msg)                                                                                                                       \</span></div>
+<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span><span class="preprocessor">    gApp()-&gt;log(log_level, std::string(std::string(__FILE__) + &quot; LINE: &quot; + std::to_string(__LINE__) + &quot; MSG: &quot; + msg).data());</span></div>
 <div class="ttc" id="aclassPSCore_1_1Application_html"><div class="ttname"><a href="classPSCore_1_1Application.html">PSCore::Application</a></div><div class="ttdef"><b>Definition</b> application.h:17</div></div>
 <div class="ttc" id="aclassPSCore_1_1Application_html_a2e5dee1fbe413783d3500fe8da567ad4"><div class="ttname"><a href="classPSCore_1_1Application.html#a2e5dee1fbe413783d3500fe8da567ad4">PSCore::Application::stop</a></div><div class="ttdeci">void stop()</div><div class="ttdoc">stops the applikation</div><div class="ttdef"><b>Definition</b> application.cpp:136</div></div>
+<div class="ttc" id="aclassPSCore_1_1Application_html_a669c90f37b98862a6c134d7100974272"><div class="ttname"><a href="classPSCore_1_1Application.html#a669c90f37b98862a6c134d7100974272">PSCore::Application::unregister_entity</a></div><div class="ttdeci">void unregister_entity(std::shared_ptr&lt; E &gt; e)</div><div class="ttdoc">removes an entity from the registry</div><div class="ttdef"><b>Definition</b> application.h:108</div></div>
 <div class="ttc" id="aclassPSCore_1_1Application_html_a68965449404743bf1add056784d6cf81"><div class="ttname"><a href="classPSCore_1_1Application.html#a68965449404743bf1add056784d6cf81">PSCore::Application::run</a></div><div class="ttdeci">void run()</div><div class="ttdoc">starts the update/render loop</div><div class="ttdef"><b>Definition</b> application.cpp:93</div></div>
 <div class="ttc" id="aclassPSCore_1_1Application_html_a96dd5207a3997a0ea518e1365802d170"><div class="ttname"><a href="classPSCore_1_1Application.html#a96dd5207a3997a0ea518e1365802d170">PSCore::Application::pop_layer</a></div><div class="ttdeci">void pop_layer()</div><div class="ttdoc">removes every occourence of type T from the layer stack</div><div class="ttdef"><b>Definition</b> application.h:57</div></div>
 <div class="ttc" id="aclassPSCore_1_1Application_html_a9758ad077c88cdda6ff1057ad4216539"><div class="ttname"><a href="classPSCore_1_1Application.html#a9758ad077c88cdda6ff1057ad4216539">PSCore::Application::register_entity</a></div><div class="ttdeci">void register_entity(std::shared_ptr&lt; E &gt; e)</div><div class="ttdoc">registers an entity to the applikation</div><div class="ttdef"><b>Definition</b> application.h:83</div></div>

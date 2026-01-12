@@ -8,5 +8,6 @@ var classPSCore_1_1Application =
     [ "push_layer", "classPSCore_1_1Application.html#ab14fb509b3de1dd8d4ba871a14ba6cc2", null ],
     [ "register_entity", "classPSCore_1_1Application.html#a9758ad077c88cdda6ff1057ad4216539", null ],
     [ "run", "classPSCore_1_1Application.html#a68965449404743bf1add056784d6cf81", null ],
-    [ "stop", "classPSCore_1_1Application.html#a2e5dee1fbe413783d3500fe8da567ad4", null ]
+    [ "stop", "classPSCore_1_1Application.html#a2e5dee1fbe413783d3500fe8da567ad4", null ],
+    [ "unregister_entity", "classPSCore_1_1Application.html#a669c90f37b98862a6c134d7100974272", null ]
 ];

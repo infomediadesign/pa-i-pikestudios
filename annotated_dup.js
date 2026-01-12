@@ -19,5 +19,6 @@ var annotated_dup =
     [ "AppLayerPriv", "classAppLayerPriv.html", null ],
     [ "DebugLayer", "classDebugLayer.html", null ],
     [ "PauseLayer", "classPauseLayer.html", null ],
-    [ "Player", "classPlayer.html", null ]
+    [ "Player", "classPlayer.html", null ],
+    [ "SpawnRequest", "structSpawnRequest.html", "structSpawnRequest" ]
 ];

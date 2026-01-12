@@ -17,5 +17,6 @@ var hierarchy =
       [ "DebugLayer", "classDebugLayer.html", null ],
       [ "PauseLayer", "classPauseLayer.html", null ]
     ] ],
-    [ "PSCore::Renderer", "classPSCore_1_1Renderer.html", null ]
+    [ "PSCore::Renderer", "classPSCore_1_1Renderer.html", null ],
+    [ "SpawnRequest", "structSpawnRequest.html", null ]
 ];
