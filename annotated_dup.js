@@ -1,5 +1,10 @@
 var annotated_dup =
 [
+    [ "misc", "namespacemisc.html", [
+      [ "map", "namespacemisc_1_1map.html", [
+        [ "SpawnRequest", "structmisc_1_1map_1_1SpawnRequest.html", "structmisc_1_1map_1_1SpawnRequest" ]
+      ] ]
+    ] ],
     [ "PSCore", null, [
       [ "Application", "classPSCore_1_1Application.html", "classPSCore_1_1Application" ],
       [ "ApplicationPriv", "classPSCore_1_1ApplicationPriv.html", null ],
@@ -19,6 +24,5 @@ var annotated_dup =
     [ "AppLayerPriv", "classAppLayerPriv.html", null ],
     [ "DebugLayer", "classDebugLayer.html", null ],
     [ "PauseLayer", "classPauseLayer.html", null ],
-    [ "Player", "classPlayer.html", null ],
-    [ "SpawnRequest", "structSpawnRequest.html", "structSpawnRequest" ]
+    [ "Player", "classPlayer.html", null ]
 ];

@@ -18,5 +18,5 @@ var hierarchy =
       [ "PauseLayer", "classPauseLayer.html", null ]
     ] ],
     [ "PSCore::Renderer", "classPSCore_1_1Renderer.html", null ],
-    [ "SpawnRequest", "structSpawnRequest.html", null ]
+    [ "misc::map::SpawnRequest", "structmisc_1_1map_1_1SpawnRequest.html", null ]
 ];

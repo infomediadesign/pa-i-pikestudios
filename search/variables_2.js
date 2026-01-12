@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['position_0',['position',['../structSpawnRequest.html#af9077a30b6baf3ae0fa91eb572b94208',1,'SpawnRequest']]]
+  ['position_0',['position',['../structmisc_1_1map_1_1SpawnRequest.html#a8356e880742191d0745d82f6fe229859',1,'misc::map::SpawnRequest']]]
 ];

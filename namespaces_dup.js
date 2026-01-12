@@ -13,5 +13,6 @@ var namespaces_dup =
       [ "vector_forward", "namespacecoordinatesystem.html#a1680893c27dc53613ed92df865f0d1c3", null ],
       [ "vector_left", "namespacecoordinatesystem.html#a484f560e9bcf89654a2e22dd5064f28a", null ],
       [ "vector_right", "namespacecoordinatesystem.html#abb6b4daab6a0c92be18d35641bffda5b", null ]
-    ] ]
+    ] ],
+    [ "misc", "namespacemisc.html", "namespacemisc" ]
 ];

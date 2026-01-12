@@ -1,4 +1,8 @@
 var searchData=
 [
-  ['target_5ffps_0',['target_fps',['../classPSCore_1_1DeltaTimeManager.html#a68f4363cd2c1b7f42ad29ae6d7071b68',1,'PSCore::DeltaTimeManager']]]
+  ['register_5fentity_0',['register_entity',['../classPSCore_1_1Application.html#a9758ad077c88cdda6ff1057ad4216539',1,'PSCore::Application']]],
+  ['remove_5frendarble_1',['remove_rendarble',['../classPSCore_1_1Renderer.html#a01eed56b61e822030cbcedd33533fd39',1,'PSCore::Renderer']]],
+  ['render_2',['render',['../classPSCore_1_1Renderer.html#a6bd1a15c5064eeab9b46376859b464a6',1,'PSCore::Renderer']]],
+  ['request_5fspawn_3',['request_spawn',['../namespacemisc_1_1map.html#ad46555aa7e4dbc0ad0cd3e066ba87bbb',1,'misc::map']]],
+  ['run_4',['run',['../classPSCore_1_1Application.html#a68965449404743bf1add056784d6cf81',1,'PSCore::Application']]]
 ];
