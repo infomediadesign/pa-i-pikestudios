@@ -4,6 +4,8 @@
 #include <pscore/application.h>
 #include <raymath.h>
 
+#include <layers/applayer.h>
+
 #ifndef CALCULATION_VELOCITY_MIN
 #define CALCULATION_VELOCITY_MIN 1
 #endif
@@ -123,18 +125,21 @@ void Player::calculate_movement(const float& dt)
 
 void Player::update(const float dt)
 {
-	// Input Functions to set Target Velocity and Target Rotation
-	if ( IsKeyDown(KEY_W) ) {
-		m_target_velocity += m_target_velocity < m_max_velocity ? m_input_velocity_multiplier * dt : 0;
-	}
-	if ( IsKeyDown(KEY_S) ) {
-		m_target_velocity -= m_target_velocity > 0 ? m_input_velocity_multiplier * dt : 0;
-	}
-	if ( IsKeyDown(KEY_D) && Vector2Length(m_velocity) > CALCULATION_VELOCITY_MIN ) {
-		m_target_rotation += m_input_rotation_multiplier * Vector2Length(m_velocity) * dt;
-	}
-	if ( IsKeyDown(KEY_A) && Vector2Length(m_velocity) > CALCULATION_VELOCITY_MIN ) {
-		m_target_rotation -= m_input_rotation_multiplier * Vector2Length(m_velocity) * dt;
+	if ( !m_is_clone ) 
+	{
+		// Input Functions to set Target Velocity and Target Rotation
+		if ( IsKeyDown(KEY_W) ) {
+			m_target_velocity += m_target_velocity < m_max_velocity ? m_input_velocity_multiplier * dt : 0;
+		}
+		if ( IsKeyDown(KEY_S) ) {
+			m_target_velocity -= m_target_velocity > 0 ? m_input_velocity_multiplier * dt : 0;
+		}
+		if ( IsKeyDown(KEY_D) && Vector2Length(m_velocity) > CALCULATION_VELOCITY_MIN ) {
+			m_target_rotation += m_input_rotation_multiplier * Vector2Length(m_velocity) * dt;
+		}
+		if ( IsKeyDown(KEY_A) && Vector2Length(m_velocity) > CALCULATION_VELOCITY_MIN ) {
+			m_target_rotation -= m_input_rotation_multiplier * Vector2Length(m_velocity) * dt;
+		}
 	}
 
 	calculate_movement(dt);
@@ -188,4 +193,46 @@ void Player::render()
 	m_dest	 = {m_position.x, m_position.y, m_source.width * m_base_scale, m_source.height * m_base_scale};
 	m_origin = {m_dest.width / 2, m_dest.height / 2};
 	DrawTexturePro(m_texture, m_source, m_dest, m_origin, m_rotation + m_rotation_offset, WHITE);
+}
+
+// Border Collision Variables and Methods
+void Player::set_border_collision_active_horizontal(bool active)
+{
+	m_border_collision_active_horizontal = active;
+}
+
+bool Player::border_collision_active_horizontal() const
+{
+	return m_border_collision_active_horizontal;
+}
+
+void Player::set_border_collision_active_vertical(bool active)
+{
+	m_border_collision_active_vertical = active;
+}
+
+bool Player::border_collision_active_vertical() const
+{
+	return m_border_collision_active_vertical;
+}
+
+bool Player::set_is_clone(bool active)
+{
+	m_is_clone = active;
+	return m_is_clone;
+}
+
+bool Player::is_clone() const
+{
+	return m_is_clone;
+}
+
+float Player::dest_width() const
+{
+	return m_dest.width;
+}
+
+float Player::dest_height() const
+{
+	return m_dest.height;
 }
