@@ -6,6 +6,7 @@
 #include <raylib.h>
 #include <type_traits>
 #include <vector>
+#include "pscore/viewport.h"
 
 namespace PSCore {
 
@@ -119,6 +120,8 @@ namespace PSCore {
 				}
 			}
 		}
+
+		PSCore::Viewport* viewport();
 
 	private:
 		std::unique_ptr<ApplicationPriv> _p;

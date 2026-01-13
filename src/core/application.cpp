@@ -4,6 +4,8 @@
 #include <pscore/time.h>
 #include <raylib.h>
 #include <stdexcept>
+#include "pscore/viewport.h"
+#include "psinterfaces/layer.h"
 
 
 using PSCore::Application;
@@ -67,6 +69,7 @@ class PSCore::ApplicationPriv
 	}
 
 	std::unique_ptr<PSCore::DeltaTimeManager> m_time_manager = std::make_unique<PSCore::DeltaTimeManager>();
+	std::unique_ptr<PSCore::Viewport> m_viewport			 = std::make_unique<PSCore::Viewport>();
 };
 
 Application::Application(const AppSpec& spec)
@@ -153,3 +156,10 @@ void Application::log(TraceLogLevel type, const char* text) const
 	_p->print_log_prefix(type);
 	std::cout << text << std::endl;
 }
+PSCore::Viewport* PSCore::Application::viewport()
+{
+	if ( !_p->m_viewport )
+		return nullptr;
+
+	return _p->m_viewport.get();
+};

@@ -193,6 +193,10 @@ void Player::render()
 	m_dest	 = {m_position.x, m_position.y, m_source.width * m_base_scale, m_source.height * m_base_scale};
 	m_origin = {m_dest.width / 2, m_dest.height / 2};
 	DrawTexturePro(m_texture, m_source, m_dest, m_origin, m_rotation + m_rotation_offset, WHITE);
+	
+	if (auto vp = gApp()->viewport()) {
+	//	vp->draw_in_viewport(const Texture2D &texture, const Rectangle &source, const Vector2 &position, const float &rotation, const Color &color)
+	}
 }
 
 // Border Collision Variables and Methods

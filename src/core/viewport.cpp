@@ -2,6 +2,8 @@
 
 #include <cmath>
 
+using PSCore::Viewport;
+
 Vector2 Viewport::viewport_base_size()
 {
 	return m_viewport_base_origin;
@@ -66,5 +68,5 @@ void Viewport::draw_outline_boxes(const Color& color)
 
 void Viewport::render()
 {
-	draw_outline_boxes(BLACK);
+	draw_outline_boxes(RED);
 }
