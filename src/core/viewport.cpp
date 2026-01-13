@@ -6,7 +6,7 @@ using PSCore::Viewport;
 
 Vector2 Viewport::viewport_base_size()
 {
-	return m_viewport_base_origin;
+	return m_viewport_base_size;
 }
 
 float Viewport::viewport_scale()
@@ -47,26 +47,35 @@ Vector2 Viewport::position_viewport_to_global(const Vector2& position_viewport)
 
 void Viewport::update(float dt)
 {
-	m_viewport_scale  = std::min(trunc(GetScreenWidth() / m_viewport_base_size.x), trunc(GetScreenHeight() / m_viewport_base_size.y));
+	auto screen_width  = static_cast<float>(GetScreenWidth());
+	auto screen_height = static_cast<float>(GetScreenHeight());
+
+	m_viewport_scale  = std::min(trunc(screen_width / m_viewport_base_size.x), trunc(screen_height / m_viewport_base_size.y));
 	m_viewport_origin = {
-			(GetScreenWidth() - m_viewport_base_size.x * m_viewport_scale) / 2, (GetScreenHeight() - m_viewport_base_size.y * m_viewport_scale) / 2
+			(screen_width - m_viewport_base_size.x * m_viewport_scale) / 2, (screen_height - m_viewport_base_size.y * m_viewport_scale) / 2
 	};
-	m_viewport_base_origin = {(GetScreenWidth() - m_viewport_base_size.x) / 2, (GetScreenHeight() - m_viewport_base_size.y) / 2};
+	m_viewport_base_origin = {(screen_width - m_viewport_base_size.x) / 2, (screen_height - m_viewport_base_size.y) / 2};
 }
 
 void Viewport::draw_outline_boxes(const Color& color)
 {
-	if ( m_viewport_base_size.x * m_viewport_scale < GetScreenWidth() ) {
-		DrawRectangle(0, 0, (GetScreenWidth() - m_viewport_base_size.x * m_viewport_scale) / 2, GetScreenHeight(), color);
-		DrawRectangle(GetScreenWidth(), 0, -(GetScreenWidth() - m_viewport_base_size.x * m_viewport_scale) / 2, GetScreenHeight(), color);
+	auto screen_width  = static_cast<float>(GetScreenWidth());
+	auto screen_height = static_cast<float>(GetScreenHeight());
+
+	float screen_width_offset  = screen_width - m_viewport_base_size.x * m_viewport_scale;
+	float screen_height_offset = screen_height - m_viewport_base_size.y * m_viewport_scale;
+
+	if ( m_viewport_base_size.x * m_viewport_scale < screen_width ) {
+		DrawRectangle(0, 0, screen_width_offset / 2, screen_height, color);
+		DrawRectangle(screen_width - (screen_width_offset / 2), 0, screen_width_offset / 2, screen_height, color);
 	}
-	if ( m_viewport_base_size.y * m_viewport_scale < GetScreenHeight() ) {
-		DrawRectangle(0, 0, GetScreenWidth(), (GetScreenHeight() - m_viewport_base_size.y * m_viewport_scale) / 2, color);
-		DrawRectangle(0, GetScreenHeight(), GetScreenWidth(), -(GetScreenHeight() - m_viewport_base_size.y * m_viewport_scale) / 2, color);
+	if ( m_viewport_base_size.y * m_viewport_scale < screen_height ) {
+		DrawRectangle(0, 0, screen_width, screen_height_offset / 2, color);
+		DrawRectangle(0, screen_height - (screen_height_offset / 2), screen_width, screen_height_offset / 2, color);
 	}
 }
 
 void Viewport::render()
 {
-	draw_outline_boxes(RED);
+	draw_outline_boxes(BLUE);
 }

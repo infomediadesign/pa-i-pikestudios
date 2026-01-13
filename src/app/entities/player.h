@@ -57,7 +57,7 @@ public:
 	bool border_collision_active_horizontal() const;
 	void set_border_collision_active_vertical(bool active);
 	bool border_collision_active_vertical() const;
-	bool set_is_clone(bool active);
+	void set_is_clone(bool active);
 	bool is_clone() const;
 	float dest_width() const;
 	float dest_height() const;

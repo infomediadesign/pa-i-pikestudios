@@ -24,7 +24,6 @@ namespace PSCore {
 
 		void update(float dt) override;
 
-
 		void render() override;
 
 	private:

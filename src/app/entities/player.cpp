@@ -14,10 +14,13 @@ Player::Player()
 {
 
 	// WARNING: THIS IS ONLY FOR TESTING
-	m_position	   = {GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f};
-	m_max_velocity = 600;
+	//m_position	   = {GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f};
+	if ( auto vp = gApp()->viewport()) {
+		m_position = vp->viewport_base_size()/2;
+	}
+	m_max_velocity = 250;
 	m_rotation	   = 0;
-	set_interpolation_values(6, 2, 4, 1500, 0.3);
+	set_interpolation_values(6, 2, 4, 1500, 0.9);
 	set_texture_values(LoadTexture("ressources/SpaceShipSpriteSheet.png"), 90, 4);
 	set_animation_values(2, {1, 4}, 4);
 	//
@@ -192,10 +195,10 @@ void Player::render()
 	};
 	m_dest	 = {m_position.x, m_position.y, m_source.width * m_base_scale, m_source.height * m_base_scale};
 	m_origin = {m_dest.width / 2, m_dest.height / 2};
-	DrawTexturePro(m_texture, m_source, m_dest, m_origin, m_rotation + m_rotation_offset, WHITE);
+	//DrawTexturePro(m_texture, m_source, m_dest, m_origin, m_rotation + m_rotation_offset, WHITE);
 	
 	if (auto vp = gApp()->viewport()) {
-	//	vp->draw_in_viewport(const Texture2D &texture, const Rectangle &source, const Vector2 &position, const float &rotation, const Color &color)
+		vp->draw_in_viewport(m_texture, m_source, m_position, m_rotation + m_rotation_offset, WHITE);
 	}
 }
 
@@ -220,10 +223,9 @@ bool Player::border_collision_active_vertical() const
 	return m_border_collision_active_vertical;
 }
 
-bool Player::set_is_clone(bool active)
+void Player::set_is_clone(bool active)
 {
 	m_is_clone = active;
-	return m_is_clone;
 }
 
 bool Player::is_clone() const
