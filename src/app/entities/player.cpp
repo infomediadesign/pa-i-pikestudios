@@ -107,14 +107,14 @@ void Player::calculate_movement(const float& dt)
 {
 	// Linear Interpolation form Rotation to Target Rotation with a regression of Rotation and a static Alpha
 	// which ends in an exponential approximation to calculate the rotation
-	m_rotation = m_rotation + (m_target_rotation - m_rotation) * fmaxf(0, fminf((m_rotation_fade * dt), 1));
+	m_rotation = m_rotation + (m_target_rotation - m_rotation) * std::clamp(m_rotation_fade * dt, 0.0f, 1.0f);
 
 	// Check if the Velocity should increase or decrease and uses right the Linear Interpolation form Velocity to Target Velocity with a regression of
 	// Velocity and a static Alpha which ends in an exponential approximation to calculate the Value of the Velocity
 	float velocity_value =
 			(m_target_velocity - Vector2Length(m_velocity)) > 0
-					? Vector2Length(m_velocity) + (m_target_velocity - Vector2Length(m_velocity)) * fmaxf(0, fminf((m_acceleration_fade * dt), 1))
-					: Vector2Length(m_velocity) + (m_target_velocity - Vector2Length(m_velocity)) * fmaxf(0, fminf((m_deceleration_fade * dt), 1));
+					? Vector2Length(m_velocity) + (m_target_velocity - Vector2Length(m_velocity)) * std::clamp(m_acceleration_fade * dt, 0.0f, 1.0f)
+					: Vector2Length(m_velocity) + (m_target_velocity - Vector2Length(m_velocity)) * std::clamp(m_deceleration_fade * dt, 0.0f, 1.0f);
 
 	// Calculate with the Velocity Value and the Rotation the actual 2 Dimensional Velocity
 	m_velocity.x = velocity_value * cos(m_rotation * DEG2RAD);
