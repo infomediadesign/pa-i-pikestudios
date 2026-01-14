@@ -47,35 +47,58 @@ Vector2 Viewport::position_viewport_to_global(const Vector2& position_viewport)
 
 void Viewport::update(float dt)
 {
-	auto screen_width  = static_cast<float>(GetScreenWidth());
-	auto screen_height = static_cast<float>(GetScreenHeight());
+	auto screen_widthf	= static_cast<float>(GetScreenWidth());
+	auto screen_heightf = static_cast<float>(GetScreenHeight());
 
-	m_viewport_scale  = std::min(trunc(screen_width / m_viewport_base_size.x), trunc(screen_height / m_viewport_base_size.y));
+	m_viewport_scale  = static_cast<float>(std::min(truncf(screen_widthf / m_viewport_base_size.x), truncf(screen_heightf / m_viewport_base_size.y)));
 	m_viewport_origin = {
-			(screen_width - m_viewport_base_size.x * m_viewport_scale) / 2, (screen_height - m_viewport_base_size.y * m_viewport_scale) / 2
+			(screen_widthf - m_viewport_base_size.x * m_viewport_scale) / 2, (screen_heightf - m_viewport_base_size.y * m_viewport_scale) / 2
 	};
-	m_viewport_base_origin = {(screen_width - m_viewport_base_size.x) / 2, (screen_height - m_viewport_base_size.y) / 2};
+	m_viewport_base_origin = {(screen_widthf - m_viewport_base_size.x) / 2, (screen_heightf - m_viewport_base_size.y) / 2};
 }
 
 void Viewport::draw_outline_boxes(const Color& color)
 {
-	auto screen_width  = static_cast<float>(GetScreenWidth());
-	auto screen_height = static_cast<float>(GetScreenHeight());
+	int screen_width  = GetScreenWidth();
+	int screen_height = GetScreenHeight();
 
-	float screen_width_offset  = screen_width - m_viewport_base_size.x * m_viewport_scale;
-	float screen_height_offset = screen_height - m_viewport_base_size.y * m_viewport_scale;
+	auto screen_widthf	= static_cast<float>(screen_width);
+	auto screen_heightf = static_cast<float>(screen_height);
 
-	if ( m_viewport_base_size.x * m_viewport_scale < screen_width ) {
+	int screen_width_offset	 = static_cast<int>(screen_widthf - m_viewport_base_size.x * m_viewport_scale);
+	int screen_height_offset = static_cast<int>(screen_heightf - m_viewport_base_size.y * m_viewport_scale);
+
+	if ( m_viewport_base_size.x * m_viewport_scale < screen_widthf ) {
 		DrawRectangle(0, 0, screen_width_offset / 2, screen_height, color);
 		DrawRectangle(screen_width - (screen_width_offset / 2), 0, screen_width_offset / 2, screen_height, color);
 	}
-	if ( m_viewport_base_size.y * m_viewport_scale < screen_height ) {
+	if ( m_viewport_base_size.y * m_viewport_scale < screen_heightf ) {
 		DrawRectangle(0, 0, screen_width, screen_height_offset / 2, color);
 		DrawRectangle(0, screen_height - (screen_height_offset / 2), screen_width, screen_height_offset / 2, color);
 	}
 }
 
+void Viewport::draw_viewport_frame(
+		const bool& draw, const float& line_thickness, const float& radius, const Color& color_base, const Color& color_scaled
+)
+{
+	if ( draw ) {
+		DrawRectangleLinesEx(
+				{m_viewport_base_origin.x, m_viewport_base_origin.y, m_viewport_base_size.x, m_viewport_base_size.y}, line_thickness, color_base
+		);
+		DrawCircleV(m_viewport_base_origin, radius, color_base);
+		DrawRectangleLinesEx(
+				{m_viewport_origin.x, m_viewport_origin.y, m_viewport_base_size.x * m_viewport_scale, m_viewport_base_size.y * m_viewport_scale},
+				line_thickness, color_scaled
+		);
+		DrawCircleV(m_viewport_origin, radius, color_scaled);
+	}
+}
+
+
 void Viewport::render()
 {
 	draw_outline_boxes(BLUE);
+
+	draw_viewport_frame(false, 2, 10, RED, GREEN);
 }

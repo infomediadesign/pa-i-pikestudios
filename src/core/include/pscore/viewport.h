@@ -29,6 +29,8 @@ namespace PSCore {
 	private:
 		void draw_outline_boxes(const Color& color);
 
+		void draw_viewport_frame(const bool& draw, const float& line_thickness, const float& radius, const Color& color_base, const Color& color_scaled);
+
 		Vector2 m_viewport_base_size = {640, 360};
 
 		float m_viewport_scale = 1;

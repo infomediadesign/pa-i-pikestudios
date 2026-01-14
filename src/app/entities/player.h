@@ -54,12 +54,19 @@ public:
 
 	// Borderinteration Variables and Methods
 	void set_border_collision_active_horizontal(bool active);
+
 	bool border_collision_active_horizontal() const;
+
 	void set_border_collision_active_vertical(bool active);
+
 	bool border_collision_active_vertical() const;
+
 	void set_is_clone(bool active);
+
 	bool is_clone() const;
+
 	float dest_width() const;
+
 	float dest_height() const;
 
 
@@ -84,11 +91,8 @@ private:
 	float m_rotation_offset = 0;
 	float m_base_scale		= 1;
 	Rectangle m_source		= {0};
-	Rectangle m_dest		= {0};
-	Vector2 m_origin		= {0};
 
 	// Variables for Animation
-
 	std::valarray<int> m_sprite_sheet = {1};
 	float m_animation_speed			  = 1;
 

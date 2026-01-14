@@ -14,11 +14,10 @@ Player::Player()
 {
 
 	// WARNING: THIS IS ONLY FOR TESTING
-	//m_position	   = {GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f};
-	if ( auto vp = gApp()->viewport()) {
-		m_position = vp->viewport_base_size()/2;
+	if ( auto vp = gApp()->viewport() ) {
+		m_position = vp->viewport_base_size() / 2;
 	}
-	m_max_velocity = 250;
+	m_max_velocity = 200;
 	m_rotation	   = 0;
 	set_interpolation_values(6, 2, 4, 1500, 0.9);
 	set_texture_values(LoadTexture("ressources/SpaceShipSpriteSheet.png"), 90, 4);
@@ -128,8 +127,7 @@ void Player::calculate_movement(const float& dt)
 
 void Player::update(const float dt)
 {
-	if ( !m_is_clone ) 
-	{
+	if ( !m_is_clone ) {
 		// Input Functions to set Target Velocity and Target Rotation
 		if ( IsKeyDown(KEY_W) ) {
 			m_target_velocity += m_target_velocity < m_max_velocity ? m_input_velocity_multiplier * dt : 0;
@@ -181,7 +179,7 @@ void Player::calculate_animation(const float& dt)
 	if ( m_frame_counter >= 1 / (dt * m_animation_speed) ) {
 		m_frame_counter = 0;
 		m_animation_frame++;
-		if ( m_animation_frame >= round(Lerp(0, (float)m_sprite_sheet[m_animation_count], Vector2Length(m_velocity) / m_max_velocity)) ) {
+		if ( m_animation_frame >= round(Lerp(0, (float) m_sprite_sheet[m_animation_count], Vector2Length(m_velocity) / m_max_velocity)) ) {
 			m_animation_frame = 0;
 		}
 	}
@@ -193,11 +191,7 @@ void Player::render()
 			m_animation_frame * (float) m_texture.width / m_sprite_sheet.max(), m_animation_count * (float) m_texture.height / m_sprite_sheet.size(),
 			(float) m_texture.width / m_sprite_sheet.max(), (float) m_texture.height / m_sprite_sheet.size()
 	};
-	m_dest	 = {m_position.x, m_position.y, m_source.width * m_base_scale, m_source.height * m_base_scale};
-	m_origin = {m_dest.width / 2, m_dest.height / 2};
-	//DrawTexturePro(m_texture, m_source, m_dest, m_origin, m_rotation + m_rotation_offset, WHITE);
-	
-	if (auto vp = gApp()->viewport()) {
+	if ( auto vp = gApp()->viewport() ) {
 		vp->draw_in_viewport(m_texture, m_source, m_position, m_rotation + m_rotation_offset, WHITE);
 	}
 }
@@ -235,10 +229,16 @@ bool Player::is_clone() const
 
 float Player::dest_width() const
 {
-	return m_dest.width;
+	if ( auto vp = gApp()->viewport() ) {
+		return m_source.width * vp->viewport_scale();
+	}
+	return m_source.width;
 }
 
 float Player::dest_height() const
 {
-	return m_dest.height;
+	if ( auto vp = gApp()->viewport() ) {
+		return m_source.height * vp->viewport_scale();
+	}
+	return m_source.height;
 }
