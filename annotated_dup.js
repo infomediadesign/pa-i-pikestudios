@@ -23,6 +23,8 @@ var annotated_dup =
     [ "AppLayer", "classAppLayer.html", null ],
     [ "AppLayerPriv", "classAppLayerPriv.html", null ],
     [ "DebugLayer", "classDebugLayer.html", null ],
+    [ "FortunaDirector", "classFortunaDirector.html", null ],
+    [ "FortunaDirectorPriv", "classFortunaDirectorPriv.html", null ],
     [ "PauseLayer", "classPauseLayer.html", null ],
     [ "Player", "classPlayer.html", null ]
 ];

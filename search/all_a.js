@@ -1,10 +1,19 @@
 var searchData=
 [
-  ['register_5fentity_0',['register_entity',['../classPSCore_1_1Application.html#a9758ad077c88cdda6ff1057ad4216539',1,'PSCore::Application']]],
-  ['remove_5frendarble_1',['remove_rendarble',['../classPSCore_1_1Renderer.html#a01eed56b61e822030cbcedd33533fd39',1,'PSCore::Renderer']]],
-  ['render_2',['render',['../classPSCore_1_1Renderer.html#a6bd1a15c5064eeab9b46376859b464a6',1,'PSCore::Renderer']]],
-  ['renderer_3',['Renderer',['../classPSCore_1_1Renderer.html',1,'PSCore']]],
-  ['request_5fspawn_4',['request_spawn',['../namespacemisc_1_1map.html#ad46555aa7e4dbc0ad0cd3e066ba87bbb',1,'misc::map']]],
-  ['rotation_5',['rotation',['../structmisc_1_1map_1_1SpawnRequest.html#a9048ce2d3c3132194a3cb6dfc0340692',1,'misc::map::SpawnRequest']]],
-  ['run_6',['run',['../classPSCore_1_1Application.html#a68965449404743bf1add056784d6cf81',1,'PSCore::Application']]]
+  ['pauselayer_0',['PauseLayer',['../classPauseLayer.html',1,'']]],
+  ['player_1',['Player',['../classPlayer.html',1,'']]],
+  ['point_5fglobal_5fto_5frelative_5fleftdown_2',['point_global_to_relative_leftdown',['../namespacecoordinatesystem.html#a7d5ec20471731ef2a5c00b4c9e6fcb85',1,'coordinatesystem']]],
+  ['point_5fglobal_5fto_5frelative_5fleftup_3',['point_global_to_relative_leftup',['../namespacecoordinatesystem.html#a967c1fc35e0ffbd659963f4e377e2df2',1,'coordinatesystem']]],
+  ['point_5fglobal_5fto_5frelative_5frightdown_4',['point_global_to_relative_rightdown',['../namespacecoordinatesystem.html#a016b9208049964b40a382b9df1745ec9',1,'coordinatesystem']]],
+  ['point_5fglobal_5fto_5frelative_5frightup_5',['point_global_to_relative_rightup',['../namespacecoordinatesystem.html#a72b77f0101d36e6be9abc2181d38e6bc',1,'coordinatesystem']]],
+  ['point_5frelative_5fto_5fglobal_5fleftdown_6',['point_relative_to_global_leftdown',['../namespacecoordinatesystem.html#ad7cd2eb3a95cb37f871e9479a6345fdc',1,'coordinatesystem']]],
+  ['point_5frelative_5fto_5fglobal_5fleftup_7',['point_relative_to_global_leftup',['../namespacecoordinatesystem.html#ab05133ef0916a581bd5de3436f269a16',1,'coordinatesystem']]],
+  ['point_5frelative_5fto_5fglobal_5frightdown_8',['point_relative_to_global_rightdown',['../namespacecoordinatesystem.html#adaad406aefbb42e60b456c5c6668ddb8',1,'coordinatesystem']]],
+  ['point_5frelative_5fto_5fglobal_5frightup_9',['point_relative_to_global_rightup',['../namespacecoordinatesystem.html#ad1766f0fb2bd3f12e31b78a17acfc45b',1,'coordinatesystem']]],
+  ['pop_5flayer_10',['pop_layer',['../classPSCore_1_1Application.html#a96dd5207a3997a0ea518e1365802d170',1,'PSCore::Application']]],
+  ['position_11',['position',['../structmisc_1_1map_1_1SpawnRequest.html#a8356e880742191d0745d82f6fe229859',1,'misc::map::SpawnRequest']]],
+  ['process_5foff_5fscreen_5fentities_12',['process_off_screen_entities',['../namespacemisc_1_1map.html#a23c4771f11fd1972405b97c686b41060',1,'misc::map']]],
+  ['pscore_3a_3ailayerderived_13',['ILayerDerived',['../conceptPSCore_1_1ILayerDerived.html',1,'PSCore']]],
+  ['pscore_3a_3airenderablederived_14',['IRenderableDerived',['../conceptPSCore_1_1IRenderableDerived.html',1,'PSCore']]],
+  ['push_5flayer_15',['push_layer',['../classPSCore_1_1Application.html#ab14fb509b3de1dd8d4ba871a14ba6cc2',1,'PSCore::Application']]]
 ];

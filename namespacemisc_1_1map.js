@@ -19,8 +19,8 @@ var namespacemisc_1_1map =
     [ "process_off_screen_entities", "namespacemisc_1_1map.html#a23c4771f11fd1972405b97c686b41060", null ],
     [ "request_spawn", "namespacemisc_1_1map.html#ad46555aa7e4dbc0ad0cd3e066ba87bbb", null ],
     [ "set_player_position_to_opposite_border", "namespacemisc_1_1map.html#a9be0704e6416db02a479070dc8cec015", null ],
-    [ "spawn_new_player_at_opposite_border", "namespacemisc_1_1map.html#a97851a7048702fea626afebbcc714e13", null ],
-    [ "toggle_wrap_around_mode", "namespacemisc_1_1map.html#a25bee11ecd50f9e763af7a1666af9cc2", null ],
+    [ "set_wrap_around_mode", "namespacemisc_1_1map.html#a6da7cb8cb5c63049d7007e8c72fce104", null ],
+    [ "spawn_new_player_at_opposite_border", "namespacemisc_1_1map.html#a73d666d5d54fa4dbf0e5969f2ce94e7f", null ],
     [ "use_off_screen_wrap_around", "namespacemisc_1_1map.html#a67db7fe9f9852f515536514d7f019703", null ],
     [ "use_on_screen_wrap_around", "namespacemisc_1_1map.html#a2d95802c0697a3bb791c5631b615df6a", null ]
 ];

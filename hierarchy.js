@@ -6,7 +6,9 @@ var hierarchy =
     [ "PSCore::Application::AppSpec", "structPSCore_1_1Application_1_1AppSpec.html", null ],
     [ "PSCore::DeltaTimeManager", "classPSCore_1_1DeltaTimeManager.html", null ],
     [ "PSInterfaces::Events::Event", "structPSInterfaces_1_1Events_1_1Event.html", null ],
+    [ "FortunaDirectorPriv", "classFortunaDirectorPriv.html", null ],
     [ "PSInterfaces::IEntity", "classPSInterfaces_1_1IEntity.html", [
+      [ "FortunaDirector", "classFortunaDirector.html", null ],
       [ "PSInterfaces::IRenderable", "classPSInterfaces_1_1IRenderable.html", [
         [ "Player", "classPlayer.html", null ]
       ] ]

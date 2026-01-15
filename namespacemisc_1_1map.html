@@ -125,9 +125,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a9e19b7bca76dcaba498faf0954e37698" id="r_a9e19b7bca76dcaba498faf0954e37698"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacemisc_1_1map.html#a9e19b7bca76dcaba498faf0954e37698">detect_map_border_collision</a> (<a class="el" href="classPlayer.html">Player</a> &amp;p, std::vector&lt; <a class="el" href="structmisc_1_1map_1_1SpawnRequest.html">SpawnRequest</a> &gt; &amp;spawnRequests)</td></tr>
 <tr class="memdesc:a9e19b7bca76dcaba498faf0954e37698"><td class="mdescLeft">&#160;</td><td class="mdescRight">Detects collisions with the map border and handles wrap-around.  <br /></td></tr>
 <tr class="separator:a9e19b7bca76dcaba498faf0954e37698"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a97851a7048702fea626afebbcc714e13" id="r_a97851a7048702fea626afebbcc714e13"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacemisc_1_1map.html#a97851a7048702fea626afebbcc714e13">spawn_new_player_at_opposite_border</a> (const <a class="el" href="structmisc_1_1map_1_1SpawnRequest.html">SpawnRequest</a> &amp;request, <a class="el" href="classAppLayer.html">AppLayer</a> *appLayer)</td></tr>
-<tr class="memdesc:a97851a7048702fea626afebbcc714e13"><td class="mdescLeft">&#160;</td><td class="mdescRight">Spawns a new player at the opposite border.  <br /></td></tr>
-<tr class="separator:a97851a7048702fea626afebbcc714e13"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a73d666d5d54fa4dbf0e5969f2ce94e7f" id="r_a73d666d5d54fa4dbf0e5969f2ce94e7f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacemisc_1_1map.html#a73d666d5d54fa4dbf0e5969f2ce94e7f">spawn_new_player_at_opposite_border</a> (const <a class="el" href="structmisc_1_1map_1_1SpawnRequest.html">SpawnRequest</a> &amp;request, <a class="el" href="classFortunaDirector.html">FortunaDirector</a> *director)</td></tr>
+<tr class="memdesc:a73d666d5d54fa4dbf0e5969f2ce94e7f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Spawns a new player at the opposite border.  <br /></td></tr>
+<tr class="separator:a73d666d5d54fa4dbf0e5969f2ce94e7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9be0704e6416db02a479070dc8cec015" id="r_a9be0704e6416db02a479070dc8cec015"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacemisc_1_1map.html#a9be0704e6416db02a479070dc8cec015">set_player_position_to_opposite_border</a> (<a class="el" href="classPlayer.html">Player</a> &amp;p, <a class="el" href="namespacemisc_1_1map.html#a45f42e822d87c3849657a88f509ff14a">LastCollisionAxis</a> axis)</td></tr>
 <tr class="memdesc:a9be0704e6416db02a479070dc8cec015"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the player position to the opposite border.  <br /></td></tr>
 <tr class="separator:a9be0704e6416db02a479070dc8cec015"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -155,10 +155,10 @@ Functions</h2></td></tr>
 <tr class="memitem:a23c4771f11fd1972405b97c686b41060" id="r_a23c4771f11fd1972405b97c686b41060"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacemisc_1_1map.html#a23c4771f11fd1972405b97c686b41060">process_off_screen_entities</a> ()</td></tr>
 <tr class="memdesc:a23c4771f11fd1972405b97c686b41060"><td class="mdescLeft">&#160;</td><td class="mdescRight">Processes entities that are off-screen.  <br /></td></tr>
 <tr class="separator:a23c4771f11fd1972405b97c686b41060"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a25bee11ecd50f9e763af7a1666af9cc2" id="r_a25bee11ecd50f9e763af7a1666af9cc2"><td class="memItemLeft" align="right" valign="top"><a id="a25bee11ecd50f9e763af7a1666af9cc2" name="a25bee11ecd50f9e763af7a1666af9cc2"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>toggle_wrap_around_mode</b> ()</td></tr>
-<tr class="memdesc:a25bee11ecd50f9e763af7a1666af9cc2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Toggles between on-screen and off-screen wrap-around modes. <br /></td></tr>
-<tr class="separator:a25bee11ecd50f9e763af7a1666af9cc2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6da7cb8cb5c63049d7007e8c72fce104" id="r_a6da7cb8cb5c63049d7007e8c72fce104"><td class="memItemLeft" align="right" valign="top"><a id="a6da7cb8cb5c63049d7007e8c72fce104" name="a6da7cb8cb5c63049d7007e8c72fce104"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set_wrap_around_mode</b> (bool on_screen)</td></tr>
+<tr class="memdesc:a6da7cb8cb5c63049d7007e8c72fce104"><td class="mdescLeft">&#160;</td><td class="mdescRight">Toggles between on-screen and off-screen wrap-around modes. <br /></td></tr>
+<tr class="separator:a6da7cb8cb5c63049d7007e8c72fce104"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Namespace for map interactions </p>
@@ -498,8 +498,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>toggle_wrap_around_mo
 
 </div>
 </div>
-<a id="a97851a7048702fea626afebbcc714e13" name="a97851a7048702fea626afebbcc714e13"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a97851a7048702fea626afebbcc714e13">&#9670;&#160;</a></span>spawn_new_player_at_opposite_border()</h2>
+<a id="a73d666d5d54fa4dbf0e5969f2ce94e7f" name="a73d666d5d54fa4dbf0e5969f2ce94e7f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a73d666d5d54fa4dbf0e5969f2ce94e7f">&#9670;&#160;</a></span>spawn_new_player_at_opposite_border()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -513,8 +513,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>toggle_wrap_around_mo
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="classAppLayer.html">AppLayer</a> *&#160;</td>
-          <td class="paramname"><em>appLayer</em>&#160;</td>
+          <td class="paramtype"><a class="el" href="classFortunaDirector.html">FortunaDirector</a> *&#160;</td>
+          <td class="paramname"><em>director</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
