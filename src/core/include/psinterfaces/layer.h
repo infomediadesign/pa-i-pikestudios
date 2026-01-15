@@ -11,7 +11,7 @@ namespace PSInterfaces {
 
 		virtual void on_event() {};
 		virtual void on_update(const float dt) = 0;
-		virtual void on_render() = 0;
+		virtual void on_render()			   = 0;
 
 		void suspend()
 		{
@@ -23,8 +23,14 @@ namespace PSInterfaces {
 			active = true;
 		};
 
+		PSCore::Renderer* renderer()
+		{
+			return renderer_.get();
+		}
+
 	protected:
+		const std::unique_ptr<PSCore::Renderer> renderer_ = std::make_unique<PSCore::Renderer>();
+
 		bool active = true;
-		std::unique_ptr<PSCore::Renderer> renderer_ = std::make_unique<PSCore::Renderer>();
 	};
 } // namespace PSInterfaces

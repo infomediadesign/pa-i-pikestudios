@@ -1,12 +1,14 @@
 #include <chrono>
+#include <iostream>
 #include <memory>
-#include <pscore/application.h>
-#include <pscore/time.h>
-#include <raylib.h>
 #include <stdexcept>
 #include "pscore/viewport.h"
 #include "psinterfaces/layer.h"
 
+#include <pscore/application.h>
+#include <pscore/time.h>
+#include <psinterfaces/entity.h>
+#include <raylib.h>
 
 using PSCore::Application;
 static Application* g_app = nullptr;
@@ -117,8 +119,12 @@ void Application::run()
 		}
 
 		try { // call the update of every layer
+			auto dt = _p->m_time_manager->delta_t().count();
+			if ( m_game_director )
+				m_game_director->update(dt);
+
 			for ( int i = 0; i < m_layer_stack.size(); ++i )
-				m_layer_stack.at(i)->on_update(_p->m_time_manager->delta_t().count());
+				m_layer_stack.at(i)->on_update(dt);
 		} catch ( std::out_of_range e ) {
 		}
 

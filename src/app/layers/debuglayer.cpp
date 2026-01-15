@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <imgui.h>
 #include <rlImGui.h>
+#include "pscore/application.h"
 
 DebugLayer::DebugLayer()
 {
@@ -29,7 +30,18 @@ void DebugLayer::on_render()
 #endif
 
 	ImGui::Begin("Game Debug");
+
 	ImGui::Text("%s", TextFormat("CURRENT FPS: %i", static_cast<int64_t>(1.0f / m_dt)));
+
+	if ( auto director = gApp()->game_director() )
+		director->draw_debug();
+
+	for ( auto entity: gApp()->entities() ) {
+		if ( auto locked_entity = entity.lock() ) {
+			locked_entity->draw_debug();
+		}
+	}
+
 	ImGui::End();
 
 	rlImGuiEnd();
