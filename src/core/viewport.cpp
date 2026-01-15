@@ -4,6 +4,30 @@
 
 using PSCore::Viewport;
 
+Viewport::Viewport()
+{
+	propose_z_index(100000);
+}
+
+void Viewport::update(float dt)
+{
+	auto screen_widthf	= static_cast<float>(GetScreenWidth());
+	auto screen_heightf = static_cast<float>(GetScreenHeight());
+
+	m_viewport_scale  = static_cast<float>(std::min(truncf(screen_widthf / m_viewport_base_size.x), truncf(screen_heightf / m_viewport_base_size.y)));
+	m_viewport_origin = {
+			(screen_widthf - m_viewport_base_size.x * m_viewport_scale) / 2, (screen_heightf - m_viewport_base_size.y * m_viewport_scale) / 2
+	};
+	m_viewport_base_origin = {(screen_widthf - m_viewport_base_size.x) / 2, (screen_heightf - m_viewport_base_size.y) / 2};
+}
+
+void Viewport::render()
+{
+	draw_outline_boxes(BLUE);
+
+	draw_viewport_frame(true, 2, 10, RED, GREEN);
+}
+
 Vector2 Viewport::viewport_base_size()
 {
 	return m_viewport_base_size;
@@ -29,7 +53,7 @@ void Viewport::set_viewport_base_size(const Vector2& viewport_base_size)
 	m_viewport_base_size = viewport_base_size;
 }
 
-void Viewport::draw_in_viewport(const Texture2D& texture, const Rectangle& source, const Vector2& position, const float& rotation, const Color& color)
+void Viewport::draw_in_viewport(const Texture2D& texture, const Rectangle& source, const Vector2& position, float rotation, const Color& color)
 {
 	Rectangle dest = {
 			m_viewport_origin.x + position.x * m_viewport_scale, m_viewport_origin.y + position.y * m_viewport_scale, source.width * m_viewport_scale,
@@ -43,18 +67,6 @@ void Viewport::draw_in_viewport(const Texture2D& texture, const Rectangle& sourc
 Vector2 Viewport::position_viewport_to_global(const Vector2& position_viewport)
 {
 	return {m_viewport_origin.x + position_viewport.x * m_viewport_scale, m_viewport_origin.y + position_viewport.y * m_viewport_scale};
-}
-
-void Viewport::update(float dt)
-{
-	auto screen_widthf	= static_cast<float>(GetScreenWidth());
-	auto screen_heightf = static_cast<float>(GetScreenHeight());
-
-	m_viewport_scale  = static_cast<float>(std::min(truncf(screen_widthf / m_viewport_base_size.x), truncf(screen_heightf / m_viewport_base_size.y)));
-	m_viewport_origin = {
-			(screen_widthf - m_viewport_base_size.x * m_viewport_scale) / 2, (screen_heightf - m_viewport_base_size.y * m_viewport_scale) / 2
-	};
-	m_viewport_base_origin = {(screen_widthf - m_viewport_base_size.x) / 2, (screen_heightf - m_viewport_base_size.y) / 2};
 }
 
 void Viewport::draw_outline_boxes(const Color& color)
@@ -78,9 +90,7 @@ void Viewport::draw_outline_boxes(const Color& color)
 	}
 }
 
-void Viewport::draw_viewport_frame(
-		const bool& draw, const float& line_thickness, const float& radius, const Color& color_base, const Color& color_scaled
-)
+void Viewport::draw_viewport_frame(bool draw, float line_thickness, float radius, const Color& color_base, const Color& color_scaled)
 {
 	if ( draw ) {
 		DrawRectangleLinesEx(
@@ -93,12 +103,4 @@ void Viewport::draw_viewport_frame(
 		);
 		DrawCircleV(m_viewport_origin, radius, color_scaled);
 	}
-}
-
-
-void Viewport::render()
-{
-	draw_outline_boxes(BLUE);
-
-	draw_viewport_frame(false, 2, 10, RED, GREEN);
 }
