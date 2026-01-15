@@ -1,11 +1,11 @@
 #pragma once
 
-#include <memory>
 #include <vector>
-#include "raylib.h"
+#include <raylib.h>
 
 class Player;
 class AppLayer;
+class FortunaDirector;
 
 /*!
  * @details Namespace for miscellaneous funktions
@@ -53,7 +53,7 @@ namespace misc {
 		 * @param appLayer Pointer to the AppLayer that manages the player.
 		 * @note Only used when WrapAroundMode is set to OnScreen.
 		 */
-		void spawn_new_player_at_opposite_border(const SpawnRequest& request, AppLayer* appLayer);
+		void spawn_new_player_at_opposite_border(const SpawnRequest& request, FortunaDirector* director);
 
 		/**
 		 * @brief Sets the player position to the opposite border.
@@ -141,7 +141,6 @@ namespace misc {
 		/**
 		 * @brief Toggles between on-screen and off-screen wrap-around modes.
 		 */
-		void toggle_wrap_around_mode();
-
+		void set_wrap_around_mode(bool on_screen);
 	} // namespace map
 } // namespace misc

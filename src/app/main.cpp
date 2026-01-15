@@ -1,6 +1,7 @@
 #include <pscore/application.h>
 #include <psinterfaces/layer.h>
 #include <layers/applayer.h>
+#include <entities/director.h>
 
 int main(void)
 {
@@ -8,6 +9,7 @@ int main(void)
 
 	PSCore::Application app(spec);
 	app.push_layer<AppLayer>();
+	app.add_game_director<FortunaDirector>();
 	app.run();
 
 	return 0;
