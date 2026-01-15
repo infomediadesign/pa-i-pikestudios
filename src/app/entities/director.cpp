@@ -21,7 +21,7 @@ FortunaDirector::FortunaDirector()
 
 	gApp()->register_entity(initial_player);
 	if ( auto app_layer = gApp()->get_layer<AppLayer>() )
-		app_layer->renderer_->submit_renderable<Player>(initial_player);
+		app_layer->renderer()->submit_renderable<Player>(initial_player);
 }
 
 FortunaDirector::~FortunaDirector()
@@ -50,7 +50,7 @@ std::shared_ptr<Player> FortunaDirector::spawn_player(const Vector2& position)
 
 	gApp()->register_entity(new_player);
 	if ( auto app_layer = gApp()->get_layer<AppLayer>() )
-		app_layer->renderer_->submit_renderable<Player>(new_player);
+		app_layer->renderer()->submit_renderable<Player>(new_player);
 
 	return new_player;
 }
@@ -58,7 +58,7 @@ std::shared_ptr<Player> FortunaDirector::spawn_player(const Vector2& position)
 void FortunaDirector::destroy_player(std::shared_ptr<Player> player)
 {
 	if ( auto app_layer = gApp()->get_layer<AppLayer>() )
-		app_layer->renderer_->remove_rendarble<Player>(player);
+		app_layer->renderer()->remove_rendarble<Player>(player);
 
 	gApp()->unregister_entity(player);
 	auto& players = _p->players;
