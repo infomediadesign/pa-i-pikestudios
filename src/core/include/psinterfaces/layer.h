@@ -23,8 +23,9 @@ namespace PSInterfaces {
 			active = true;
 		};
 
+		const std::unique_ptr<PSCore::Renderer> renderer_ = std::make_unique<PSCore::Renderer>();
+
 	protected:
 		bool active = true;
-		std::unique_ptr<PSCore::Renderer> renderer_ = std::make_unique<PSCore::Renderer>();
 	};
 } // namespace PSInterfaces

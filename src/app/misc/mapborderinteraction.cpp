@@ -1,10 +1,12 @@
 #include "mapborderinteraction.h"
 
+#include <memory>
 #include <pscore/application.h>
 #include <vector>
 #include <entities/player.h>
 #include <layers/applayer.h>
 #include <raylib.h>
+#include <entities/director.h>
 
 namespace misc {
 
@@ -20,9 +22,9 @@ namespace misc {
 			detect_map_border_collision(player, spawns);
 
 			if ( wrapAroundMode == OnScreen && !spawns.empty() ) {
-				auto appLayer = gApp()->get_layer<AppLayer>();
+				auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
 				for ( const auto& request: spawns ) {
-					spawn_new_player_at_opposite_border(request, appLayer);
+					spawn_new_player_at_opposite_border(request, director);
 				}
 				spawns.clear();
 			}
@@ -46,9 +48,9 @@ namespace misc {
 			}
 		}
 
-		void spawn_new_player_at_opposite_border(const SpawnRequest& request, AppLayer* appLayer)
+		void spawn_new_player_at_opposite_border(const SpawnRequest& request, FortunaDirector* director)
 		{
-			if ( !appLayer )
+			if ( !director )
 				return;
 
 			float half_w = request.width / 2.0f;
@@ -56,7 +58,7 @@ namespace misc {
 
 			Vector2 pos = calculate_opposite_position(request.position, half_w, half_h, request.axis);
 
-			auto new_player = appLayer->spawn_player(pos);
+			auto new_player = director->spawn_player(pos);
 			new_player->set_border_collision_active_horizontal(true);
 			new_player->set_border_collision_active_vertical(true);
 			new_player->set_is_clone(true);
@@ -173,21 +175,21 @@ namespace misc {
 			if ( wrapAroundMode != OnScreen )
 				return;
 
-			auto app_layer = gApp()->get_layer<AppLayer>();
-			if ( !app_layer )
+			auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
+			if ( !director )
 				return;
 
 			for ( auto& entity: gApp()->entities() ) {
 				if ( auto player = std::dynamic_pointer_cast<Player>(entity.lock()) ) {
 					if ( misc::map::is_off_screen(*player) )
-						app_layer->destroy_player(player);
+						director->destroy_player(player);
 				}
 			}
 		}
 
-		void toggle_wrap_around_mode()
+		void set_wrap_around_mode(bool on_screen)
 		{
-			wrapAroundMode = (wrapAroundMode == OnScreen) ? OffScreen : OnScreen;
+			wrapAroundMode = on_screen ? OnScreen : OffScreen;
 		}
 
 	} // namespace map

@@ -13,9 +13,11 @@ namespace PSInterfaces {
 	class IEntity
 	{
 	public:
-		~IEntity() = default;
+		virtual ~IEntity() = default;
 
 		virtual void update(float dt) = 0;
+
+		virtual void draw_debug() {};
 
 		void add_event_manager(const Events::IEventManager* manager)
 		{

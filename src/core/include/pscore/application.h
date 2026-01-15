@@ -120,11 +120,26 @@ namespace PSCore {
 			}
 		}
 
+		template<typename E>
+			requires std::is_base_of_v<PSInterfaces::IEntity, E>
+		void add_game_director()
+		{
+			m_game_director = std::make_unique<E>();
+		};
+
+		PSInterfaces::IEntity* game_director()
+		{
+			if ( m_game_director )
+				return m_game_director.get();
+
+			return nullptr;
+		};
+
 	private:
 		std::unique_ptr<ApplicationPriv> _p;
 		std::vector<std::unique_ptr<PSInterfaces::Layer>> m_layer_stack;
-
 		std::vector<std::weak_ptr<PSInterfaces::IEntity>> m_entity_registry;
+		std::unique_ptr<PSInterfaces::IEntity> m_game_director;
 	};
 } // namespace PSCore
 
