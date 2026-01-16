@@ -35,7 +35,7 @@ namespace misc {
 			int screen_w;
 			int screen_h;
 
-			if ( auto vp = gApp()->viewport() ) {
+			if ( auto& vp = gApp()->viewport() ) {
 				screen_w = static_cast<int>(vp->viewport_base_size().x);
 				screen_h = static_cast<int>(vp->viewport_base_size().y);
 			}
@@ -90,7 +90,7 @@ namespace misc {
 			int screen_w;
 			int screen_h;
 
-			if ( auto vp = gApp()->viewport() ) {
+			if ( auto& vp = gApp()->viewport() ) {
 				screen_w = static_cast<int>(vp->viewport_base_size().x);
 				screen_h = static_cast<int>(vp->viewport_base_size().y);
 			}
@@ -177,7 +177,7 @@ namespace misc {
 			int screen_w;
 			int screen_h;
 
-			if ( auto vp = gApp()->viewport() ) {
+			if ( auto& vp = gApp()->viewport() ) {
 				screen_w = static_cast<int>(vp->viewport_base_size().x);
 				screen_h = static_cast<int>(vp->viewport_base_size().y);
 			}

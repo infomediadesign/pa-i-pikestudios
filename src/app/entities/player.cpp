@@ -14,7 +14,7 @@ Player::Player()
 {
 
 	// WARNING: THIS IS ONLY FOR TESTING
-	if ( auto vp = gApp()->viewport() ) {
+	if ( auto& vp = gApp()->viewport() ) {
 		m_position = vp->viewport_base_size() / 2;
 	}
 	m_max_velocity = 200;
@@ -191,7 +191,7 @@ void Player::render()
 			m_animation_frame * (float) m_texture.width / m_sprite_sheet.max(), m_animation_count * (float) m_texture.height / m_sprite_sheet.size(),
 			(float) m_texture.width / m_sprite_sheet.max(), (float) m_texture.height / m_sprite_sheet.size()
 	};
-	if ( auto vp = gApp()->viewport() ) {
+	if ( auto& vp = gApp()->viewport() ) {
 		vp->draw_in_viewport(m_texture, m_source, m_position, m_rotation + m_rotation_offset, WHITE);
 	}
 }
@@ -229,7 +229,7 @@ bool Player::is_clone() const
 
 float Player::dest_width() const
 {
-	if ( auto vp = gApp()->viewport() ) {
+	if ( auto& vp = gApp()->viewport() ) {
 		return m_source.width * vp->viewport_scale();
 	}
 	return m_source.width;
@@ -237,7 +237,7 @@ float Player::dest_width() const
 
 float Player::dest_height() const
 {
-	if ( auto vp = gApp()->viewport() ) {
+	if ( auto& vp = gApp()->viewport() ) {
 		return m_source.height * vp->viewport_scale();
 	}
 	return m_source.height;

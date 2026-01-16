@@ -162,10 +162,7 @@ void Application::log(TraceLogLevel type, const char* text) const
 	_p->print_log_prefix(type);
 	std::cout << text << std::endl;
 }
-PSCore::Viewport* PSCore::Application::viewport()
+std::unique_ptr<PSCore::Viewport>&  PSCore::Application::viewport()
 {
-	if ( !_p->m_viewport )
-		return nullptr;
-
-	return _p->m_viewport.get();
+	return _p->m_viewport;
 };

@@ -136,7 +136,7 @@ namespace PSCore {
 			return nullptr;
 		};
 
-		PSCore::Viewport* viewport();
+		std::unique_ptr<PSCore::Viewport>& viewport();
 
 
 	private:
