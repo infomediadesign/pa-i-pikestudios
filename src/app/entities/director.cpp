@@ -12,8 +12,7 @@ class FortunaDirectorPriv
 	friend class FortunaDirector;
 	std::vector<std::shared_ptr<Player>> players;
 	std::vector<std::shared_ptr<Projectile>> projectiles;
-	//std::shared_ptr<Projectile> projectile;
-	std::shared_ptr<Cannon> cannon;
+	std::vector<std::shared_ptr<Cannon>> cannons;
 	bool on_screen_warp_around = true;
 };
 
@@ -28,23 +27,24 @@ FortunaDirector::FortunaDirector()
 	if ( auto app_layer = gApp()->get_layer<AppLayer>() )
 		app_layer->renderer()->submit_renderable<Player>(initial_player);
 
-	/*
-	// Test Projectile
-	auto test_projectile = std::make_shared<Projectile>();
-	_p->projectile		 = test_projectile;
-	gApp()->register_entity(test_projectile);
-	if ( auto app_layer = gApp()->get_layer<AppLayer>() )
-		app_layer->renderer()->submit_renderable<Projectile>(test_projectile);
-	*/
-
-	// Test Cannon
+	// Test Cannons
 	auto test_cannon = std::make_shared<Cannon>();
-	_p->cannon		 = test_cannon;
+	_p->cannons	.push_back(test_cannon);
 	gApp()->register_entity(test_cannon);
 	if ( auto app_layer = gApp()->get_layer<AppLayer>() )
 		app_layer->renderer()->submit_renderable<Cannon>(test_cannon);
 	test_cannon->set_director(this);
+	test_cannon->set_parent(initial_player);
+	test_cannon->set_positioning(Cannon::CannonPositioning::Left);
 
+		auto test_cannon_2 = std::make_shared<Cannon>();
+	_p->cannons.push_back(test_cannon_2);
+	gApp()->register_entity(test_cannon_2);
+	if ( auto app_layer = gApp()->get_layer<AppLayer>() )
+		app_layer->renderer()->submit_renderable<Cannon>(test_cannon_2);
+	test_cannon_2->set_director(this);
+	test_cannon_2->set_parent(initial_player);
+	test_cannon_2->set_positioning(Cannon::CannonPositioning::Right);
 }
 
 FortunaDirector::~FortunaDirector()

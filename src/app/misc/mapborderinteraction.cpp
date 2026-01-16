@@ -13,7 +13,7 @@ namespace misc {
 	namespace map {
 
 		namespace {
-			WrapAroundMode wrapAroundMode = OnScreen;
+			WrapAroundMode wrapAroundMode = OffScreen;
 			std::vector<SpawnRequest> spawns;
 		} // namespace
 

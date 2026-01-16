@@ -12,9 +12,17 @@ public:
 	void update(const float dt) override;
 	void render() override;
 
+	enum class CannonPositioning { Left, Right };
+
 	Vector2 calculate_projectile_target_position();
 
 	void fire();
+
+	void set_position_to_parent();
+	void set_rotation_to_parent();
+
+	std::shared_ptr<Player> parent();
+	void set_parent(std::shared_ptr<Player> parent);
 
 	Vector2 position();
 	void set_position(const Vector2& position);
@@ -28,8 +36,14 @@ public:
 	float fire_rate();
 	void set_fire_rate(const float fire_rate);
 
+	float projectile_speed();
+	void set_projectile_speed(const float projectile_speed);
+
 	Vector2 projectile_target_position();
 	void set_projectile_target_position(const Vector2& target_position);
+
+	CannonPositioning positioning();
+	void set_positioning(const Cannon::CannonPositioning positioning);
 
 	Texture2D texture();
 	void set_texture(const Texture2D& texture);
@@ -42,14 +56,16 @@ private:
 	Vector2 m_c_position;
 	float m_c_rotation;
 	float m_c_range;
-	float m_c_fire_rate;
+	float m_c_projectile_speed;
+	float m_c_fire_rate_in_s;
+	float m_c_time_since_last_shot;
+	Vector2 m_c_projectile_target_position;
+	CannonPositioning m_c_positioning;
 
 	Texture2D m_c_texture;
 	Rectangle m_c_source;
 	Rectangle m_c_dest;
 
-	Vector2 m_c_projectile_target_position;
-
 	FortunaDirector* m_c_director;
-
+	std::shared_ptr<Player> m_c_parent;
 };

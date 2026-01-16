@@ -1,5 +1,6 @@
 #include "projectile.h"
 #include <raylib.h>
+#include <entities/director.h>
 
 #include <raymath.h>
 
@@ -8,7 +9,7 @@ Projectile::Projectile()
 
 	IRenderable::propose_z_index(1);
 	m_p_position		= {GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f};
-	m_p_rotation		= 0;
+	m_p_rotation		= 0.0f;
 	m_p_texture			= LoadTexture("ressources/test_projectile.png");
 	m_p_target_position = {360.0f, 360.f};
 	m_p_speed			= 200.0f;
@@ -34,8 +35,10 @@ void Projectile::calculate_movement(const float dt, Vector2& target_position)
 	m_p_direction		= Vector2Subtract(target_position, m_p_position);
 	m_p_travel_distance = Vector2Length(m_p_direction);
 
-	if ( m_p_travel_distance <= 1.0f ) {
+	if ( m_p_travel_distance <= 1.0f ) 
+	{
 		printf("Projectile reached target position.\n");
+		m_p_director->destroy_projectile(m_p_shared_ptr);
 		return;
 	}
 
@@ -128,6 +131,8 @@ void Projectile::set_speed(const float speed)
 	m_p_speed = speed;
 }
 
+float fire_rate();
+
 float Projectile::travel_distance()
 {
 	return m_p_travel_distance;
@@ -136,4 +141,24 @@ float Projectile::travel_distance()
 void Projectile::set_travel_distance(const float travel_distance)
 {
 	m_p_travel_distance = travel_distance;
+}
+
+FortunaDirector* Projectile::director()
+{
+	return m_p_director;
+}
+
+void Projectile::set_director(FortunaDirector* director)
+{
+	m_p_director = director;
+}
+
+void Projectile::set_shared_ptr(std::shared_ptr<Projectile>& ptr)
+{
+	m_p_shared_ptr = ptr;
+}
+
+std ::shared_ptr<Projectile> Projectile::shared_ptr()
+{
+	return m_p_shared_ptr;
 }

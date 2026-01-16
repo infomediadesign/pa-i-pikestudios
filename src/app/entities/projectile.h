@@ -1,6 +1,9 @@
 #pragma once
 #include <psinterfaces/renderable.h>
 #include <raylib.h>
+#include <memory>
+
+class FortunaDirector;
 
 class Projectile : public PSInterfaces::IRenderable
 {
@@ -8,7 +11,6 @@ public:
 	Projectile();
 	void update(const float dt) override;
 	void render() override;
-	void initialize(const Vector2& position, const float& rotation, const float& velocity, const Texture2D& texture);
 	void calculate_movement(const float dt, Vector2& target_position);
 
 
@@ -39,6 +41,13 @@ public:
 	float travel_distance();
 	void set_travel_distance(const float travel_distance);
 
+	FortunaDirector* director();
+	void set_director(FortunaDirector* director);
+
+	std ::shared_ptr<Projectile> shared_ptr();
+	void set_shared_ptr(std::shared_ptr<Projectile>& ptr);
+	
+
 private:
 	Vector2 m_p_position;
 	Vector2 m_p_velocity;
@@ -53,4 +62,6 @@ private:
 	Rectangle m_p_source;
 	Rectangle m_p_dest;
 	bool m_p_is_first_tick = true;
+	FortunaDirector* m_p_director;
+	std::shared_ptr<Projectile> m_p_shared_ptr;
 };
