@@ -229,16 +229,16 @@ bool Player::is_clone() const
 
 float Player::dest_width() const
 {
-	if ( auto& vp = gApp()->viewport() ) {
+	/*if ( auto& vp = gApp()->viewport() ) {
 		return m_source.width * vp->viewport_scale();
-	}
+	}*/
 	return m_source.width;
 }
 
 float Player::dest_height() const
 {
-	if ( auto& vp = gApp()->viewport() ) {
+	/*if ( auto& vp = gApp()->viewport() ) {
 		return m_source.height * vp->viewport_scale();
-	}
+	}*/
 	return m_source.height;
 }
