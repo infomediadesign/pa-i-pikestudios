@@ -2,6 +2,7 @@
 
 #include <psinterfaces/entity.h>
 #include <psinterfaces/renderable.h>
+#include <entities/director.h>
 
 #include <raylib.h>
 #include <valarray>
@@ -49,6 +50,8 @@ public:
 	void set_animation_values(const int& animation_max_count, const std::valarray<int>& sprite_sheet, const float& animation_speed);
 
 	void calculate_animation(const float& dt);
+
+	void initialize_cannons(int amount);
 
 	void render() override;
 

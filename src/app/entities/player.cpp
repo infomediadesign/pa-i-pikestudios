@@ -1,5 +1,6 @@
 #include "player.h"
 #include <raylib.h>
+#include <entities/director.h>
 
 #include <pscore/application.h>
 #include <raymath.h>
@@ -182,6 +183,11 @@ void Player::calculate_animation(const float& dt)
 			m_animation_frame = 0;
 		}
 	}
+}
+
+void Player::initialize_cannons(int amount)
+{
+	auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
 }
 
 void Player::render()

@@ -35,7 +35,7 @@ FortunaDirector::FortunaDirector()
 		app_layer->renderer()->submit_renderable<Cannon>(test_cannon);
 	test_cannon->set_director(this);
 	test_cannon->set_parent(initial_player);
-	test_cannon->set_positioning(Cannon::CannonPositioning::Left);
+	test_cannon->set_positioning(Cannon::CannonPositioning::Right);
 
 		auto test_cannon_2 = std::make_shared<Cannon>();
 	_p->cannons.push_back(test_cannon_2);
@@ -45,6 +45,7 @@ FortunaDirector::FortunaDirector()
 	test_cannon_2->set_director(this);
 	test_cannon_2->set_parent(initial_player);
 	test_cannon_2->set_positioning(Cannon::CannonPositioning::Right);
+	test_cannon_2->set_parent_position_x_offset(-20.0f);
 }
 
 FortunaDirector::~FortunaDirector()

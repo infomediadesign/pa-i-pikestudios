@@ -2,8 +2,10 @@
 #include <psinterfaces/renderable.h>
 #include <raylib.h>
 #include <entities/director.h>
+#include <entities/player.h>
 
 class FortunaDirector;
+class Player;
 
 class Cannon : public PSInterfaces::IRenderable
 {
@@ -15,9 +17,7 @@ public:
 	enum class CannonPositioning { Left, Right };
 
 	Vector2 calculate_projectile_target_position();
-
 	void fire();
-
 	void set_position_to_parent();
 	void set_rotation_to_parent();
 
@@ -42,6 +42,12 @@ public:
 	Vector2 projectile_target_position();
 	void set_projectile_target_position(const Vector2& target_position);
 
+	float parent_position_x_offset();
+	void set_parent_position_x_offset(const float offset);
+
+	float parent_position_y_offset();
+	void set_parent_position_y_offset(const float offset);
+
 	CannonPositioning positioning();
 	void set_positioning(const Cannon::CannonPositioning positioning);
 
@@ -60,6 +66,8 @@ private:
 	float m_c_fire_rate_in_s;
 	float m_c_time_since_last_shot;
 	Vector2 m_c_projectile_target_position;
+	float m_c_parent_position_x_offset;
+	float m_c_parent_position_y_offset;
 	CannonPositioning m_c_positioning;
 
 	Texture2D m_c_texture;

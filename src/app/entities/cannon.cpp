@@ -9,10 +9,12 @@ Cannon::Cannon()
 	m_c_position = {100.0f, 100.0f};
 	m_c_rotation = 0.0f;
 	m_c_texture  = LoadTexture("ressources/test_cannon.png");
-	m_c_range	 = 500.0f;
+	m_c_range	 = 1000.0f;
 	m_c_time_since_last_shot = 0.0f;
 	m_c_fire_rate_in_s		 = 0.5f;
 	m_c_projectile_speed	 = 1000.0f;
+	m_c_parent_position_x_offset = 0.0f;
+	m_c_parent_position_y_offset = 10.0f;
 }
 
 void Cannon::update(const float dt)
@@ -77,11 +79,11 @@ void Cannon::set_position_to_parent()
 		switch ( m_c_positioning ) 
 		{
 			case Cannon::CannonPositioning::Right:
-				set_position(coordinatesystem::point_relative_to_global_rightup(m_c_parent->position(), m_c_parent->rotation(), Vector2{0, 10}));
+				set_position(coordinatesystem::point_relative_to_global_rightup(m_c_parent->position(), m_c_parent->rotation(), Vector2{m_c_parent_position_x_offset, m_c_parent_position_y_offset}));
 				break;
 
 			case Cannon::CannonPositioning::Left:
-				set_position(coordinatesystem::point_relative_to_global_rightup(m_c_parent->position(), m_c_parent->rotation(), Vector2{0, -10}));
+				set_position(coordinatesystem::point_relative_to_global_rightdown(m_c_parent->position(), m_c_parent->rotation(), Vector2{m_c_parent_position_x_offset, m_c_parent_position_y_offset}));
 				break;
 		}
 	}
@@ -181,6 +183,26 @@ Vector2 Cannon::projectile_target_position()
 void Cannon::set_projectile_target_position(const Vector2& target_position)
 {
 	m_c_projectile_target_position = target_position;
+}
+
+float Cannon::parent_position_x_offset()
+{
+	return m_c_parent_position_x_offset;
+}
+
+void Cannon::set_parent_position_x_offset(const float offset)
+{
+	m_c_parent_position_x_offset = offset;
+}
+
+float Cannon::parent_position_y_offset()
+{
+	return m_c_parent_position_y_offset;
+}
+
+void Cannon::set_parent_position_y_offset(const float offset)
+{
+	m_c_parent_position_y_offset = offset;
 }
 
 std::shared_ptr<Player> Cannon::parent()
