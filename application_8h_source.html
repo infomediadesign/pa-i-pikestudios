@@ -105,142 +105,146 @@ $(document).ready(function(){initNavTree('application_8h_source.html',''); initR
 <div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &lt;raylib.h&gt;</span></div>
 <div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#include &lt;type_traits&gt;</span></div>
 <div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#include &lt;vector&gt;</span></div>
-<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span> </div>
-<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="keyword">namespace </span>PSCore {</div>
-<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span> </div>
-<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span>    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> TL&gt;</div>
-<div class="line"><a id="l00013" name="l00013"></a><span class="lineno"><a class="line" href="conceptPSCore_1_1ILayerDerived.html">   13</a></span>    <span class="keyword">concept </span><a class="code hl_concept" href="conceptPSCore_1_1ILayerDerived.html">ILayerDerived</a> = std::is_base_of_v&lt;PSInterfaces::Layer, TL&gt;;</div>
-<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span> </div>
-<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>    <span class="keyword">class </span>ApplicationPriv;</div>
-<div class="foldopen" id="foldopen00016" data-start="{" data-end="};">
-<div class="line"><a id="l00016" name="l00016"></a><span class="lineno"><a class="line" href="classPSCore_1_1Application.html">   16</a></span>    <span class="keyword">class </span><a class="code hl_class" href="classPSCore_1_1Application.html">Application</a></div>
-<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>    {</div>
-<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>    <span class="keyword">public</span>:</div>
-<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>        <span class="keyword">using </span>WindowSize = Vector2;</div>
-<div class="foldopen" id="foldopen00020" data-start="{" data-end="};">
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno"><a class="line" href="structPSCore_1_1Application_1_1AppSpec.html">   20</a></span>        <span class="keyword">struct </span><a class="code hl_struct" href="structPSCore_1_1Application_1_1AppSpec.html">AppSpec</a></div>
-<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>        {</div>
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>            <span class="keyword">const</span> <span class="keywordtype">char</span>* title;</div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>            WindowSize size;</div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>        };</div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor">#include &quot;pscore/viewport.h&quot;</span></div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span> </div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="keyword">namespace </span>PSCore {</div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span> </div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span>    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> TL&gt;</div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno"><a class="line" href="conceptPSCore_1_1ILayerDerived.html">   14</a></span>    <span class="keyword">concept </span><a class="code hl_concept" href="conceptPSCore_1_1ILayerDerived.html">ILayerDerived</a> = std::is_base_of_v&lt;PSInterfaces::Layer, TL&gt;;</div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span> </div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>    <span class="keyword">class </span>ApplicationPriv;</div>
+<div class="foldopen" id="foldopen00017" data-start="{" data-end="};">
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno"><a class="line" href="classPSCore_1_1Application.html">   17</a></span>    <span class="keyword">class </span><a class="code hl_class" href="classPSCore_1_1Application.html">Application</a></div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>    {</div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>    <span class="keyword">public</span>:</div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>        <span class="keyword">using </span>WindowSize = Vector2;</div>
+<div class="foldopen" id="foldopen00021" data-start="{" data-end="};">
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno"><a class="line" href="structPSCore_1_1Application_1_1AppSpec.html">   21</a></span>        <span class="keyword">struct </span><a class="code hl_struct" href="structPSCore_1_1Application_1_1AppSpec.html">AppSpec</a></div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>        {</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>            <span class="keyword">const</span> <span class="keywordtype">char</span>* title;</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>            WindowSize size;</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>        };</div>
 </div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span> </div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>        <a class="code hl_class" href="classPSCore_1_1Application.html">Application</a>(<span class="keyword">const</span> <a class="code hl_struct" href="structPSCore_1_1Application_1_1AppSpec.html">AppSpec</a>&amp; spec);</div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>        <a class="code hl_class" href="classPSCore_1_1Application.html">~Application</a>();</div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span> </div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>        <span class="keyword">static</span> <a class="code hl_class" href="classPSCore_1_1Application.html">Application</a>* get();</div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span> </div>
-<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>        <span class="keyword">template</span>&lt;ILayerDerived TL&gt;</div>
-<div class="foldopen" id="foldopen00035" data-start="{" data-end="}">
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno"><a class="line" href="classPSCore_1_1Application.html#ab14fb509b3de1dd8d4ba871a14ba6cc2">   35</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classPSCore_1_1Application.html#ab14fb509b3de1dd8d4ba871a14ba6cc2">push_layer</a>()</div>
-<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>        {</div>
-<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>            m_layer_stack.push_back(std::make_unique&lt;TL&gt;());</div>
-<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>        };</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span> </div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>        <a class="code hl_class" href="classPSCore_1_1Application.html">Application</a>(<span class="keyword">const</span> <a class="code hl_struct" href="structPSCore_1_1Application_1_1AppSpec.html">AppSpec</a>&amp; spec);</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>        <a class="code hl_class" href="classPSCore_1_1Application.html">~Application</a>();</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span> </div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>        <span class="keyword">static</span> <a class="code hl_class" href="classPSCore_1_1Application.html">Application</a>* get();</div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span> </div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>        <span class="keyword">template</span>&lt;ILayerDerived TL&gt;</div>
+<div class="foldopen" id="foldopen00036" data-start="{" data-end="}">
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno"><a class="line" href="classPSCore_1_1Application.html#ab14fb509b3de1dd8d4ba871a14ba6cc2">   36</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classPSCore_1_1Application.html#ab14fb509b3de1dd8d4ba871a14ba6cc2">push_layer</a>()</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>        {</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>            m_layer_stack.push_back(std::make_unique&lt;TL&gt;());</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>        };</div>
 </div>
-<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span> </div>
-<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>        <span class="keyword">template</span>&lt;ILayerDerived TL&gt;</div>
-<div class="foldopen" id="foldopen00044" data-start="{" data-end="}">
-<div class="line"><a id="l00044" name="l00044"></a><span class="lineno"><a class="line" href="classPSCore_1_1Application.html#aac5407db21de1f55fe73848447917fe9">   44</a></span>        TL* <a class="code hl_function" href="classPSCore_1_1Application.html#aac5407db21de1f55fe73848447917fe9">get_layer</a>()</div>
-<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>        {</div>
-<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>            <span class="keywordflow">for</span> ( <span class="keyword">const</span> <span class="keyword">auto</span>&amp; layer: m_layer_stack ) {</div>
-<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>                <span class="keywordflow">if</span> ( <span class="keyword">auto</span> casted = <span class="keyword">dynamic_cast&lt;</span>TL*<span class="keyword">&gt;</span>(layer.get()) )</div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>                    <span class="keywordflow">return</span> casted;</div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>            }</div>
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>            <span class="keywordflow">return</span> <span class="keyword">nullptr</span>;</div>
-<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>        }</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span> </div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>        <span class="keyword">template</span>&lt;ILayerDerived TL&gt;</div>
+<div class="foldopen" id="foldopen00045" data-start="{" data-end="}">
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno"><a class="line" href="classPSCore_1_1Application.html#aac5407db21de1f55fe73848447917fe9">   45</a></span>        TL* <a class="code hl_function" href="classPSCore_1_1Application.html#aac5407db21de1f55fe73848447917fe9">get_layer</a>()</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>        {</div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>            <span class="keywordflow">for</span> ( <span class="keyword">const</span> <span class="keyword">auto</span>&amp; layer: m_layer_stack ) {</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>                <span class="keywordflow">if</span> ( <span class="keyword">auto</span> casted = <span class="keyword">dynamic_cast&lt;</span>TL*<span class="keyword">&gt;</span>(layer.get()) )</div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>                    <span class="keywordflow">return</span> casted;</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>            }</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>            <span class="keywordflow">return</span> <span class="keyword">nullptr</span>;</div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>        }</div>
 </div>
-<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span> </div>
-<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>        <span class="keyword">template</span>&lt;ILayerDerived TL&gt;</div>
-<div class="foldopen" id="foldopen00057" data-start="{" data-end="}">
-<div class="line"><a id="l00057" name="l00057"></a><span class="lineno"><a class="line" href="classPSCore_1_1Application.html#a96dd5207a3997a0ea518e1365802d170">   57</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classPSCore_1_1Application.html#a96dd5207a3997a0ea518e1365802d170">pop_layer</a>()</div>
-<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>        {</div>
-<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>            <span class="keywordflow">for</span> ( <span class="keyword">auto</span> itr = m_layer_stack.begin(); itr != m_layer_stack.end(); ) {</div>
-<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>                <span class="keywordflow">if</span> ( <span class="keyword">auto</span> casted = <span class="keyword">dynamic_cast&lt;</span>TL*<span class="keyword">&gt;</span>(itr-&gt;get()) )</div>
-<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>                    itr = m_layer_stack.erase(itr);</div>
-<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>                <span class="keywordflow">else</span></div>
-<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>                    itr++;</div>
-<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>            }</div>
-<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>        };</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span> </div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>        <span class="keyword">template</span>&lt;ILayerDerived TL&gt;</div>
+<div class="foldopen" id="foldopen00058" data-start="{" data-end="}">
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno"><a class="line" href="classPSCore_1_1Application.html#a96dd5207a3997a0ea518e1365802d170">   58</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classPSCore_1_1Application.html#a96dd5207a3997a0ea518e1365802d170">pop_layer</a>()</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>        {</div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>            <span class="keywordflow">for</span> ( <span class="keyword">auto</span> itr = m_layer_stack.begin(); itr != m_layer_stack.end(); ) {</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>                <span class="keywordflow">if</span> ( <span class="keyword">auto</span> casted = <span class="keyword">dynamic_cast&lt;</span>TL*<span class="keyword">&gt;</span>(itr-&gt;get()) )</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>                    itr = m_layer_stack.erase(itr);</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>                <span class="keywordflow">else</span></div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>                    itr++;</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>            }</div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>        };</div>
 </div>
-<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span> </div>
-<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classPSCore_1_1Application.html#a68965449404743bf1add056784d6cf81">run</a>();</div>
-<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span> </div>
-<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classPSCore_1_1Application.html#a2e5dee1fbe413783d3500fe8da567ad4">stop</a>();</div>
-<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span> </div>
-<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>        <span class="keyword">template</span>&lt;<span class="keyword">typename</span> E&gt;</div>
-<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>            <span class="keyword">requires</span> std::is_base_of_v&lt;PSInterfaces::IEntity, E&gt;</div>
-<div class="foldopen" id="foldopen00083" data-start="{" data-end="}">
-<div class="line"><a id="l00083" name="l00083"></a><span class="lineno"><a class="line" href="classPSCore_1_1Application.html#a9758ad077c88cdda6ff1057ad4216539">   83</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classPSCore_1_1Application.html#a9758ad077c88cdda6ff1057ad4216539">register_entity</a>(std::shared_ptr&lt;E&gt; e)</div>
-<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>        {</div>
-<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>            <span class="keywordflow">if</span> ( <span class="keyword">auto</span> entity = <span class="keyword">dynamic_cast&lt;</span><a class="code hl_class" href="classPSInterfaces_1_1IEntity.html">PSInterfaces::IEntity</a>*<span class="keyword">&gt;</span>(e.get()) )</div>
-<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>                m_entity_registry.push_back(e);</div>
-<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>        };</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span> </div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classPSCore_1_1Application.html#a68965449404743bf1add056784d6cf81">run</a>();</div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span> </div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classPSCore_1_1Application.html#a2e5dee1fbe413783d3500fe8da567ad4">stop</a>();</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span> </div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>        <span class="keyword">template</span>&lt;<span class="keyword">typename</span> E&gt;</div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>            <span class="keyword">requires</span> std::is_base_of_v&lt;PSInterfaces::IEntity, E&gt;</div>
+<div class="foldopen" id="foldopen00084" data-start="{" data-end="}">
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno"><a class="line" href="classPSCore_1_1Application.html#a9758ad077c88cdda6ff1057ad4216539">   84</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classPSCore_1_1Application.html#a9758ad077c88cdda6ff1057ad4216539">register_entity</a>(std::shared_ptr&lt;E&gt; e)</div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>        {</div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>            <span class="keywordflow">if</span> ( <span class="keyword">auto</span> entity = <span class="keyword">dynamic_cast&lt;</span><a class="code hl_class" href="classPSInterfaces_1_1IEntity.html">PSInterfaces::IEntity</a>*<span class="keyword">&gt;</span>(e.get()) )</div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>                m_entity_registry.push_back(e);</div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>        };</div>
 </div>
-<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span> </div>
-<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>        std::vector&lt;std::weak_ptr&lt;PSInterfaces::IEntity&gt;&gt; <a class="code hl_function" href="classPSCore_1_1Application.html#ad3887181246fb985ab715295d271b9f6">entities</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span> </div>
-<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classPSCore_1_1Application.html#acd8087b11723daecdbd8248f4fee9f69">log</a>(TraceLogLevel type, <span class="keyword">const</span> <span class="keywordtype">char</span>* text) <span class="keyword">const</span>;</div>
-<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span> </div>
-<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>        <span class="keyword">template</span>&lt;<span class="keyword">typename</span> E&gt;</div>
-<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>            <span class="keyword">requires</span> std::is_base_of_v&lt;PSInterfaces::IEntity, E&gt;</div>
-<div class="foldopen" id="foldopen00108" data-start="{" data-end="}">
-<div class="line"><a id="l00108" name="l00108"></a><span class="lineno"><a class="line" href="classPSCore_1_1Application.html#a669c90f37b98862a6c134d7100974272">  108</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classPSCore_1_1Application.html#a669c90f37b98862a6c134d7100974272">unregister_entity</a>(std::shared_ptr&lt;E&gt; e)</div>
-<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>        {</div>
-<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>            <span class="keywordflow">for</span> ( <span class="keyword">auto</span> itr = m_entity_registry.begin(); itr != m_entity_registry.end(); ) {</div>
-<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>                <span class="keywordflow">if</span> ( <span class="keyword">auto</span> locked = itr-&gt;lock() ) {</div>
-<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>                    <span class="keywordflow">if</span> ( locked.get() == e.get() ) {</div>
-<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>                        itr = m_entity_registry.erase(itr);</div>
-<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span>                        <span class="keywordflow">return</span>;</div>
-<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span>                    }</div>
-<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span>                    ++itr;</div>
-<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span>                } <span class="keywordflow">else</span> {</div>
-<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span>                    itr = m_entity_registry.erase(itr);</div>
-<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span>                }</div>
-<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span>            }</div>
-<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span>        }</div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span> </div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>        std::vector&lt;std::weak_ptr&lt;PSInterfaces::IEntity&gt;&gt; <a class="code hl_function" href="classPSCore_1_1Application.html#ad3887181246fb985ab715295d271b9f6">entities</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span> </div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classPSCore_1_1Application.html#acd8087b11723daecdbd8248f4fee9f69">log</a>(TraceLogLevel type, <span class="keyword">const</span> <span class="keywordtype">char</span>* text) <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span> </div>
+<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>        <span class="keyword">template</span>&lt;<span class="keyword">typename</span> E&gt;</div>
+<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>            <span class="keyword">requires</span> std::is_base_of_v&lt;PSInterfaces::IEntity, E&gt;</div>
+<div class="foldopen" id="foldopen00109" data-start="{" data-end="}">
+<div class="line"><a id="l00109" name="l00109"></a><span class="lineno"><a class="line" href="classPSCore_1_1Application.html#a669c90f37b98862a6c134d7100974272">  109</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classPSCore_1_1Application.html#a669c90f37b98862a6c134d7100974272">unregister_entity</a>(std::shared_ptr&lt;E&gt; e)</div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>        {</div>
+<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>            <span class="keywordflow">for</span> ( <span class="keyword">auto</span> itr = m_entity_registry.begin(); itr != m_entity_registry.end(); ) {</div>
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>                <span class="keywordflow">if</span> ( <span class="keyword">auto</span> locked = itr-&gt;lock() ) {</div>
+<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>                    <span class="keywordflow">if</span> ( locked.get() == e.get() ) {</div>
+<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span>                        itr = m_entity_registry.erase(itr);</div>
+<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span>                        <span class="keywordflow">return</span>;</div>
+<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span>                    }</div>
+<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span>                    ++itr;</div>
+<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span>                } <span class="keywordflow">else</span> {</div>
+<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span>                    itr = m_entity_registry.erase(itr);</div>
+<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span>                }</div>
+<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span>            }</div>
+<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span>        }</div>
 </div>
-<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span> </div>
-<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span>        <span class="keyword">template</span>&lt;<span class="keyword">typename</span> E&gt;</div>
-<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span>            <span class="keyword">requires</span> std::is_base_of_v&lt;PSInterfaces::IEntity, E&gt;</div>
-<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span>        <span class="keywordtype">void</span> add_game_director()</div>
-<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span>        {</div>
-<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span>            m_game_director = std::make_unique&lt;E&gt;();</div>
-<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span>        };</div>
-<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span> </div>
-<div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span>        <a class="code hl_class" href="classPSInterfaces_1_1IEntity.html">PSInterfaces::IEntity</a>* game_director()</div>
-<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span>        {</div>
-<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span>            <span class="keywordflow">if</span> ( m_game_director )</div>
-<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span>                <span class="keywordflow">return</span> m_game_director.get();</div>
-<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span> </div>
-<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span>            <span class="keywordflow">return</span> <span class="keyword">nullptr</span>;</div>
-<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span>        };</div>
-<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span> </div>
-<div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span>    <span class="keyword">private</span>:</div>
-<div class="line"><a id="l00139" name="l00139"></a><span class="lineno">  139</span>        std::unique_ptr&lt;ApplicationPriv&gt; _p;</div>
-<div class="line"><a id="l00140" name="l00140"></a><span class="lineno">  140</span>        std::vector&lt;std::unique_ptr&lt;PSInterfaces::Layer&gt;&gt; m_layer_stack;</div>
-<div class="line"><a id="l00141" name="l00141"></a><span class="lineno">  141</span>        std::vector&lt;std::weak_ptr&lt;PSInterfaces::IEntity&gt;&gt; m_entity_registry;</div>
-<div class="line"><a id="l00142" name="l00142"></a><span class="lineno">  142</span>        std::unique_ptr&lt;PSInterfaces::IEntity&gt; m_game_director;</div>
-<div class="line"><a id="l00143" name="l00143"></a><span class="lineno">  143</span>    };</div>
+<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span> </div>
+<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span>        <span class="keyword">template</span>&lt;<span class="keyword">typename</span> E&gt;</div>
+<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span>            <span class="keyword">requires</span> std::is_base_of_v&lt;PSInterfaces::IEntity, E&gt;</div>
+<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span>        <span class="keywordtype">void</span> add_game_director()</div>
+<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span>        {</div>
+<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span>            m_game_director = std::make_unique&lt;E&gt;();</div>
+<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span>        };</div>
+<div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span> </div>
+<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span>        <a class="code hl_class" href="classPSInterfaces_1_1IEntity.html">PSInterfaces::IEntity</a>* game_director()</div>
+<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span>        {</div>
+<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span>            <span class="keywordflow">if</span> ( m_game_director )</div>
+<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span>                <span class="keywordflow">return</span> m_game_director.get();</div>
+<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span> </div>
+<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span>            <span class="keywordflow">return</span> <span class="keyword">nullptr</span>;</div>
+<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span>        };</div>
+<div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span> </div>
+<div class="line"><a id="l00139" name="l00139"></a><span class="lineno">  139</span>        std::unique_ptr&lt;PSCore::Viewport&gt;&amp; viewport();</div>
+<div class="line"><a id="l00140" name="l00140"></a><span class="lineno">  140</span> </div>
+<div class="line"><a id="l00141" name="l00141"></a><span class="lineno">  141</span> </div>
+<div class="line"><a id="l00142" name="l00142"></a><span class="lineno">  142</span>    <span class="keyword">private</span>:</div>
+<div class="line"><a id="l00143" name="l00143"></a><span class="lineno">  143</span>        std::unique_ptr&lt;ApplicationPriv&gt; _p;</div>
+<div class="line"><a id="l00144" name="l00144"></a><span class="lineno">  144</span>        std::vector&lt;std::unique_ptr&lt;PSInterfaces::Layer&gt;&gt; m_layer_stack;</div>
+<div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span>        std::vector&lt;std::weak_ptr&lt;PSInterfaces::IEntity&gt;&gt; m_entity_registry;</div>
+<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span>        std::unique_ptr&lt;PSInterfaces::IEntity&gt; m_game_director;</div>
+<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span>    };</div>
 </div>
-<div class="line"><a id="l00144" name="l00144"></a><span class="lineno">  144</span>} <span class="comment">// namespace PSCore</span></div>
-<div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span> </div>
-<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span><span class="keyword">constexpr</span> <span class="keyword">auto</span> gApp = PSCore::Application::get;</div>
-<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span> </div>
-<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span><span class="preprocessor">#define PS_LOG(log_level, msg)                                                                                                                       \</span></div>
-<div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span><span class="preprocessor">    gApp()-&gt;log(log_level, std::string(std::string(__FILE__) + &quot; LINE: &quot; + std::to_string(__LINE__) + &quot; MSG: &quot; + msg).data());</span></div>
-<div class="ttc" id="aclassPSCore_1_1Application_html"><div class="ttname"><a href="classPSCore_1_1Application.html">PSCore::Application</a></div><div class="ttdef"><b>Definition</b> application.h:17</div></div>
-<div class="ttc" id="aclassPSCore_1_1Application_html_a2e5dee1fbe413783d3500fe8da567ad4"><div class="ttname"><a href="classPSCore_1_1Application.html#a2e5dee1fbe413783d3500fe8da567ad4">PSCore::Application::stop</a></div><div class="ttdeci">void stop()</div><div class="ttdoc">stops the applikation</div><div class="ttdef"><b>Definition</b> application.cpp:142</div></div>
-<div class="ttc" id="aclassPSCore_1_1Application_html_a669c90f37b98862a6c134d7100974272"><div class="ttname"><a href="classPSCore_1_1Application.html#a669c90f37b98862a6c134d7100974272">PSCore::Application::unregister_entity</a></div><div class="ttdeci">void unregister_entity(std::shared_ptr&lt; E &gt; e)</div><div class="ttdoc">removes an entity from the registry</div><div class="ttdef"><b>Definition</b> application.h:108</div></div>
-<div class="ttc" id="aclassPSCore_1_1Application_html_a68965449404743bf1add056784d6cf81"><div class="ttname"><a href="classPSCore_1_1Application.html#a68965449404743bf1add056784d6cf81">PSCore::Application::run</a></div><div class="ttdeci">void run()</div><div class="ttdoc">starts the update/render loop</div><div class="ttdef"><b>Definition</b> application.cpp:95</div></div>
-<div class="ttc" id="aclassPSCore_1_1Application_html_a96dd5207a3997a0ea518e1365802d170"><div class="ttname"><a href="classPSCore_1_1Application.html#a96dd5207a3997a0ea518e1365802d170">PSCore::Application::pop_layer</a></div><div class="ttdeci">void pop_layer()</div><div class="ttdoc">removes every occourence of type T from the layer stack</div><div class="ttdef"><b>Definition</b> application.h:57</div></div>
-<div class="ttc" id="aclassPSCore_1_1Application_html_a9758ad077c88cdda6ff1057ad4216539"><div class="ttname"><a href="classPSCore_1_1Application.html#a9758ad077c88cdda6ff1057ad4216539">PSCore::Application::register_entity</a></div><div class="ttdeci">void register_entity(std::shared_ptr&lt; E &gt; e)</div><div class="ttdoc">registers an entity to the applikation</div><div class="ttdef"><b>Definition</b> application.h:83</div></div>
-<div class="ttc" id="aclassPSCore_1_1Application_html_aac5407db21de1f55fe73848447917fe9"><div class="ttname"><a href="classPSCore_1_1Application.html#aac5407db21de1f55fe73848447917fe9">PSCore::Application::get_layer</a></div><div class="ttdeci">TL * get_layer()</div><div class="ttdoc">returns an instance to a layer of type T or a nullptr</div><div class="ttdef"><b>Definition</b> application.h:44</div></div>
-<div class="ttc" id="aclassPSCore_1_1Application_html_ab14fb509b3de1dd8d4ba871a14ba6cc2"><div class="ttname"><a href="classPSCore_1_1Application.html#ab14fb509b3de1dd8d4ba871a14ba6cc2">PSCore::Application::push_layer</a></div><div class="ttdeci">void push_layer()</div><div class="ttdoc">pushes a Layer of type T to the layer stack</div><div class="ttdef"><b>Definition</b> application.h:35</div></div>
-<div class="ttc" id="aclassPSCore_1_1Application_html_acd8087b11723daecdbd8248f4fee9f69"><div class="ttname"><a href="classPSCore_1_1Application.html#acd8087b11723daecdbd8248f4fee9f69">PSCore::Application::log</a></div><div class="ttdeci">void log(TraceLogLevel type, const char *text) const</div><div class="ttdoc">prints a log message, use the PS_LOG macro instead</div><div class="ttdef"><b>Definition</b> application.cpp:157</div></div>
-<div class="ttc" id="aclassPSCore_1_1Application_html_ad3887181246fb985ab715295d271b9f6"><div class="ttname"><a href="classPSCore_1_1Application.html#ad3887181246fb985ab715295d271b9f6">PSCore::Application::entities</a></div><div class="ttdeci">std::vector&lt; std::weak_ptr&lt; PSInterfaces::IEntity &gt; &gt; entities() const</div><div class="ttdoc">returns a list of weak_ptr of all registered entiteies</div><div class="ttdef"><b>Definition</b> application.cpp:152</div></div>
+<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span>} <span class="comment">// namespace PSCore</span></div>
+<div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span> </div>
+<div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span><span class="keyword">constexpr</span> <span class="keyword">auto</span> gApp = PSCore::Application::get;</div>
+<div class="line"><a id="l00151" name="l00151"></a><span class="lineno">  151</span> </div>
+<div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span><span class="preprocessor">#define PS_LOG(log_level, msg)                                                                                                                       \</span></div>
+<div class="line"><a id="l00153" name="l00153"></a><span class="lineno">  153</span><span class="preprocessor">    gApp()-&gt;log(log_level, std::string(std::string(__FILE__) + &quot; LINE: &quot; + std::to_string(__LINE__) + &quot; MSG: &quot; + msg).data());</span></div>
+<div class="ttc" id="aclassPSCore_1_1Application_html"><div class="ttname"><a href="classPSCore_1_1Application.html">PSCore::Application</a></div><div class="ttdef"><b>Definition</b> application.h:18</div></div>
+<div class="ttc" id="aclassPSCore_1_1Application_html_a2e5dee1fbe413783d3500fe8da567ad4"><div class="ttname"><a href="classPSCore_1_1Application.html#a2e5dee1fbe413783d3500fe8da567ad4">PSCore::Application::stop</a></div><div class="ttdeci">void stop()</div><div class="ttdoc">stops the applikation</div><div class="ttdef"><b>Definition</b> application.cpp:145</div></div>
+<div class="ttc" id="aclassPSCore_1_1Application_html_a669c90f37b98862a6c134d7100974272"><div class="ttname"><a href="classPSCore_1_1Application.html#a669c90f37b98862a6c134d7100974272">PSCore::Application::unregister_entity</a></div><div class="ttdeci">void unregister_entity(std::shared_ptr&lt; E &gt; e)</div><div class="ttdoc">removes an entity from the registry</div><div class="ttdef"><b>Definition</b> application.h:109</div></div>
+<div class="ttc" id="aclassPSCore_1_1Application_html_a68965449404743bf1add056784d6cf81"><div class="ttname"><a href="classPSCore_1_1Application.html#a68965449404743bf1add056784d6cf81">PSCore::Application::run</a></div><div class="ttdeci">void run()</div><div class="ttdoc">starts the update/render loop</div><div class="ttdef"><b>Definition</b> application.cpp:98</div></div>
+<div class="ttc" id="aclassPSCore_1_1Application_html_a96dd5207a3997a0ea518e1365802d170"><div class="ttname"><a href="classPSCore_1_1Application.html#a96dd5207a3997a0ea518e1365802d170">PSCore::Application::pop_layer</a></div><div class="ttdeci">void pop_layer()</div><div class="ttdoc">removes every occourence of type T from the layer stack</div><div class="ttdef"><b>Definition</b> application.h:58</div></div>
+<div class="ttc" id="aclassPSCore_1_1Application_html_a9758ad077c88cdda6ff1057ad4216539"><div class="ttname"><a href="classPSCore_1_1Application.html#a9758ad077c88cdda6ff1057ad4216539">PSCore::Application::register_entity</a></div><div class="ttdeci">void register_entity(std::shared_ptr&lt; E &gt; e)</div><div class="ttdoc">registers an entity to the applikation</div><div class="ttdef"><b>Definition</b> application.h:84</div></div>
+<div class="ttc" id="aclassPSCore_1_1Application_html_aac5407db21de1f55fe73848447917fe9"><div class="ttname"><a href="classPSCore_1_1Application.html#aac5407db21de1f55fe73848447917fe9">PSCore::Application::get_layer</a></div><div class="ttdeci">TL * get_layer()</div><div class="ttdoc">returns an instance to a layer of type T or a nullptr</div><div class="ttdef"><b>Definition</b> application.h:45</div></div>
+<div class="ttc" id="aclassPSCore_1_1Application_html_ab14fb509b3de1dd8d4ba871a14ba6cc2"><div class="ttname"><a href="classPSCore_1_1Application.html#ab14fb509b3de1dd8d4ba871a14ba6cc2">PSCore::Application::push_layer</a></div><div class="ttdeci">void push_layer()</div><div class="ttdoc">pushes a Layer of type T to the layer stack</div><div class="ttdef"><b>Definition</b> application.h:36</div></div>
+<div class="ttc" id="aclassPSCore_1_1Application_html_acd8087b11723daecdbd8248f4fee9f69"><div class="ttname"><a href="classPSCore_1_1Application.html#acd8087b11723daecdbd8248f4fee9f69">PSCore::Application::log</a></div><div class="ttdeci">void log(TraceLogLevel type, const char *text) const</div><div class="ttdoc">prints a log message, use the PS_LOG macro instead</div><div class="ttdef"><b>Definition</b> application.cpp:160</div></div>
+<div class="ttc" id="aclassPSCore_1_1Application_html_ad3887181246fb985ab715295d271b9f6"><div class="ttname"><a href="classPSCore_1_1Application.html#ad3887181246fb985ab715295d271b9f6">PSCore::Application::entities</a></div><div class="ttdeci">std::vector&lt; std::weak_ptr&lt; PSInterfaces::IEntity &gt; &gt; entities() const</div><div class="ttdoc">returns a list of weak_ptr of all registered entiteies</div><div class="ttdef"><b>Definition</b> application.cpp:155</div></div>
 <div class="ttc" id="aclassPSInterfaces_1_1IEntity_html"><div class="ttname"><a href="classPSInterfaces_1_1IEntity.html">PSInterfaces::IEntity</a></div><div class="ttdef"><b>Definition</b> entity.h:14</div></div>
-<div class="ttc" id="aconceptPSCore_1_1ILayerDerived_html"><div class="ttname"><a href="conceptPSCore_1_1ILayerDerived.html">PSCore::ILayerDerived</a></div><div class="ttdef"><b>Definition</b> application.h:13</div></div>
-<div class="ttc" id="astructPSCore_1_1Application_1_1AppSpec_html"><div class="ttname"><a href="structPSCore_1_1Application_1_1AppSpec.html">PSCore::Application::AppSpec</a></div><div class="ttdef"><b>Definition</b> application.h:21</div></div>
+<div class="ttc" id="aconceptPSCore_1_1ILayerDerived_html"><div class="ttname"><a href="conceptPSCore_1_1ILayerDerived.html">PSCore::ILayerDerived</a></div><div class="ttdef"><b>Definition</b> application.h:14</div></div>
+<div class="ttc" id="astructPSCore_1_1Application_1_1AppSpec_html"><div class="ttname"><a href="structPSCore_1_1Application_1_1AppSpec.html">PSCore::Application::AppSpec</a></div><div class="ttdef"><b>Definition</b> application.h:22</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
