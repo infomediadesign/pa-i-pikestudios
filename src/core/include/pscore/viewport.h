@@ -14,15 +14,7 @@ namespace PSCore {
 
 		void render() override;
 
-		Vector2 viewport_base_size();
-
-		float viewport_scale();
-
-		Vector2 viewport_base_origin();
-
-		Vector2 viewport_origin();
-
-		void set_viewport_base_size(const Vector2& viewport_base_size);
+		void draw_debug() override;
 
 		/**
 		 * @brief Draws a Texture in the defined Viewport with a Position in the Relative Coordinate system of the Viewport and Origin in the center
@@ -41,6 +33,16 @@ namespace PSCore {
 		 * @return The Global Position
 		 */
 		Vector2 position_viewport_to_global(const Vector2& position_viewport);
+
+		Vector2 viewport_base_size();
+
+		float viewport_scale();
+
+		Vector2 viewport_base_origin();
+
+		Vector2 viewport_origin();
+
+		void set_viewport_base_size(const Vector2& viewport_base_size);
 
 	private:
 		/**
@@ -66,6 +68,8 @@ namespace PSCore {
 		Vector2 m_viewport_base_origin = {(GetScreenWidth() - m_viewport_base_size.x) / 2, (GetScreenHeight() - m_viewport_base_size.y) / 2};
 
 		Vector2 m_viewport_origin = {(GetScreenWidth() - m_viewport_base_size.x) / 2, (GetScreenHeight() - m_viewport_base_size.y) / 2};
+
+		bool m_draw_viewport_frame = false;
 	};
 
 } // namespace PSCore

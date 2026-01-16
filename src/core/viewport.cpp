@@ -1,6 +1,7 @@
-#include "include/pscore/viewport.h"
+#include <pscore/viewport.h>
 
 #include <cmath>
+#include <imgui.h>
 
 using PSCore::Viewport;
 
@@ -24,8 +25,30 @@ void Viewport::update(float dt)
 void Viewport::render()
 {
 	draw_outline_boxes(BLUE);
+}
 
-	draw_viewport_frame(true, 2, 10, RED, GREEN);
+void Viewport::draw_debug()
+{
+	draw_viewport_frame(m_draw_viewport_frame, 2, 10, RED, GREEN);
+
+	ImGui::Checkbox("Render Viewport Frame", &m_draw_viewport_frame);
+}
+
+
+void Viewport::draw_in_viewport(const Texture2D& texture, const Rectangle& source, const Vector2& position, float rotation, const Color& color)
+{
+	Rectangle dest = {
+			m_viewport_origin.x + position.x * m_viewport_scale, m_viewport_origin.y + position.y * m_viewport_scale, source.width * m_viewport_scale,
+			source.height * m_viewport_scale
+	};
+	Vector2 orign = {dest.width / 2, dest.height / 2};
+
+	DrawTexturePro(texture, source, dest, orign, rotation, color);
+}
+
+Vector2 Viewport::position_viewport_to_global(const Vector2& position_viewport)
+{
+	return {m_viewport_origin.x + position_viewport.x * m_viewport_scale, m_viewport_origin.y + position_viewport.y * m_viewport_scale};
 }
 
 Vector2 Viewport::viewport_base_size()
@@ -51,22 +74,6 @@ Vector2 Viewport::viewport_origin()
 void Viewport::set_viewport_base_size(const Vector2& viewport_base_size)
 {
 	m_viewport_base_size = viewport_base_size;
-}
-
-void Viewport::draw_in_viewport(const Texture2D& texture, const Rectangle& source, const Vector2& position, float rotation, const Color& color)
-{
-	Rectangle dest = {
-			m_viewport_origin.x + position.x * m_viewport_scale, m_viewport_origin.y + position.y * m_viewport_scale, source.width * m_viewport_scale,
-			source.height * m_viewport_scale
-	};
-	Vector2 orign = {dest.width / 2, dest.height / 2};
-
-	DrawTexturePro(texture, source, dest, orign, rotation, color);
-}
-
-Vector2 Viewport::position_viewport_to_global(const Vector2& position_viewport)
-{
-	return {m_viewport_origin.x + position_viewport.x * m_viewport_scale, m_viewport_origin.y + position_viewport.y * m_viewport_scale};
 }
 
 void Viewport::draw_outline_boxes(const Color& color)
