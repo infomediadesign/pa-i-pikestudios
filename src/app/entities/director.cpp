@@ -2,6 +2,8 @@
 #include <layers/applayer.h>
 #include <misc/mapborderinteraction.h>
 #include <pscore/application.h>
+#include <entities/projectile.h>
+#include <entities/cannon.h>
 
 #include <imgui.h>
 
@@ -9,6 +11,9 @@ class FortunaDirectorPriv
 {
 	friend class FortunaDirector;
 	std::vector<std::shared_ptr<Player>> players;
+	std::vector<std::shared_ptr<Projectile>> projectiles;
+	//std::shared_ptr<Projectile> projectile;
+	std::shared_ptr<Cannon> cannon;
 	bool on_screen_warp_around = true;
 };
 
@@ -22,6 +27,24 @@ FortunaDirector::FortunaDirector()
 	gApp()->register_entity(initial_player);
 	if ( auto app_layer = gApp()->get_layer<AppLayer>() )
 		app_layer->renderer()->submit_renderable<Player>(initial_player);
+
+	/*
+	// Test Projectile
+	auto test_projectile = std::make_shared<Projectile>();
+	_p->projectile		 = test_projectile;
+	gApp()->register_entity(test_projectile);
+	if ( auto app_layer = gApp()->get_layer<AppLayer>() )
+		app_layer->renderer()->submit_renderable<Projectile>(test_projectile);
+	*/
+
+	// Test Cannon
+	auto test_cannon = std::make_shared<Cannon>();
+	_p->cannon		 = test_cannon;
+	gApp()->register_entity(test_cannon);
+	if ( auto app_layer = gApp()->get_layer<AppLayer>() )
+		app_layer->renderer()->submit_renderable<Cannon>(test_cannon);
+	test_cannon->set_director(this);
+
 }
 
 FortunaDirector::~FortunaDirector()
@@ -76,4 +99,24 @@ void FortunaDirector::sync_player_entities()
 			_p->players[i]->set_rotation(_p->players[0]->rotation());
 		}
 	}
+}
+
+std::shared_ptr<Projectile> FortunaDirector::spawn_projectile(const Vector2& position)
+{
+	auto new_projectile = std::make_shared<Projectile>();
+	new_projectile->set_position(position);
+	_p->projectiles.push_back(new_projectile);
+	gApp()->register_entity(new_projectile);
+	if ( auto app_layer = gApp()->get_layer<AppLayer>() )
+		app_layer->renderer()->submit_renderable<Projectile>(new_projectile);
+	return new_projectile;
+}
+
+void FortunaDirector::destroy_projectile(std::shared_ptr<Projectile> projectile)
+{
+	if ( auto app_layer = gApp()->get_layer<AppLayer>() )
+		app_layer->renderer()->remove_rendarble<Projectile>(projectile);
+	gApp()->unregister_entity(projectile);
+	auto& projectiles = _p->projectiles;
+	projectiles.erase(std::remove(projectiles.begin(), projectiles.end(), projectile), projectiles.end());
 }

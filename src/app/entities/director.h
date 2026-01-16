@@ -4,6 +4,8 @@
 
 #include <entities/player.h>
 #include <psinterfaces/entity.h>
+#include <entities/projectile.h>
+#include <entities/cannon.h>
 
 class FortunaDirectorPriv;
 class FortunaDirector : public PSInterfaces::IEntity
@@ -20,6 +22,15 @@ public:
 	std::shared_ptr<Player> spawn_player(const Vector2& position);
 	void destroy_player(std::shared_ptr<Player> player);
 	void sync_player_entities();
+
+	// Functions to spawn and destroy projectiles
+	std::shared_ptr<Projectile> spawn_projectile(const Vector2& position);
+	void destroy_projectile(std::shared_ptr<Projectile> projectile);
+
+	// Functions to spawn and destroy cannons
+//	std::shared_ptr<Cannon> spawn_cannon(const Vector2& position);
+//	void destroy_cannon(std::shared_ptr<Cannon> cannon);
+
 private:
 	std::unique_ptr<FortunaDirectorPriv> _p;
 
