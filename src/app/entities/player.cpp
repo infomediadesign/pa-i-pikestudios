@@ -14,10 +14,12 @@ Player::Player()
 {
 
 	// WARNING: THIS IS ONLY FOR TESTING
-	m_position	   = {GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f};
-	m_max_velocity = 600;
+	if ( auto& vp = gApp()->viewport() ) {
+		m_position = vp->viewport_base_size() / 2;
+	}
+	m_max_velocity = 200;
 	m_rotation	   = 0;
-	set_interpolation_values(6, 2, 4, 1500, 0.3);
+	set_interpolation_values(6, 2, 4, 1500, 0.9);
 	set_texture_values(LoadTexture("ressources/SpaceShipSpriteSheet.png"), 90, 4);
 	set_animation_values(2, {1, 4}, 4);
 	//
@@ -104,14 +106,14 @@ void Player::calculate_movement(const float& dt)
 {
 	// Linear Interpolation form Rotation to Target Rotation with a regression of Rotation and a static Alpha
 	// which ends in an exponential approximation to calculate the rotation
-	m_rotation = m_rotation + (m_target_rotation - m_rotation) * fmaxf(0, fminf((m_rotation_fade * dt), 1));
+	m_rotation = m_rotation + (m_target_rotation - m_rotation) * std::clamp(m_rotation_fade * dt, 0.0f, 1.0f);
 
 	// Check if the Velocity should increase or decrease and uses right the Linear Interpolation form Velocity to Target Velocity with a regression of
 	// Velocity and a static Alpha which ends in an exponential approximation to calculate the Value of the Velocity
 	float velocity_value =
 			(m_target_velocity - Vector2Length(m_velocity)) > 0
-					? Vector2Length(m_velocity) + (m_target_velocity - Vector2Length(m_velocity)) * fmaxf(0, fminf((m_acceleration_fade * dt), 1))
-					: Vector2Length(m_velocity) + (m_target_velocity - Vector2Length(m_velocity)) * fmaxf(0, fminf((m_deceleration_fade * dt), 1));
+					? Vector2Length(m_velocity) + (m_target_velocity - Vector2Length(m_velocity)) * std::clamp(m_acceleration_fade * dt, 0.0f, 1.0f)
+					: Vector2Length(m_velocity) + (m_target_velocity - Vector2Length(m_velocity)) * std::clamp(m_deceleration_fade * dt, 0.0f, 1.0f);
 
 	// Calculate with the Velocity Value and the Rotation the actual 2 Dimensional Velocity
 	m_velocity.x = velocity_value * cos(m_rotation * DEG2RAD);
@@ -125,8 +127,7 @@ void Player::calculate_movement(const float& dt)
 
 void Player::update(const float dt)
 {
-	if ( !m_is_clone ) 
-	{
+	if ( !m_is_clone ) {
 		// Input Functions to set Target Velocity and Target Rotation
 		if ( IsKeyDown(KEY_W) ) {
 			m_target_velocity += m_target_velocity < m_max_velocity ? m_input_velocity_multiplier * dt : 0;
@@ -178,7 +179,7 @@ void Player::calculate_animation(const float& dt)
 	if ( m_frame_counter >= 1 / (dt * m_animation_speed) ) {
 		m_frame_counter = 0;
 		m_animation_frame++;
-		if ( m_animation_frame >= round(Lerp(0, (float)m_sprite_sheet[m_animation_count], Vector2Length(m_velocity) / m_max_velocity)) ) {
+		if ( m_animation_frame >= round(Lerp(0, (float) m_sprite_sheet[m_animation_count], Vector2Length(m_velocity) / m_max_velocity)) ) {
 			m_animation_frame = 0;
 		}
 	}
@@ -190,9 +191,9 @@ void Player::render()
 			m_animation_frame * (float) m_texture.width / m_sprite_sheet.max(), m_animation_count * (float) m_texture.height / m_sprite_sheet.size(),
 			(float) m_texture.width / m_sprite_sheet.max(), (float) m_texture.height / m_sprite_sheet.size()
 	};
-	m_dest	 = {m_position.x, m_position.y, m_source.width * m_base_scale, m_source.height * m_base_scale};
-	m_origin = {m_dest.width / 2, m_dest.height / 2};
-	DrawTexturePro(m_texture, m_source, m_dest, m_origin, m_rotation + m_rotation_offset, WHITE);
+	if ( auto& vp = gApp()->viewport() ) {
+		vp->draw_in_viewport(m_texture, m_source, m_position, m_rotation + m_rotation_offset, WHITE);
+	}
 }
 
 // Border Collision Variables and Methods
@@ -216,10 +217,9 @@ bool Player::border_collision_active_vertical() const
 	return m_border_collision_active_vertical;
 }
 
-bool Player::set_is_clone(bool active)
+void Player::set_is_clone(bool active)
 {
 	m_is_clone = active;
-	return m_is_clone;
 }
 
 bool Player::is_clone() const
@@ -229,10 +229,16 @@ bool Player::is_clone() const
 
 float Player::dest_width() const
 {
-	return m_dest.width;
+	if ( auto& vp = gApp()->viewport() ) {
+		return m_source.width * vp->viewport_scale();
+	}
+	return m_source.width;
 }
 
 float Player::dest_height() const
 {
-	return m_dest.height;
+	if ( auto& vp = gApp()->viewport() ) {
+		return m_source.height * vp->viewport_scale();
+	}
+	return m_source.height;
 }

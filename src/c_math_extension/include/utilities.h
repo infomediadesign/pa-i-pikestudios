@@ -47,4 +47,21 @@ namespace utilities {
 	 */
 	Vector2 grid_from_index_vertical(int index, int grid_width, int grid_height);
 
+	/**
+	 * @brief Calculates a Vector with a certain length based on a Vector and a length
+	 * @param vector A direction Vector
+	 * @param length The length the direction Vector should have
+	 * @return A Vector in the same direction as the direction Vector but with the given length
+	 */
+	Vector2 vector_with_length(Vector2 vector, float length);
+
+	/**
+	 * @brief Calculates a Rotation that the self Actor must be Rotated to look at a Target
+	 * based on the self Location and the Target Location
+	 * @param self_position Position of the self Actor
+	 * @param look_position Position of the Point the self Actor is looking
+	 * @return A Rotation that the self Actor must be Rotated to look at the Target
+	 */
+	float rotation_look_at(Vector2 self_position, Vector2 look_position);
+
 } // namespace utilities

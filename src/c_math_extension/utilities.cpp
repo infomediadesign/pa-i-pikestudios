@@ -1,5 +1,7 @@
 #include "utilities.h"
 
+#include "raymath.h"
+
 float utilities::divide_save(float dividend, float divisor)
 {
 	if ( divisor == 0 ) {
@@ -42,4 +44,14 @@ Vector2 utilities::grid_from_index_vertical(int index, int grid_width, int grid_
 	value.x = index % grid_height;
 
 	return value;
+}
+
+Vector2 utilities::vector_with_length(Vector2 vector, float length)
+{
+	return Vector2Scale(Vector2Normalize(vector), length);
+}
+
+float utilities::rotation_look_at(Vector2 self_position, Vector2 look_position)
+{
+	return atan2f(look_position.y - self_position.y, look_position.x - self_position.x) * RAD2DEG;
 }
