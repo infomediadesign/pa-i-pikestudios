@@ -13,7 +13,7 @@ namespace misc {
 	namespace map {
 
 		namespace {
-			WrapAroundMode wrapAroundMode = OffScreen;
+			WrapAroundMode wrapAroundMode = OnScreen;
 			std::vector<SpawnRequest> spawns;
 		} // namespace
 
@@ -178,7 +178,6 @@ namespace misc {
 			auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
 			if ( !director )
 				return;
-
 			for ( auto& entity: gApp()->entities() ) {
 				if ( auto player = std::dynamic_pointer_cast<Player>(entity.lock()) ) {
 					if ( misc::map::is_off_screen(*player) )

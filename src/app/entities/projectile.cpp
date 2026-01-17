@@ -1,6 +1,7 @@
 #include "projectile.h"
 #include <raylib.h>
 #include <entities/director.h>
+#include <pscore/application.h>
 
 #include <raymath.h>
 
@@ -37,8 +38,12 @@ void Projectile::calculate_movement(const float dt, Vector2& target_position)
 
 	if ( m_p_travel_distance <= 1.0f ) 
 	{
-		printf("Projectile reached target position.\n");
-		m_p_director->destroy_projectile(m_p_shared_ptr);
+		auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
+		if ( !director ) 
+		{
+			return;
+		}
+		director->destroy_projectile(m_p_shared_ptr);
 		return;
 	}
 
@@ -141,16 +146,6 @@ float Projectile::travel_distance()
 void Projectile::set_travel_distance(const float travel_distance)
 {
 	m_p_travel_distance = travel_distance;
-}
-
-FortunaDirector* Projectile::director()
-{
-	return m_p_director;
-}
-
-void Projectile::set_director(FortunaDirector* director)
-{
-	m_p_director = director;
 }
 
 void Projectile::set_shared_ptr(std::shared_ptr<Projectile>& ptr)

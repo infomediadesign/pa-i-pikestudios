@@ -1,8 +1,7 @@
 #pragma once
 #include <psinterfaces/renderable.h>
 #include <raylib.h>
-#include <entities/director.h>
-#include <entities/player.h>
+#include <memory>
 
 class FortunaDirector;
 class Player;
@@ -54,9 +53,6 @@ public:
 	Texture2D texture();
 	void set_texture(const Texture2D& texture);
 
-	FortunaDirector* director();
-	void set_director(FortunaDirector* director);
-
 private:
 
 	Vector2 m_c_position;
@@ -74,6 +70,5 @@ private:
 	Rectangle m_c_source;
 	Rectangle m_c_dest;
 
-	FortunaDirector* m_c_director;
 	std::shared_ptr<Player> m_c_parent;
 };

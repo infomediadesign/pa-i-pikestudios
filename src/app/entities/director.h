@@ -14,6 +14,8 @@ public:
 	FortunaDirector();
 	~FortunaDirector();
 
+	void initialize_entities();
+
 	void update(float dt) override;
 	
 	void draw_debug() override;
@@ -27,9 +29,10 @@ public:
 	std::shared_ptr<Projectile> spawn_projectile(const Vector2& position);
 	void destroy_projectile(std::shared_ptr<Projectile> projectile);
 
+
 	// Functions to spawn and destroy cannons
-//	std::shared_ptr<Cannon> spawn_cannon(const Vector2& position);
-//	void destroy_cannon(std::shared_ptr<Cannon> cannon);
+	std::shared_ptr<Cannon> spawn_cannon(const Vector2& position);
+	void destroy_cannon(std::shared_ptr<Cannon> cannon);
 
 private:
 	std::unique_ptr<FortunaDirectorPriv> _p;

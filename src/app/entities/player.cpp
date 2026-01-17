@@ -128,6 +128,10 @@ void Player::update(const float dt)
 {
 	if ( !m_is_clone ) 
 	{
+		if ( IsKeyPressed(KEY_G) ) 
+		{
+			initialize_cannons(2);
+		}
 		// Input Functions to set Target Velocity and Target Rotation
 		if ( IsKeyDown(KEY_W) ) {
 			m_target_velocity += m_target_velocity < m_max_velocity ? m_input_velocity_multiplier * dt : 0;
@@ -187,7 +191,49 @@ void Player::calculate_animation(const float& dt)
 
 void Player::initialize_cannons(int amount)
 {
+	for (int i = 0; i < amount; i++ ) 
+	{
+		add_cannons();
+	}
+}
+
+void Player::add_cannons()
+{
 	auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
+	if ( !director ) 
+	{
+		printf("Error: Could not add cannons, director is null!\n");
+		return;
+	}
+	if (m_cannon_container.size() <= 1) 
+	{
+		
+		auto new_cannon = director->spawn_cannon(m_position);
+		m_cannon_container.push_back(new_cannon);
+		new_cannon->set_parent(m_shared_ptr_this);
+		new_cannon->set_positioning(Cannon::CannonPositioning::Left);
+
+		auto new_cannon_2 = director->spawn_cannon(m_position);
+		m_cannon_container.push_back(new_cannon_2);
+		new_cannon_2->set_parent(m_shared_ptr_this);
+		new_cannon_2->set_positioning(Cannon::CannonPositioning::Right);
+	} 
+	else
+	{
+		float x_offset	= -20.0f * (m_cannon_container.size() / 2);
+		auto new_cannon = director->spawn_cannon(m_position);
+		m_cannon_container.push_back(new_cannon);
+		new_cannon->set_parent(m_shared_ptr_this);
+		new_cannon->set_positioning(Cannon::CannonPositioning::Left);
+		new_cannon->set_parent_position_x_offset(x_offset);
+
+		auto new_cannon_2 = director->spawn_cannon(m_position);
+		m_cannon_container.push_back(new_cannon_2);
+		new_cannon_2->set_parent(m_shared_ptr_this);
+		new_cannon_2->set_positioning(Cannon::CannonPositioning::Right);
+		new_cannon_2->set_parent_position_x_offset(x_offset);
+	}
+
 }
 
 void Player::render()
@@ -241,4 +287,24 @@ float Player::dest_width() const
 float Player::dest_height() const
 {
 	return m_dest.height;
+}
+
+std::vector<std::shared_ptr<Cannon>>& Player::cannon_container()
+{
+	return m_cannon_container;
+}
+
+void Player::set_cannon_container(const std::vector<std::shared_ptr<Cannon>>& container)
+{
+	m_cannon_container = container;
+}
+
+std::shared_ptr<Player> Player::shared_ptr_this()
+{
+	return m_shared_ptr_this;
+}
+
+void Player::set_shared_ptr_this(std::shared_ptr<Player> ptr)
+{
+	m_shared_ptr_this = ptr;
 }

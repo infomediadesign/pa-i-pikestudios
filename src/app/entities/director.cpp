@@ -19,34 +19,41 @@ class FortunaDirectorPriv
 FortunaDirector::FortunaDirector()
 {
 	_p = std::make_unique<FortunaDirectorPriv>();
+}
 
+void FortunaDirector::initialize_entities()
+{
 	auto initial_player = std::make_shared<Player>();
 	_p->players.push_back(initial_player);
+	initial_player->set_shared_ptr_this(initial_player);
 
 	gApp()->register_entity(initial_player);
 	if ( auto app_layer = gApp()->get_layer<AppLayer>() )
 		app_layer->renderer()->submit_renderable<Player>(initial_player);
+	initial_player->initialize_cannons(2);
 
-	// Test Cannons
-	auto test_cannon = std::make_shared<Cannon>();
-	_p->cannons	.push_back(test_cannon);
-	gApp()->register_entity(test_cannon);
-	if ( auto app_layer = gApp()->get_layer<AppLayer>() )
-		app_layer->renderer()->submit_renderable<Cannon>(test_cannon);
-	test_cannon->set_director(this);
-	test_cannon->set_parent(initial_player);
-	test_cannon->set_positioning(Cannon::CannonPositioning::Right);
+		/*
+// Test Cannons
+auto test_cannon = std::make_shared<Cannon>();
+_p->cannons	.push_back(test_cannon);
+gApp()->register_entity(test_cannon);
+if ( auto app_layer = gApp()->get_layer<AppLayer>() )
+	app_layer->renderer()->submit_renderable<Cannon>(test_cannon);
+test_cannon->set_parent(initial_player);
+test_cannon->set_positioning(Cannon::CannonPositioning::Right);
 
-		auto test_cannon_2 = std::make_shared<Cannon>();
-	_p->cannons.push_back(test_cannon_2);
-	gApp()->register_entity(test_cannon_2);
-	if ( auto app_layer = gApp()->get_layer<AppLayer>() )
-		app_layer->renderer()->submit_renderable<Cannon>(test_cannon_2);
-	test_cannon_2->set_director(this);
-	test_cannon_2->set_parent(initial_player);
-	test_cannon_2->set_positioning(Cannon::CannonPositioning::Right);
-	test_cannon_2->set_parent_position_x_offset(-20.0f);
+	auto test_cannon_2 = std::make_shared<Cannon>();
+_p->cannons.push_back(test_cannon_2);
+gApp()->register_entity(test_cannon_2);
+if ( auto app_layer = gApp()->get_layer<AppLayer>() )
+	app_layer->renderer()->submit_renderable<Cannon>(test_cannon_2);
+test_cannon_2->set_parent(initial_player);
+test_cannon_2->set_positioning(Cannon::CannonPositioning::Right);
+test_cannon_2->set_parent_position_x_offset(-20.0f);
+*/
 }
+
+
 
 FortunaDirector::~FortunaDirector()
 {
@@ -75,12 +82,19 @@ std::shared_ptr<Player> FortunaDirector::spawn_player(const Vector2& position)
 	gApp()->register_entity(new_player);
 	if ( auto app_layer = gApp()->get_layer<AppLayer>() )
 		app_layer->renderer()->submit_renderable<Player>(new_player);
+	new_player->set_shared_ptr_this(new_player);
+	new_player->initialize_cannons(_p->players[0]->cannon_container().size() / 2);
 
 	return new_player;
 }
 
 void FortunaDirector::destroy_player(std::shared_ptr<Player> player)
 {
+
+	for ( auto cannon: player->cannon_container() ) {
+		destroy_cannon(cannon);
+	}
+
 	if ( auto app_layer = gApp()->get_layer<AppLayer>() )
 		app_layer->renderer()->remove_rendarble<Player>(player);
 
@@ -120,4 +134,24 @@ void FortunaDirector::destroy_projectile(std::shared_ptr<Projectile> projectile)
 	gApp()->unregister_entity(projectile);
 	auto& projectiles = _p->projectiles;
 	projectiles.erase(std::remove(projectiles.begin(), projectiles.end(), projectile), projectiles.end());
+}
+
+std::shared_ptr<Cannon> FortunaDirector::spawn_cannon(const Vector2& position)
+{
+	auto new_cannon = std::make_shared<Cannon>();
+	new_cannon->set_position(position);
+	_p->cannons.push_back(new_cannon);
+	gApp()->register_entity(new_cannon);
+	if ( auto app_layer = gApp()->get_layer<AppLayer>() )
+		app_layer->renderer()->submit_renderable<Cannon>(new_cannon);
+	return new_cannon;
+}
+
+void FortunaDirector::destroy_cannon(std::shared_ptr<Cannon> cannon)
+{
+	if ( auto app_layer = gApp()->get_layer<AppLayer>() )
+		app_layer->renderer()->remove_rendarble<Cannon>(cannon);
+	gApp()->unregister_entity(cannon);
+	auto& cannons = _p->cannons;
+	cannons.erase(std::remove(cannons.begin(), cannons.end(), cannon), cannons.end());
 }

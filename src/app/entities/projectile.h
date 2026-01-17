@@ -41,9 +41,6 @@ public:
 	float travel_distance();
 	void set_travel_distance(const float travel_distance);
 
-	FortunaDirector* director();
-	void set_director(FortunaDirector* director);
-
 	std ::shared_ptr<Projectile> shared_ptr();
 	void set_shared_ptr(std::shared_ptr<Projectile>& ptr);
 	
@@ -62,6 +59,5 @@ private:
 	Rectangle m_p_source;
 	Rectangle m_p_dest;
 	bool m_p_is_first_tick = true;
-	FortunaDirector* m_p_director;
 	std::shared_ptr<Projectile> m_p_shared_ptr;
 };

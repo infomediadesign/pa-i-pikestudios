@@ -2,6 +2,8 @@
 #include <raylib.h>
 #include <entities/director.h>
 #include <coordinatesystem.h>
+#include <pscore/application.h>
+#include <memory>
 
 Cannon::Cannon()
 {
@@ -9,7 +11,7 @@ Cannon::Cannon()
 	m_c_position = {100.0f, 100.0f};
 	m_c_rotation = 0.0f;
 	m_c_texture  = LoadTexture("ressources/test_cannon.png");
-	m_c_range	 = 1000.0f;
+	m_c_range	 = 500.0f;
 	m_c_time_since_last_shot = 0.0f;
 	m_c_fire_rate_in_s		 = 0.5f;
 	m_c_projectile_speed	 = 1000.0f;
@@ -50,12 +52,16 @@ void Cannon::render()
 
 void Cannon::fire()
 {
-	if ( m_c_time_since_last_shot >= m_c_fire_rate_in_s && m_c_director) 
+	if ( m_c_time_since_last_shot >= m_c_fire_rate_in_s) 
 	{
-		auto new_projectile = m_c_director->spawn_projectile(m_c_position);
+		auto director		= dynamic_cast<FortunaDirector*>(gApp()->game_director());
+		if (!director ) 
+		{
+			return;
+		}
+		auto new_projectile = director->spawn_projectile(m_c_position);
 		new_projectile->set_speed(m_c_projectile_speed);
 		new_projectile->set_target_position(calculate_projectile_target_position());
-		new_projectile->set_director(m_c_director);
 		new_projectile->set_shared_ptr(new_projectile);
 		printf("Cannon fired a projectile at position (%f, %f)\n", m_c_position.x, m_c_position.y);
 		m_c_time_since_last_shot = 0.0f;
@@ -74,7 +80,11 @@ Vector2 Cannon::calculate_projectile_target_position()
 
 void Cannon::set_position_to_parent()
 {
-	if ( m_c_parent ) {
+	if ( !m_c_parent ) 
+	{
+		printf("Cannon has no parent set, cannot set position to parent!\n");
+		return;
+	}
 		
 		switch ( m_c_positioning ) 
 		{
@@ -86,7 +96,7 @@ void Cannon::set_position_to_parent()
 				set_position(coordinatesystem::point_relative_to_global_rightdown(m_c_parent->position(), m_c_parent->rotation(), Vector2{m_c_parent_position_x_offset, m_c_parent_position_y_offset}));
 				break;
 		}
-	}
+	
 }
 
 void Cannon::set_rotation_to_parent()
@@ -103,16 +113,6 @@ void Cannon::set_rotation_to_parent()
 				break;
 		}
 	}
-}
-
-void Cannon::set_director(FortunaDirector* director)
-{
-	m_c_director = director;
-}
-
-FortunaDirector* Cannon::director()
-{
-	return m_c_director;
 }
 
 Texture2D Cannon::texture()
