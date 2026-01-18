@@ -1,14 +1,17 @@
 #pragma once
 
 #include <memory>
-#include <psinterfaces/entity.h>
 #include <psinterfaces/layer.h>
 #include <raylib.h>
 #include <type_traits>
 #include <vector>
-#include "pscore/viewport.h"
 
 namespace PSCore {
+
+	class Viewport;
+	namespace sprites {
+		class SpriteLoader;
+	}
 
 	template<typename TL>
 	concept ILayerDerived = std::is_base_of_v<PSInterfaces::Layer, TL>;
@@ -138,6 +141,7 @@ namespace PSCore {
 
 		std::unique_ptr<PSCore::Viewport>& viewport();
 
+		std::unique_ptr<PSCore::sprites::SpriteLoader>& sprite_loader();
 
 	private:
 		std::unique_ptr<ApplicationPriv> _p;

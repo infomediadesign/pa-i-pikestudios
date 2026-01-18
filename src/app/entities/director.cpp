@@ -6,6 +6,7 @@
 
 #include <imgui.h>
 #include <entities/shark.h>
+#include "psinterfaces/entity.h"
 
 class FortunaDirectorPriv
 {
@@ -16,7 +17,7 @@ class FortunaDirectorPriv
 	std::shared_ptr<Shark> test_shark = std::make_shared<Shark>();
 };
 
-FortunaDirector::FortunaDirector()
+FortunaDirector::FortunaDirector() : PSInterfaces::IEntity("fortuna_director")
 {
 	_p = std::make_unique<FortunaDirectorPriv>();
 

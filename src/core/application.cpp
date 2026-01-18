@@ -2,8 +2,11 @@
 #include <iostream>
 #include <memory>
 #include <stdexcept>
-#include "pscore/viewport.h"
-#include "psinterfaces/layer.h"
+#include <pscore/viewport.h>
+#include <psinterfaces/layer.h>
+#include <pscore/sprite.h>
+#include <psinterfaces/entity.h>
+#include <pscore/viewport.h>
 
 #include <pscore/application.h>
 #include <pscore/time.h>
@@ -70,8 +73,9 @@ class PSCore::ApplicationPriv
 		std::cout << std::endl;
 	}
 
-	std::unique_ptr<PSCore::DeltaTimeManager> m_time_manager = std::make_unique<PSCore::DeltaTimeManager>();
-	std::unique_ptr<PSCore::Viewport> m_viewport			 = std::make_unique<PSCore::Viewport>();
+	std::unique_ptr<PSCore::DeltaTimeManager> m_time_manager	   = std::make_unique<PSCore::DeltaTimeManager>();
+	std::unique_ptr<PSCore::Viewport> m_viewport				   = std::make_unique<PSCore::Viewport>();
+	std::unique_ptr<PSCore::sprites::SpriteLoader> m_sprite_loader = std::make_unique<PSCore::sprites::SpriteLoader>();
 };
 
 Application::Application(const AppSpec& spec)
@@ -162,7 +166,13 @@ void Application::log(TraceLogLevel type, const char* text) const
 	_p->print_log_prefix(type);
 	std::cout << text << std::endl;
 }
-std::unique_ptr<PSCore::Viewport>&  PSCore::Application::viewport()
+
+std::unique_ptr<PSCore::Viewport>& PSCore::Application::viewport()
 {
 	return _p->m_viewport;
 };
+
+std::unique_ptr<PSCore::sprites::SpriteLoader>& PSCore::Application::sprite_loader()
+{
+	return _p->m_sprite_loader;
+}

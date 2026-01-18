@@ -5,11 +5,13 @@
 #include <raylib.h>
 #include "entities/player.h"
 #include "pscore/application.h"
+#include "psinterfaces/entity.h"
+#include "utilities.h"
 
 //
 // Fin of Shark
 //
-Fin::Fin(Shark* shark) : m_shark(shark)
+Fin::Fin(Shark* shark) : PSInterfaces::IEntity("shark_fin"), m_shark(shark)
 {
 }
 
@@ -35,7 +37,7 @@ void Fin::draw_debug()
 //
 // Body of Shark
 //
-Body::Body(Shark* shark) : m_shark(shark)
+Body::Body(Shark* shark) : PSInterfaces::IEntity("shark_body"), m_shark(shark)
 {
 }
 
@@ -45,6 +47,9 @@ Body::~Body()
 
 void Body::render()
 {
+	if ( auto& vp = gApp()->viewport() ) {
+		// vp->draw_in_viewport(const Texture2D &texture, const Rectangle &source, const Vector2 &position, float rotation, const Color &color)
+	}
 }
 
 void Body::update(float dt)
@@ -61,8 +66,11 @@ void Body::draw_debug()
 //
 // The Shark itself
 //
-Shark::Shark()
+Shark::Shark() : PSInterfaces::IEntity("shark")
 {
+	PRELOAD_TEXTURE(ident_, "ressources/hai.png");
+	m_shark_sprite = FETCH_SPRITE(ident_);
+
 	m_body = std::make_shared<Body>(this);
 	m_fin  = std::make_shared<Fin>(this);
 
@@ -78,19 +86,18 @@ void Shark::update(float dt)
 {
 	m_body->update(dt);
 	m_fin->update(dt);
-	
+
 	Player* player_entity = nullptr;
-	for ( auto entity : gApp()->entities() ) {
+	for ( auto entity: gApp()->entities() ) {
 		if ( auto locked = entity.lock() ) {
 			if ( auto player = dynamic_cast<Player*>(locked.get()) )
 				player_entity = player;
 		}
 	}
-	if (!player_entity)
+	if ( !player_entity )
 		return;
-	
-	
-	
+
+	float shark_rotation = utilities::rotation_look_at(m_pos, player_entity->position());
 }
 
 void Shark::draw_debug()

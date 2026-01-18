@@ -7,6 +7,7 @@
 #include <layers/applayer.h>
 #include <raylib.h>
 #include <entities/director.h>
+#include <pscore/viewport.h>
 
 namespace misc {
 

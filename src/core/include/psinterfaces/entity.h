@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <vector>
 #include <psinterfaces/events.h>
 
@@ -13,6 +14,7 @@ namespace PSInterfaces {
 	class IEntity
 	{
 	public:
+		explicit IEntity(const std::string& ident) : ident_(ident) {};
 		virtual ~IEntity() = default;
 
 		virtual void update(float dt) = 0;
@@ -39,5 +41,6 @@ namespace PSInterfaces {
 
 	protected:
 		std::vector<const Events::IEventManager*> event_managers_;
+		const std::string ident_;
 	};
 } // namespace PSInterfaces

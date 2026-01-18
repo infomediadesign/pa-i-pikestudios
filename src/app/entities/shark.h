@@ -4,6 +4,33 @@
 #include <psinterfaces/entity.h>
 #include <psinterfaces/renderable.h>
 #include <raylib.h>
+#include "pscore/sprite.h"
+
+class Fin;
+class Body;
+class Shark : public PSInterfaces::IRenderable
+{
+	friend class Body;
+	friend class Fin;
+
+public:
+	Shark();
+	~Shark();
+
+	void update(float dt) override;
+	void render() override;
+	void draw_debug() override;
+
+private:
+	std::shared_ptr<Body> m_body;
+	std::shared_ptr<Fin> m_fin;
+
+	Vector2 m_pos{(float) GetScreenWidth() / 2, (float) GetScreenHeight() / 2};
+
+	Vector2 pos_to_rel_fin();
+
+	std::shared_ptr<PSCore::sprites::Sprite> m_shark_sprite;
+};
 
 class Fin : public PSInterfaces::IRenderable
 {
@@ -37,27 +64,4 @@ public:
 private:
 	Shark* m_shark;
 	Vector2 m_size{60, 120};
-};
-
-class Shark : public PSInterfaces::IRenderable
-{
-	friend class Body;
-	friend class Fin;
-
-public:
-	Shark();
-	~Shark();
-
-	void update(float dt) override;
-	void render() override;
-
-	void draw_debug() override;
-
-private:
-	std::shared_ptr<Body> m_body;
-	std::shared_ptr<Fin> m_fin;
-
-	Vector2 m_pos{(float) GetScreenWidth() / 2, (float) GetScreenHeight() / 2};
-	
-	Vector2 pos_to_rel_fin();
 };
