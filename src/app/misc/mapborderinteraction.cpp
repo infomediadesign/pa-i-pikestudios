@@ -32,8 +32,18 @@ namespace misc {
 
 		void detect_map_border_collision(Player& p, std::vector<SpawnRequest>& spawnRequests)
 		{
-			int screen_w	   = GetScreenWidth();
-			int screen_h	   = GetScreenHeight();
+			int screen_w;
+			int screen_h;
+
+			if ( auto& vp = gApp()->viewport() ) {
+				screen_w = static_cast<int>(vp->viewport_base_size().x);
+				screen_h = static_cast<int>(vp->viewport_base_size().y);
+			}
+			else {
+				screen_w = GetScreenWidth();
+				screen_h = GetScreenHeight();
+			}
+
 			Vector2 player_pos = p.position();
 
 			switch ( wrapAroundMode ) {
@@ -77,8 +87,18 @@ namespace misc {
 
 		bool is_off_screen(Player& p)
 		{
-			int screen_w = GetScreenWidth();
-			int screen_h = GetScreenHeight();
+			int screen_w;
+			int screen_h;
+
+			if ( auto& vp = gApp()->viewport() ) {
+				screen_w = static_cast<int>(vp->viewport_base_size().x);
+				screen_h = static_cast<int>(vp->viewport_base_size().y);
+			}
+			else {
+				screen_w = GetScreenWidth();
+				screen_h = GetScreenHeight();
+			}
+
 			Vector2 pos	 = p.position();
 
 			float half_w = p.dest_width() / 2.0f;
@@ -154,8 +174,17 @@ namespace misc {
 
 		Vector2 calculate_opposite_position(Vector2 pos, float half_w, float half_h, LastCollisionAxis axis)
 		{
-			int screen_w = GetScreenWidth();
-			int screen_h = GetScreenHeight();
+			int screen_w;
+			int screen_h;
+
+			if ( auto& vp = gApp()->viewport() ) {
+				screen_w = static_cast<int>(vp->viewport_base_size().x);
+				screen_h = static_cast<int>(vp->viewport_base_size().y);
+			}
+			else {
+				screen_w = GetScreenWidth();
+				screen_h = GetScreenHeight();
+			}
 
 			switch ( axis ) {
 				case LastCollisionAxis::Horizontal:

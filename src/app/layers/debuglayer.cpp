@@ -36,6 +36,9 @@ void DebugLayer::on_render()
 	if ( auto director = gApp()->game_director() )
 		director->draw_debug();
 
+	if ( auto& viewport = gApp()->viewport() )
+		viewport->draw_debug();
+
 	for ( auto entity: gApp()->entities() ) {
 		if ( auto locked_entity = entity.lock() ) {
 			locked_entity->draw_debug();

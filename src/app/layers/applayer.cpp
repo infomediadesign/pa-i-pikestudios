@@ -65,10 +65,19 @@ void AppLayer::on_update(const float dt)
 			}
 		}
 	}
+
+	if (auto& vp = gApp()->viewport()) {
+		vp->update(dt);
+	}
 }
 
 void AppLayer::on_render()
 {
 	if ( renderer_ )
 		renderer_->render();
+
+	if (auto& vp = gApp()->viewport()) {
+		vp->render();
+	}
+
 }
