@@ -56,6 +56,10 @@ public:
 
 	void render() override;
 
+	bool is_active() override;
+
+	void set_is_active(bool active);
+
 	// Borderinteration Variables and Methods
 	void set_border_collision_active_horizontal(bool active);
 	bool border_collision_active_horizontal() const;
@@ -113,4 +117,5 @@ private:
 
 	std::vector<std::shared_ptr<Cannon>> m_cannon_container;
 	std::shared_ptr<Player> m_shared_ptr_this;
+	bool m_is_active = true;
 };

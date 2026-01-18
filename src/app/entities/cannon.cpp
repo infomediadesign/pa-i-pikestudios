@@ -21,10 +21,11 @@ Cannon::Cannon()
 
 void Cannon::update(const float dt)
 {
-	m_c_time_since_last_shot += dt;
+	
 	set_position_to_parent();
 	set_rotation_to_parent();
 
+	m_c_time_since_last_shot += dt;
 	if ( IsMouseButtonDown(MOUSE_BUTTON_LEFT) ) 
 	{
 		if ( m_c_positioning == CannonPositioning::Left ) 
@@ -44,10 +45,23 @@ void Cannon::update(const float dt)
 
 void Cannon::render()
 {
-	m_c_source = {0, 0, (float)m_c_texture.width, (float)m_c_texture.height};
-	m_c_dest   = {m_c_position.x, m_c_position.y, (float)m_c_texture.width, (float)m_c_texture.height};
-	Vector2 origin = {m_c_dest.width / 2, m_c_dest.height / 2};
-	DrawTexturePro(m_c_texture, m_c_source, m_c_dest, origin, m_c_rotation, WHITE);
+	if ( m_c_is_active ) 
+	{
+		m_c_source	   = {0, 0, (float) m_c_texture.width, (float) m_c_texture.height};
+		m_c_dest	   = {m_c_position.x, m_c_position.y, (float) m_c_texture.width, (float) m_c_texture.height};
+		Vector2 origin = {m_c_dest.width / 2, m_c_dest.height / 2};
+		DrawTexturePro(m_c_texture, m_c_source, m_c_dest, origin, m_c_rotation, WHITE);
+	}
+}
+
+bool Cannon::is_active()
+{
+	return m_c_is_active;
+}
+
+void Cannon::set_is_active(const bool active)
+{
+	m_c_is_active = active;
 }
 
 void Cannon::fire()
@@ -63,7 +77,10 @@ void Cannon::fire()
 		new_projectile->set_speed(m_c_projectile_speed);
 		new_projectile->set_target_position(calculate_projectile_target_position());
 		new_projectile->set_shared_ptr(new_projectile);
-		printf("Cannon fired a projectile at position (%f, %f)\n", m_c_position.x, m_c_position.y);
+		if ( m_c_parent ) 
+		{
+			new_projectile->set_owner_velocity(m_c_parent->velocity());
+		}
 		m_c_time_since_last_shot = 0.0f;
 	}
 }
@@ -82,7 +99,6 @@ void Cannon::set_position_to_parent()
 {
 	if ( !m_c_parent ) 
 	{
-		printf("Cannon has no parent set, cannot set position to parent!\n");
 		return;
 	}
 		

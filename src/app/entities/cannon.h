@@ -12,6 +12,9 @@ public:
 	Cannon();
 	void update(const float dt) override;
 	void render() override;
+	bool is_active() override;
+
+	void set_is_active(const bool active);
 
 	enum class CannonPositioning { Left, Right };
 
@@ -69,6 +72,7 @@ private:
 	Texture2D m_c_texture;
 	Rectangle m_c_source;
 	Rectangle m_c_dest;
+	bool m_c_is_active = true;
 
 	std::shared_ptr<Player> m_c_parent;
 };

@@ -18,32 +18,40 @@ Projectile::Projectile()
 
 void Projectile::update(const float dt)
 {
+	
+	m_p_target_position += m_p_owner_velocity * dt;
 	calculate_movement(dt, m_p_target_position);
+
 }
 
 void Projectile::render()
 {
-	m_p_source	   = {0, 0, (float) m_p_texture.width, (float) m_p_texture.height};
-	m_p_dest	   = {m_p_position.x, m_p_position.y, (float) m_p_texture.width, (float) m_p_texture.height};
-	Vector2 origin = {m_p_dest.width / 2, m_p_dest.height / 2};
-	DrawTexturePro(m_p_texture, m_p_source, m_p_dest, origin, m_p_rotation, WHITE);
+	if ( m_p_is_active ) 
+	{
+		m_p_source	   = {0, 0, (float) m_p_texture.width, (float) m_p_texture.height};
+		m_p_dest	   = {m_p_position.x, m_p_position.y, (float) m_p_texture.width, (float) m_p_texture.height};
+		Vector2 origin = {m_p_dest.width / 2, m_p_dest.height / 2};
+		DrawTexturePro(m_p_texture, m_p_source, m_p_dest, origin, m_p_rotation, WHITE);
+	}
+
+}
+
+bool Projectile::is_active()
+{
+	return m_p_is_active;
 }
 
 void Projectile::calculate_movement(const float dt, Vector2& target_position)
 {
-
-
 	m_p_direction		= Vector2Subtract(target_position, m_p_position);
 	m_p_travel_distance = Vector2Length(m_p_direction);
 
-	if ( m_p_travel_distance <= 1.0f ) 
-	{
+	if ( m_p_travel_distance <= 1.0f ) {
 		auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
-		if ( !director ) 
-		{
+		if ( !director ) {
 			return;
 		}
-		director->destroy_projectile(m_p_shared_ptr);
+		m_p_is_active = false;
 		return;
 	}
 
@@ -51,10 +59,10 @@ void Projectile::calculate_movement(const float dt, Vector2& target_position)
 	m_p_velocity.x				 = normalized_direction.x * m_p_speed;
 	m_p_velocity.y				 = normalized_direction.y * m_p_speed;
 
-	m_p_position.y += m_p_velocity.y * dt;
-	m_p_position.x += m_p_velocity.x * dt;
-
+	m_p_position.x += (m_p_velocity.x + m_p_owner_velocity.x) * dt;
+	m_p_position.y += (m_p_velocity.y + m_p_owner_velocity.y) * dt;
 }
+
 
 Texture2D Projectile::texture()
 {
@@ -156,4 +164,29 @@ void Projectile::set_shared_ptr(std::shared_ptr<Projectile>& ptr)
 std ::shared_ptr<Projectile> Projectile::shared_ptr()
 {
 	return m_p_shared_ptr;
+}
+
+std::shared_ptr<Player> Projectile::owner()
+{
+	return m_p_owner;
+}
+
+void Projectile::set_owner(std::shared_ptr<Player>& owner)
+{
+	m_p_owner = owner;
+}
+
+Vector2 Projectile::owner_velocity()
+{
+	return m_p_owner_velocity;
+}
+
+void Projectile::set_owner_velocity(const Vector2& velocity)
+{
+	m_p_owner_velocity = velocity;
+}
+
+void Projectile::set_is_active(const bool active)
+{
+	m_p_is_active = active;
 }

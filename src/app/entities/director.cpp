@@ -31,26 +31,6 @@ void FortunaDirector::initialize_entities()
 	if ( auto app_layer = gApp()->get_layer<AppLayer>() )
 		app_layer->renderer()->submit_renderable<Player>(initial_player);
 	initial_player->initialize_cannons(2);
-
-		/*
-// Test Cannons
-auto test_cannon = std::make_shared<Cannon>();
-_p->cannons	.push_back(test_cannon);
-gApp()->register_entity(test_cannon);
-if ( auto app_layer = gApp()->get_layer<AppLayer>() )
-	app_layer->renderer()->submit_renderable<Cannon>(test_cannon);
-test_cannon->set_parent(initial_player);
-test_cannon->set_positioning(Cannon::CannonPositioning::Right);
-
-	auto test_cannon_2 = std::make_shared<Cannon>();
-_p->cannons.push_back(test_cannon_2);
-gApp()->register_entity(test_cannon_2);
-if ( auto app_layer = gApp()->get_layer<AppLayer>() )
-	app_layer->renderer()->submit_renderable<Cannon>(test_cannon_2);
-test_cannon_2->set_parent(initial_player);
-test_cannon_2->set_positioning(Cannon::CannonPositioning::Right);
-test_cannon_2->set_parent_position_x_offset(-20.0f);
-*/
 }
 
 
@@ -74,6 +54,18 @@ void FortunaDirector::draw_debug()
 
 std::shared_ptr<Player> FortunaDirector::spawn_player(const Vector2& position)
 {
+
+	for (auto player: _p->players)
+		{
+		if (!player->is_active())
+		{
+			player->set_position(position);
+			player->set_is_active(true);
+			printf("Reusing inactive player\n");
+			return player;
+		}
+	}
+	printf("Spawning new player\n");
 	auto new_player = std::make_shared<Player>();
 	new_player->set_position(position);
 
@@ -92,7 +84,7 @@ void FortunaDirector::destroy_player(std::shared_ptr<Player> player)
 {
 
 	for ( auto cannon: player->cannon_container() ) {
-		destroy_cannon(cannon);
+		cannon->set_is_active(false);
 	}
 
 	if ( auto app_layer = gApp()->get_layer<AppLayer>() )
@@ -118,6 +110,19 @@ void FortunaDirector::sync_player_entities()
 
 std::shared_ptr<Projectile> FortunaDirector::spawn_projectile(const Vector2& position)
 {
+
+	for (auto projectile: _p->projectiles)
+		{
+		if (!projectile->is_active())
+		{
+			projectile->set_position(position);
+			projectile->set_is_active(true);
+			printf("Reusing inactive projectile\n");
+			return projectile;
+		}
+	}
+
+	printf("Spawning new projectile\n");
 	auto new_projectile = std::make_shared<Projectile>();
 	new_projectile->set_position(position);
 	_p->projectiles.push_back(new_projectile);
@@ -138,6 +143,18 @@ void FortunaDirector::destroy_projectile(std::shared_ptr<Projectile> projectile)
 
 std::shared_ptr<Cannon> FortunaDirector::spawn_cannon(const Vector2& position)
 {
+
+	for ( auto cannon: _p->cannons ) 
+	{
+		if ( !cannon->is_active() ) 
+		{
+			cannon->set_position(position);
+			cannon->set_is_active(true);
+			printf("Reusing inactive cannon\n");
+			return cannon;
+		}
+	}
+	printf("Spawning new cannon\n");
 	auto new_cannon = std::make_shared<Cannon>();
 	new_cannon->set_position(position);
 	_p->cannons.push_back(new_cannon);
