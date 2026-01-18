@@ -14,44 +14,43 @@ public:
 	void render() override;
 	bool is_active() override;
 
-	void calculate_movement(const float dt, Vector2& target_position);
+	void calculate_movement(const float dt, Vector2& target_position); // Calculates the movement towards the target position wihle keeping the forward velocity of the owner
 
+	Texture2D texture(); // Returns the texture of the projectile
+	void set_texture(const Texture2D& texture); // Sets the texture of the projectile
 
-	Texture2D texture();
-	void set_texture(const Texture2D& texture);
+	Vector2 position(); // Returns the position of the projectile
+	void set_position(const Vector2& position); // Sets the position of the projectile
 
-	Vector2 position();
-	void set_position(const Vector2& position);
+	float rotation(); // Returns the rotation of the projectile
+	void set_rotation(const float& rotation); // Sets the rotation of the projectile
 
-	float rotation();
-	void set_rotation(const float& rotation);
+	Vector2 velocity(); // Returns the velocity of the projectile
+	void set_velocity(const Vector2& velocity); // Sets the velocity of the projectile
 
-	Vector2 velocity();
-	void set_velocity(const Vector2& velocity);
+	Vector2 target_position(); // Returns the target position of the projectile
+	void set_target_position(const Vector2& target_position); // Sets the target position of the projectile
 
-	Vector2 target_position();
-	void set_target_position(const Vector2& target_position);
+	Vector2 direction(); // Returns the direction of the projectile
+	void set_direction(const Vector2& direction); // Sets the direction of the projectile
 
-	Vector2 direction();
-	void set_direction(const Vector2& direction);
+	Vector2 movement(); // Returns the movement of the projectile
+	void set_movement(const Vector2& movement); // Sets the movement of the projectile
 
-	Vector2 movement();
-	void set_movement(const Vector2& movement);
+	float speed(); // Returns the speed of the projectile
+	void set_speed(const float speed); // Sets the speed of the projectile
 
-	float speed();
-	void set_speed(const float speed);
+	float travel_distance(); // Returns the travel distance of the projectile
+	void set_travel_distance(const float travel_distance); // Sets the travel distance of the projectile
 
-	float travel_distance();
-	void set_travel_distance(const float travel_distance);
+	std ::shared_ptr<Projectile> shared_ptr(); // Returns the shared pointer to this projectile
+	void set_shared_ptr(std::shared_ptr<Projectile>& ptr); // Sets the shared pointer to this projectile
 
-	std ::shared_ptr<Projectile> shared_ptr();
-	void set_shared_ptr(std::shared_ptr<Projectile>& ptr);
+	std::shared_ptr<Player> owner(); // Returns shared pointer to the owner of the projectile
+	void set_owner(std::shared_ptr<Player>& owner); // Sets shared pointer to the owner of the projectile
 
-	std::shared_ptr<Player> owner();
-	void set_owner(std::shared_ptr<Player>& owner);
-
-	Vector2 owner_velocity();
-	void set_owner_velocity(const Vector2& velocity);
+	Vector2 owner_velocity(); // Returns the owner's velocity
+	void set_owner_velocity(const Vector2& velocity); // Sets the owner's velocity
 
 	void set_is_active(const bool active);
 	

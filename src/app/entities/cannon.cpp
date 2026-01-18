@@ -201,6 +201,16 @@ void Cannon::set_projectile_target_position(const Vector2& target_position)
 	m_c_projectile_target_position = target_position;
 }
 
+float Cannon::dest_width()
+{
+	return m_c_dest.width;
+}
+
+float Cannon::dest_height()
+{
+	return m_c_dest.height;
+}
+
 float Cannon::parent_position_x_offset()
 {
 	return m_c_parent_position_x_offset;

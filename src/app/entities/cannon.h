@@ -18,43 +18,49 @@ public:
 
 	enum class CannonPositioning { Left, Right };
 
-	Vector2 calculate_projectile_target_position();
-	void fire();
-	void set_position_to_parent();
-	void set_rotation_to_parent();
+	Vector2 calculate_projectile_target_position(); // Calculates the target position based on current position, rotation and range
 
-	std::shared_ptr<Player> parent();
-	void set_parent(std::shared_ptr<Player> parent);
+	void fire(); // Spawns a projectile if the fire rate allows it
 
-	Vector2 position();
-	void set_position(const Vector2& position);
+	void set_position_to_parent(); // Sets the cannon's position relative to its parent player
 
-	float rotation();
-	void set_rotation(const float rotation);
+	void set_rotation_to_parent(); // Sets the cannon's rotation to match its parent player
 
-	float range();
-	void set_range(const float range);
+	std::shared_ptr<Player> parent(); // Returns the shared pointer to the parent
+	void set_parent(std::shared_ptr<Player> parent); // Sets the shared pointer to the parent
 
-	float fire_rate();
-	void set_fire_rate(const float fire_rate);
+	Vector2 position(); // Returns the cannon's position
+	void set_position(const Vector2& position); // Sets the cannon's position
 
-	float projectile_speed();
-	void set_projectile_speed(const float projectile_speed);
+	float rotation(); // Returns the cannon's rotation
+	void set_rotation(const float rotation); // Sets the cannon's rotation
 
-	Vector2 projectile_target_position();
-	void set_projectile_target_position(const Vector2& target_position);
+	float range(); // Returns the cannon's range
+	void set_range(const float range); // Sets the cannon's range
 
-	float parent_position_x_offset();
-	void set_parent_position_x_offset(const float offset);
+	float fire_rate(); // Returns the cannon's fire rate in seconds
+	void set_fire_rate(const float fire_rate); // Sets the cannon's fire rate in seconds
 
-	float parent_position_y_offset();
-	void set_parent_position_y_offset(const float offset);
+	float projectile_speed(); // Returns the cannon's projectile speed
+	void set_projectile_speed(const float projectile_speed); // Sets the cannon's projectile speed
 
-	CannonPositioning positioning();
-	void set_positioning(const Cannon::CannonPositioning positioning);
+	float dest_width(); // Returns the width of the destination rectangle
+	float dest_height(); // Returns the height of the destination rectangle
 
-	Texture2D texture();
-	void set_texture(const Texture2D& texture);
+	Vector2 projectile_target_position(); // Returns the projectile's target position
+	void set_projectile_target_position(const Vector2& target_position); // Sets the projectile's target position
+
+	float parent_position_x_offset(); // Returns the parent's position x offset
+	void set_parent_position_x_offset(const float offset); // Sets the parent's position x offset
+
+	float parent_position_y_offset(); // Returns the parent's position y offset
+	void set_parent_position_y_offset(const float offset); // Sets the parent's position y offset
+
+	CannonPositioning positioning(); // Returns the cannon's positioning
+	void set_positioning(const Cannon::CannonPositioning positioning); // Sets the cannon's positioning
+
+	Texture2D texture(); // Returns the cannon's texture
+	void set_texture(const Texture2D& texture); // Sets the cannon's texture
 
 private:
 

@@ -140,7 +140,28 @@ void Player::update(const float dt)
 	{
 		if ( IsKeyPressed(KEY_G) ) 
 		{
-			initialize_cannons(2);
+			auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
+			if ( !director ) {
+				return;
+			}
+			director->upgrade_player_fire_rate(0.4f);
+			printf("Upgraded Fire Rate!\n");
+		}
+		if ( IsKeyPressed(KEY_F) ) {
+			auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
+			if ( !director ) {
+				return;
+			}
+			director->upgrade_player_fire_range(50.0f);
+			printf("Upgraded Fire Range!\n");
+		}
+		if ( IsKeyPressed(KEY_H) ) {
+			auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
+			if ( !director ) {
+				return;
+			}
+			director->upgrade_player_projectile_speed(100.0f);
+			printf("Upgraded Projectile Speed!\n");
 		}
 		// Input Functions to set Target Velocity and Target Rotation
 		if ( IsKeyDown(KEY_W) ) {
@@ -199,51 +220,48 @@ void Player::calculate_animation(const float& dt)
 	}
 }
 
-void Player::initialize_cannons(int amount)
-{
-	for (int i = 0; i < amount; i++ ) 
-	{
-		add_cannons();
-	}
-}
-
-void Player::add_cannons()
+void Player::initialize_cannon()
 {
 	auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
-	if ( !director ) 
-	{
-		printf("Error: Could not add cannons, director is null!\n");
+	if ( !director ) {
 		return;
 	}
-	if (m_cannon_container.size() <= 1) 
-	{
-		
-		auto new_cannon = director->spawn_cannon(m_position);
-		m_cannon_container.push_back(new_cannon);
-		new_cannon->set_parent(m_shared_ptr_this);
-		new_cannon->set_positioning(Cannon::CannonPositioning::Left);
 
-		auto new_cannon_2 = director->spawn_cannon(m_position);
-		m_cannon_container.push_back(new_cannon_2);
-		new_cannon_2->set_parent(m_shared_ptr_this);
-		new_cannon_2->set_positioning(Cannon::CannonPositioning::Right);
-	} 
-	else
+	float cannon_width = 20.0f;
+	float spacing	   = 5.0f;
+	
+	float x_offset = 0;
+	if ( !m_cannon_container.empty() ) 
 	{
-		float x_offset	= -20.0f * (m_cannon_container.size() / 2);
-		auto new_cannon = director->spawn_cannon(m_position);
-		m_cannon_container.push_back(new_cannon);
-		new_cannon->set_parent(m_shared_ptr_this);
-		new_cannon->set_positioning(Cannon::CannonPositioning::Left);
-		new_cannon->set_parent_position_x_offset(x_offset);
+		cannon_width = static_cast<float>(m_cannon_container[0]->texture().width);
 
-		auto new_cannon_2 = director->spawn_cannon(m_position);
-		m_cannon_container.push_back(new_cannon_2);
-		new_cannon_2->set_parent(m_shared_ptr_this);
-		new_cannon_2->set_positioning(Cannon::CannonPositioning::Right);
-		new_cannon_2->set_parent_position_x_offset(x_offset);
 	}
+	x_offset = -((cannon_width + spacing) * m_cannon_container.size()) / 2;
 
+	for ( int i = 0; i < 2; i++ ) 
+	{
+		auto new_cannon = director->spawn_cannon(m_position);
+		m_cannon_container.push_back(new_cannon);
+		new_cannon->set_parent(m_shared_ptr_this);
+		new_cannon->set_parent_position_x_offset(x_offset);
+		if ( i == 0 ) 
+		{
+			new_cannon->set_positioning(Cannon::CannonPositioning::Left);
+		} 
+		else 
+		{
+			new_cannon->set_positioning(Cannon::CannonPositioning::Right);
+		}
+	}
+	
+}
+
+void Player::add_cannons(int amount)
+{
+	for ( int i = 0; i < amount; i++ ) 
+	{
+		initialize_cannon();
+	}
 }
 
 void Player::render()

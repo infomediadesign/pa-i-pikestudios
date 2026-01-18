@@ -34,7 +34,11 @@ public:
 	std::shared_ptr<Cannon> spawn_cannon(const Vector2& position);
 	void destroy_cannon(std::shared_ptr<Cannon> cannon);
 
+	// Upgrade functions
+	void upgrade_player_fire_rate(float amount);
+	void upgrade_player_projectile_speed(float amount);
+	void upgrade_player_fire_range(float amount);
+
 private:
 	std::unique_ptr<FortunaDirectorPriv> _p;
-
 };
