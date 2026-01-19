@@ -4,13 +4,17 @@
 #include <coordinatesystem.h>
 #include <pscore/application.h>
 #include <memory>
+#include <pscore/sprite.h>
+#include <pscore/viewport.h>
 
-Cannon::Cannon()
+Cannon::Cannon() : PSInterfaces::IEntity("cannon")
 {
 	IRenderable::propose_z_index(2);
 	m_c_position = {100.0f, 100.0f};
 	m_c_rotation = 0.0f;
-	m_c_texture  = LoadTexture("ressources/test_cannon.png");
+	Vector2 frame_grid{1, 1};
+	m_c_sprite	= PRELOAD_TEXTURE(ident_, "ressources/test_cannon.png", frame_grid);
+	m_c_texture	= m_c_sprite->m_s_texture;
 	m_c_range	 = 500.0f;
 	m_c_time_since_last_shot = 0.0f;
 	m_c_fire_rate_in_s		 = 0.5f;

@@ -2,6 +2,7 @@
 #include <psinterfaces/renderable.h>
 #include <raylib.h>
 #include <memory>
+#include <pscore/sprite.h>
 
 class FortunaDirector;
 class Player;
@@ -78,6 +79,7 @@ private:
 	Texture2D m_c_texture;
 	Rectangle m_c_source;
 	Rectangle m_c_dest;
+	std::shared_ptr<PSCore::sprites::Sprite> m_c_sprite;
 	bool m_c_is_active = true;
 
 	std::shared_ptr<Player> m_c_parent;

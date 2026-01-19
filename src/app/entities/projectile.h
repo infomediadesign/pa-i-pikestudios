@@ -2,6 +2,7 @@
 #include <psinterfaces/renderable.h>
 #include <raylib.h>
 #include <memory>
+#include <pscore/sprite.h>
 
 class Player;
 class FortunaDirector;
@@ -67,6 +68,7 @@ private:
 	Vector2 m_p_owner_velocity;
 
 	Texture2D m_p_texture;
+	std::shared_ptr<PSCore::sprites::Sprite> m_p_sprite;
 	Rectangle m_p_source;
 	Rectangle m_p_dest;
 	bool m_p_is_first_tick = true;
