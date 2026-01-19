@@ -6,6 +6,10 @@ var annotated_dup =
       ] ]
     ] ],
     [ "PSCore", null, [
+      [ "sprites", null, [
+        [ "Sprite", "structPSCore_1_1sprites_1_1Sprite.html", null ],
+        [ "SpriteLoader", "classPSCore_1_1sprites_1_1SpriteLoader.html", null ]
+      ] ],
       [ "Application", "classPSCore_1_1Application.html", "classPSCore_1_1Application" ],
       [ "ApplicationPriv", "classPSCore_1_1ApplicationPriv.html", null ],
       [ "DeltaTimeManager", "classPSCore_1_1DeltaTimeManager.html", "classPSCore_1_1DeltaTimeManager" ],
@@ -23,9 +27,12 @@ var annotated_dup =
     ] ],
     [ "AppLayer", "classAppLayer.html", null ],
     [ "AppLayerPriv", "classAppLayerPriv.html", null ],
+    [ "Body", "classBody.html", null ],
     [ "DebugLayer", "classDebugLayer.html", null ],
+    [ "Fin", "classFin.html", null ],
     [ "FortunaDirector", "classFortunaDirector.html", null ],
     [ "FortunaDirectorPriv", "classFortunaDirectorPriv.html", null ],
     [ "PauseLayer", "classPauseLayer.html", null ],
-    [ "Player", "classPlayer.html", null ]
+    [ "Player", "classPlayer.html", null ],
+    [ "Shark", "classShark.html", null ]
 ];

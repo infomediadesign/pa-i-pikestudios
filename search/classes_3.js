@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['fortunadirector_0',['FortunaDirector',['../classFortunaDirector.html',1,'']]],
-  ['fortunadirectorpriv_1',['FortunaDirectorPriv',['../classFortunaDirectorPriv.html',1,'']]]
+  ['event_0',['Event',['../structPSInterfaces_1_1Events_1_1Event.html',1,'PSInterfaces::Events']]]
 ];

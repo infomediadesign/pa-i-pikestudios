@@ -1,10 +1,10 @@
 var searchData=
 [
-  ['set_5fplayer_5fposition_5fto_5fopposite_5fborder_0',['set_player_position_to_opposite_border',['../namespacemisc_1_1map.html#a9be0704e6416db02a479070dc8cec015',1,'misc::map']]],
-  ['set_5ftarget_5ffps_1',['set_target_fps',['../classPSCore_1_1DeltaTimeManager.html#a255126b97e19205841867e689918af6f',1,'PSCore::DeltaTimeManager']]],
-  ['set_5fwrap_5faround_5fmode_2',['set_wrap_around_mode',['../namespacemisc_1_1map.html#a6da7cb8cb5c63049d7007e8c72fce104',1,'misc::map']]],
-  ['spawn_5fnew_5fplayer_5fat_5fopposite_5fborder_3',['spawn_new_player_at_opposite_border',['../namespacemisc_1_1map.html#a73d666d5d54fa4dbf0e5969f2ce94e7f',1,'misc::map']]],
-  ['spawnrequest_4',['SpawnRequest',['../structmisc_1_1map_1_1SpawnRequest.html',1,'misc::map']]],
-  ['stop_5',['stop',['../classPSCore_1_1Application.html#a2e5dee1fbe413783d3500fe8da567ad4',1,'PSCore::Application']]],
-  ['submit_5frenderable_6',['submit_renderable',['../classPSCore_1_1Renderer.html#a3bfa539d23da7eb4afbe0bc142938744',1,'PSCore::Renderer']]]
+  ['register_5fentity_0',['register_entity',['../classPSCore_1_1Application.html#a9758ad077c88cdda6ff1057ad4216539',1,'PSCore::Application']]],
+  ['remove_5frendarble_1',['remove_rendarble',['../classPSCore_1_1Renderer.html#a01eed56b61e822030cbcedd33533fd39',1,'PSCore::Renderer']]],
+  ['render_2',['render',['../classPSCore_1_1Renderer.html#a6bd1a15c5064eeab9b46376859b464a6',1,'PSCore::Renderer']]],
+  ['renderer_3',['Renderer',['../classPSCore_1_1Renderer.html',1,'PSCore']]],
+  ['request_5fspawn_4',['request_spawn',['../namespacemisc_1_1map.html#ad46555aa7e4dbc0ad0cd3e066ba87bbb',1,'misc::map']]],
+  ['rotation_5',['rotation',['../structmisc_1_1map_1_1SpawnRequest.html#a9048ce2d3c3132194a3cb6dfc0340692',1,'misc::map::SpawnRequest']]],
+  ['run_6',['run',['../classPSCore_1_1Application.html#a68965449404743bf1add056784d6cf81',1,'PSCore::Application']]]
 ];

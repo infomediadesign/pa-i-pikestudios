@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['renderer_0',['Renderer',['../classPSCore_1_1Renderer.html',1,'PSCore']]]
+  ['pauselayer_0',['PauseLayer',['../classPauseLayer.html',1,'']]],
+  ['player_1',['Player',['../classPlayer.html',1,'']]]
 ];
