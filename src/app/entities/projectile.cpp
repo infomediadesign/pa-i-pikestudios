@@ -26,12 +26,11 @@ void Projectile::update(const float dt)
 
 void Projectile::render()
 {
-	if ( m_p_is_active ) 
-	{
-		m_p_source	   = {0, 0, (float) m_p_texture.width, (float) m_p_texture.height};
-		m_p_dest	   = {m_p_position.x, m_p_position.y, (float) m_p_texture.width, (float) m_p_texture.height};
-		Vector2 origin = {m_p_dest.width / 2, m_p_dest.height / 2};
-		DrawTexturePro(m_p_texture, m_p_source, m_p_dest, origin, m_p_rotation, WHITE);
+	if ( m_p_is_active ) {
+		m_p_source = {0, 0, (float) m_p_texture.width, (float) m_p_texture.height};
+		if ( auto& vp = gApp()->viewport() ) {
+			vp->draw_in_viewport(m_p_texture, m_p_source, m_p_position, m_p_rotation, WHITE);
+		}
 	}
 
 }

@@ -90,6 +90,17 @@ void FortunaDirector::draw_debug()
 		upgrade_player_fire_range(range_amount);
 	}
 
+	// Add Cannons
+	static int cannon_amount = 1;
+	ImGui::Text("Cannons count: %zu", _p->players[0]->cannon_container().size());
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(80);
+	ImGui::InputInt("##cannon_amount", &cannon_amount);
+	ImGui::SameLine();
+	if ( ImGui::Button("Add Cannons") ) {
+		upgrade_player_add_cannon(cannon_amount);
+	}
+
 }
 
 std::shared_ptr<Player> FortunaDirector::spawn_player(const Vector2& position)
@@ -243,5 +254,12 @@ void FortunaDirector::upgrade_player_fire_range(float amount)
 		for ( auto& cannon: player->cannon_container() ) {
 			cannon->set_range(_p->player_current_fire_range);
 		}
+	}
+}
+
+void FortunaDirector::upgrade_player_add_cannon(int amount)
+{
+	for ( auto player: _p->players ) {
+		player->add_cannons(amount);
 	}
 }
