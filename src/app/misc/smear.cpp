@@ -9,19 +9,24 @@ float smear::update_smear_rotation(
 	return smear_rotation_current + (deflection_scale * (actor_rotation_velocity) -smear_rotation_current) * (deflection_velocity * delta_time);
 }
 
-smear::SmearLinearPoints smear::draw_smear_linear(
-		Vector2 position_start, float actor_velocity, float actor_rotation, float smear_rotation, float smear_length, float smear_rotation_offset,
-		float smear_line_thickness, float smear_line_thickness_falloff, Color smear_color
+smear::SmearLinearPoints smear::calculate_smear_linear_points(
+		Vector2& position_start, float actor_velocity, float actor_rotation, float smear_rotation, float smear_length, float smear_rotation_offset
 )
 {
+	Vector2 bv = coordinatesystem::vector_backward(actor_rotation);
+
 	Vector2 p1 = position_start;
-	Vector2 c2 =
-			position_start +
-			Vector2Rotate(Vector2Scale(coordinatesystem::vector_backward(actor_rotation), smear_length * actor_velocity / 2), smear_rotation_offset);
-	Vector2 p3 = position_start + Vector2Rotate(
-										  Vector2Scale(coordinatesystem::vector_backward(actor_rotation), smear_length * actor_velocity),
-										  smear_rotation + smear_rotation_offset
-								  );
+	Vector2 c2 = position_start + Vector2Rotate(Vector2Scale(bv, smear_length * actor_velocity / 2), smear_rotation_offset);
+	Vector2 p3 = position_start + Vector2Rotate(Vector2Scale(bv, smear_length * actor_velocity), smear_rotation + smear_rotation_offset);
+
+	return {p1, c2, p3};
+}
+
+void smear::draw_smear_linear(SmearLinearPoints& smear_points, float smear_line_thickness, float smear_line_thickness_falloff, Color smear_color)
+{
+	Vector2 p1 = smear_points.p1;
+	Vector2 c2 = smear_points.c2;
+	Vector2 p3 = smear_points.p3;
 
 	const float step = 1.0f / SPLINE_SEGMENT_DIVISIONS;
 
@@ -62,36 +67,41 @@ smear::SmearLinearPoints smear::draw_smear_linear(
 	}
 
 	DrawTriangleStrip(points, 2 * SPLINE_SEGMENT_DIVISIONS + 2, smear_color);
-
-	return {p1, c2, p3};
 }
 
-smear::SmearExponentialPoints smear::draw_smear_exponential(
-		Vector2 position_start, float actor_velocity, float actor_rotation, float smear_rotation, float smear_length, float smear_rotation_offset,
-		float smear_deflection_start, float smear_deflection_length, float smear_line_thickness, float smear_line_thickness_falloff, Color smear_color
+
+smear::SmearExponentialPoints smear::calculate_smear_exponential_points(
+		Vector2& position_start, float actor_velocity, float actor_rotation, float smear_rotation, float smear_length, float smear_rotation_offset,
+		float smear_deflection_start, float smear_deflection_length
 )
 {
+	Vector2 bv = coordinatesystem::vector_backward(actor_rotation);
+	Vector2 rv = coordinatesystem::vector_right(actor_rotation);
+
 	Vector2 p1 = position_start;
-	Vector2 c2 = position_start +
+	Vector2 c2 = position_start + Vector2Rotate(Vector2Scale(rv, smear_deflection_start * actor_velocity), smear_rotation_offset);
+	Vector2 c3 = position_start +
 				 Vector2Rotate(
-						 Vector2Scale(coordinatesystem::vector_right(actor_rotation), smear_deflection_start * actor_velocity), smear_rotation_offset
+						 Vector2Add(Vector2Scale(bv, smear_length * actor_velocity / 2), Vector2Scale(rv, smear_deflection_length * actor_velocity)),
+						 smear_rotation_offset
 				 );
-	Vector2 c3 =
-			position_start + Vector2Rotate(
-									 Vector2Add(
-											 Vector2Scale(coordinatesystem::vector_backward(actor_rotation), smear_length * actor_velocity / 2),
-											 Vector2Scale(coordinatesystem::vector_right(actor_rotation), smear_deflection_length * actor_velocity)
-									 ),
-									 smear_rotation_offset
-							 );
-	Vector2 p4 =
-			position_start + Vector2Rotate(
-									 Vector2Add(
-											 Vector2Scale(coordinatesystem::vector_backward(actor_rotation), smear_length * actor_velocity),
-											 Vector2Scale(coordinatesystem::vector_right(actor_rotation), smear_deflection_length * actor_velocity)
-									 ),
-									 smear_rotation + smear_rotation_offset
-							 );
+	Vector2 p4 = position_start +
+				 Vector2Rotate(
+						 Vector2Add(Vector2Scale(bv, smear_length * actor_velocity), Vector2Scale(rv, smear_deflection_length * actor_velocity)),
+						 smear_rotation + smear_rotation_offset
+				 );
+
+	return {p1, c2, c3, p4};
+}
+
+void smear::draw_smear_exponential(
+		SmearExponentialPoints& smear_points, float smear_line_thickness, float smear_line_thickness_falloff, Color smear_color
+)
+{
+	Vector2 p1 = smear_points.p1;
+	Vector2 c2 = smear_points.c2;
+	Vector2 c3 = smear_points.c3;
+	Vector2 p4 = smear_points.p4;
 
 	const float step = 1.0f / SPLINE_SEGMENT_DIVISIONS;
 
@@ -132,6 +142,4 @@ smear::SmearExponentialPoints smear::draw_smear_exponential(
 	}
 
 	DrawTriangleStrip(points, 2 * SPLINE_SEGMENT_DIVISIONS + 2, smear_color);
-
-	return {p1, c2, c3, p4};
 }
