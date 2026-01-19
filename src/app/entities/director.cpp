@@ -15,8 +15,8 @@ class FortunaDirectorPriv
 	std::vector<std::shared_ptr<Cannon>> cannons;
 	bool on_screen_warp_around = true;
 	float player_current_fire_rate = 0.5f;
-	float player_current_projectile_speed = 1000.0f;
-	float player_current_fire_range = 300.0f;
+	float player_current_projectile_speed = 300.0f;
+	float player_current_fire_range = 100.0f;
 };
 
 FortunaDirector::FortunaDirector()
