@@ -15,6 +15,9 @@
 //
 Fin::Fin(Shark* shark) : PSInterfaces::IEntity("shark_fin"), m_shark(shark)
 {
+	auto tex = m_shark->m_shark_sprite;
+	auto frame_rect = tex->frame_rect({0,0});
+	m_size = {frame_rect.width,  frame_rect.height};
 }
 
 Fin::~Fin()
@@ -23,6 +26,10 @@ Fin::~Fin()
 
 void Fin::render()
 {
+	if ( auto& vp = gApp()->viewport() ) {
+		auto tex = m_shark->m_shark_sprite;
+		vp->draw_in_viewport(tex->m_s_sprite, tex->frame_rect({0, 1}), m_shark->pos_to_rel_fin(), m_shark->m_shark_rotation + 90, RED);
+	}
 }
 
 void Fin::update(float dt)
@@ -41,6 +48,9 @@ void Fin::draw_debug()
 //
 Body::Body(Shark* shark) : PSInterfaces::IEntity("shark_body"), m_shark(shark)
 {
+	auto tex = m_shark->m_shark_sprite;
+	auto frame_rect = tex->frame_rect({0,0});
+	m_size = {frame_rect.width,  frame_rect.height};
 }
 
 Body::~Body()
@@ -51,7 +61,7 @@ void Body::render()
 {
 	if ( auto& vp = gApp()->viewport() ) {
 		auto tex = m_shark->m_shark_sprite;
-		vp->draw_in_viewport(tex->m_s_sprite, tex->frame_rect({0, 0}), m_shark->m_pos, m_shark->m_shark_rotation, WHITE);
+		vp->draw_in_viewport(tex->m_s_sprite, tex->frame_rect({0, 0}), m_shark->m_pos, m_shark->m_shark_rotation + 90, WHITE);
 	}
 }
 

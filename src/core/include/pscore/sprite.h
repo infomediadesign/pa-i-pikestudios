@@ -30,10 +30,11 @@ namespace PSCore {
 			Rectangle frame_rect(const Vector2& pos)
 			{
 				Rectangle rect;
-				rect.x		= pos.x * (m_s_sprite.width / m_s_frame_grid.x);
-				rect.y		= pos.y * (m_s_sprite.height / m_s_frame_grid.y);
+				
 				rect.width	= m_s_sprite.width / m_s_frame_grid.x;
 				rect.height = m_s_sprite.height / m_s_frame_grid.y;
+				rect.x		= pos.x * rect.width;
+				rect.y		= pos.y * rect.height;
 				return rect;
 			};
 		};
@@ -50,10 +51,10 @@ namespace PSCore {
 				}
 			}
 
-			void preload(const std::string& ident, const std::string& texture_path, const Vector2& frame_grid)
+			std::shared_ptr<Sprite> preload(const std::string& ident, const std::string& texture_path, const Vector2& frame_grid)
 			{
 				if ( m_texture_cache.contains(ident) )
-					return;
+					return fetch_sprite(ident);
 
 				auto sp			   = std::make_shared<Sprite>();
 				sp->m_s_sprite	   = LoadTexture(texture_path.data());
@@ -62,6 +63,8 @@ namespace PSCore {
 				m_texture_cache.insert({ident, std::move(sp)});
 				PS_LOG(LOG_INFO, TextFormat("Loaded texture '%s' into cache!", ident.c_str()));
 				PS_LOG(LOG_INFO, TextFormat("Texture cache size updated to: %i!", m_texture_cache.size()));
+				
+				return fetch_sprite(ident);
 			}
 
 			int unload(const std::string& ident)
