@@ -1,8 +1,10 @@
 #include <entities/shark.h>
 #include <iostream>
 #include <memory>
+#include <pscore/viewport.h>
 #include <psinterfaces/renderable.h>
 #include <raylib.h>
+#include <raymath.h>
 #include "entities/player.h"
 #include "pscore/application.h"
 #include "psinterfaces/entity.h"
@@ -48,7 +50,8 @@ Body::~Body()
 void Body::render()
 {
 	if ( auto& vp = gApp()->viewport() ) {
-		// vp->draw_in_viewport(const Texture2D &texture, const Rectangle &source, const Vector2 &position, float rotation, const Color &color)
+		auto tex = m_shark->m_shark_sprite;
+		vp->draw_in_viewport(tex->m_s_sprite, tex->frame_rect({0, 0}), m_shark->m_pos, m_shark->m_shark_rotation, WHITE);
 	}
 }
 
@@ -68,7 +71,8 @@ void Body::draw_debug()
 //
 Shark::Shark() : PSInterfaces::IEntity("shark")
 {
-	PRELOAD_TEXTURE(ident_, "ressources/hai.png");
+	Vector2 frame_grid{9, 2};
+	PRELOAD_TEXTURE(ident_, "ressources/hai.png", frame_grid);
 	m_shark_sprite = FETCH_SPRITE(ident_);
 
 	m_body = std::make_shared<Body>(this);
@@ -97,7 +101,18 @@ void Shark::update(float dt)
 	if ( !player_entity )
 		return;
 
-	float shark_rotation = utilities::rotation_look_at(m_pos, player_entity->position());
+	Vector2 player_pos = player_entity->position();
+
+	Vector2 direction = Vector2Subtract(player_pos, m_pos);
+	float distance	  = Vector2Length(direction);
+
+	if ( distance > 1.0f ) // stop when close enough
+	{
+		direction = Vector2Normalize(direction);
+		m_pos	  = Vector2Add(m_pos, Vector2Scale(direction, m_speed * dt));
+	}
+
+	m_shark_rotation = utilities::rotation_look_at(m_pos, player_entity->position());
 }
 
 void Shark::draw_debug()

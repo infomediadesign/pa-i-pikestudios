@@ -25,11 +25,14 @@ private:
 	std::shared_ptr<Body> m_body;
 	std::shared_ptr<Fin> m_fin;
 
-	Vector2 m_pos{(float) GetScreenWidth() / 2, (float) GetScreenHeight() / 2};
+	Vector2 m_pos{(float) 100, (float) 100};
+	float m_speed = 100.0f;
 
 	Vector2 pos_to_rel_fin();
 
 	std::shared_ptr<PSCore::sprites::Sprite> m_shark_sprite;
+
+	float m_shark_rotation = 0;
 };
 
 class Fin : public PSInterfaces::IRenderable

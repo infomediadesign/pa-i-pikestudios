@@ -7,7 +7,7 @@
 #include <unordered_map>
 #include <valarray>
 
-#define PRELOAD_TEXTURE(ident, path) gApp()->sprite_loader()->preload(ident, path)
+#define PRELOAD_TEXTURE(ident, path, frame_grid) gApp()->sprite_loader()->preload(ident, path, frame_grid)
 #define FETCH_SPRITE(ident) gApp()->sprite_loader()->fetch_sprite(ident)
 #define FETCH_SPRITE_TEXTURE(ident) gApp()->sprite_loader()->fetch_sprite(ident)->m_s_sprite
 
@@ -25,6 +25,17 @@ namespace PSCore {
 			float m_s_animation_frame = 0;
 
 			Texture2D m_s_sprite;
+			Vector2 m_s_frame_grid;
+
+			Rectangle frame_rect(const Vector2& pos)
+			{
+				Rectangle rect;
+				rect.x		= pos.x * (m_s_sprite.width / m_s_frame_grid.x);
+				rect.y		= pos.y * (m_s_sprite.height / m_s_frame_grid.y);
+				rect.width	= m_s_sprite.width / m_s_frame_grid.x;
+				rect.height = m_s_sprite.height / m_s_frame_grid.y;
+				return rect;
+			};
 		};
 
 		class SpriteLoader
@@ -39,13 +50,14 @@ namespace PSCore {
 				}
 			}
 
-			void preload(const std::string& ident, const std::string& texture_path)
+			void preload(const std::string& ident, const std::string& texture_path, const Vector2& frame_grid)
 			{
 				if ( m_texture_cache.contains(ident) )
 					return;
 
-				auto sp		   = std::make_shared<Sprite>();
-				sp->m_s_sprite = LoadTexture(texture_path.data());
+				auto sp			   = std::make_shared<Sprite>();
+				sp->m_s_sprite	   = LoadTexture(texture_path.data());
+				sp->m_s_frame_grid = frame_grid;
 
 				m_texture_cache.insert({ident, std::move(sp)});
 				PS_LOG(LOG_INFO, TextFormat("Loaded texture '%s' into cache!", ident.c_str()));
