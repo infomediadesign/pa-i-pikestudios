@@ -108,7 +108,7 @@ $(document).ready(function(){initNavTree('sprite_8h_source.html',''); initResiza
 <div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span> </div>
 <div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor">#define PRELOAD_TEXTURE(ident, path, frame_grid) gApp()-&gt;sprite_loader()-&gt;preload(ident, path, frame_grid)</span></div>
 <div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="preprocessor">#define FETCH_SPRITE(ident) gApp()-&gt;sprite_loader()-&gt;fetch_sprite(ident)</span></div>
-<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="preprocessor">#define FETCH_SPRITE_TEXTURE(ident) gApp()-&gt;sprite_loader()-&gt;fetch_sprite(ident)-&gt;m_s_sprite</span></div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="preprocessor">#define FETCH_SPRITE_TEXTURE(ident) gApp()-&gt;sprite_loader()-&gt;fetch_sprite(ident)-&gt;m_s_texture</span></div>
 <div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span> </div>
 <div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="keyword">namespace </span>PSCore {</div>
 <div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span> </div>
@@ -124,15 +124,15 @@ $(document).ready(function(){initNavTree('sprite_8h_source.html',''); initResiza
 <div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>            <span class="keywordtype">float</span> m_s_animation_count = 0;</div>
 <div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>            <span class="keywordtype">float</span> m_s_animation_frame = 0;</div>
 <div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span> </div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>            Texture2D m_s_sprite;</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>            Texture2D m_s_texture;</div>
 <div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>            Vector2 m_s_frame_grid;</div>
 <div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span> </div>
 <div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>            Rectangle frame_rect(<span class="keyword">const</span> Vector2&amp; pos)</div>
 <div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>            {</div>
 <div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>                Rectangle rect;</div>
 <div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>                </div>
-<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>                rect.width  = m_s_sprite.width / m_s_frame_grid.x;</div>
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>                rect.height = m_s_sprite.height / m_s_frame_grid.y;</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>                rect.width  = m_s_texture.width / m_s_frame_grid.x;</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>                rect.height = m_s_texture.height / m_s_frame_grid.y;</div>
 <div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>                rect.x      = pos.x * rect.width;</div>
 <div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>                rect.y      = pos.y * rect.height;</div>
 <div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>                <span class="keywordflow">return</span> rect;</div>
@@ -159,7 +159,7 @@ $(document).ready(function(){initNavTree('sprite_8h_source.html',''); initResiza
 <div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>                    <span class="keywordflow">return</span> fetch_sprite(ident);</div>
 <div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span> </div>
 <div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>                <span class="keyword">auto</span> sp            = std::make_shared&lt;Sprite&gt;();</div>
-<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>                sp-&gt;m_s_sprite     = LoadTexture(texture_path.data());</div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>                sp-&gt;m_s_texture    = LoadTexture(texture_path.data());</div>
 <div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>                sp-&gt;m_s_frame_grid = frame_grid;</div>
 <div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span> </div>
 <div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>                m_texture_cache.insert({ident, std::move(sp)});</div>
@@ -172,7 +172,7 @@ $(document).ready(function(){initNavTree('sprite_8h_source.html',''); initResiza
 <div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>            <span class="keywordtype">int</span> unload(<span class="keyword">const</span> std::string&amp; ident)</div>
 <div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>            {</div>
 <div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>                <span class="keyword">auto</span> sp = m_texture_cache.at(ident);</div>
-<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>                UnloadTexture(sp-&gt;m_s_sprite);</div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>                UnloadTexture(sp-&gt;m_s_texture);</div>
 <div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span> </div>
 <div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>                <span class="keywordflow">return</span> m_texture_cache.erase(ident);</div>
 <div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>            }</div>
