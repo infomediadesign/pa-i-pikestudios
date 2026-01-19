@@ -45,12 +45,12 @@ void Cannon::update(const float dt)
 
 void Cannon::render()
 {
-	if ( m_c_is_active ) 
+	if ( m_c_is_active )
 	{
-		m_c_source	   = {0, 0, (float) m_c_texture.width, (float) m_c_texture.height};
-		m_c_dest	   = {m_c_position.x, m_c_position.y, (float) m_c_texture.width, (float) m_c_texture.height};
-		Vector2 origin = {m_c_dest.width / 2, m_c_dest.height / 2};
-		DrawTexturePro(m_c_texture, m_c_source, m_c_dest, origin, m_c_rotation, WHITE);
+		m_c_source = {0, 0, (float) m_c_texture.width, (float) m_c_texture.height};
+		if ( auto& vp = gApp()->viewport() ) {
+			vp->draw_in_viewport(m_c_texture, m_c_source, m_c_position, m_c_rotation, WHITE);
+		}
 	}
 }
 

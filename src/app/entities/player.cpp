@@ -249,17 +249,12 @@ void Player::render()
 				m_animation_count * (float) m_texture.height / m_sprite_sheet.size(), (float) m_texture.width / m_sprite_sheet.max(),
 				(float) m_texture.height / m_sprite_sheet.size()
 		};
-		m_dest	 = {m_position.x, m_position.y, m_source.width * m_base_scale, m_source.height * m_base_scale};
-		m_origin = {m_dest.width / 2, m_dest.height / 2};
-		DrawTexturePro(m_texture, m_source, m_dest, m_origin, m_rotation + m_rotation_offset, WHITE);
-	m_source = {
-			m_animation_frame * (float) m_texture.width / m_sprite_sheet.max(), m_animation_count * (float) m_texture.height / m_sprite_sheet.size(),
-			(float) m_texture.width / m_sprite_sheet.max(), (float) m_texture.height / m_sprite_sheet.size()
-	};
-	if ( auto& vp = gApp()->viewport() ) {
-		vp->draw_in_viewport(m_texture, m_source, m_position, m_rotation + m_rotation_offset, WHITE);
+		if ( auto& vp = gApp()->viewport() ) {
+			vp->draw_in_viewport(m_texture, m_source, m_position, m_rotation + m_rotation_offset, WHITE);
+		}
 	}
-}
+
+} 
 
 // Border Collision Variables and Methods
 void Player::set_border_collision_active_horizontal(bool active)
