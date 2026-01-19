@@ -10,7 +10,7 @@ file(GLOB_RECURSE SOURCE_FILES
      "./*.cpp"
 )
 
-add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES} ${app_icon} "entities/cannon.h" "entities/cannon.cpp")
+add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES} ${app_icon} )
 
 target_link_libraries(${PROJECT_NAME} PUBLIC
  imgui

@@ -15,8 +15,8 @@ class FortunaDirectorPriv
 	std::vector<std::shared_ptr<Cannon>> cannons;
 	bool on_screen_warp_around = true;
 	float player_current_fire_rate = 0.5f;
-	float player_current_projectile_speed = 1000.0f;
-	float player_current_fire_range = 300.0f;
+	float player_current_projectile_speed = 300.0f;
+	float player_current_fire_range = 100.0f;
 };
 
 FortunaDirector::FortunaDirector()
@@ -88,6 +88,17 @@ void FortunaDirector::draw_debug()
 	ImGui::SameLine();
 	if ( ImGui::Button("Upgrade##Range") ) {
 		upgrade_player_fire_range(range_amount);
+	}
+
+	// Add Cannons
+	static int cannon_amount = 1;
+	ImGui::Text("Cannons count: %zu", _p->players[0]->cannon_container().size());
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(80);
+	ImGui::InputInt("##cannon_amount", &cannon_amount);
+	ImGui::SameLine();
+	if ( ImGui::Button("Add Cannons") ) {
+		upgrade_player_add_cannon(cannon_amount);
 	}
 
 }
@@ -243,5 +254,12 @@ void FortunaDirector::upgrade_player_fire_range(float amount)
 		for ( auto& cannon: player->cannon_container() ) {
 			cannon->set_range(_p->player_current_fire_range);
 		}
+	}
+}
+
+void FortunaDirector::upgrade_player_add_cannon(int amount)
+{
+	for ( auto player: _p->players ) {
+		player->add_cannons(amount);
 	}
 }

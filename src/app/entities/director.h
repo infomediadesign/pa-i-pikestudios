@@ -38,6 +38,7 @@ public:
 	void upgrade_player_fire_rate(float amount);
 	void upgrade_player_projectile_speed(float amount);
 	void upgrade_player_fire_range(float amount);
+	void upgrade_player_add_cannon(int amount);
 
 private:
 	std::unique_ptr<FortunaDirectorPriv> _p;
