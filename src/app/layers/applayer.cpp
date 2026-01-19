@@ -4,6 +4,7 @@
 
 #include <memory>
 #include <pscore/application.h>
+#include <pscore/viewport.h>
 #include <raylib.h>
 
 #include <psinterfaces/renderable.h>

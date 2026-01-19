@@ -3,16 +3,21 @@
 #include <entities/director.h>
 
 #include <pscore/application.h>
+#include <pscore/viewport.h>
+#include <pscore/sprite.h>
 #include <raymath.h>
 
 #include <layers/applayer.h>
+#include "psinterfaces/entity.h"
 
 #ifndef CALCULATION_VELOCITY_MIN
 #define CALCULATION_VELOCITY_MIN 1
 #endif
 
-Player::Player()
+Player::Player() : PSInterfaces::IEntity("player")
 {
+	Vector2 frame_grid{4, 2};
+	PRELOAD_TEXTURE(ident_, "ressources/SpaceShipSpriteSheet.png", frame_grid);
 
 	// WARNING: THIS IS ONLY FOR TESTING
 	if ( auto& vp = gApp()->viewport() ) {
@@ -21,8 +26,9 @@ Player::Player()
 	m_max_velocity = 200;
 	m_rotation	   = 0;
 	set_interpolation_values(6, 2, 4, 1500, 0.9);
-	set_texture_values(LoadTexture("ressources/SpaceShipSpriteSheet.png"), 90, 4);
+	set_texture_values(FETCH_SPRITE_TEXTURE(ident_), 90, 4);
 	set_animation_values(2, {1, 4}, 4);
+	//
 	//
 }
 
@@ -289,17 +295,17 @@ bool Player::is_clone() const
 
 float Player::dest_width() const
 {
-	if ( auto& vp = gApp()->viewport() ) {
-		return m_source.width * vp->viewport_scale();
-	}
+	// if ( auto& vp = gApp()->viewport() ) {
+	// 	return m_source.width * vp->viewport_scale();
+	// }
 	return m_source.width;
 }
 
 float Player::dest_height() const
 {
-	if ( auto& vp = gApp()->viewport() ) {
-		return m_source.height * vp->viewport_scale();
-	}
+	// if ( auto& vp = gApp()->viewport() ) {
+	// 	return m_source.height * vp->viewport_scale();
+	// }
 	return m_source.height;
 }
 

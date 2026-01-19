@@ -1,11 +1,14 @@
 #include <entities/director.h>
 #include <layers/applayer.h>
+#include <memory>
 #include <misc/mapborderinteraction.h>
 #include <pscore/application.h>
 #include <entities/projectile.h>
 #include <entities/cannon.h>
 
 #include <imgui.h>
+#include <entities/shark.h>
+#include "psinterfaces/entity.h"
 
 class FortunaDirectorPriv
 {
@@ -14,12 +17,14 @@ class FortunaDirectorPriv
 	std::vector<std::shared_ptr<Projectile>> projectiles;
 	std::vector<std::shared_ptr<Cannon>> cannons;
 	bool on_screen_warp_around = true;
+
+	std::shared_ptr<Shark> test_shark = std::make_shared<Shark>();
 	float player_current_fire_rate = 0.5f;
 	float player_current_projectile_speed = 300.0f;
 	float player_current_fire_range = 100.0f;
 };
 
-FortunaDirector::FortunaDirector()
+FortunaDirector::FortunaDirector() : PSInterfaces::IEntity("fortuna_director")
 {
 	_p = std::make_unique<FortunaDirectorPriv>();
 }
@@ -31,8 +36,13 @@ void FortunaDirector::initialize_entities()
 	initial_player->set_shared_ptr_this(initial_player);
 
 	gApp()->register_entity(initial_player);
-	if ( auto app_layer = gApp()->get_layer<AppLayer>() )
+	gApp()->register_entity(_p->test_shark);
+
+	if ( auto app_layer = gApp()->get_layer<AppLayer>() ) {
 		app_layer->renderer()->submit_renderable<Player>(initial_player);
+		app_layer->renderer()->submit_renderable<Shark>(_p->test_shark);
+	}
+
 	initial_player->add_cannons(2);
 }
 
