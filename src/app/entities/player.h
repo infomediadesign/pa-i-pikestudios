@@ -109,9 +109,6 @@ private:
 
 	// Smear Variables
 
-	float m_smear_rotation = 0;
-	smear::SmearPoints m_smear_linear_points[2] = {{0},{0}};
-	float m_rv = 0;
-	float m_lr = 0;
-	float time = 0;
+	float m_smear_rotation				 = 0;
+	smear::SmearPoints m_smear_points[2] = {{0}, {0}};
 };

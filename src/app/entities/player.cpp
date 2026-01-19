@@ -7,7 +7,7 @@
 #include <layers/applayer.h>
 #include <misc/smear.h>
 
-#include <iostream>
+#include <coordinatesystem.h>
 
 #ifndef CALCULATION_VELOCITY_MIN
 #define CALCULATION_VELOCITY_MIN 1
@@ -154,22 +154,19 @@ void Player::update(const float dt)
 
 	// Smear Calculation
 
-	//smear::update_smear_rotation(m_smear_rotation, m_rotation - m_target_rotation, 0.5, 10, dt);
-
-	smear::update_smear_rotation(m_smear_rotation, m_rv, -8, 10, dt);
+	smear::update_smear_rotation(m_smear_rotation, m_rotation - m_target_rotation, 0.5, 10, dt);
 
 	if ( auto& vp = gApp()->viewport() ) {
 		Vector2 m_position_absolute = vp->position_viewport_to_global(m_position);
+		Vector2 m_smear_right_position =
+				coordinatesystem::point_relative_to_global_leftup(m_position_absolute, m_rotation, Vector2Scale({9, 8}, vp->viewport_scale()));
+		Vector2 m_smear_left_position =
+				coordinatesystem::point_relative_to_global_leftdown(m_position_absolute, m_rotation, Vector2Scale({9, 8}, vp->viewport_scale()));
 
-		m_smear_linear_points[0] = smear::calculate_smear_linear_points(m_position_absolute, Vector2Length(m_velocity), m_rotation, m_smear_rotation, 0.5, 0);
-	}
-
-	time += dt;
-	if ( time >= 0.02 ) {
-		time = 0;
-		m_rv = m_rotation - m_lr;
-		m_lr = m_rotation;
-		std::cout << m_rv << std::endl;
+		m_smear_points[0] =
+				smear::calculate_smear_linear_points(m_smear_right_position, Vector2Length(m_velocity), m_rotation, m_smear_rotation, 0.4, 0);
+		m_smear_points[1] =
+				smear::calculate_smear_linear_points(m_smear_left_position, Vector2Length(m_velocity), m_rotation, m_smear_rotation, 0.4, 0);
 	}
 }
 
@@ -218,7 +215,10 @@ void Player::render()
 		vp->draw_in_viewport(m_texture, m_source, m_position, m_rotation + m_rotation_offset, WHITE);
 	}
 
-	smear::draw_smear_linear(m_smear_linear_points[0], 5, 1, RED);
+	// Draw Smear
+
+	smear::draw_smear_linear(m_smear_points[0], 4, 1, BLUE);
+	smear::draw_smear_linear(m_smear_points[1], 4, 1, BLUE);
 }
 
 // Border Collision Variables and Methods

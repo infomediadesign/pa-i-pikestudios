@@ -8,7 +8,8 @@ void smear::update_smear_rotation(
 		float& smear_rotation, float actor_rotation_velocity, float deflection_scale, float deflection_velocity, float delta_time
 )
 {
-	smear_rotation = smear_rotation + (deflection_scale * (actor_rotation_velocity) -smear_rotation) * std::clamp(deflection_velocity * delta_time, 0.0f,1.0f);
+	smear_rotation = smear_rotation +
+					 (deflection_scale * (actor_rotation_velocity) -smear_rotation) * std::clamp(deflection_velocity * delta_time, 0.0f, 1.0f);
 }
 
 smear::SmearPoints smear::calculate_smear_linear_points(
@@ -53,7 +54,8 @@ void smear::draw_smear_linear(SmearPoints& smear_points, float smear_line_thickn
 		float dx   = current.x - previous.x;
 		float size = 0.5f * smear_line_thickness / sqrtf(dx * dx + dy * dy);
 
-		float smear_falloff = (((-smear_line_thickness_falloff / (SPLINE_SEGMENT_DIVISIONS - 1)) * static_cast<float>(i - 1)) + 1);
+		float smear_falloff =
+				(((-std::clamp(smear_line_thickness_falloff, 0.0f, 1.0f) / (SPLINE_SEGMENT_DIVISIONS - 1)) * static_cast<float>(i - 1)) + 1);
 
 		if ( i == 1 ) {
 			points[0].x = previous.x + dy * size * smear_falloff;
@@ -83,24 +85,22 @@ smear::SmearPoints smear::calculate_smear_exponential_points(
 	Vector2 rv = coordinatesystem::vector_right(actor_rotation);
 
 	Vector2 p1 = position_start;
-	Vector2 c2 = position_start + Vector2Rotate(Vector2Scale(rv, smear_deflection_start * actor_velocity), smear_rotation_offset);
+	Vector2 c2 = position_start + Vector2Rotate(Vector2Scale(rv, smear_deflection_start * actor_velocity), smear_rotation_offset * DEG2RAD);
 	Vector2 c3 = position_start +
 				 Vector2Rotate(
 						 Vector2Add(Vector2Scale(bv, smear_length * actor_velocity / 2), Vector2Scale(rv, smear_deflection_length * actor_velocity)),
-						 smear_rotation_offset
+						 smear_rotation_offset * DEG2RAD
 				 );
 	Vector2 p4 = position_start +
 				 Vector2Rotate(
 						 Vector2Add(Vector2Scale(bv, smear_length * actor_velocity), Vector2Scale(rv, smear_deflection_length * actor_velocity)),
-						 smear_rotation + smear_rotation_offset
+						 (smear_rotation + smear_rotation_offset) * DEG2RAD
 				 );
 
 	return {p1, c2, c3, p4};
 }
 
-void smear::draw_smear_exponential(
-		SmearPoints& smear_points, float smear_line_thickness, float smear_line_thickness_falloff, Color smear_color
-)
+void smear::draw_smear_exponential(SmearPoints& smear_points, float smear_line_thickness, float smear_line_thickness_falloff, Color smear_color)
 {
 	Vector2 p1 = smear_points.p1;
 	Vector2 c2 = smear_points.c2;
@@ -130,17 +130,20 @@ void smear::draw_smear_exponential(
 		float dx   = current.x - previous.x;
 		float size = 0.5f * smear_line_thickness / sqrtf(dx * dx + dy * dy);
 
+		float smear_falloff =
+				(((-std::clamp(smear_line_thickness_falloff, 0.0f, 1.0f) / (SPLINE_SEGMENT_DIVISIONS - 1)) * static_cast<float>(i - 1)) + 1);
+
 		if ( i == 1 ) {
-			points[0].x = previous.x + dy * size * (((-smear_line_thickness_falloff / (SPLINE_SEGMENT_DIVISIONS - 1)) * (i - 1)) + 1);
-			points[0].y = previous.y - dx * size * (((-smear_line_thickness_falloff / (SPLINE_SEGMENT_DIVISIONS - 1)) * (i - 1)) + 1);
-			points[1].x = previous.x - dy * size * (((-smear_line_thickness_falloff / (SPLINE_SEGMENT_DIVISIONS - 1)) * (i - 1)) + 1);
-			points[1].y = previous.y + dx * size * (((-smear_line_thickness_falloff / (SPLINE_SEGMENT_DIVISIONS - 1)) * (i - 1)) + 1);
+			points[0].x = previous.x + dy * size * smear_falloff;
+			points[0].y = previous.y - dx * size * smear_falloff;
+			points[1].x = previous.x - dy * size * smear_falloff;
+			points[1].y = previous.y + dx * size * smear_falloff;
 		}
 
-		points[2 * i + 1].x = current.x - dy * size * (((-smear_line_thickness_falloff / (SPLINE_SEGMENT_DIVISIONS - 1)) * (i - 1)) + 1);
-		points[2 * i + 1].y = current.y + dx * size * (((-smear_line_thickness_falloff / (SPLINE_SEGMENT_DIVISIONS - 1)) * (i - 1)) + 1);
-		points[2 * i].x		= current.x + dy * size * (((-smear_line_thickness_falloff / (SPLINE_SEGMENT_DIVISIONS - 1)) * (i - 1)) + 1);
-		points[2 * i].y		= current.y - dx * size * (((-smear_line_thickness_falloff / (SPLINE_SEGMENT_DIVISIONS - 1)) * (i - 1)) + 1);
+		points[2 * i + 1].x = current.x - dy * size * smear_falloff;
+		points[2 * i + 1].y = current.y + dx * size * smear_falloff;
+		points[2 * i].x		= current.x + dy * size * smear_falloff;
+		points[2 * i].y		= current.y - dx * size * smear_falloff;
 
 		previous = current;
 	}
