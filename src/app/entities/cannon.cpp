@@ -52,7 +52,6 @@ void Cannon::render()
 			vp->draw_in_viewport(m_c_texture, m_c_source, m_c_position, m_c_rotation, WHITE);
 		}
 	}
-
 }
 
 bool Cannon::is_active()

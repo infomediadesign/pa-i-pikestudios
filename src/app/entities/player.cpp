@@ -203,8 +203,7 @@ void Player::initialize_cannon()
 		return;
 	}
 
-	float cannon_width = 20.0f;
-	float spacing	   = 5.0f;
+	float cannon_width = 5.0f;
 	
 	float x_offset = 0;
 	if ( !m_cannon_container.empty() ) 
@@ -212,7 +211,7 @@ void Player::initialize_cannon()
 		cannon_width = static_cast<float>(m_cannon_container[0]->texture().width);
 
 	}
-	x_offset = -((cannon_width + spacing) * m_cannon_container.size()) / 2;
+	x_offset = -((cannon_width + cannon_width / 4) * m_cannon_container.size()) / 2;
 
 	for ( int i = 0; i < 2; i++ ) 
 	{
@@ -220,6 +219,7 @@ void Player::initialize_cannon()
 		m_cannon_container.push_back(new_cannon);
 		new_cannon->set_parent(m_shared_ptr_this);
 		new_cannon->set_parent_position_x_offset(x_offset);
+		new_cannon->set_parent_position_y_offset(new_cannon->texture().height);
 		if ( i == 0 ) 
 		{
 			new_cannon->set_positioning(Cannon::CannonPositioning::Left);
