@@ -9,7 +9,7 @@
 
 #define PRELOAD_TEXTURE(ident, path, frame_grid) gApp()->sprite_loader()->preload(ident, path, frame_grid)
 #define FETCH_SPRITE(ident) gApp()->sprite_loader()->fetch_sprite(ident)
-#define FETCH_SPRITE_TEXTURE(ident) gApp()->sprite_loader()->fetch_sprite(ident)->m_s_sprite
+#define FETCH_SPRITE_TEXTURE(ident) gApp()->sprite_loader()->fetch_sprite(ident)->m_s_texture
 
 namespace PSCore {
 
@@ -24,15 +24,15 @@ namespace PSCore {
 			float m_s_animation_count = 0;
 			float m_s_animation_frame = 0;
 
-			Texture2D m_s_sprite;
+			Texture2D m_s_texture;
 			Vector2 m_s_frame_grid;
 
 			Rectangle frame_rect(const Vector2& pos)
 			{
 				Rectangle rect;
 				
-				rect.width	= m_s_sprite.width / m_s_frame_grid.x;
-				rect.height = m_s_sprite.height / m_s_frame_grid.y;
+				rect.width	= m_s_texture.width / m_s_frame_grid.x;
+				rect.height = m_s_texture.height / m_s_frame_grid.y;
 				rect.x		= pos.x * rect.width;
 				rect.y		= pos.y * rect.height;
 				return rect;
@@ -57,7 +57,7 @@ namespace PSCore {
 					return fetch_sprite(ident);
 
 				auto sp			   = std::make_shared<Sprite>();
-				sp->m_s_sprite	   = LoadTexture(texture_path.data());
+				sp->m_s_texture	   = LoadTexture(texture_path.data());
 				sp->m_s_frame_grid = frame_grid;
 
 				m_texture_cache.insert({ident, std::move(sp)});
@@ -70,7 +70,7 @@ namespace PSCore {
 			int unload(const std::string& ident)
 			{
 				auto sp = m_texture_cache.at(ident);
-				UnloadTexture(sp->m_s_sprite);
+				UnloadTexture(sp->m_s_texture);
 
 				return m_texture_cache.erase(ident);
 			}
