@@ -6,6 +6,8 @@
 #include <raylib.h>
 #include <valarray>
 
+#include "misc/smear.h"
+
 class Player : public PSInterfaces::IRenderable
 {
 public:
@@ -104,4 +106,12 @@ private:
 	bool m_border_collision_active_horizontal = false;
 	bool m_border_collision_active_vertical	  = false;
 	bool m_is_clone							  = false;
+
+	// Smear Variables
+
+	float m_smear_rotation = 0;
+	smear::SmearPoints m_smear_linear_points[2] = {{0},{0}};
+	float m_rv = 0;
+	float m_lr = 0;
+	float time = 0;
 };

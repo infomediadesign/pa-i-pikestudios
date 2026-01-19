@@ -5,6 +5,9 @@
 #include <raymath.h>
 
 #include <layers/applayer.h>
+#include <misc/smear.h>
+
+#include <iostream>
 
 #ifndef CALCULATION_VELOCITY_MIN
 #define CALCULATION_VELOCITY_MIN 1
@@ -148,6 +151,26 @@ void Player::update(const float dt)
 	// Animation Calculation
 
 	calculate_animation(dt);
+
+	// Smear Calculation
+
+	//smear::update_smear_rotation(m_smear_rotation, m_rotation - m_target_rotation, 0.5, 10, dt);
+
+	smear::update_smear_rotation(m_smear_rotation, m_rv, -8, 10, dt);
+
+	if ( auto& vp = gApp()->viewport() ) {
+		Vector2 m_position_absolute = vp->position_viewport_to_global(m_position);
+
+		m_smear_linear_points[0] = smear::calculate_smear_linear_points(m_position_absolute, Vector2Length(m_velocity), m_rotation, m_smear_rotation, 0.5, 0);
+	}
+
+	time += dt;
+	if ( time >= 0.02 ) {
+		time = 0;
+		m_rv = m_rotation - m_lr;
+		m_lr = m_rotation;
+		std::cout << m_rv << std::endl;
+	}
 }
 
 void Player::set_texture_values(const Texture2D& texture, const float& rotation_offset, const float& base_scale)
@@ -194,6 +217,8 @@ void Player::render()
 	if ( auto& vp = gApp()->viewport() ) {
 		vp->draw_in_viewport(m_texture, m_source, m_position, m_rotation + m_rotation_offset, WHITE);
 	}
+
+	smear::draw_smear_linear(m_smear_linear_points[0], 5, 1, RED);
 }
 
 // Border Collision Variables and Methods
