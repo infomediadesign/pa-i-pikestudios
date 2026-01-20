@@ -128,8 +128,6 @@ void Shark::update(float dt)
 		}
 		case Pursuing: {
 			m_state_string = "pursuing";
-
-			m_speed = 100;
 			if ( distance > 20.0f ) // stop when close enough
 			{
 				direction = Vector2Normalize(direction);
@@ -152,10 +150,10 @@ void Shark::update(float dt)
 			if ( distance > 40.0f )
 				m_state = State::Pursuing;
 
-			m_speed	  = 20;
-			direction = Vector2Normalize(direction);
-			direction = Vector2Negate(direction);
-			m_pos	  = Vector2Add(m_pos, Vector2Scale(direction, m_speed * dt));
+			const int retreat_speed = 20;
+			direction				= Vector2Normalize(direction);
+			direction				= Vector2Negate(direction);
+			m_pos					= Vector2Add(m_pos, Vector2Scale(direction, retreat_speed * dt));
 
 			break;
 		}
@@ -184,6 +182,17 @@ void Shark::draw_debug()
 	PSUtils::DrawRectangleLinesRotated(shark_rec, m_shark_rotation + 90, RED);
 
 	DrawText(m_state_string.c_str(), shark_rec.x + 20, shark_rec.y + 20, 12, RED);
+
+	// Shark Debug values
+	// ImGui::Text("Shark Speed: %.0f", m_speed);
+	// ImGui::SameLine();
+	// ImGui::SetNextItemWidth(60);
+	// static float buffer = 0;
+	// ImGui::InputFloat("##range_amount", &buffer, 0.0f, 0.0f, "%.0f");
+	// ImGui::SameLine();
+	// if ( ImGui::Button("Upgrade##Speed") ) {
+	// 	m_speed = buffer;
+	// }
 }
 
 void Shark::render()
