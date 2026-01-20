@@ -71,9 +71,13 @@ void Player::update(const float dt)
 		m_smear_wave_time += dt;
 		if ( m_smear_wave_time >= m_smear_wave_per_second / (Vector2Length(m_velocity) / m_max_velocity) ) {
 			m_smear_wave_time = 0;
-			smear::send_smear_wave(&m_smear_wave, &m_smear_wave_index, 0.1, 0, Vector2Length(m_velocity), m_max_velocity, dt);
+			smear::send_smear_wave(&m_smear_wave, &m_smear_wave_index, 0.1, Vector2Length(m_velocity), m_max_velocity, dt);
 		}
-		m_dt = dt;
+		smear::update_smear_wave(&m_smear_wave, 1, Vector2Length(m_velocity), m_max_velocity, dt);
+		smear::calculate_smear_wave_points(
+				&m_smear_wave_points, m_smear_wave, m_smear_points, {0, 1}, m_smear_rotation, 10, Vector2Length(m_velocity), m_max_velocity,
+				smear::linear_points
+		);
 	}
 }
 
@@ -92,9 +96,8 @@ void Player::render()
 	if ( auto& vp = gApp()->viewport() ) {
 		smear::draw_smear_linear(m_smear_points[0], 2 * vp->viewport_scale(), 1, BLUE);
 		smear::draw_smear_linear(m_smear_points[1], 2 * vp->viewport_scale(), 1, BLUE);
-		smear::draw_smear_wave_between_linear_smears(
-				m_smear_wave, m_smear_points, {0, 1}, m_smear_rotation, 1, 10, Vector2Length(m_velocity), m_max_velocity, 2 * vp->viewport_scale(), 1,
-				SKYBLUE, m_dt
+		smear::draw_smear_wave_between_smears(
+				m_smear_wave_points, m_smear_wave, Vector2Length(m_velocity), m_max_velocity, 2 * vp->viewport_scale(), 1, SKYBLUE
 		);
 	}
 }

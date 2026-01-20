@@ -106,11 +106,11 @@ private:
 	bool m_is_clone							  = false;
 
 	// Smear Variables
-	float m_smear_rotation						   = 0;
-	std::vector<smear::SmearPoints> m_smear_points = {{0}, {0}};
-	std::vector<float> m_smear_wave				   = {0};
-	int m_smear_wave_index						   = 0;
-	float m_smear_wave_time						   = 0;
-	float m_smear_wave_per_second				   = 0.25;
-	float m_dt									   = 0;
+	float m_smear_rotation								= 0;
+	std::vector<smear::SmearPoints> m_smear_points		= {{0}, {0}};
+	std::vector<float> m_smear_wave						= {0};
+	int m_smear_wave_index								= 0;
+	float m_smear_wave_time								= 0;
+	float m_smear_wave_per_second						= 0.25;
+	std::vector<smear::SmearPoints> m_smear_wave_points = {{0}, {0}};
 };

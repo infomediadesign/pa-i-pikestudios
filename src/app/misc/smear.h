@@ -20,6 +20,8 @@ namespace smear {
 		Vector2 p4;
 	};
 
+	enum UseSmearPointsForWaveCalculation { linear_points, exponential_points };
+
 	/**
 	 * @brief Updates the given smear_rotation to the given Value
 	 * @warning Call it once per Frame at the Actor
@@ -82,62 +84,68 @@ namespace smear {
 	void draw_smear_exponential(SmearPoints& smear_points, float smear_line_thickness, float smear_line_thickness_falloff, Color smear_color);
 
 	/**
-	 * @brief Sends a new Wave at the start Location of the Smear or at the smear_wave_start Value
-	 * @details Only one of these Locations must be defined. If smear_wave_start is 0 the Funktion calculates the start Location of the
-	 * Smear based on the smear_wave_velocity, actor_velocity, actor_max_velocity and delta_time. If smear_wave_start is greader 0 the Wave starts
-	 * at this Value of the Smear and smear_wave_velocity, actor_velocity, actor_max_velocity and delta_time are not used.
+	 * @brief Sends a new Wave at the start Location of the Smear
 	 * @param smear_waves A Pointer to a Vector of floats with Values between 0 and 1 which is the Location of the Wave on the Smear
 	 * @param smear_wave_index A Pointer to an Index of the smear_waves Vector
 	 * @param smear_wave_velocity The Velocity of the Wave to move
-	 * @param smear_wave_start The start Location of the Wave
 	 * @param actor_velocity The Velocity of the Actor
 	 * @param actor_max_velocity The max Velocity of the Actor
 	 * @param delta_time Delta Time
 	 */
 	void send_smear_wave(
-			std::vector<float>* smear_waves, int* smear_wave_index, float smear_wave_velocity, float smear_wave_start, float actor_velocity,
-			float actor_max_velocity, float delta_time
+			std::vector<float>* smear_waves, int* smear_wave_index, float smear_wave_velocity, float actor_velocity, float actor_max_velocity,
+			float delta_time
 	);
 
 	/**
-	 * @brief Draw the Smear Waves between 2 Linear Smears and move the up to the end of the Smear with the given Values
-	 * @param smear_waves A Vector of floats with Values between 0 and 1 which is the Location of the Wave on the Smear
-	 * @param smear_points A Vector of SmearPoints the contains the Points of the Smears for the Smear Wave
+	 * @brief Sends a new Wave to the smear_wave_start Value
+	 * @param smear_waves A Pointer to a Vector of floats with Values between 0 and 1 which is the Location of the Wave on the Smear
+	 * @param smear_wave_index A Pointer to an Index of the smear_waves Vector
+	 * @param smear_wave_start The start Location of the Smear Wave
+	 */
+	void send_smear_wave_at_start(std::vector<float>* smear_waves, int* smear_wave_index, float smear_wave_start);
+
+	/**
+	 * @brief Updates the Location of the Smear Waves
+	 * @param smear_waves A Pointer to a Vector of floats with Values between 0 and 1 which is the Location of the Wave on the Smear
+	 * @param smear_wave_velocity The Velocity of the Wave to move
+	 * @param actor_velocity The Velocity of the Actor
+	 * @param actor_max_velocity The max Velocity of the Actor
+	 * @param delta_time Delta Time
+	 */
+	void
+	update_smear_wave(std::vector<float>* smear_waves, float smear_wave_velocity, float actor_velocity, float actor_max_velocity, float delta_time);
+
+	/**
+	 * @brief Calculate the Points for the Smear Wave
+	 * @param smear_wave_points A Pointer to a Vector of SmearPoints that contains the Points to draw the Waves
+	 * @param smear_waves A Reference to a Vector of floats with Values between 0 and 1 which is the Location of the Wave on the Smear
+	 * @param smear_points A Reference to a Vector of SmearPoints the contains the Points of the Smears for the Smear Wave
 	 * @param smear_points_vector_index A Vector2 with the 2 Indexes in the smear_points Vector to use
 	 * @param smear_rotation The Calculated Smear Rotation
-	 * @param smear_wave_velocity The Velocity of the Wave to move
 	 * @param smear_wave_height The Height of the Smear Wave (Amplitude)
+	 * @param actor_velocity The Velocity of the Actor
+	 * @param actor_max_velocity The max Velocity of the Actor
+	 * @param smear_type_of_smear_points An Enum that contains the type of the Smears at both Indexes
+	 */
+	void calculate_smear_wave_points(
+			std::vector<SmearPoints>* smear_wave_points, std::vector<float>& smear_waves, std::vector<SmearPoints>& smear_points,
+			Vector2 smear_points_vector_index, float smear_rotation, float smear_wave_height, float actor_velocity, float actor_max_velocity,
+			UseSmearPointsForWaveCalculation smear_type_of_smear_points
+	);
+
+	/**
+	 * @brief Draw the Smear Waves between 2 Smears
+	 * @param smear_wave_points A Reference to a Vector of SmearPoints that are the Points of the Smear Wave
+	 * @param smear_waves A Reference to a Vector of floats with Values between 0 and 1 which is the Location of the Wave on the Smear
 	 * @param actor_velocity The Velocity of the Actor
 	 * @param actor_max_velocity The max Velocity of the Actor
 	 * @param smear_wave_line_thickness The Thickness of the Drawn Smear Wave
 	 * @param smear_wave_line_thickness_falloff The Thickness Falloff of the Smear Wave over the Length
 	 * @param smear_wave_color The Color of the Smear Wave
-	 * @param delta_time Delta Time
 	 */
-	void draw_smear_wave_between_linear_smears(
-			std::vector<float>& smear_waves, std::vector<SmearPoints>& smear_points, Vector2 smear_points_vector_index, float smear_rotation, float smear_wave_velocity,
-			float smear_wave_height, float actor_velocity, float actor_max_velocity, float smear_wave_line_thickness,
-			float smear_wave_line_thickness_falloff, Color smear_wave_color, float delta_time
-	);
-
-	/**
-	 * @brief Draw the Smear Waves between 2 Exponential Smears and move the up to the end of the Smear with the given Values
-	 * @param smear_waves A Vector of floats with Values between 0 and 1 which is the Location of the Wave on the Smear
-	 * @param smear_points A Vector of SmearPoints the contains the Points of the Smears for the Smear Wave
-	 * @param smear_points_vector_index A Vector2 with the 2 Indexes in the smear_points Vector to use
-	 * @param smear_rotation The Calculated Smear Rotation
-	 * @param smear_wave_velocity The Velocity of the Wave to move
-	 * @param smear_wave_height The Height of the Smear Wave (Amplitude)
-	 * @param actor_velocity The Velocity of the Actor
-	 * @param actor_max_velocity The max Velocity of the Actor
-	 * @param smear_wave_line_thickness The Thickness of the Drawn Smear Wave
-	 * @param smear_wave_line_thickness_falloff The Thickness Falloff of the Smear Wave over the Length
-	 * @param smear_wave_color The Color of the Smear Wave
-	 * @param delta_time Delta Time
-	 */
-	void draw_smear_wave_between_exponential_smears(
-			std::vector<float>& smear_waves, std::vector<SmearPoints>& smear_points, Vector2 smear_points_vector_index, float smear_rotation, float smear_wave_velocity,
-			float smear_wave_height, float actor_velocity, float actor_max_velocity, float smear_wave_line_thickness,
-			float smear_wave_line_thickness_falloff, Color smear_wave_color, float delta_time
+	void draw_smear_wave_between_smears(
+			std::vector<SmearPoints>& smear_wave_points, std::vector<float>& smear_waves, float actor_velocity, float actor_max_velocity,
+			float smear_wave_line_thickness, float smear_wave_line_thickness_falloff, Color smear_wave_color
 	);
 }; // namespace smear
