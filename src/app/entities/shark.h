@@ -4,6 +4,7 @@
 #include <psinterfaces/entity.h>
 #include <psinterfaces/renderable.h>
 #include <raylib.h>
+#include <string>
 #include "pscore/sprite.h"
 
 class Fin;
@@ -21,14 +22,18 @@ public:
 	void render() override;
 	void draw_debug() override;
 
+	enum State { Idle = 0, Pursuing, Attacking, Retreat };
+
 private:
+	bool m_marked;
+	
 	std::shared_ptr<Body> m_body;
 	std::shared_ptr<Fin> m_fin;
 
 	Vector2 m_pos{(float) 100, (float) 100};
 	float m_speed = 100.0f;
-
-	Vector2 pos_to_rel_fin();
+	State m_state = State::Idle;
+	std::string m_state_string;
 
 	std::shared_ptr<PSCore::sprites::Sprite> m_shark_sprite;
 
@@ -48,7 +53,7 @@ public:
 	void draw_debug() override;
 
 private:
-	Shark* m_shark;
+	const Shark* m_shark;
 	Vector2 m_size{20, 60};
 };
 
@@ -65,6 +70,6 @@ public:
 	void draw_debug() override;
 
 private:
-	Shark* m_shark;
+	const Shark* m_shark;
 	Vector2 m_size{60, 120};
 };
