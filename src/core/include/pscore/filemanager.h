@@ -5,15 +5,17 @@
 #pragma once
 #include <string>
 
- class filemanager
- {
- 	private:
-	 std::string filename;
- 	void ensurefileexists(std::string filename);
+class filemanager
+{
 
- 	public:
- 	filemanager(std::string filename);
+public:
+	void ensurefileexists(std::string filename);
 
- 	void write();
- 	std::string load();
- };
+	filemanager(std::string filename);
+
+	void write(const std::string& mes);
+	std::string load();
+
+private:
+	std::string filename;
+};

@@ -22,8 +22,8 @@ class ScoreLayer : public PSInterfaces::Layer
 	std::vector<HighscoreEntries> highscore;
 	void on_update(float dt) override;
 	void on_render() override;
-	void load_highscore(const std::string & filename = "noahistgay.txt");
-	void save_highscore(const std::string & filename = "noahistgay.txt");
+	void load_highscore(const std::string& filename = "noahistgay.txt");
+	void save_highscore(const std::string& filename = "noahistgay.txt");
 	bool check_for_new_highscore(int);
 	void ensurefileexists(std::string filename);
 	void save_new_highscore(int);
@@ -33,6 +33,3 @@ class ScoreLayer : public PSInterfaces::Layer
 	enum liststate { VIEWING, AWAITING_INPUT, TYPING_NAME, INPUT_MADE };
 	liststate list_state = VIEWING;
 };
-
-
-
