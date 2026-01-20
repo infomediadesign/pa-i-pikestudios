@@ -1,15 +1,15 @@
 #include "player.h"
-#include <raylib.h>
 #include <entities/director.h>
+#include <raylib.h>
 
 #include <pscore/application.h>
-#include <pscore/viewport.h>
 #include <pscore/sprite.h>
+#include <pscore/viewport.h>
 #include <raymath.h>
 
 #include <layers/applayer.h>
-#include "psinterfaces/entity.h"
 #include <misc/smear.h>
+#include "psinterfaces/entity.h"
 
 #include <coordinatesystem.h>
 
@@ -70,10 +70,12 @@ void Player::update(const float dt)
 		Vector2 m_smear_left_position =
 				coordinatesystem::point_relative_to_global_leftdown(m_position_absolute, m_rotation, Vector2Scale({9, 8}, vp->viewport_scale()));
 
-		m_smear_points[0] =
-				smear::calculate_smear_linear_points(m_smear_right_position, Vector2Length(m_velocity), m_rotation, m_smear_rotation, 0.4, 0);
-		m_smear_points[1] =
-				smear::calculate_smear_linear_points(m_smear_left_position, Vector2Length(m_velocity), m_rotation, m_smear_rotation, 0.4, 0);
+		m_smear_points[0] = smear::calculate_smear_linear_points(
+				m_smear_right_position, Vector2Length(m_velocity), m_rotation, m_smear_rotation, 0.2 * vp->viewport_scale(), 0
+		);
+		m_smear_points[1] = smear::calculate_smear_linear_points(
+				m_smear_left_position, Vector2Length(m_velocity), m_rotation, m_smear_rotation, 0.2 * vp->viewport_scale(), 0
+		);
 
 		m_smear_wave_time += dt;
 		if ( m_smear_wave_time >= m_smear_wave_per_second / (Vector2Length(m_velocity) / m_max_velocity) ) {
@@ -260,38 +262,30 @@ void Player::initialize_cannon()
 	}
 
 	float cannon_width = 5.0f;
-	
-	float x_offset = 0;
-	if ( !m_cannon_container.empty() ) 
-	{
-		cannon_width = static_cast<float>(m_cannon_container[0]->texture().width);
 
+	float x_offset = 0;
+	if ( !m_cannon_container.empty() ) {
+		cannon_width = static_cast<float>(m_cannon_container[0]->texture().width);
 	}
 	x_offset = -((cannon_width + cannon_width / 4) * m_cannon_container.size()) / 2;
 
-	for ( int i = 0; i < 2; i++ ) 
-	{
+	for ( int i = 0; i < 2; i++ ) {
 		auto new_cannon = director->spawn_cannon(m_position);
 		m_cannon_container.push_back(new_cannon);
 		new_cannon->set_parent(m_shared_ptr_this);
 		new_cannon->set_parent_position_x_offset(x_offset);
 		new_cannon->set_parent_position_y_offset(new_cannon->texture().height);
-		if ( i == 0 ) 
-		{
+		if ( i == 0 ) {
 			new_cannon->set_positioning(Cannon::CannonPositioning::Left);
-		} 
-		else 
-		{
+		} else {
 			new_cannon->set_positioning(Cannon::CannonPositioning::Right);
 		}
 	}
-	
 }
 
 void Player::add_cannons(int amount)
 {
-	for ( int i = 0; i < amount; i++ ) 
-	{
+	for ( int i = 0; i < amount; i++ ) {
 		initialize_cannon();
 	}
 }

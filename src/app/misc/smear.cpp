@@ -218,7 +218,7 @@ void smear::calculate_smear_wave_points(
 	}
 
 	for ( int i = 0; i < smear_waves.size(); i++ ) {
-		if ( smear_waves[i] > 0 ) {
+		if ( smear_waves.at(i) > 0 ) {
 			switch ( smear_type_of_smear_points ) {
 				case linear_points:
 					(*smear_wave_points)[i].p1 = GetSplinePointBezierQuad(
@@ -264,12 +264,15 @@ void smear::draw_smear_wave_between_smears(
 		float smear_wave_line_thickness, float smear_wave_line_thickness_falloff, Color smear_wave_color
 )
 {
-	for ( int i = 0; i < smear_wave_points.size(); i++ ) {
-		if ( smear_waves[i] > 0 ) {
+	if ( smear_wave_points.size() != smear_waves.size())
+		return;
 
-			Vector2 p1 = smear_wave_points[i].p1;
-			Vector2 c2 = smear_wave_points[i].c2;
-			Vector2 p3 = smear_wave_points[i].p4;
+	for ( int i = 0; i < smear_wave_points.size(); i++ ) {
+		if ( smear_waves.at(i) > 0 ) {
+
+			Vector2 p1 = smear_wave_points.at(i).p1;
+			Vector2 c2 = smear_wave_points.at(i).c2;
+			Vector2 p3 = smear_wave_points.at(i).p4;
 
 			const float step = 1.0f / SPLINE_SEGMENT_DIVISIONS;
 
