@@ -107,6 +107,9 @@ Inheritance diagram for FortunaDirector:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr class="memitem:aa39f8e3b9fb7b600805f366e17ab6370" id="r_aa39f8e3b9fb7b600805f366e17ab6370"><td class="memItemLeft" align="right" valign="top"><a id="aa39f8e3b9fb7b600805f366e17ab6370" name="aa39f8e3b9fb7b600805f366e17ab6370"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>initialize_entities</b> ()</td></tr>
+<tr class="separator:aa39f8e3b9fb7b600805f366e17ab6370"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6b01cd3802b121d85bd4bdaf8af3388a" id="r_a6b01cd3802b121d85bd4bdaf8af3388a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFortunaDirector.html#a6b01cd3802b121d85bd4bdaf8af3388a">update</a> (float dt) override</td></tr>
 <tr class="separator:a6b01cd3802b121d85bd4bdaf8af3388a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa1e961eba3653c01b2a79fde72de8d2d" id="r_aa1e961eba3653c01b2a79fde72de8d2d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFortunaDirector.html#aa1e961eba3653c01b2a79fde72de8d2d">draw_debug</a> () override</td></tr>
@@ -120,10 +123,37 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>destroy_player</b> (s
 <tr class="memitem:a03bd2f0791aefb8a9e834a252225f52c" id="r_a03bd2f0791aefb8a9e834a252225f52c"><td class="memItemLeft" align="right" valign="top"><a id="a03bd2f0791aefb8a9e834a252225f52c" name="a03bd2f0791aefb8a9e834a252225f52c"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>sync_player_entities</b> ()</td></tr>
 <tr class="separator:a03bd2f0791aefb8a9e834a252225f52c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab144418a39e5cca6e2d2f49761639405" id="r_ab144418a39e5cca6e2d2f49761639405"><td class="memItemLeft" align="right" valign="top"><a id="ab144418a39e5cca6e2d2f49761639405" name="ab144418a39e5cca6e2d2f49761639405"></a>
+std::shared_ptr&lt; <a class="el" href="classProjectile.html">Projectile</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>spawn_projectile</b> (const Vector2 &amp;position)</td></tr>
+<tr class="separator:ab144418a39e5cca6e2d2f49761639405"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a46f6f4fd57889a6c560b8a4acc99f8bb" id="r_a46f6f4fd57889a6c560b8a4acc99f8bb"><td class="memItemLeft" align="right" valign="top"><a id="a46f6f4fd57889a6c560b8a4acc99f8bb" name="a46f6f4fd57889a6c560b8a4acc99f8bb"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>destroy_projectile</b> (std::shared_ptr&lt; <a class="el" href="classProjectile.html">Projectile</a> &gt; projectile)</td></tr>
+<tr class="separator:a46f6f4fd57889a6c560b8a4acc99f8bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adb7ae3f8d61886c0252e259045bd82ba" id="r_adb7ae3f8d61886c0252e259045bd82ba"><td class="memItemLeft" align="right" valign="top"><a id="adb7ae3f8d61886c0252e259045bd82ba" name="adb7ae3f8d61886c0252e259045bd82ba"></a>
+std::shared_ptr&lt; <a class="el" href="classCannon.html">Cannon</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>spawn_cannon</b> (const Vector2 &amp;position)</td></tr>
+<tr class="separator:adb7ae3f8d61886c0252e259045bd82ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a20ee669e5816eef26d9a2f0c159fa0bc" id="r_a20ee669e5816eef26d9a2f0c159fa0bc"><td class="memItemLeft" align="right" valign="top"><a id="a20ee669e5816eef26d9a2f0c159fa0bc" name="a20ee669e5816eef26d9a2f0c159fa0bc"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>destroy_cannon</b> (std::shared_ptr&lt; <a class="el" href="classCannon.html">Cannon</a> &gt; cannon)</td></tr>
+<tr class="separator:a20ee669e5816eef26d9a2f0c159fa0bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaf887622ea8df99e117708ea0171e505" id="r_aaf887622ea8df99e117708ea0171e505"><td class="memItemLeft" align="right" valign="top"><a id="aaf887622ea8df99e117708ea0171e505" name="aaf887622ea8df99e117708ea0171e505"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>upgrade_player_fire_rate</b> (float amount)</td></tr>
+<tr class="separator:aaf887622ea8df99e117708ea0171e505"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adaba6669929c2a78761d4cb96ac5339c" id="r_adaba6669929c2a78761d4cb96ac5339c"><td class="memItemLeft" align="right" valign="top"><a id="adaba6669929c2a78761d4cb96ac5339c" name="adaba6669929c2a78761d4cb96ac5339c"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>upgrade_player_projectile_speed</b> (float amount)</td></tr>
+<tr class="separator:adaba6669929c2a78761d4cb96ac5339c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0e872a0d1cf4e3efb69646eb5b873d2f" id="r_a0e872a0d1cf4e3efb69646eb5b873d2f"><td class="memItemLeft" align="right" valign="top"><a id="a0e872a0d1cf4e3efb69646eb5b873d2f" name="a0e872a0d1cf4e3efb69646eb5b873d2f"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>upgrade_player_fire_range</b> (float amount)</td></tr>
+<tr class="separator:a0e872a0d1cf4e3efb69646eb5b873d2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae91ec1debf081a5806f83d11d00dc99c" id="r_ae91ec1debf081a5806f83d11d00dc99c"><td class="memItemLeft" align="right" valign="top"><a id="ae91ec1debf081a5806f83d11d00dc99c" name="ae91ec1debf081a5806f83d11d00dc99c"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>upgrade_player_add_cannon</b> (int amount)</td></tr>
+<tr class="separator:ae91ec1debf081a5806f83d11d00dc99c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classPSInterfaces_1_1IEntity"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classPSInterfaces_1_1IEntity')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classPSInterfaces_1_1IEntity.html">PSInterfaces::IEntity</a></td></tr>
 <tr class="memitem:a817942d790f3a6178098cb99206bc125 inherit pub_methods_classPSInterfaces_1_1IEntity" id="r_a817942d790f3a6178098cb99206bc125"><td class="memItemLeft" align="right" valign="top">
 &#160;</td><td class="memItemRight" valign="bottom"><b>IEntity</b> (const std::string &amp;ident)</td></tr>
 <tr class="separator:a817942d790f3a6178098cb99206bc125 inherit pub_methods_classPSInterfaces_1_1IEntity"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adedbc4a8f60f732c1c7772d7c5ac6732 inherit pub_methods_classPSInterfaces_1_1IEntity" id="r_adedbc4a8f60f732c1c7772d7c5ac6732"><td class="memItemLeft" align="right" valign="top">
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>is_active</b> ()</td></tr>
+<tr class="separator:adedbc4a8f60f732c1c7772d7c5ac6732 inherit pub_methods_classPSInterfaces_1_1IEntity"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af981a0b96f5bd9936b229afe84b66165 inherit pub_methods_classPSInterfaces_1_1IEntity" id="r_af981a0b96f5bd9936b229afe84b66165"><td class="memItemLeft" align="right" valign="top">
 void&#160;</td><td class="memItemRight" valign="bottom"><b>add_event_manager</b> (const <a class="el" href="classPSInterfaces_1_1Events_1_1IEventManager.html">Events::IEventManager</a> *manager)</td></tr>
 <tr class="separator:af981a0b96f5bd9936b229afe84b66165 inherit pub_methods_classPSInterfaces_1_1IEntity"><td class="memSeparator" colspan="2">&#160;</td></tr>

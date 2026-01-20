@@ -11,9 +11,11 @@ var hierarchy =
       [ "FortunaDirector", "classFortunaDirector.html", null ],
       [ "PSInterfaces::IRenderable", "classPSInterfaces_1_1IRenderable.html", [
         [ "Body", "classBody.html", null ],
+        [ "Cannon", "classCannon.html", null ],
         [ "Fin", "classFin.html", null ],
         [ "PSCore::Viewport", "classPSCore_1_1Viewport.html", null ],
         [ "Player", "classPlayer.html", null ],
+        [ "Projectile", "classProjectile.html", null ],
         [ "Shark", "classShark.html", null ]
       ] ]
     ] ],
