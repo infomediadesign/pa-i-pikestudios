@@ -2,10 +2,11 @@
 
 #include <cmath>
 #include <imgui.h>
+#include "psinterfaces/entity.h"
 
 using PSCore::Viewport;
 
-Viewport::Viewport()
+Viewport::Viewport() : PSInterfaces::IEntity("viewport")
 {
 	propose_z_index(100000);
 }

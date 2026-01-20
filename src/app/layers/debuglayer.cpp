@@ -3,7 +3,8 @@
 #include <cstdint>
 #include <imgui.h>
 #include <rlImGui.h>
-#include "pscore/application.h"
+#include <pscore/application.h>
+#include <pscore/viewport.h>
 
 DebugLayer::DebugLayer()
 {
