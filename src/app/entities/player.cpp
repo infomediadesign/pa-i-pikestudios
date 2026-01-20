@@ -1,5 +1,6 @@
 #include "player.h"
 #include <raylib.h>
+#include <entities/director.h>
 
 #include <pscore/application.h>
 #include <pscore/viewport.h>
@@ -29,6 +30,16 @@ Player::Player() : PSInterfaces::IEntity("player")
 	set_animation_values(2, {1, 4}, 4);
 	//
 	//
+}
+
+bool Player::is_active()
+{
+	return m_is_active;
+}
+
+void Player::set_is_active(bool active)
+{
+	m_is_active = active;
 }
 
 Vector2 Player::position()
@@ -191,16 +202,65 @@ void Player::calculate_animation(const float& dt)
 	}
 }
 
-void Player::render()
+void Player::initialize_cannon()
 {
-	m_source = {
-			m_animation_frame * (float) m_texture.width / m_sprite_sheet.max(), m_animation_count * (float) m_texture.height / m_sprite_sheet.size(),
-			(float) m_texture.width / m_sprite_sheet.max(), (float) m_texture.height / m_sprite_sheet.size()
-	};
-	if ( auto& vp = gApp()->viewport() ) {
-		vp->draw_in_viewport(m_texture, m_source, m_position, m_rotation + m_rotation_offset, WHITE);
+	auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
+	if ( !director ) {
+		return;
+	}
+
+	float cannon_width = 5.0f;
+	
+	float x_offset = 0;
+	if ( !m_cannon_container.empty() ) 
+	{
+		cannon_width = static_cast<float>(m_cannon_container[0]->texture().width);
+
+	}
+	x_offset = -((cannon_width + cannon_width / 4) * m_cannon_container.size()) / 2;
+
+	for ( int i = 0; i < 2; i++ ) 
+	{
+		auto new_cannon = director->spawn_cannon(m_position);
+		m_cannon_container.push_back(new_cannon);
+		new_cannon->set_parent(m_shared_ptr_this);
+		new_cannon->set_parent_position_x_offset(x_offset);
+		new_cannon->set_parent_position_y_offset(new_cannon->texture().height);
+		if ( i == 0 ) 
+		{
+			new_cannon->set_positioning(Cannon::CannonPositioning::Left);
+		} 
+		else 
+		{
+			new_cannon->set_positioning(Cannon::CannonPositioning::Right);
+		}
+	}
+	
+}
+
+void Player::add_cannons(int amount)
+{
+	for ( int i = 0; i < amount; i++ ) 
+	{
+		initialize_cannon();
 	}
 }
+
+void Player::render()
+{
+	if ( m_is_active ) 
+	{
+		m_source = {
+				m_animation_frame * (float) m_texture.width / m_sprite_sheet.max(),
+				m_animation_count * (float) m_texture.height / m_sprite_sheet.size(), (float) m_texture.width / m_sprite_sheet.max(),
+				(float) m_texture.height / m_sprite_sheet.size()
+		};
+		if ( auto& vp = gApp()->viewport() ) {
+			vp->draw_in_viewport(m_texture, m_source, m_position, m_rotation + m_rotation_offset, WHITE);
+		}
+	}
+
+} 
 
 // Border Collision Variables and Methods
 void Player::set_border_collision_active_horizontal(bool active)
@@ -247,4 +307,24 @@ float Player::dest_height() const
 	// 	return m_source.height * vp->viewport_scale();
 	// }
 	return m_source.height;
+}
+
+std::vector<std::shared_ptr<Cannon>>& Player::cannon_container()
+{
+	return m_cannon_container;
+}
+
+void Player::set_cannon_container(const std::vector<std::shared_ptr<Cannon>>& container)
+{
+	m_cannon_container = container;
+}
+
+std::shared_ptr<Player> Player::shared_ptr_this()
+{
+	return m_shared_ptr_this;
+}
+
+void Player::set_shared_ptr_this(std::shared_ptr<Player> ptr)
+{
+	m_shared_ptr_this = ptr;
 }
