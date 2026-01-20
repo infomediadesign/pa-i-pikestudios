@@ -204,15 +204,24 @@ namespace misc {
 		{
 			if ( wrapAroundMode != OnScreen )
 				return;
-
+			
 			auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
 			if ( !director )
 				return;
-
+				
 			for ( auto& entity: gApp()->entities() ) {
 				if ( auto player = std::dynamic_pointer_cast<Player>(entity.lock()) ) {
-					if ( misc::map::is_off_screen(*player) )
+					if ( misc::map::is_off_screen(*player) ) 
+					{
 						director->destroy_player(player);
+						//player->set_is_active(false);
+						/* 
+						for ( auto& cannons: player->cannon_container() ) 
+						{
+							cannons->set_is_active(false);
+						}
+						*/
+					}
 				}
 			}
 		}
