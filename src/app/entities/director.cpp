@@ -15,6 +15,7 @@ class FortunaDirectorPriv
 	bool on_screen_warp_around = true;
 
 	std::shared_ptr<Shark> test_shark = std::make_shared<Shark>();
+	std::shared_ptr<Shark> test_shark2 = std::make_shared<Shark>();
 };
 
 FortunaDirector::FortunaDirector() : PSInterfaces::IEntity("fortuna_director")
@@ -26,12 +27,15 @@ FortunaDirector::FortunaDirector() : PSInterfaces::IEntity("fortuna_director")
 
 	gApp()->register_entity(initial_player);
 	gApp()->register_entity(_p->test_shark);
+	gApp()->register_entity(_p->test_shark2);
 
 	if ( auto app_layer = gApp()->get_layer<AppLayer>() ) {
 		app_layer->renderer()->submit_renderable<Player>(initial_player);
 		app_layer->renderer()->submit_renderable<Shark>(_p->test_shark);
+		app_layer->renderer()->submit_renderable<Shark>(_p->test_shark2);
 	}
 
+	_p->test_shark2->set_pos({300, 300});
 }
 
 FortunaDirector::~FortunaDirector()

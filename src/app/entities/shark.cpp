@@ -1,14 +1,15 @@
+#include <entities/player.h>
 #include <entities/shark.h>
+#include <imgui.h>
 #include <memory>
+#include <pscore/application.h>
+#include <pscore/utils.h>
 #include <pscore/viewport.h>
+#include <psinterfaces/entity.h>
 #include <psinterfaces/renderable.h>
 #include <raylib.h>
 #include <raymath.h>
-#include "entities/player.h"
-#include "pscore/application.h"
-#include "pscore/utils.h"
-#include "psinterfaces/entity.h"
-#include "utilities.h"
+#include <utilities.h>
 
 //
 // Fin of Shark
@@ -84,14 +85,14 @@ Shark::Shark() : PSInterfaces::IEntity("shark")
 
 	m_body->propose_z_index(-1);
 	m_fin->propose_z_index(1);
-	
+
 	// Has an droppable upgrade
 	m_marked = PSUtils::gen_rand(1, 100) > 50;
 }
 
 Shark::~Shark()
 {
-	if (m_marked) {
+	if ( m_marked ) {
 		PS_LOG(LOG_INFO, "Dropped an upgrade");
 		// TODO: implement loot drop
 	}
@@ -127,7 +128,7 @@ void Shark::update(float dt)
 		}
 		case Pursuing: {
 			m_state_string = "pursuing";
-			
+
 			m_speed = 100;
 			if ( distance > 20.0f ) // stop when close enough
 			{
@@ -151,7 +152,7 @@ void Shark::update(float dt)
 			if ( distance > 40.0f )
 				m_state = State::Pursuing;
 
-			m_speed = 20;
+			m_speed	  = 20;
 			direction = Vector2Normalize(direction);
 			direction = Vector2Negate(direction);
 			m_pos	  = Vector2Add(m_pos, Vector2Scale(direction, m_speed * dt));
@@ -189,4 +190,9 @@ void Shark::render()
 {
 	m_body->render();
 	m_fin->render();
+}
+
+void Shark::set_pos(const Vector2& pos)
+{
+	m_pos = pos;
 }

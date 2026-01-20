@@ -38,6 +38,10 @@ namespace PSInterfaces {
 			for ( auto manager: event_managers_ )
 				manager->notify(event);
 		}
+		
+		const std::string ident() const {
+			return ident_;
+		}
 
 	protected:
 		std::vector<const Events::IEventManager*> event_managers_;

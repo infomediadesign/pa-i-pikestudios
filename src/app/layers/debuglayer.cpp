@@ -2,9 +2,9 @@
 
 #include <cstdint>
 #include <imgui.h>
-#include <rlImGui.h>
 #include <pscore/application.h>
 #include <pscore/viewport.h>
+#include <rlImGui.h>
 
 DebugLayer::DebugLayer()
 {
@@ -30,20 +30,44 @@ void DebugLayer::on_render()
 	); // set ImGuiDockNodeFlags_PassthruCentralNode so that we can see the raylib contents behind the dockspace
 #endif
 
+	ImGui::GetIO().ConfigDebugHighlightIdConflicts = false;
+
 	ImGui::Begin("Game Debug");
 
 	ImGui::Text("%s", TextFormat("CURRENT FPS: %i", static_cast<int64_t>(1.0f / m_dt)));
 
-	if ( auto director = gApp()->game_director() )
-		director->draw_debug();
+	ImGui::Checkbox("Draw all", &m_draw_all);
 
-	if ( auto& viewport = gApp()->viewport() )
-		viewport->draw_debug();
+	if ( ImGui::BeginTabBar("MyTabBar", ImGuiTabBarFlags_None) ) {
 
-	for ( auto entity: gApp()->entities() ) {
-		if ( auto locked_entity = entity.lock() ) {
-			locked_entity->draw_debug();
+		if ( m_draw_all || ImGui::BeginTabItem("Direktor") ) {
+			if ( auto director = gApp()->game_director() )
+				director->draw_debug();
+
+			if ( !m_draw_all )
+				ImGui::EndTabItem();
 		}
+
+		if ( m_draw_all || ImGui::BeginTabItem("Viewport") ) {
+			if ( auto& viewport = gApp()->viewport() )
+				viewport->draw_debug();
+
+			if ( !m_draw_all )
+				ImGui::EndTabItem();
+		}
+
+		for ( auto entity: gApp()->entities() ) {
+			if ( auto locked_entity = entity.lock() ) {
+				if ( m_draw_all || ImGui::BeginTabItem(locked_entity->ident().c_str()) ) {
+					locked_entity->draw_debug();
+
+					if ( !m_draw_all )
+						ImGui::EndTabItem();
+				}
+			}
+		}
+
+		ImGui::EndTabBar();
 	}
 
 	ImGui::End();

@@ -5,7 +5,7 @@
 #include <psinterfaces/renderable.h>
 #include <raylib.h>
 #include <string>
-#include "pscore/sprite.h"
+#include <pscore/sprite.h>
 
 class Fin;
 class Body;
@@ -21,6 +21,8 @@ public:
 	void update(float dt) override;
 	void render() override;
 	void draw_debug() override;
+	
+	void set_pos(const Vector2& pos);
 
 	enum State { Idle = 0, Pursuing, Attacking, Retreat };
 
