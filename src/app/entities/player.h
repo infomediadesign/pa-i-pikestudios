@@ -1,14 +1,17 @@
 #pragma once
 
-#include <psinterfaces/entity.h>
 #include <psinterfaces/renderable.h>
 
 #include <raylib.h>
 #include <valarray>
+#include <entities/cannon.h>
 
 class Player : public PSInterfaces::IRenderable
+
+
 {
 public:
+
 	Player();
 
 	Vector2 position();
@@ -52,6 +55,10 @@ public:
 
 	void render() override;
 
+	bool is_active() override;
+
+	void set_is_active(bool active);
+
 	// Borderinteration Variables and Methods
 	void set_border_collision_active_horizontal(bool active);
 
@@ -68,6 +75,17 @@ public:
 	float dest_width() const;
 
 	float dest_height() const;
+
+	// Cannons & Projectiles Variables and Methods
+	std::vector<std::shared_ptr<Cannon>>& cannon_container();
+	void set_cannon_container(const std::vector<std::shared_ptr<Cannon>>& container);
+
+	std::shared_ptr<Player> shared_ptr_this();
+	void set_shared_ptr_this(std::shared_ptr<Player> ptr);
+
+	void initialize_cannon();
+
+	void add_cannons(int amount);
 
 
 private:
@@ -104,4 +122,10 @@ private:
 	bool m_border_collision_active_horizontal = false;
 	bool m_border_collision_active_vertical	  = false;
 	bool m_is_clone							  = false;
+
+	// Variabels and Methods for Cannons & Projectiles
+	std::vector<std::shared_ptr<Cannon>> m_cannon_container;
+	std::shared_ptr<Player> m_shared_ptr_this;
+	bool m_is_active = true;
+
 };

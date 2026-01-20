@@ -21,6 +21,11 @@ namespace PSInterfaces {
 
 		virtual void draw_debug() {};
 
+		virtual bool is_active()
+		{
+			return true;
+		}
+
 		void add_event_manager(const Events::IEventManager* manager)
 		{
 			if ( std::find(event_managers_.begin(), event_managers_.end(), manager) == event_managers_.end() ) {
