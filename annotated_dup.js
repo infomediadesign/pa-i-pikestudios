@@ -25,6 +25,9 @@ var annotated_dup =
       [ "IRenderable", "classPSInterfaces_1_1IRenderable.html", null ],
       [ "Layer", "classPSInterfaces_1_1Layer.html", null ]
     ] ],
+    [ "smear", null, [
+      [ "SmearPoints", "structsmear_1_1SmearPoints.html", null ]
+    ] ],
     [ "AppLayer", "classAppLayer.html", null ],
     [ "AppLayerPriv", "classAppLayerPriv.html", null ],
     [ "Body", "classBody.html", null ],

@@ -108,6 +108,10 @@ Inheritance diagram for Player:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr class="memitem:abe2902b7decc38472183a08977eeb57f" id="r_abe2902b7decc38472183a08977eeb57f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlayer.html#abe2902b7decc38472183a08977eeb57f">update</a> (float dt) override</td></tr>
+<tr class="separator:abe2902b7decc38472183a08977eeb57f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abc5e1bf310b37b68566bd2c0a0932424" id="r_abc5e1bf310b37b68566bd2c0a0932424"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlayer.html#abc5e1bf310b37b68566bd2c0a0932424">render</a> () override</td></tr>
+<tr class="separator:abc5e1bf310b37b68566bd2c0a0932424"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adb82fd62af0f9e8ff723dbfbe390682f" id="r_adb82fd62af0f9e8ff723dbfbe390682f"><td class="memItemLeft" align="right" valign="top"><a id="adb82fd62af0f9e8ff723dbfbe390682f" name="adb82fd62af0f9e8ff723dbfbe390682f"></a>
 Vector2&#160;</td><td class="memItemRight" valign="bottom"><b>position</b> ()</td></tr>
 <tr class="separator:adb82fd62af0f9e8ff723dbfbe390682f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -132,37 +136,33 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>set_position</b> (con
 <tr class="memitem:a44e9e6b972ad8689290e63fb0cddaa07" id="r_a44e9e6b972ad8689290e63fb0cddaa07"><td class="memItemLeft" align="right" valign="top"><a id="a44e9e6b972ad8689290e63fb0cddaa07" name="a44e9e6b972ad8689290e63fb0cddaa07"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>set_velocity</b> (const Vector2 &amp;velocity)</td></tr>
 <tr class="separator:a44e9e6b972ad8689290e63fb0cddaa07"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8bc78749be76a8f0131b4cba3fdeed50" id="r_a8bc78749be76a8f0131b4cba3fdeed50"><td class="memItemLeft" align="right" valign="top"><a id="a8bc78749be76a8f0131b4cba3fdeed50" name="a8bc78749be76a8f0131b4cba3fdeed50"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>set_target_velocity</b> (const float &amp;target_velocity)</td></tr>
-<tr class="separator:a8bc78749be76a8f0131b4cba3fdeed50"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa5bbd4c735e0be65b5d5f7fde782ebd2" id="r_aa5bbd4c735e0be65b5d5f7fde782ebd2"><td class="memItemLeft" align="right" valign="top"><a id="aa5bbd4c735e0be65b5d5f7fde782ebd2" name="aa5bbd4c735e0be65b5d5f7fde782ebd2"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>set_max_velocity</b> (const float &amp;max_velocity)</td></tr>
-<tr class="separator:aa5bbd4c735e0be65b5d5f7fde782ebd2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8e104afa087bf94999414d53f4596c11" id="r_a8e104afa087bf94999414d53f4596c11"><td class="memItemLeft" align="right" valign="top"><a id="a8e104afa087bf94999414d53f4596c11" name="a8e104afa087bf94999414d53f4596c11"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>set_rotation</b> (const float &amp;rotation)</td></tr>
-<tr class="separator:a8e104afa087bf94999414d53f4596c11"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a52e6376488185fcb29cdca9e26928d88" id="r_a52e6376488185fcb29cdca9e26928d88"><td class="memItemLeft" align="right" valign="top"><a id="a52e6376488185fcb29cdca9e26928d88" name="a52e6376488185fcb29cdca9e26928d88"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>set_target_rotation</b> (const float &amp;target_rotation)</td></tr>
-<tr class="separator:a52e6376488185fcb29cdca9e26928d88"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0c92ca438a70b4c2d9a0bb05e793be93" id="r_a0c92ca438a70b4c2d9a0bb05e793be93"><td class="memItemLeft" align="right" valign="top"><a id="a0c92ca438a70b4c2d9a0bb05e793be93" name="a0c92ca438a70b4c2d9a0bb05e793be93"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>set_interpolation_values</b> (const float &amp;acceleration_fade, const float &amp;deceleration_fade, const float &amp;rotation_fade, const float &amp;input_velocity_multiplier, const float &amp;input_rotation_multiplier)</td></tr>
-<tr class="separator:a0c92ca438a70b4c2d9a0bb05e793be93"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae1d5b64f8da8389a26299ef1c9b7f567" id="r_ae1d5b64f8da8389a26299ef1c9b7f567"><td class="memItemLeft" align="right" valign="top"><a id="ae1d5b64f8da8389a26299ef1c9b7f567" name="ae1d5b64f8da8389a26299ef1c9b7f567"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>calculate_movement</b> (const float &amp;dt)</td></tr>
-<tr class="separator:ae1d5b64f8da8389a26299ef1c9b7f567"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0bae51648ce7e96ae0755aee74cf2df0" id="r_a0bae51648ce7e96ae0755aee74cf2df0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlayer.html#a0bae51648ce7e96ae0755aee74cf2df0">update</a> (const float dt) override</td></tr>
-<tr class="separator:a0bae51648ce7e96ae0755aee74cf2df0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acfd6faf613846517e47d57b110f5f5c9" id="r_acfd6faf613846517e47d57b110f5f5c9"><td class="memItemLeft" align="right" valign="top"><a id="acfd6faf613846517e47d57b110f5f5c9" name="acfd6faf613846517e47d57b110f5f5c9"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>set_texture_values</b> (const Texture2D &amp;texture, const float &amp;rotation_offset, const float &amp;base_scale)</td></tr>
-<tr class="separator:acfd6faf613846517e47d57b110f5f5c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3271ad472f28228cdbc17e18228544d8" id="r_a3271ad472f28228cdbc17e18228544d8"><td class="memItemLeft" align="right" valign="top"><a id="a3271ad472f28228cdbc17e18228544d8" name="a3271ad472f28228cdbc17e18228544d8"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>set_animation_values</b> (const int &amp;animation_max_count, const std::valarray&lt; int &gt; &amp;sprite_sheet, const float &amp;animation_speed)</td></tr>
-<tr class="separator:a3271ad472f28228cdbc17e18228544d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a286980b5b8c9292cfad375b8c1ba6948" id="r_a286980b5b8c9292cfad375b8c1ba6948"><td class="memItemLeft" align="right" valign="top"><a id="a286980b5b8c9292cfad375b8c1ba6948" name="a286980b5b8c9292cfad375b8c1ba6948"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>calculate_animation</b> (const float &amp;dt)</td></tr>
-<tr class="separator:a286980b5b8c9292cfad375b8c1ba6948"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abc5e1bf310b37b68566bd2c0a0932424" id="r_abc5e1bf310b37b68566bd2c0a0932424"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlayer.html#abc5e1bf310b37b68566bd2c0a0932424">render</a> () override</td></tr>
-<tr class="separator:abc5e1bf310b37b68566bd2c0a0932424"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a994560af880ca8bef618856f52f596c2" id="r_a994560af880ca8bef618856f52f596c2"><td class="memItemLeft" align="right" valign="top"><a id="a994560af880ca8bef618856f52f596c2" name="a994560af880ca8bef618856f52f596c2"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set_target_velocity</b> (float target_velocity)</td></tr>
+<tr class="separator:a994560af880ca8bef618856f52f596c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9576ff45f09a81505d4aa9ea11102509" id="r_a9576ff45f09a81505d4aa9ea11102509"><td class="memItemLeft" align="right" valign="top"><a id="a9576ff45f09a81505d4aa9ea11102509" name="a9576ff45f09a81505d4aa9ea11102509"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set_max_velocity</b> (float max_velocity)</td></tr>
+<tr class="separator:a9576ff45f09a81505d4aa9ea11102509"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac384e6024af6931883b048b269abb50c" id="r_ac384e6024af6931883b048b269abb50c"><td class="memItemLeft" align="right" valign="top"><a id="ac384e6024af6931883b048b269abb50c" name="ac384e6024af6931883b048b269abb50c"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set_rotation</b> (float rotation)</td></tr>
+<tr class="separator:ac384e6024af6931883b048b269abb50c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae0340921a2cca1ac1144b6f207470f8f" id="r_ae0340921a2cca1ac1144b6f207470f8f"><td class="memItemLeft" align="right" valign="top"><a id="ae0340921a2cca1ac1144b6f207470f8f" name="ae0340921a2cca1ac1144b6f207470f8f"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set_target_rotation</b> (float target_rotation)</td></tr>
+<tr class="separator:ae0340921a2cca1ac1144b6f207470f8f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3154becdc907c07ff2a6359e9e4682cf" id="r_a3154becdc907c07ff2a6359e9e4682cf"><td class="memItemLeft" align="right" valign="top"><a id="a3154becdc907c07ff2a6359e9e4682cf" name="a3154becdc907c07ff2a6359e9e4682cf"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set_interpolation_values</b> (float acceleration_fade, float deceleration_fade, float rotation_fade, float input_velocity_multiplier, float input_rotation_multiplier)</td></tr>
+<tr class="separator:a3154becdc907c07ff2a6359e9e4682cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab932852c9a02bfa3e638b026031ddef8" id="r_ab932852c9a02bfa3e638b026031ddef8"><td class="memItemLeft" align="right" valign="top"><a id="ab932852c9a02bfa3e638b026031ddef8" name="ab932852c9a02bfa3e638b026031ddef8"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>calculate_movement</b> (float dt)</td></tr>
+<tr class="separator:ab932852c9a02bfa3e638b026031ddef8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afdf976fa9b973af1782405e5245938b4" id="r_afdf976fa9b973af1782405e5245938b4"><td class="memItemLeft" align="right" valign="top"><a id="afdf976fa9b973af1782405e5245938b4" name="afdf976fa9b973af1782405e5245938b4"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set_texture_values</b> (const Texture2D &amp;texture, float rotation_offset)</td></tr>
+<tr class="separator:afdf976fa9b973af1782405e5245938b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad313e36cdfdb21338b805be7ab402735" id="r_ad313e36cdfdb21338b805be7ab402735"><td class="memItemLeft" align="right" valign="top"><a id="ad313e36cdfdb21338b805be7ab402735" name="ad313e36cdfdb21338b805be7ab402735"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set_animation_values</b> (int animation_max_count, const std::valarray&lt; int &gt; &amp;sprite_sheet, float animation_speed)</td></tr>
+<tr class="separator:ad313e36cdfdb21338b805be7ab402735"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7f87724472b65e86ef5dbbac2f950f5d" id="r_a7f87724472b65e86ef5dbbac2f950f5d"><td class="memItemLeft" align="right" valign="top"><a id="a7f87724472b65e86ef5dbbac2f950f5d" name="a7f87724472b65e86ef5dbbac2f950f5d"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>calculate_animation</b> (float dt)</td></tr>
+<tr class="separator:a7f87724472b65e86ef5dbbac2f950f5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0f88a44e2cb1c01f0451515271f58d06" id="r_a0f88a44e2cb1c01f0451515271f58d06"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlayer.html#a0f88a44e2cb1c01f0451515271f58d06">is_active</a> () override</td></tr>
 <tr class="separator:a0f88a44e2cb1c01f0451515271f58d06"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a58da2cced6d584d4c32436ca985c87ba" id="r_a58da2cced6d584d4c32436ca985c87ba"><td class="memItemLeft" align="right" valign="top"><a id="a58da2cced6d584d4c32436ca985c87ba" name="a58da2cced6d584d4c32436ca985c87ba"></a>
@@ -306,8 +306,8 @@ const std::string&#160;</td><td class="memItemRight" valign="bottom"><b>ident_</
 
 </div>
 </div>
-<a id="a0bae51648ce7e96ae0755aee74cf2df0" name="a0bae51648ce7e96ae0755aee74cf2df0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0bae51648ce7e96ae0755aee74cf2df0">&#9670;&#160;</a></span>update()</h2>
+<a id="abe2902b7decc38472183a08977eeb57f" name="abe2902b7decc38472183a08977eeb57f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abe2902b7decc38472183a08977eeb57f">&#9670;&#160;</a></span>update()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -318,7 +318,7 @@ const std::string&#160;</td><td class="memItemRight" valign="bottom"><b>ident_</
         <tr>
           <td class="memname">void Player::update </td>
           <td>(</td>
-          <td class="paramtype">const float&#160;</td>
+          <td class="paramtype">float&#160;</td>
           <td class="paramname"><em>dt</em></td><td>)</td>
           <td></td>
         </tr>
