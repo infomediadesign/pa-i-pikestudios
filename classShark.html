@@ -90,6 +90,7 @@ $(document).ready(function(){initNavTree('classShark.html',''); initResizable();
 
 <div class="header">
   <div class="summary">
+<a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#friends">Friends</a> &#124;
 <a href="classShark-members.html">List of all members</a>  </div>
@@ -107,6 +108,15 @@ Inheritance diagram for Shark:</div>
   </map>
 </div></div>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
+Public Types</h2></td></tr>
+<tr class="memitem:a8b9bad4268b00c605265289b672bbf9e" id="r_a8b9bad4268b00c605265289b672bbf9e"><td class="memItemLeft" align="right" valign="top"><a id="a8b9bad4268b00c605265289b672bbf9e" name="a8b9bad4268b00c605265289b672bbf9e"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><b>State</b> { <b>Idle</b> = 0
+, <b>Pursuing</b>
+, <b>Attacking</b>
+, <b>Retreat</b>
+ }</td></tr>
+<tr class="separator:a8b9bad4268b00c605265289b672bbf9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ad24a5f386a2b663bc0bd6e8b83cdf6b8" id="r_ad24a5f386a2b663bc0bd6e8b83cdf6b8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classShark.html#ad24a5f386a2b663bc0bd6e8b83cdf6b8">update</a> (float dt) override</td></tr>
@@ -115,6 +125,9 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a5e73edce1d19e51819d7b49fe6f34ed8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a17d492cef0c60b2f1d5e308d79c2e586" id="r_a17d492cef0c60b2f1d5e308d79c2e586"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classShark.html#a17d492cef0c60b2f1d5e308d79c2e586">draw_debug</a> () override</td></tr>
 <tr class="separator:a17d492cef0c60b2f1d5e308d79c2e586"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afe3091e01dad62bd71c63d14c3630ab7" id="r_afe3091e01dad62bd71c63d14c3630ab7"><td class="memItemLeft" align="right" valign="top"><a id="afe3091e01dad62bd71c63d14c3630ab7" name="afe3091e01dad62bd71c63d14c3630ab7"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set_pos</b> (const Vector2 &amp;pos)</td></tr>
+<tr class="separator:afe3091e01dad62bd71c63d14c3630ab7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classPSInterfaces_1_1IRenderable"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classPSInterfaces_1_1IRenderable')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classPSInterfaces_1_1IRenderable.html">PSInterfaces::IRenderable</a></td></tr>
 <tr class="memitem:ab27dbdf6a0e7fda9f3d7da3cae80433d inherit pub_methods_classPSInterfaces_1_1IRenderable" id="r_ab27dbdf6a0e7fda9f3d7da3cae80433d"><td class="memItemLeft" align="right" valign="top">
 int&#160;</td><td class="memItemRight" valign="bottom"><b>z_index</b> ()</td></tr>
@@ -138,6 +151,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>remove_event_manager<
 <tr class="memitem:a4c4194e382ccd511d83934fb2a859086 inherit pub_methods_classPSInterfaces_1_1IEntity" id="r_a4c4194e382ccd511d83934fb2a859086"><td class="memItemLeft" align="right" valign="top">
 void&#160;</td><td class="memItemRight" valign="bottom"><b>notify_all</b> (const <a class="el" href="structPSInterfaces_1_1Events_1_1Event.html">Events::Event</a> &amp;event)</td></tr>
 <tr class="separator:a4c4194e382ccd511d83934fb2a859086 inherit pub_methods_classPSInterfaces_1_1IEntity"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2bad5078518c22b17e61d5c352d2f54e inherit pub_methods_classPSInterfaces_1_1IEntity" id="r_a2bad5078518c22b17e61d5c352d2f54e"><td class="memItemLeft" align="right" valign="top">
+const std::string&#160;</td><td class="memItemRight" valign="bottom"><b>ident</b> () const</td></tr>
+<tr class="separator:a2bad5078518c22b17e61d5c352d2f54e inherit pub_methods_classPSInterfaces_1_1IEntity"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="friends" name="friends"></a>
 Friends</h2></td></tr>
