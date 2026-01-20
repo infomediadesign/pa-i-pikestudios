@@ -28,7 +28,7 @@ Player::Player() : PSInterfaces::IEntity("player")
 	m_max_velocity = 200;
 	m_rotation	   = 0;
 	set_interpolation_values(6, 2, 4, 1500, 0.9);
-	set_texture_values(FETCH_SPRITE_TEXTURE(ident_), 90, 4);
+	set_texture_values(FETCH_SPRITE_TEXTURE(ident_), 90);
 	set_animation_values(2, {1, 4}, 4);
 	//
 	//
