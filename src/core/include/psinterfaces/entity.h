@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <vector>
 #include <psinterfaces/events.h>
 
@@ -13,11 +14,17 @@ namespace PSInterfaces {
 	class IEntity
 	{
 	public:
+		explicit IEntity(const std::string& ident) : ident_(ident) {};
 		virtual ~IEntity() = default;
 
 		virtual void update(float dt) = 0;
 
 		virtual void draw_debug() {};
+
+		virtual bool is_active()
+		{
+			return true;
+		}
 
 		void add_event_manager(const Events::IEventManager* manager)
 		{
@@ -36,8 +43,13 @@ namespace PSInterfaces {
 			for ( auto manager: event_managers_ )
 				manager->notify(event);
 		}
+		
+		const std::string ident() const {
+			return ident_;
+		}
 
 	protected:
 		std::vector<const Events::IEventManager*> event_managers_;
+		const std::string ident_;
 	};
 } // namespace PSInterfaces

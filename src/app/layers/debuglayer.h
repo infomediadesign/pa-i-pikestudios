@@ -13,4 +13,5 @@ class DebugLayer : public PSInterfaces::Layer
 	
 	private:
 	float m_dt = 0;
+	bool m_draw_all = false;
 };

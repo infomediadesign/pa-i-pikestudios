@@ -14,7 +14,6 @@ namespace PSUtils {
 	int gen_rand(const int min, const int max);
 
 
-
 	// Raylib specific
 	void DrawTextBoxedSelectable(
 			Font font, const char* text, Rectangle rec, float fontSize, float spacing, bool wordWrap, Color tint, int selectStart, int selectLength,
@@ -23,4 +22,5 @@ namespace PSUtils {
 
 	void DrawTextBoxed(Font font, const char* text, Rectangle rec, float fontSize, float spacing, bool wordWrap, Color tint);
 
+	void DrawRectangleLinesRotated(Rectangle rec, float rotation, Color color);
 } // namespace PSUtils

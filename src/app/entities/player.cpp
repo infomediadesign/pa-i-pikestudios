@@ -1,17 +1,26 @@
 #include "player.h"
 #include <raylib.h>
+#include <entities/director.h>
 
 #include <pscore/application.h>
+#include <pscore/viewport.h>
+#include <pscore/sprite.h>
 #include <raymath.h>
 
 #include <layers/applayer.h>
+#include "psinterfaces/entity.h"
+#include <misc/smear.h>
+
+#include <coordinatesystem.h>
 
 #ifndef CALCULATION_VELOCITY_MIN
 #define CALCULATION_VELOCITY_MIN 1
 #endif
 
-Player::Player()
+Player::Player() : PSInterfaces::IEntity("player")
 {
+	Vector2 frame_grid{4, 2};
+	PRELOAD_TEXTURE(ident_, "ressources/SpaceShipSpriteSheet.png", frame_grid);
 
 	// WARNING: THIS IS ONLY FOR TESTING
 	if ( auto& vp = gApp()->viewport() ) {
@@ -20,9 +29,84 @@ Player::Player()
 	m_max_velocity = 200;
 	m_rotation	   = 0;
 	set_interpolation_values(6, 2, 4, 1500, 0.9);
-	set_texture_values(LoadTexture("ressources/SpaceShipSpriteSheet.png"), 90, 4);
+	set_texture_values(FETCH_SPRITE_TEXTURE(ident_), 90);
 	set_animation_values(2, {1, 4}, 4);
 	//
+	//
+}
+
+void Player::update(const float dt)
+{
+	if ( !m_is_clone ) {
+		// Input Functions to set Target Velocity and Target Rotation
+		if ( IsKeyDown(KEY_W) ) {
+			m_target_velocity += m_target_velocity < m_max_velocity ? m_input_velocity_multiplier * dt : 0;
+		}
+		if ( IsKeyDown(KEY_S) ) {
+			m_target_velocity -= m_target_velocity > 0 ? m_input_velocity_multiplier * dt : 0;
+		}
+		if ( IsKeyDown(KEY_D) && Vector2Length(m_velocity) > CALCULATION_VELOCITY_MIN ) {
+			m_target_rotation += m_input_rotation_multiplier * Vector2Length(m_velocity) * dt;
+		}
+		if ( IsKeyDown(KEY_A) && Vector2Length(m_velocity) > CALCULATION_VELOCITY_MIN ) {
+			m_target_rotation -= m_input_rotation_multiplier * Vector2Length(m_velocity) * dt;
+		}
+	}
+
+	calculate_movement(dt);
+
+	// Animation Calculation
+
+	calculate_animation(dt);
+
+	// Smear Calculation
+
+	smear::update_smear_rotation(&m_smear_rotation, m_rotation - m_target_rotation, 0.5, 10, dt);
+
+	if ( auto& vp = gApp()->viewport() ) {
+		Vector2 m_position_absolute = vp->position_viewport_to_global(m_position);
+		Vector2 m_smear_right_position =
+				coordinatesystem::point_relative_to_global_leftup(m_position_absolute, m_rotation, Vector2Scale({9, 8}, vp->viewport_scale()));
+		Vector2 m_smear_left_position =
+				coordinatesystem::point_relative_to_global_leftdown(m_position_absolute, m_rotation, Vector2Scale({9, 8}, vp->viewport_scale()));
+
+		m_smear_points[0] =
+				smear::calculate_smear_linear_points(m_smear_right_position, Vector2Length(m_velocity), m_rotation, m_smear_rotation, 0.4, 0);
+		m_smear_points[1] =
+				smear::calculate_smear_linear_points(m_smear_left_position, Vector2Length(m_velocity), m_rotation, m_smear_rotation, 0.4, 0);
+
+		m_smear_wave_time += dt;
+		if ( m_smear_wave_time >= m_smear_wave_per_second / (Vector2Length(m_velocity) / m_max_velocity) ) {
+			m_smear_wave_time = 0;
+			smear::send_smear_wave(&m_smear_wave, &m_smear_wave_index, 0.1, Vector2Length(m_velocity), m_max_velocity, dt);
+		}
+		smear::update_smear_wave(&m_smear_wave, 1, Vector2Length(m_velocity), m_max_velocity, dt);
+		smear::calculate_smear_wave_points(
+				&m_smear_wave_points, m_smear_wave, m_smear_points, {0, 1}, m_smear_rotation, 10, Vector2Length(m_velocity), m_max_velocity,
+				smear::linear_points
+		);
+	}
+}
+
+void Player::render()
+{
+	m_source = {
+			m_animation_frame * (float) m_texture.width / m_sprite_sheet.max(), m_animation_count * (float) m_texture.height / m_sprite_sheet.size(),
+			(float) m_texture.width / m_sprite_sheet.max(), (float) m_texture.height / m_sprite_sheet.size()
+	};
+	if ( auto& vp = gApp()->viewport() ) {
+		vp->draw_in_viewport(m_texture, m_source, m_position, m_rotation + m_rotation_offset, WHITE);
+	}
+
+	// Draw Smear
+
+	if ( auto& vp = gApp()->viewport() ) {
+		smear::draw_smear_linear(m_smear_points[0], 2 * vp->viewport_scale(), 1, BLUE);
+		smear::draw_smear_linear(m_smear_points[1], 2 * vp->viewport_scale(), 1, BLUE);
+		smear::draw_smear_wave_between_smears(
+				m_smear_wave_points, m_smear_wave, Vector2Length(m_velocity), m_max_velocity, 2 * vp->viewport_scale(), 1, SKYBLUE
+		);
+	}
 }
 
 Vector2 Player::position()
@@ -69,30 +153,30 @@ void Player::set_velocity(const Vector2& velocity)
 	m_target_velocity = Vector2Length(velocity) <= m_max_velocity ? Vector2Length(velocity) : m_max_velocity;
 }
 
-void Player::set_target_velocity(const float& target_velocity)
+void Player::set_target_velocity(const float target_velocity)
 {
 	m_target_velocity = target_velocity;
 }
 
-void Player::set_max_velocity(const float& max_velocity)
+void Player::set_max_velocity(const float max_velocity)
 {
 	m_max_velocity = max_velocity;
 }
 
-void Player::set_rotation(const float& rotation)
+void Player::set_rotation(const float rotation)
 {
 	m_rotation		  = rotation;
 	m_target_rotation = rotation;
 }
 
-void Player::set_target_rotation(const float& target_rotation)
+void Player::set_target_rotation(const float target_rotation)
 {
 	m_target_rotation = target_rotation;
 }
 
 void Player::set_interpolation_values(
-		const float& acceleration_fade, const float& deceleration_fade, const float& rotation_fade, const float& input_velocity_multiplier,
-		const float& input_rotation_multiplier
+		const float acceleration_fade, const float deceleration_fade, const float rotation_fade, const float input_velocity_multiplier,
+		const float input_rotation_multiplier
 )
 {
 	m_acceleration_fade			= acceleration_fade;
@@ -102,7 +186,7 @@ void Player::set_interpolation_values(
 	m_input_rotation_multiplier = input_rotation_multiplier;
 }
 
-void Player::calculate_movement(const float& dt)
+void Player::calculate_movement(const float dt)
 {
 	// Linear Interpolation form Rotation to Target Rotation with a regression of Rotation and a static Alpha
 	// which ends in an exponential approximation to calculate the rotation
@@ -124,47 +208,20 @@ void Player::calculate_movement(const float& dt)
 	m_position.y += m_velocity.y * dt;
 }
 
-
-void Player::update(const float dt)
-{
-	if ( !m_is_clone ) {
-		// Input Functions to set Target Velocity and Target Rotation
-		if ( IsKeyDown(KEY_W) ) {
-			m_target_velocity += m_target_velocity < m_max_velocity ? m_input_velocity_multiplier * dt : 0;
-		}
-		if ( IsKeyDown(KEY_S) ) {
-			m_target_velocity -= m_target_velocity > 0 ? m_input_velocity_multiplier * dt : 0;
-		}
-		if ( IsKeyDown(KEY_D) && Vector2Length(m_velocity) > CALCULATION_VELOCITY_MIN ) {
-			m_target_rotation += m_input_rotation_multiplier * Vector2Length(m_velocity) * dt;
-		}
-		if ( IsKeyDown(KEY_A) && Vector2Length(m_velocity) > CALCULATION_VELOCITY_MIN ) {
-			m_target_rotation -= m_input_rotation_multiplier * Vector2Length(m_velocity) * dt;
-		}
-	}
-
-	calculate_movement(dt);
-
-	// Animation Calculation
-
-	calculate_animation(dt);
-}
-
-void Player::set_texture_values(const Texture2D& texture, const float& rotation_offset, const float& base_scale)
+void Player::set_texture_values(const Texture2D& texture, const float rotation_offset)
 {
 	m_texture		  = texture;
 	m_rotation_offset = rotation_offset;
-	m_base_scale	  = base_scale;
 }
 
-void Player::set_animation_values(const int& animation_max_count, const std::valarray<int>& sprite_sheet, const float& animation_speed)
+void Player::set_animation_values(const int animation_max_count, const std::valarray<int>& sprite_sheet, const float animation_speed)
 {
 	m_sprite_sheet.resize(animation_max_count);
 	m_sprite_sheet	  = sprite_sheet;
 	m_animation_speed = animation_speed;
 }
 
-void Player::calculate_animation(const float& dt)
+void Player::calculate_animation(const float dt)
 {
 	if ( Vector2Length(m_velocity) >= CALCULATION_VELOCITY_MIN && m_animation_count == 0 ) {
 		m_animation_count = 1;
@@ -185,14 +242,57 @@ void Player::calculate_animation(const float& dt)
 	}
 }
 
-void Player::render()
+bool Player::is_active()
 {
-	m_source = {
-			m_animation_frame * (float) m_texture.width / m_sprite_sheet.max(), m_animation_count * (float) m_texture.height / m_sprite_sheet.size(),
-			(float) m_texture.width / m_sprite_sheet.max(), (float) m_texture.height / m_sprite_sheet.size()
-	};
-	if ( auto& vp = gApp()->viewport() ) {
-		vp->draw_in_viewport(m_texture, m_source, m_position, m_rotation + m_rotation_offset, WHITE);
+	return m_is_active;
+}
+
+void Player::set_is_active(bool active)
+{
+	m_is_active = active;
+}
+
+void Player::initialize_cannon()
+{
+	auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
+	if ( !director ) {
+		return;
+	}
+
+	float cannon_width = 5.0f;
+	
+	float x_offset = 0;
+	if ( !m_cannon_container.empty() ) 
+	{
+		cannon_width = static_cast<float>(m_cannon_container[0]->texture().width);
+
+	}
+	x_offset = -((cannon_width + cannon_width / 4) * m_cannon_container.size()) / 2;
+
+	for ( int i = 0; i < 2; i++ ) 
+	{
+		auto new_cannon = director->spawn_cannon(m_position);
+		m_cannon_container.push_back(new_cannon);
+		new_cannon->set_parent(m_shared_ptr_this);
+		new_cannon->set_parent_position_x_offset(x_offset);
+		new_cannon->set_parent_position_y_offset(new_cannon->texture().height);
+		if ( i == 0 ) 
+		{
+			new_cannon->set_positioning(Cannon::CannonPositioning::Left);
+		} 
+		else 
+		{
+			new_cannon->set_positioning(Cannon::CannonPositioning::Right);
+		}
+	}
+	
+}
+
+void Player::add_cannons(int amount)
+{
+	for ( int i = 0; i < amount; i++ ) 
+	{
+		initialize_cannon();
 	}
 }
 
@@ -229,16 +329,30 @@ bool Player::is_clone() const
 
 float Player::dest_width() const
 {
-	/*if ( auto& vp = gApp()->viewport() ) {
-		return m_source.width * vp->viewport_scale();
-	}*/
 	return m_source.width;
 }
 
 float Player::dest_height() const
 {
-	/*if ( auto& vp = gApp()->viewport() ) {
-		return m_source.height * vp->viewport_scale();
-	}*/
 	return m_source.height;
+}
+
+std::vector<std::shared_ptr<Cannon>>& Player::cannon_container()
+{
+	return m_cannon_container;
+}
+
+void Player::set_cannon_container(const std::vector<std::shared_ptr<Cannon>>& container)
+{
+	m_cannon_container = container;
+}
+
+std::shared_ptr<Player> Player::shared_ptr_this()
+{
+	return m_shared_ptr_this;
+}
+
+void Player::set_shared_ptr_this(std::shared_ptr<Player> ptr)
+{
+	m_shared_ptr_this = ptr;
 }

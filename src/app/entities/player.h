@@ -1,15 +1,24 @@
 #pragma once
 
-#include <psinterfaces/entity.h>
 #include <psinterfaces/renderable.h>
 
 #include <raylib.h>
 #include <valarray>
+#include <entities/cannon.h>
+
+#include <misc/smear.h>
 
 class Player : public PSInterfaces::IRenderable
+
+
 {
 public:
+
 	Player();
+
+	void update(float dt) override;
+
+	void render() override;
 
 	Vector2 position();
 
@@ -27,30 +36,29 @@ public:
 
 	void set_velocity(const Vector2& velocity);
 
-	void set_target_velocity(const float& target_velocity);
+	void set_target_velocity(float target_velocity);
 
-	void set_max_velocity(const float& max_velocity);
+	void set_max_velocity(float max_velocity);
 
-	void set_rotation(const float& rotation);
+	void set_rotation(float rotation);
 
-	void set_target_rotation(const float& target_rotation);
+	void set_target_rotation(float target_rotation);
 
 	void set_interpolation_values(
-			const float& acceleration_fade, const float& deceleration_fade, const float& rotation_fade, const float& input_velocity_multiplier,
-			const float& input_rotation_multiplier
+			float acceleration_fade, float deceleration_fade, float rotation_fade, float input_velocity_multiplier, float input_rotation_multiplier
 	);
 
-	void calculate_movement(const float& dt);
+	void calculate_movement(float dt);
 
-	void update(const float dt) override;
+	void set_texture_values(const Texture2D& texture, float rotation_offset);
 
-	void set_texture_values(const Texture2D& texture, const float& rotation_offset, const float& base_scale);
+	void set_animation_values(int animation_max_count, const std::valarray<int>& sprite_sheet, float animation_speed);
 
-	void set_animation_values(const int& animation_max_count, const std::valarray<int>& sprite_sheet, const float& animation_speed);
+	void calculate_animation(float dt);
 
-	void calculate_animation(const float& dt);
+	bool is_active() override;
 
-	void render() override;
+	void set_is_active(bool active);
 
 	// Borderinteration Variables and Methods
 	void set_border_collision_active_horizontal(bool active);
@@ -68,6 +76,17 @@ public:
 	float dest_width() const;
 
 	float dest_height() const;
+
+	// Cannons & Projectiles Variables and Methods
+	std::vector<std::shared_ptr<Cannon>>& cannon_container();
+	void set_cannon_container(const std::vector<std::shared_ptr<Cannon>>& container);
+
+	std::shared_ptr<Player> shared_ptr_this();
+	void set_shared_ptr_this(std::shared_ptr<Player> ptr);
+
+	void initialize_cannon();
+
+	void add_cannons(int amount);
 
 
 private:
@@ -89,7 +108,6 @@ private:
 	// Variables for Texture Rendering
 	Texture2D m_texture		= {0};
 	float m_rotation_offset = 0;
-	float m_base_scale		= 1;
 	Rectangle m_source		= {0};
 
 	// Variables for Animation
@@ -104,4 +122,19 @@ private:
 	bool m_border_collision_active_horizontal = false;
 	bool m_border_collision_active_vertical	  = false;
 	bool m_is_clone							  = false;
+
+	// Variabels and Methods for Cannons & Projectiles
+	std::vector<std::shared_ptr<Cannon>> m_cannon_container;
+	std::shared_ptr<Player> m_shared_ptr_this;
+	bool m_is_active = true;
+
+
+	// Smear Variables
+	float m_smear_rotation								= 0;
+	std::vector<smear::SmearPoints> m_smear_points		= {{0}, {0}};
+	std::vector<float> m_smear_wave						= {0};
+	int m_smear_wave_index								= 0;
+	float m_smear_wave_time								= 0;
+	float m_smear_wave_per_second						= 0.25;
+	std::vector<smear::SmearPoints> m_smear_wave_points = {{0}, {0}};
 };

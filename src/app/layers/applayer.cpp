@@ -4,6 +4,7 @@
 
 #include <memory>
 #include <pscore/application.h>
+#include <pscore/viewport.h>
 #include <raylib.h>
 
 #include <psinterfaces/renderable.h>
@@ -54,7 +55,11 @@ void AppLayer::on_update(const float dt)
 
 	for ( auto entity: PSCore::Application::get()->entities() ) {
 		if ( auto locked_entity = entity.lock() ) {
-			locked_entity->update(dt);
+
+			if ( locked_entity->is_active() ) {
+				locked_entity->update(dt);
+			}
+			
 
 			if ( auto player = dynamic_cast<Player*>(locked_entity.get()) ) {
 				misc::map::map_border_wrap_around(*player);
