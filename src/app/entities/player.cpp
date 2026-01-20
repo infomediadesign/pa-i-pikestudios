@@ -35,16 +35,6 @@ Player::Player() : PSInterfaces::IEntity("player")
 	//
 }
 
-bool Player::is_active()
-{
-	return m_is_active;
-}
-
-void Player::set_is_active(bool active)
-{
-	m_is_active = active;
-}
-
 void Player::update(const float dt)
 {
 	if ( !m_is_clone ) {
@@ -252,6 +242,16 @@ void Player::calculate_animation(const float dt)
 	}
 }
 
+bool Player::is_active()
+{
+	return m_is_active;
+}
+
+void Player::set_is_active(bool active)
+{
+	m_is_active = active;
+}
+
 void Player::initialize_cannon()
 {
 	auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
@@ -295,22 +295,6 @@ void Player::add_cannons(int amount)
 		initialize_cannon();
 	}
 }
-
-void Player::render()
-{
-	if ( m_is_active ) 
-	{
-		m_source = {
-				m_animation_frame * (float) m_texture.width / m_sprite_sheet.max(),
-				m_animation_count * (float) m_texture.height / m_sprite_sheet.size(), (float) m_texture.width / m_sprite_sheet.max(),
-				(float) m_texture.height / m_sprite_sheet.size()
-		};
-		if ( auto& vp = gApp()->viewport() ) {
-			vp->draw_in_viewport(m_texture, m_source, m_position, m_rotation + m_rotation_offset, WHITE);
-		}
-	}
-
-} 
 
 // Border Collision Variables and Methods
 void Player::set_border_collision_active_horizontal(bool active)
