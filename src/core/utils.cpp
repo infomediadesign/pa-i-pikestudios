@@ -1,6 +1,7 @@
 #include <pscore/utils.h>
 
 #include <random>
+#include <raylib.h>
 
 int PSUtils::gen_rand(const int min, const int max)
 {
@@ -108,18 +109,13 @@ void PSUtils::DrawTextBoxedSelectable(
 				// Draw selection background
 				bool isGlyphSelected = false;
 				if ( (selectStart >= 0) && (k >= selectStart) && (k < (selectStart + selectLength)) ) {
-					DrawRectangleRec(
-							{rec.x + textOffsetX - 1, rec.y + textOffsetY, glyphWidth, (float) font.baseSize * scaleFactor},
-							selectBackTint
-					);
+					DrawRectangleRec({rec.x + textOffsetX - 1, rec.y + textOffsetY, glyphWidth, (float) font.baseSize * scaleFactor}, selectBackTint);
 					isGlyphSelected = true;
 				}
 
 				// Draw current character glyph
 				if ( (codepoint != ' ') && (codepoint != '\t') ) {
-					DrawTextCodepoint(
-							font, codepoint, {rec.x + textOffsetX, rec.y + textOffsetY}, fontSize, isGlyphSelected ? selectTint : tint
-					);
+					DrawTextCodepoint(font, codepoint, {rec.x + textOffsetX, rec.y + textOffsetY}, fontSize, isGlyphSelected ? selectTint : tint);
 				}
 			}
 
@@ -144,4 +140,30 @@ void PSUtils::DrawTextBoxedSelectable(
 void PSUtils::DrawTextBoxed(Font font, const char* text, Rectangle rec, float fontSize, float spacing, bool wordWrap, Color tint)
 {
 	DrawTextBoxedSelectable(font, text, rec, fontSize, spacing, wordWrap, tint, 0, 0, WHITE, WHITE);
+}
+
+void PSUtils::DrawRectangleLinesRotated(Rectangle rec, float rotation, Color color)
+{
+	// Calculate the four corners of the rectangle
+	float halfWidth	 = rec.width / 2.0f;
+	float halfHeight = rec.height / 2.0f;
+
+	float cosRot = cosf(rotation * DEG2RAD);
+	float sinRot = sinf(rotation * DEG2RAD);
+
+	Vector2 corners[4] = {{-halfWidth, -halfHeight}, {halfWidth, -halfHeight}, {halfWidth, halfHeight}, {-halfWidth, halfHeight}};
+
+	// Rotate and translate corners
+	for ( int i = 0; i < 4; i++ ) {
+		float x		 = corners[i].x;
+		float y		 = corners[i].y;
+		corners[i].x = rec.x + (x * cosRot - y * sinRot);
+		corners[i].y = rec.y + (x * sinRot + y * cosRot);
+	}
+
+	// Draw the four lines
+	DrawLineV(corners[0], corners[1], color);
+	DrawLineV(corners[1], corners[2], color);
+	DrawLineV(corners[2], corners[3], color);
+	DrawLineV(corners[3], corners[0], color);
 }

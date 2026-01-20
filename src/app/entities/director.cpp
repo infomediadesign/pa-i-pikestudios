@@ -42,7 +42,6 @@ void FortunaDirector::initialize_entities()
 		app_layer->renderer()->submit_renderable<Player>(initial_player);
 		app_layer->renderer()->submit_renderable<Shark>(_p->test_shark);
 	}
-
 	initial_player->add_cannons(2);
 }
 
