@@ -40,6 +40,7 @@ namespace coordinatesystem {
 	/**
 	 * @brief Calculates a Point in a Relative Coordinate system with positive Axis in right and up direction
 	 * to a Point in the Global Coordinate system
+	 * @details The Relative Coordinate system of these Function are used to Position an Object relative to an Other Position or Object
 	 * @param origin The Origin of the Relative Coordinate system
 	 * @param rotation The Rotation of the Relative Coordinate system
 	 * @param point The Relative Point
@@ -50,6 +51,7 @@ namespace coordinatesystem {
 	/**
 	 * @brief Calculates a Point in a Relative Coordinate system with positive Axis in right and down direction
 	 * to a Point in the Global Coordinate system
+	 * @details The Relative Coordinate system of these Function are used to Position an Object relative to an Other Position or Object
 	 * @param origin The Origin of the Relative Coordinate system
 	 * @param rotation The Rotation of the Relative Coordinate system
 	 * @param point The Relative Point
@@ -60,6 +62,7 @@ namespace coordinatesystem {
 	/**
 	 * @brief Calculates a Point in a Relative Coordinate system with positive Axis in left and up direction
 	 * to a Point in the Global Coordinate system
+	 * @details The Relative Coordinate system of these Function are used to Position an Object relative to an Other Position or Object
 	 * @param origin The Origin of the Relative Coordinate system
 	 * @param rotation The Rotation of the Relative Coordinate system
 	 * @param point The Relative Point
@@ -70,6 +73,7 @@ namespace coordinatesystem {
 	/**
 	 * @brief Calculates a Point in a Relative Coordinate system with positive Axis in left and down direction
 	 * to a Point in the Global Coordinate system
+	 * @details The Relative Coordinate system of these Function are used to Position an Object relative to an Other Position or Object
 	 * @param origin The Origin of the Relative Coordinate system
 	 * @param rotation The Rotation of the Relative Coordinate system
 	 * @param point The Relative Point
