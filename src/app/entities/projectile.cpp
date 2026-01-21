@@ -14,7 +14,7 @@ Projectile::Projectile() : PSInterfaces::IEntity("projectile")
 	m_p_position		= {GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f};
 	m_p_rotation		= 0.0f;
 	Vector2 frame_grid{1, 1};
-	m_p_sprite			= PRELOAD_TEXTURE(ident_, "ressources/test_projectile.png", frame_grid);
+	m_p_sprite			= PRELOAD_TEXTURE(ident_, "ressources/entity/test_projectile.png", frame_grid);
 	m_p_texture			= m_p_sprite->m_s_texture;
 	m_p_target_position = {360.0f, 360.f};
 	m_p_speed			= 200.0f;
