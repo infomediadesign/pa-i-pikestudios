@@ -1,4 +1,5 @@
 #pragma once
+#include <optional>
 #include <psinterfaces/renderable.h>
 #include <raylib.h>
 #include <memory>
@@ -30,7 +31,7 @@ public:
 	std::shared_ptr<Player> parent(); // Returns the shared pointer to the parent
 	void set_parent(std::shared_ptr<Player> parent); // Sets the shared pointer to the parent
 
-	Vector2 position(); // Returns the cannon's position
+	std::optional<Vector2> position() override; // Returns the cannon's position
 	void set_position(const Vector2& position); // Sets the cannon's position
 
 	float rotation(); // Returns the cannon's rotation

@@ -1,8 +1,10 @@
 #pragma once
 
+#include <optional>
+#include <psinterfaces/events.h>
+#include <raylib.h>
 #include <string>
 #include <vector>
-#include <psinterfaces/events.h>
 
 namespace PSInterfaces {
 
@@ -20,6 +22,16 @@ namespace PSInterfaces {
 		virtual void update(float dt) = 0;
 
 		virtual void draw_debug() {};
+
+		virtual std::optional<std::vector<Vector2>> bounds()
+		{
+			return std::nullopt;
+		};
+
+		virtual std::optional<Vector2> position()
+		{
+			return std::nullopt;
+		}
 
 		virtual bool is_active()
 		{
@@ -43,8 +55,9 @@ namespace PSInterfaces {
 			for ( auto manager: event_managers_ )
 				manager->notify(event);
 		}
-		
-		const std::string ident() const {
+
+		const std::string ident() const
+		{
 			return ident_;
 		}
 

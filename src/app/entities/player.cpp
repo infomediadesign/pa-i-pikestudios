@@ -111,7 +111,7 @@ void Player::render()
 	}
 }
 
-Vector2 Player::position()
+std::optional<Vector2> Player::position()
 {
 	return m_position;
 }

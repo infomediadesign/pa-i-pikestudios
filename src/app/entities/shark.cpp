@@ -10,6 +10,7 @@
 #include <raylib.h>
 #include <raymath.h>
 #include <utilities.h>
+#include "layers/applayer.h"
 
 //
 // Fin of Shark
@@ -104,21 +105,24 @@ void Shark::update(float dt)
 	m_fin->update(dt);
 
 	Player* player_entity = nullptr;
-	for ( auto entity: gApp()->entities() ) {
+	
+	if (auto app_layer = gApp()->get_layer<AppLayer>()) {
+	for ( auto entity: app_layer->entities() ) {
 		if ( auto locked = entity.lock() ) {
 			if ( auto player = dynamic_cast<Player*>(locked.get()) )
 				player_entity = player;
 		}
 	}
+	}
 	if ( !player_entity )
 		return;
 
-	Vector2 player_pos = player_entity->position();
+	Vector2 player_pos = player_entity->position().value();
 
 	Vector2 direction = Vector2Subtract(player_pos, m_pos);
 	float distance	  = Vector2Length(direction);
 
-	m_shark_rotation = utilities::rotation_look_at(m_pos, player_entity->position());
+	m_shark_rotation = utilities::rotation_look_at(m_pos, player_pos);
 
 	switch ( m_state ) {
 		case Idle: {

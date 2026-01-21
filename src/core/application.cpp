@@ -1,12 +1,11 @@
 #include <chrono>
 #include <iostream>
 #include <memory>
-#include <stdexcept>
-#include <pscore/viewport.h>
-#include <psinterfaces/layer.h>
 #include <pscore/sprite.h>
-#include <psinterfaces/entity.h>
 #include <pscore/viewport.h>
+#include <psinterfaces/entity.h>
+#include <psinterfaces/layer.h>
+#include <stdexcept>
 
 #include <pscore/application.h>
 #include <pscore/time.h>
@@ -114,14 +113,6 @@ void Application::run()
 			break;
 		}
 
-		// temporary fix for invalidated entities
-		for ( auto itr = m_entity_registry.begin(); itr != m_entity_registry.end(); ) {
-			if ( auto r_locked = itr->lock() ) {
-				++itr;
-			} else // entity is expired; we dont need it
-				itr = m_entity_registry.erase(itr);
-		}
-
 		try { // call the update of every layer
 			auto dt = _p->m_time_manager->delta_t().count();
 			if ( m_game_director )
@@ -130,6 +121,7 @@ void Application::run()
 			for ( int i = 0; i < m_layer_stack.size(); ++i )
 				m_layer_stack.at(i)->on_update(dt);
 		} catch ( std::out_of_range e ) {
+			PS_LOG(LOG_WARNING, "Tried calling update on invalid layer.");
 		}
 
 		BeginDrawing();
@@ -154,11 +146,6 @@ void Application::stop()
 Application* Application::get()
 {
 	return g_app;
-}
-
-std::vector<std::weak_ptr<PSInterfaces::IEntity>> PSCore::Application::entities() const
-{
-	return m_entity_registry;
 }
 
 void Application::log(TraceLogLevel type, const char* text) const

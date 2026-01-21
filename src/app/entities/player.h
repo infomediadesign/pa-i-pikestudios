@@ -1,5 +1,6 @@
 #pragma once
 
+#include <optional>
 #include <psinterfaces/renderable.h>
 
 #include <raylib.h>
@@ -20,7 +21,7 @@ public:
 
 	void render() override;
 
-	Vector2 position();
+	std::optional<Vector2> position() override;
 
 	Vector2 velocity();
 

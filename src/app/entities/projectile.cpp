@@ -77,7 +77,7 @@ void Projectile::set_texture(const Texture2D& texture)
 	m_p_texture = texture;
 }
 
-Vector2 Projectile::position()
+std::optional<Vector2> Projectile::position()
 {
 	return m_p_position;
 }

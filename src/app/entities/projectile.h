@@ -1,4 +1,5 @@
 #pragma once
+#include <optional>
 #include <psinterfaces/renderable.h>
 #include <raylib.h>
 #include <memory>
@@ -20,7 +21,7 @@ public:
 	Texture2D texture(); // Returns the texture of the projectile
 	void set_texture(const Texture2D& texture); // Sets the texture of the projectile
 
-	Vector2 position(); // Returns the position of the projectile
+	std::optional<Vector2> position() override; // Returns the position of the projectile
 	void set_position(const Vector2& position); // Sets the position of the projectile
 
 	float rotation(); // Returns the rotation of the projectile
