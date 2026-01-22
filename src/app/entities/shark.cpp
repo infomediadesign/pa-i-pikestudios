@@ -79,7 +79,7 @@ void Body::draw_debug()
 Shark::Shark() : PSInterfaces::IEntity("shark")
 {
 	Vector2 frame_grid{9, 2};
-	PRELOAD_TEXTURE(ident_, "ressources/hai.png", frame_grid);
+	PRELOAD_TEXTURE(ident_, "ressources/entity/hai.png", frame_grid);
 	m_shark_sprite = FETCH_SPRITE(ident_);
 
 	m_body = std::make_shared<Body>(this);

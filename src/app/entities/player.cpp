@@ -20,7 +20,7 @@
 Player::Player() : PSInterfaces::IEntity("player")
 {
 	Vector2 frame_grid{4, 2};
-	PRELOAD_TEXTURE(ident_, "ressources/SpaceShipSpriteSheet.png", frame_grid);
+	PRELOAD_TEXTURE(ident_, "ressources/entity/SpaceShipSpriteSheet.png", frame_grid);
 
 	// WARNING: THIS IS ONLY FOR TESTING
 	if ( auto& vp = gApp()->viewport() ) {
