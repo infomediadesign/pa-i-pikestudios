@@ -45,7 +45,7 @@ void FortunaDirector::initialize_entities()
 		app_layer->register_entity(_p->test_shark, true);
 		app_layer->register_entity(initial_player, true);
 	}
-	initial_player->add_cannons(2);
+	initial_player->add_cannons(1);
 }
 
 

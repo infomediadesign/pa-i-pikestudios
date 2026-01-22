@@ -1,9 +1,9 @@
 #pragma once
+#include <memory>
 #include <optional>
+#include <pscore/sprite.h>
 #include <psinterfaces/renderable.h>
 #include <raylib.h>
-#include <memory>
-#include <pscore/sprite.h>
 
 class Player;
 class FortunaDirector;
@@ -14,14 +14,18 @@ public:
 	Projectile();
 	void update(const float dt) override;
 	void render() override;
-	bool is_active() override;
+	bool is_active() const override;
 
-	void calculate_movement(const float dt, Vector2& target_position); // Calculates the movement towards the target position wihle keeping the forward velocity of the owner
+	std::optional<std::vector<Vector2>> bounds() const override;
+
+	void calculate_movement(
+			const float dt, Vector2& target_position
+	); // Calculates the movement towards the target position wihle keeping the forward velocity of the owner
 
 	Texture2D texture(); // Returns the texture of the projectile
 	void set_texture(const Texture2D& texture); // Sets the texture of the projectile
 
-	std::optional<Vector2> position() override; // Returns the position of the projectile
+	std::optional<Vector2> position() const override; // Returns the position of the projectile
 	void set_position(const Vector2& position); // Sets the position of the projectile
 
 	float rotation(); // Returns the rotation of the projectile
@@ -55,7 +59,7 @@ public:
 	void set_owner_velocity(const Vector2& velocity); // Sets the owner's velocity
 
 	void set_is_active(const bool active);
-	
+
 
 private:
 	Vector2 m_p_position;

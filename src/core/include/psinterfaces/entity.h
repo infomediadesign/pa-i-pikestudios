@@ -2,9 +2,10 @@
 
 #include <optional>
 #include <psinterfaces/events.h>
-#include <raylib.h>
 #include <string>
 #include <vector>
+#include <raylib.h>
+#include "pscore/utils.h"
 
 namespace PSInterfaces {
 
@@ -23,17 +24,17 @@ namespace PSInterfaces {
 
 		virtual void draw_debug() {};
 
-		virtual std::optional<std::vector<Vector2>> bounds()
+		virtual std::optional<std::vector<Vector2>> bounds() const
 		{
 			return std::nullopt;
 		};
 
-		virtual std::optional<Vector2> position()
+		virtual std::optional<Vector2> position() const
 		{
 			return std::nullopt;
 		}
 
-		virtual bool is_active()
+		virtual bool is_active() const
 		{
 			return true;
 		}
@@ -60,9 +61,14 @@ namespace PSInterfaces {
 		{
 			return ident_;
 		}
+		
+		const std::string uid() const {
+			return uid_;
+		}
 
 	protected:
 		std::vector<const Events::IEventManager*> event_managers_;
 		const std::string ident_;
+		const std::string uid_ = PSUtils::generate_uid();
 	};
 } // namespace PSInterfaces

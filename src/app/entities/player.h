@@ -3,25 +3,22 @@
 #include <optional>
 #include <psinterfaces/renderable.h>
 
+#include <entities/cannon.h>
 #include <raylib.h>
 #include <valarray>
-#include <entities/cannon.h>
 
 #include <misc/smear.h>
 
 class Player : public PSInterfaces::IRenderable
-
-
 {
 public:
-
 	Player();
 
 	void update(float dt) override;
 
 	void render() override;
 
-	std::optional<Vector2> position() override;
+	std::optional<Vector2> position() const override;
 
 	Vector2 velocity();
 
@@ -57,7 +54,7 @@ public:
 
 	void calculate_animation(float dt);
 
-	bool is_active() override;
+	bool is_active() const override;
 
 	void set_is_active(bool active);
 

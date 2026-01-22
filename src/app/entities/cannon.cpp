@@ -53,7 +53,7 @@ void Cannon::render()
 	}
 }
 
-bool Cannon::is_active()
+bool Cannon::is_active() const
 {
 	return m_c_is_active;
 }
@@ -141,7 +141,7 @@ void Cannon::set_texture(const Texture2D& texture)
 	m_c_texture = texture;
 }
 
-std::optional<Vector2> Cannon::position()
+std::optional<Vector2> Cannon::position() const
 {
 	return m_c_position;
 }

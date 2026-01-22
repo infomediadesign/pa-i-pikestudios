@@ -1,18 +1,22 @@
 #include "projectile.h"
-#include <raylib.h>
 #include <entities/director.h>
+#include <optional>
 #include <pscore/application.h>
+#include <pscore/collision.h>
 #include <pscore/sprite.h>
 #include <pscore/viewport.h>
+#include <raylib.h>
 
 #include <raymath.h>
+#include <vector>
+#include "layers/applayer.h"
 
 Projectile::Projectile() : PSInterfaces::IEntity("projectile")
 {
 
 	IRenderable::propose_z_index(1);
-	m_p_position		= {GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f};
-	m_p_rotation		= 0.0f;
+	m_p_position = {GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f};
+	m_p_rotation = 0.0f;
 	Vector2 frame_grid{1, 1};
 	m_p_sprite			= PRELOAD_TEXTURE(ident_, "ressources/test_projectile.png", frame_grid);
 	m_p_texture			= m_p_sprite->m_s_texture;
@@ -22,10 +26,23 @@ Projectile::Projectile() : PSInterfaces::IEntity("projectile")
 
 void Projectile::update(const float dt)
 {
-	
+
 	m_p_target_position += m_p_owner_velocity * dt;
 	calculate_movement(dt, m_p_target_position);
+	
+	if (position()->x == 0 || position()->y == 0)
+		return;
 
+	if ( auto app_layer = gApp()->get_layer<AppLayer>() ) {
+		if ( auto collided_entity = PSCore::collision::check_entity_collision(this, app_layer->entities()) ) {
+			if ( collided_entity.has_value() ) {
+				app_layer->unregister_entity(collided_entity.value().first.lock());
+				if (auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director())) {
+					director->destroy_projectile(m_p_shared_ptr);
+				}
+			}
+		}
+	}
 }
 
 void Projectile::render()
@@ -36,10 +53,9 @@ void Projectile::render()
 			vp->draw_in_viewport(m_p_texture, m_p_source, m_p_position, m_p_rotation, WHITE);
 		}
 	}
-
 }
 
-bool Projectile::is_active()
+bool Projectile::is_active() const
 {
 	return m_p_is_active;
 }
@@ -77,7 +93,7 @@ void Projectile::set_texture(const Texture2D& texture)
 	m_p_texture = texture;
 }
 
-std::optional<Vector2> Projectile::position()
+std::optional<Vector2> Projectile::position() const
 {
 	return m_p_position;
 }
@@ -193,3 +209,17 @@ void Projectile::set_is_active(const bool active)
 {
 	m_p_is_active = active;
 }
+
+std::optional<std::vector<Vector2>> Projectile::bounds() const
+{
+	if ( auto pos = position() ) {
+		std::vector<Vector2> v{
+				pos.value(),
+				{pos->x + m_p_texture.width, pos->y},
+				{pos->x + m_p_texture.width, pos->y + m_p_texture.height},
+				{pos->x, pos->y + m_p_texture.height}
+		};
+		return v;
+	}
+	return std::nullopt;
+};

@@ -2,35 +2,28 @@
 
 #include <memory>
 #include <pscore/renderer.h>
+#include <pscore/utils.h>
+#include <psinterfaces/entity.h>
+#include <psinterfaces/renderable.h>
 #include <raylib.h>
 #include <vector>
-#include "psinterfaces/entity.h"
-#include "psinterfaces/renderable.h"
 
 namespace PSInterfaces {
 	class Layer
 	{
 	public:
+		explicit Layer();
 		virtual ~Layer() = default;
 
 		virtual void on_event() {};
 		virtual void on_update(const float dt) = 0;
 		virtual void on_render()			   = 0;
 
-		void suspend()
-		{
-			active = false;
-		};
+		void suspend();
 
-		void resume()
-		{
-			active = true;
-		};
+		void resume();
 
-		PSCore::Renderer* renderer()
-		{
-			return renderer_.get();
-		}
+		const std::unique_ptr<PSCore::Renderer>& renderer();
 
 		/*!
 		 * @brief registers an entity to the applikation
@@ -73,10 +66,7 @@ namespace PSInterfaces {
 			}
 		}
 
-		std::vector<std::weak_ptr<PSInterfaces::IEntity>> entities() const
-		{
-			return entities_;
-		}
+		std::vector<std::weak_ptr<PSInterfaces::IEntity>> entities() const;
 
 	private:
 		std::vector<std::weak_ptr<PSInterfaces::IEntity>> entities_;

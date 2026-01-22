@@ -10,6 +10,7 @@
 #include <raylib.h>
 #include <raymath.h>
 #include <utilities.h>
+#include <vector>
 #include "layers/applayer.h"
 
 //
@@ -105,14 +106,14 @@ void Shark::update(float dt)
 	m_fin->update(dt);
 
 	Player* player_entity = nullptr;
-	
-	if (auto app_layer = gApp()->get_layer<AppLayer>()) {
-	for ( auto entity: app_layer->entities() ) {
-		if ( auto locked = entity.lock() ) {
-			if ( auto player = dynamic_cast<Player*>(locked.get()) )
-				player_entity = player;
+
+	if ( auto app_layer = gApp()->get_layer<AppLayer>() ) {
+		for ( auto entity: app_layer->entities() ) {
+			if ( auto locked = entity.lock() ) {
+				if ( auto player = dynamic_cast<Player*>(locked.get()) )
+					player_entity = player;
+			}
 		}
-	}
 	}
 	if ( !player_entity )
 		return;
@@ -209,3 +210,23 @@ void Shark::set_pos(const Vector2& pos)
 {
 	m_pos = pos;
 }
+
+std::optional<std::vector<Vector2>> Shark::bounds() const
+{
+	Rectangle shark_rec;
+	shark_rec = m_shark_sprite->frame_rect({0, 0});
+
+	std::vector<Vector2> v{
+			m_pos, // Top-left
+			Vector2{m_pos.x + shark_rec.width, m_pos.y}, // Top-right
+			Vector2{m_pos.x + shark_rec.width, m_pos.y + shark_rec.height}, // Bottom-right
+			Vector2{m_pos.x, m_pos.y + shark_rec.height} // Bottom-left
+	};
+
+	return v;
+};
+
+std::optional<Vector2> Shark::position() const
+{
+	return m_pos;
+};

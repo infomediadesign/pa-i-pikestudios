@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <optional>
 #include <psinterfaces/entity.h>
 #include <psinterfaces/renderable.h>
 #include <raylib.h>
@@ -23,6 +24,10 @@ public:
 	void draw_debug() override;
 	
 	void set_pos(const Vector2& pos);
+
+	std::optional<Vector2> position() const override;
+
+	std::optional<std::vector<Vector2>> bounds() const override;
 
 	enum State { Idle = 0, Pursuing, Attacking, Retreat };
 

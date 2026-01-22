@@ -1,9 +1,9 @@
 #pragma once
+#include <memory>
 #include <optional>
+#include <pscore/sprite.h>
 #include <psinterfaces/renderable.h>
 #include <raylib.h>
-#include <memory>
-#include <pscore/sprite.h>
 
 class FortunaDirector;
 class Player;
@@ -14,7 +14,7 @@ public:
 	Cannon();
 	void update(const float dt) override;
 	void render() override;
-	bool is_active() override;
+	bool is_active() const override;
 
 	void set_is_active(const bool active);
 
@@ -31,7 +31,7 @@ public:
 	std::shared_ptr<Player> parent(); // Returns the shared pointer to the parent
 	void set_parent(std::shared_ptr<Player> parent); // Sets the shared pointer to the parent
 
-	std::optional<Vector2> position() override; // Returns the cannon's position
+	std::optional<Vector2> position() const override; // Returns the cannon's position
 	void set_position(const Vector2& position); // Sets the cannon's position
 
 	float rotation(); // Returns the cannon's rotation
@@ -65,7 +65,6 @@ public:
 	void set_texture(const Texture2D& texture); // Sets the cannon's texture
 
 private:
-
 	Vector2 m_c_position;
 	float m_c_rotation;
 	float m_c_range;

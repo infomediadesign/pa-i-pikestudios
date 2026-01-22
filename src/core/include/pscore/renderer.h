@@ -7,9 +7,6 @@
 
 namespace PSCore {
 
-	template<typename T>
-	concept IRenderableDerived = std::is_base_of_v<PSInterfaces::IRenderable, T>;
-
 	/*!
 	 * @details A Renderer used for rendering Renderables with a specified z index
 	 */
@@ -32,7 +29,7 @@ namespace PSCore {
 		 * @brief submits a renderable to the renderer, the renderer injects its event mnager and listens for z index changes
 		 * @param renderable: a Shared Pointer to a renderable
 		 */
-		template<IRenderableDerived T>
+		template<class T>
 		void submit_renderable(std::shared_ptr<T> renderable)
 		{
 			if ( auto* b = dynamic_cast<PSInterfaces::IRenderable*>(renderable.get()) )
@@ -48,7 +45,7 @@ namespace PSCore {
 		 * @brief removes a submitted renderable
 		 * @param renderable: a Shared Pointer to a renderable
 		 */
-		template<IRenderableDerived T>
+		template<class T>
 		void remove_rendarble(std::shared_ptr<T> renderable)
 		{
 			for ( auto itr = m_render_queue.begin(); itr != m_render_queue.end(); ) {

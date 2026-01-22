@@ -9,7 +9,7 @@
 
 #include <layers/applayer.h>
 #include <misc/smear.h>
-#include "psinterfaces/entity.h"
+#include <psinterfaces/entity.h>
 
 #include <coordinatesystem.h>
 
@@ -111,7 +111,7 @@ void Player::render()
 	}
 }
 
-std::optional<Vector2> Player::position()
+std::optional<Vector2> Player::position() const
 {
 	return m_position;
 }
@@ -244,7 +244,7 @@ void Player::calculate_animation(const float dt)
 	}
 }
 
-bool Player::is_active()
+bool Player::is_active() const
 {
 	return m_is_active;
 }
