@@ -1,6 +1,7 @@
 var searchData=
 [
-  ['unregister_5fentity_0',['unregister_entity',['../classPSCore_1_1Application.html#a669c90f37b98862a6c134d7100974272',1,'PSCore::Application']]],
-  ['use_5foff_5fscreen_5fwrap_5faround_1',['use_off_screen_wrap_around',['../namespacemisc_1_1map.html#a67db7fe9f9852f515536514d7f019703',1,'misc::map']]],
-  ['use_5fon_5fscreen_5fwrap_5faround_2',['use_on_screen_wrap_around',['../namespacemisc_1_1map.html#a2d95802c0697a3bb791c5631b615df6a',1,'misc::map']]]
+  ['vector_5fbackward_0',['vector_backward',['../namespacecoordinatesystem.html#a05d64924624731b370843324838e7ec8',1,'coordinatesystem']]],
+  ['vector_5fforward_1',['vector_forward',['../namespacecoordinatesystem.html#a1680893c27dc53613ed92df865f0d1c3',1,'coordinatesystem']]],
+  ['vector_5fleft_2',['vector_left',['../namespacecoordinatesystem.html#a484f560e9bcf89654a2e22dd5064f28a',1,'coordinatesystem']]],
+  ['vector_5fright_3',['vector_right',['../namespacecoordinatesystem.html#abb6b4daab6a0c92be18d35641bffda5b',1,'coordinatesystem']]]
 ];

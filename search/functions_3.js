@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['get_5flayer_0',['get_layer',['../classPSCore_1_1Application.html#aac5407db21de1f55fe73848447917fe9',1,'PSCore::Application']]]
+  ['is_5foff_5fscreen_0',['is_off_screen',['../namespacemisc_1_1map.html#a3c5b541bddbbd015c395ed17b2564022',1,'misc::map']]]
 ];

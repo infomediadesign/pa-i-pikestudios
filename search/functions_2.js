@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['entities_0',['entities',['../classPSCore_1_1Application.html#ad3887181246fb985ab715295d271b9f6',1,'PSCore::Application']]]
+  ['get_5flayer_0',['get_layer',['../classPSCore_1_1Application.html#aac5407db21de1f55fe73848447917fe9',1,'PSCore::Application']]]
 ];

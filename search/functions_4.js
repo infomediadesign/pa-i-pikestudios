@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['is_5foff_5fscreen_0',['is_off_screen',['../namespacemisc_1_1map.html#a3c5b541bddbbd015c395ed17b2564022',1,'misc::map']]]
+  ['log_0',['log',['../classPSCore_1_1Application.html#acd8087b11723daecdbd8248f4fee9f69',1,'PSCore::Application']]]
 ];

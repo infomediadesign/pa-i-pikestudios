@@ -151,9 +151,18 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>upgrade_player_add_ca
 <tr class="memitem:a817942d790f3a6178098cb99206bc125 inherit pub_methods_classPSInterfaces_1_1IEntity" id="r_a817942d790f3a6178098cb99206bc125"><td class="memItemLeft" align="right" valign="top">
 &#160;</td><td class="memItemRight" valign="bottom"><b>IEntity</b> (const std::string &amp;ident)</td></tr>
 <tr class="separator:a817942d790f3a6178098cb99206bc125 inherit pub_methods_classPSInterfaces_1_1IEntity"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adedbc4a8f60f732c1c7772d7c5ac6732 inherit pub_methods_classPSInterfaces_1_1IEntity" id="r_adedbc4a8f60f732c1c7772d7c5ac6732"><td class="memItemLeft" align="right" valign="top">
-virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>is_active</b> ()</td></tr>
-<tr class="separator:adedbc4a8f60f732c1c7772d7c5ac6732 inherit pub_methods_classPSInterfaces_1_1IEntity"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afd1f980e5bd9df303a2b2d61e0b25943 inherit pub_methods_classPSInterfaces_1_1IEntity" id="r_afd1f980e5bd9df303a2b2d61e0b25943"><td class="memItemLeft" align="right" valign="top">
+virtual std::optional&lt; std::vector&lt; Vector2 &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>bounds</b> () const</td></tr>
+<tr class="separator:afd1f980e5bd9df303a2b2d61e0b25943 inherit pub_methods_classPSInterfaces_1_1IEntity"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a146c9bba10bdca31136f2d393efbcbdd inherit pub_methods_classPSInterfaces_1_1IEntity" id="r_a146c9bba10bdca31136f2d393efbcbdd"><td class="memItemLeft" align="right" valign="top">
+virtual std::optional&lt; Vector2 &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>position</b> () const</td></tr>
+<tr class="separator:a146c9bba10bdca31136f2d393efbcbdd inherit pub_methods_classPSInterfaces_1_1IEntity"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a375f4a4c61fdc39b9ea67fdbc48647be inherit pub_methods_classPSInterfaces_1_1IEntity" id="r_a375f4a4c61fdc39b9ea67fdbc48647be"><td class="memItemLeft" align="right" valign="top">
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>is_active</b> () const</td></tr>
+<tr class="separator:a375f4a4c61fdc39b9ea67fdbc48647be inherit pub_methods_classPSInterfaces_1_1IEntity"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a18fea2dfcee0593fa39d83a55db16382 inherit pub_methods_classPSInterfaces_1_1IEntity" id="r_a18fea2dfcee0593fa39d83a55db16382"><td class="memItemLeft" align="right" valign="top">
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>set_is_active</b> (bool active)</td></tr>
+<tr class="separator:a18fea2dfcee0593fa39d83a55db16382 inherit pub_methods_classPSInterfaces_1_1IEntity"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af981a0b96f5bd9936b229afe84b66165 inherit pub_methods_classPSInterfaces_1_1IEntity" id="r_af981a0b96f5bd9936b229afe84b66165"><td class="memItemLeft" align="right" valign="top">
 void&#160;</td><td class="memItemRight" valign="bottom"><b>add_event_manager</b> (const <a class="el" href="classPSInterfaces_1_1Events_1_1IEventManager.html">Events::IEventManager</a> *manager)</td></tr>
 <tr class="separator:af981a0b96f5bd9936b229afe84b66165 inherit pub_methods_classPSInterfaces_1_1IEntity"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -166,6 +175,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>notify_all</b> (const
 <tr class="memitem:a2bad5078518c22b17e61d5c352d2f54e inherit pub_methods_classPSInterfaces_1_1IEntity" id="r_a2bad5078518c22b17e61d5c352d2f54e"><td class="memItemLeft" align="right" valign="top">
 const std::string&#160;</td><td class="memItemRight" valign="bottom"><b>ident</b> () const</td></tr>
 <tr class="separator:a2bad5078518c22b17e61d5c352d2f54e inherit pub_methods_classPSInterfaces_1_1IEntity"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7c3de5d4dd66e667afa23d80d6740809 inherit pub_methods_classPSInterfaces_1_1IEntity" id="r_a7c3de5d4dd66e667afa23d80d6740809"><td class="memItemLeft" align="right" valign="top">
+const std::string&#160;</td><td class="memItemRight" valign="bottom"><b>uid</b> () const</td></tr>
+<tr class="separator:a7c3de5d4dd66e667afa23d80d6740809 inherit pub_methods_classPSInterfaces_1_1IEntity"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
@@ -176,6 +188,12 @@ std::vector&lt; const <a class="el" href="classPSInterfaces_1_1Events_1_1IEventM
 <tr class="memitem:a4081cb381a9e7ad8743762f981ce1f03 inherit pro_attribs_classPSInterfaces_1_1IEntity" id="r_a4081cb381a9e7ad8743762f981ce1f03"><td class="memItemLeft" align="right" valign="top">
 const std::string&#160;</td><td class="memItemRight" valign="bottom"><b>ident_</b></td></tr>
 <tr class="separator:a4081cb381a9e7ad8743762f981ce1f03 inherit pro_attribs_classPSInterfaces_1_1IEntity"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3d2e67aff0668803c9f128abdf87b5c7 inherit pro_attribs_classPSInterfaces_1_1IEntity" id="r_a3d2e67aff0668803c9f128abdf87b5c7"><td class="memItemLeft" align="right" valign="top">
+const std::string&#160;</td><td class="memItemRight" valign="bottom"><b>uid_</b> = PSUtils::generate_uid()</td></tr>
+<tr class="separator:a3d2e67aff0668803c9f128abdf87b5c7 inherit pro_attribs_classPSInterfaces_1_1IEntity"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa625c34f31f54a7aeb6cff570e25acf5 inherit pro_attribs_classPSInterfaces_1_1IEntity" id="r_aa625c34f31f54a7aeb6cff570e25acf5"><td class="memItemLeft" align="right" valign="top">
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>is_active_</b> = true</td></tr>
+<tr class="separator:aa625c34f31f54a7aeb6cff570e25acf5 inherit pro_attribs_classPSInterfaces_1_1IEntity"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
 <a id="aa1e961eba3653c01b2a79fde72de8d2d" name="aa1e961eba3653c01b2a79fde72de8d2d"></a>

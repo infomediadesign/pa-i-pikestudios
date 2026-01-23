@@ -98,94 +98,90 @@ $(document).ready(function(){initNavTree('cannon_8h_source.html',''); initResiza
 </div><!--header-->
 <div class="contents">
 <div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#pragma once</span></div>
-<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#include &lt;psinterfaces/renderable.h&gt;</span></div>
-<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="preprocessor">#include &lt;raylib.h&gt;</span></div>
-<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &lt;memory&gt;</span></div>
-<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#include &lt;pscore/sprite.h&gt;</span></div>
-<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span> </div>
-<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="keyword">class </span><a class="code hl_class" href="classFortunaDirector.html">FortunaDirector</a>;</div>
-<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="keyword">class </span><a class="code hl_class" href="classPlayer.html">Player</a>;</div>
-<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span> </div>
-<div class="foldopen" id="foldopen00010" data-start="{" data-end="};">
-<div class="line"><a id="l00010" name="l00010"></a><span class="lineno"><a class="line" href="classCannon.html">   10</a></span><span class="keyword">class </span><a class="code hl_class" href="classCannon.html">Cannon</a> : <span class="keyword">public</span> <a class="code hl_class" href="classPSInterfaces_1_1IRenderable.html">PSInterfaces::IRenderable</a></div>
-<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span>{</div>
-<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span>    <a class="code hl_class" href="classCannon.html">Cannon</a>();</div>
-<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span>    <span class="keywordtype">void</span> update(<span class="keyword">const</span> <span class="keywordtype">float</span> dt) <span class="keyword">override</span>;</div>
-<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>    <span class="keywordtype">void</span> render() <span class="keyword">override</span>;</div>
-<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>    <span class="keywordtype">bool</span> is_active() <span class="keyword">override</span>;</div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#include &lt;memory&gt;</span></div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="preprocessor">#include &lt;optional&gt;</span></div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &lt;pscore/sprite.h&gt;</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#include &lt;psinterfaces/renderable.h&gt;</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &lt;raylib.h&gt;</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span> </div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="keyword">class </span><a class="code hl_class" href="classFortunaDirector.html">FortunaDirector</a>;</div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="keyword">class </span><a class="code hl_class" href="classPlayer.html">Player</a>;</div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span> </div>
+<div class="foldopen" id="foldopen00011" data-start="{" data-end="};">
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno"><a class="line" href="classCannon.html">   11</a></span><span class="keyword">class </span><a class="code hl_class" href="classCannon.html">Cannon</a> : <span class="keyword">public</span> <a class="code hl_class" href="classPSInterfaces_1_1IRenderable.html">PSInterfaces::IRenderable</a></div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span>{</div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="keyword">public</span>:</div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span>    <a class="code hl_class" href="classCannon.html">Cannon</a>();</div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>    <span class="keywordtype">void</span> update(<span class="keyword">const</span> <span class="keywordtype">float</span> dt) <span class="keyword">override</span>;</div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>    <span class="keywordtype">void</span> render() <span class="keyword">override</span>;</div>
 <div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span> </div>
-<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>    <span class="keywordtype">void</span> set_is_active(<span class="keyword">const</span> <span class="keywordtype">bool</span> active);</div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>    <span class="keyword">enum class</span> CannonPositioning { Left, Right };</div>
 <div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span> </div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>    <span class="keyword">enum class</span> CannonPositioning { Left, Right };</div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>    Vector2 calculate_projectile_target_position(); <span class="comment">// Calculates the target position based on current position, rotation and range</span></div>
 <div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span> </div>
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>    Vector2 calculate_projectile_target_position(); <span class="comment">// Calculates the target position based on current position, rotation and range</span></div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>    <span class="keywordtype">void</span> fire(); <span class="comment">// Spawns a projectile if the fire rate allows it</span></div>
 <div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span> </div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>    <span class="keywordtype">void</span> fire(); <span class="comment">// Spawns a projectile if the fire rate allows it</span></div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>    <span class="keywordtype">void</span> set_position_to_parent(); <span class="comment">// Sets the cannon&#39;s position relative to its parent player</span></div>
 <div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span> </div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>    <span class="keywordtype">void</span> set_position_to_parent(); <span class="comment">// Sets the cannon&#39;s position relative to its parent player</span></div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>    <span class="keywordtype">void</span> set_rotation_to_parent(); <span class="comment">// Sets the cannon&#39;s rotation to match its parent player</span></div>
 <div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span> </div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>    <span class="keywordtype">void</span> set_rotation_to_parent(); <span class="comment">// Sets the cannon&#39;s rotation to match its parent player</span></div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span> </div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>    std::shared_ptr&lt;Player&gt; parent(); <span class="comment">// Returns the shared pointer to the parent</span></div>
-<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>    <span class="keywordtype">void</span> set_parent(std::shared_ptr&lt;Player&gt; parent); <span class="comment">// Sets the shared pointer to the parent</span></div>
-<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span> </div>
-<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>    Vector2 position(); <span class="comment">// Returns the cannon&#39;s position</span></div>
-<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>    <span class="keywordtype">void</span> set_position(<span class="keyword">const</span> Vector2&amp; position); <span class="comment">// Sets the cannon&#39;s position</span></div>
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span> </div>
-<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>    <span class="keywordtype">float</span> rotation(); <span class="comment">// Returns the cannon&#39;s rotation</span></div>
-<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>    <span class="keywordtype">void</span> set_rotation(<span class="keyword">const</span> <span class="keywordtype">float</span> rotation); <span class="comment">// Sets the cannon&#39;s rotation</span></div>
-<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span> </div>
-<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>    <span class="keywordtype">float</span> range(); <span class="comment">// Returns the cannon&#39;s range</span></div>
-<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>    <span class="keywordtype">void</span> set_range(<span class="keyword">const</span> <span class="keywordtype">float</span> range); <span class="comment">// Sets the cannon&#39;s range</span></div>
-<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span> </div>
-<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>    <span class="keywordtype">float</span> fire_rate(); <span class="comment">// Returns the cannon&#39;s fire rate in seconds</span></div>
-<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>    <span class="keywordtype">void</span> set_fire_rate(<span class="keyword">const</span> <span class="keywordtype">float</span> fire_rate); <span class="comment">// Sets the cannon&#39;s fire rate in seconds</span></div>
-<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span> </div>
-<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>    <span class="keywordtype">float</span> projectile_speed(); <span class="comment">// Returns the cannon&#39;s projectile speed</span></div>
-<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>    <span class="keywordtype">void</span> set_projectile_speed(<span class="keyword">const</span> <span class="keywordtype">float</span> projectile_speed); <span class="comment">// Sets the cannon&#39;s projectile speed</span></div>
-<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span> </div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>    <span class="keywordtype">float</span> dest_width(); <span class="comment">// Returns the width of the destination rectangle</span></div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>    <span class="keywordtype">float</span> dest_height(); <span class="comment">// Returns the height of the destination rectangle</span></div>
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span> </div>
-<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>    Vector2 projectile_target_position(); <span class="comment">// Returns the projectile&#39;s target position</span></div>
-<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>    <span class="keywordtype">void</span> set_projectile_target_position(<span class="keyword">const</span> Vector2&amp; target_position); <span class="comment">// Sets the projectile&#39;s target position</span></div>
-<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span> </div>
-<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>    <span class="keywordtype">float</span> parent_position_x_offset(); <span class="comment">// Returns the parent&#39;s position x offset</span></div>
-<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>    <span class="keywordtype">void</span> set_parent_position_x_offset(<span class="keyword">const</span> <span class="keywordtype">float</span> offset); <span class="comment">// Sets the parent&#39;s position x offset</span></div>
-<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span> </div>
-<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>    <span class="keywordtype">float</span> parent_position_y_offset(); <span class="comment">// Returns the parent&#39;s position y offset</span></div>
-<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>    <span class="keywordtype">void</span> set_parent_position_y_offset(<span class="keyword">const</span> <span class="keywordtype">float</span> offset); <span class="comment">// Sets the parent&#39;s position y offset</span></div>
-<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span> </div>
-<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>    CannonPositioning positioning(); <span class="comment">// Returns the cannon&#39;s positioning</span></div>
-<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>    <span class="keywordtype">void</span> set_positioning(<span class="keyword">const</span> Cannon::CannonPositioning positioning); <span class="comment">// Sets the cannon&#39;s positioning</span></div>
-<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span> </div>
-<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>    Texture2D texture(); <span class="comment">// Returns the cannon&#39;s texture</span></div>
-<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>    <span class="keywordtype">void</span> set_texture(<span class="keyword">const</span> Texture2D&amp; texture); <span class="comment">// Sets the cannon&#39;s texture</span></div>
-<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span> </div>
-<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span><span class="keyword">private</span>:</div>
-<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span> </div>
-<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>    Vector2 m_c_position;</div>
-<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>    <span class="keywordtype">float</span> m_c_rotation;</div>
-<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>    <span class="keywordtype">float</span> m_c_range;</div>
-<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>    <span class="keywordtype">float</span> m_c_projectile_speed;</div>
-<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>    <span class="keywordtype">float</span> m_c_fire_rate_in_s;</div>
-<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>    <span class="keywordtype">float</span> m_c_time_since_last_shot;</div>
-<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>    Vector2 m_c_projectile_target_position;</div>
-<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>    <span class="keywordtype">float</span> m_c_parent_position_x_offset;</div>
-<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>    <span class="keywordtype">float</span> m_c_parent_position_y_offset;</div>
-<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>    CannonPositioning m_c_positioning;</div>
-<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span> </div>
-<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>    Texture2D m_c_texture;</div>
-<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>    Rectangle m_c_source;</div>
-<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>    Rectangle m_c_dest;</div>
-<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>    std::shared_ptr&lt;PSCore::sprites::Sprite&gt; m_c_sprite;</div>
-<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>    <span class="keywordtype">bool</span> m_c_is_active = <span class="keyword">true</span>;</div>
-<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span> </div>
-<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>    std::shared_ptr&lt;Player&gt; m_c_parent;</div>
-<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>};</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>    std::shared_ptr&lt;Player&gt; parent(); <span class="comment">// Returns the shared pointer to the parent</span></div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>    <span class="keywordtype">void</span> set_parent(std::shared_ptr&lt;Player&gt; parent); <span class="comment">// Sets the shared pointer to the parent</span></div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span> </div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>    std::optional&lt;Vector2&gt; position() <span class="keyword">const override</span>; <span class="comment">// Returns the cannon&#39;s position</span></div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>    <span class="keywordtype">void</span> set_position(<span class="keyword">const</span> Vector2&amp; position); <span class="comment">// Sets the cannon&#39;s position</span></div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span> </div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>    <span class="keywordtype">float</span> rotation(); <span class="comment">// Returns the cannon&#39;s rotation</span></div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>    <span class="keywordtype">void</span> set_rotation(<span class="keyword">const</span> <span class="keywordtype">float</span> rotation); <span class="comment">// Sets the cannon&#39;s rotation</span></div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span> </div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>    <span class="keywordtype">float</span> range(); <span class="comment">// Returns the cannon&#39;s range</span></div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>    <span class="keywordtype">void</span> set_range(<span class="keyword">const</span> <span class="keywordtype">float</span> range); <span class="comment">// Sets the cannon&#39;s range</span></div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span> </div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>    <span class="keywordtype">float</span> fire_rate(); <span class="comment">// Returns the cannon&#39;s fire rate in seconds</span></div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>    <span class="keywordtype">void</span> set_fire_rate(<span class="keyword">const</span> <span class="keywordtype">float</span> fire_rate); <span class="comment">// Sets the cannon&#39;s fire rate in seconds</span></div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span> </div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>    <span class="keywordtype">float</span> projectile_speed(); <span class="comment">// Returns the cannon&#39;s projectile speed</span></div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>    <span class="keywordtype">void</span> set_projectile_speed(<span class="keyword">const</span> <span class="keywordtype">float</span> projectile_speed); <span class="comment">// Sets the cannon&#39;s projectile speed</span></div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span> </div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>    <span class="keywordtype">float</span> dest_width(); <span class="comment">// Returns the width of the destination rectangle</span></div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>    <span class="keywordtype">float</span> dest_height(); <span class="comment">// Returns the height of the destination rectangle</span></div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span> </div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>    Vector2 projectile_target_position(); <span class="comment">// Returns the projectile&#39;s target position</span></div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>    <span class="keywordtype">void</span> set_projectile_target_position(<span class="keyword">const</span> Vector2&amp; target_position); <span class="comment">// Sets the projectile&#39;s target position</span></div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span> </div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>    <span class="keywordtype">float</span> parent_position_x_offset(); <span class="comment">// Returns the parent&#39;s position x offset</span></div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>    <span class="keywordtype">void</span> set_parent_position_x_offset(<span class="keyword">const</span> <span class="keywordtype">float</span> offset); <span class="comment">// Sets the parent&#39;s position x offset</span></div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span> </div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>    <span class="keywordtype">float</span> parent_position_y_offset(); <span class="comment">// Returns the parent&#39;s position y offset</span></div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>    <span class="keywordtype">void</span> set_parent_position_y_offset(<span class="keyword">const</span> <span class="keywordtype">float</span> offset); <span class="comment">// Sets the parent&#39;s position y offset</span></div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span> </div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>    CannonPositioning positioning(); <span class="comment">// Returns the cannon&#39;s positioning</span></div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>    <span class="keywordtype">void</span> set_positioning(<span class="keyword">const</span> Cannon::CannonPositioning positioning); <span class="comment">// Sets the cannon&#39;s positioning</span></div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span> </div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>    Texture2D texture(); <span class="comment">// Returns the cannon&#39;s texture</span></div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>    <span class="keywordtype">void</span> set_texture(<span class="keyword">const</span> Texture2D&amp; texture); <span class="comment">// Sets the cannon&#39;s texture</span></div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span> </div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span><span class="keyword">private</span>:</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>    Vector2 m_c_position;</div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>    <span class="keywordtype">float</span> m_c_rotation;</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>    <span class="keywordtype">float</span> m_c_range;</div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>    <span class="keywordtype">float</span> m_c_projectile_speed;</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>    <span class="keywordtype">float</span> m_c_fire_rate_in_s;</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>    <span class="keywordtype">float</span> m_c_time_since_last_shot;</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>    Vector2 m_c_projectile_target_position;</div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>    <span class="keywordtype">float</span> m_c_parent_position_x_offset;</div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>    <span class="keywordtype">float</span> m_c_parent_position_y_offset;</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>    CannonPositioning m_c_positioning;</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span> </div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>    Texture2D m_c_texture;</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>    Rectangle m_c_source;</div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>    Rectangle m_c_dest;</div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>    std::shared_ptr&lt;PSCore::sprites::Sprite&gt; m_c_sprite;</div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span> </div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>    std::shared_ptr&lt;Player&gt; m_c_parent;</div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>};</div>
 </div>
-<div class="ttc" id="aclassCannon_html"><div class="ttname"><a href="classCannon.html">Cannon</a></div><div class="ttdef"><b>Definition</b> cannon.h:11</div></div>
+<div class="ttc" id="aclassCannon_html"><div class="ttname"><a href="classCannon.html">Cannon</a></div><div class="ttdef"><b>Definition</b> cannon.h:12</div></div>
 <div class="ttc" id="aclassFortunaDirector_html"><div class="ttname"><a href="classFortunaDirector.html">FortunaDirector</a></div><div class="ttdef"><b>Definition</b> director.h:12</div></div>
 <div class="ttc" id="aclassPSInterfaces_1_1IRenderable_html"><div class="ttname"><a href="classPSInterfaces_1_1IRenderable.html">PSInterfaces::IRenderable</a></div><div class="ttdef"><b>Definition</b> renderable.h:8</div></div>
 <div class="ttc" id="aclassPlayer_html"><div class="ttname"><a href="classPlayer.html">Player</a></div><div class="ttdef"><b>Definition</b> player.h:14</div></div>

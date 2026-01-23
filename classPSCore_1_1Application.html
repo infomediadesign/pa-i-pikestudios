@@ -138,22 +138,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>run</b> ()</td></tr>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>stop</b> ()</td></tr>
 <tr class="memdesc:a2e5dee1fbe413783d3500fe8da567ad4"><td class="mdescLeft">&#160;</td><td class="mdescRight">stops the applikation <br /></td></tr>
 <tr class="separator:a2e5dee1fbe413783d3500fe8da567ad4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9758ad077c88cdda6ff1057ad4216539" id="r_a9758ad077c88cdda6ff1057ad4216539"><td class="memTemplParams" colspan="2">template&lt;typename E &gt; <br />
-requires std::is_base_of_v&lt;<a class="el" href="classPSInterfaces_1_1IEntity.html">PSInterfaces::IEntity</a>, E&gt;</td></tr>
-<tr class="memitem:a9758ad077c88cdda6ff1057ad4216539"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classPSCore_1_1Application.html#a9758ad077c88cdda6ff1057ad4216539">register_entity</a> (std::shared_ptr&lt; E &gt; e)</td></tr>
-<tr class="memdesc:a9758ad077c88cdda6ff1057ad4216539"><td class="mdescLeft">&#160;</td><td class="mdescRight">registers an entity to the applikation  <br /></td></tr>
-<tr class="separator:a9758ad077c88cdda6ff1057ad4216539"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad3887181246fb985ab715295d271b9f6" id="r_ad3887181246fb985ab715295d271b9f6"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::weak_ptr&lt; <a class="el" href="classPSInterfaces_1_1IEntity.html">PSInterfaces::IEntity</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPSCore_1_1Application.html#ad3887181246fb985ab715295d271b9f6">entities</a> () const</td></tr>
-<tr class="memdesc:ad3887181246fb985ab715295d271b9f6"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns a list of weak_ptr of all registered entiteies  <br /></td></tr>
-<tr class="separator:ad3887181246fb985ab715295d271b9f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acd8087b11723daecdbd8248f4fee9f69" id="r_acd8087b11723daecdbd8248f4fee9f69"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPSCore_1_1Application.html#acd8087b11723daecdbd8248f4fee9f69">log</a> (TraceLogLevel type, const char *text) const</td></tr>
 <tr class="memdesc:acd8087b11723daecdbd8248f4fee9f69"><td class="mdescLeft">&#160;</td><td class="mdescRight">prints a log message, use the PS_LOG macro instead  <br /></td></tr>
 <tr class="separator:acd8087b11723daecdbd8248f4fee9f69"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a669c90f37b98862a6c134d7100974272" id="r_a669c90f37b98862a6c134d7100974272"><td class="memTemplParams" colspan="2">template&lt;typename E &gt; <br />
-requires std::is_base_of_v&lt;<a class="el" href="classPSInterfaces_1_1IEntity.html">PSInterfaces::IEntity</a>, E&gt;</td></tr>
-<tr class="memitem:a669c90f37b98862a6c134d7100974272"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classPSCore_1_1Application.html#a669c90f37b98862a6c134d7100974272">unregister_entity</a> (std::shared_ptr&lt; E &gt; e)</td></tr>
-<tr class="memdesc:a669c90f37b98862a6c134d7100974272"><td class="mdescLeft">&#160;</td><td class="mdescRight">removes an entity from the registry  <br /></td></tr>
-<tr class="separator:a669c90f37b98862a6c134d7100974272"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac2994a7678f8f8cccbb5940131894641" id="r_ac2994a7678f8f8cccbb5940131894641"><td class="memTemplParams" colspan="2"><a id="ac2994a7678f8f8cccbb5940131894641" name="ac2994a7678f8f8cccbb5940131894641"></a>
 template&lt;typename E &gt; <br />
 requires std::is_base_of_v&lt;<a class="el" href="classPSInterfaces_1_1IEntity.html">PSInterfaces::IEntity</a>, E&gt;</td></tr>
@@ -176,26 +163,6 @@ static <a class="el" href="classPSCore_1_1Application.html">Application</a> *&#1
 <tr class="separator:af74c95b803fba6c2a5fd47a3ae5fda36"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="ad3887181246fb985ab715295d271b9f6" name="ad3887181246fb985ab715295d271b9f6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad3887181246fb985ab715295d271b9f6">&#9670;&#160;</a></span>entities()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::vector&lt; std::weak_ptr&lt; <a class="el" href="classPSInterfaces_1_1IEntity.html">PSInterfaces::IEntity</a> &gt; &gt; PSCore::Application::entities </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>returns a list of weak_ptr of all registered entiteies </p>
-<dl class="section return"><dt>Returns</dt><dd>the list of registere entities </dd></dl>
-
-</div>
-</div>
 <a id="acd8087b11723daecdbd8248f4fee9f69" name="acd8087b11723daecdbd8248f4fee9f69"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#acd8087b11723daecdbd8248f4fee9f69">&#9670;&#160;</a></span>log()</h2>
 
@@ -227,80 +194,6 @@ static <a class="el" href="classPSCore_1_1Application.html">Application</a> *&#1
   <table class="params">
     <tr><td class="paramname">type</td><td>a loglevel </td></tr>
     <tr><td class="paramname">text</td><td>the log message </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="a9758ad077c88cdda6ff1057ad4216539" name="a9758ad077c88cdda6ff1057ad4216539"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9758ad077c88cdda6ff1057ad4216539">&#9670;&#160;</a></span>register_entity()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename E &gt; <br />
-requires std::is_base_of_v&lt;<a class="el" href="classPSInterfaces_1_1IEntity.html">PSInterfaces::IEntity</a>, E&gt;</div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void PSCore::Application::register_entity </td>
-          <td>(</td>
-          <td class="paramtype">std::shared_ptr&lt; E &gt;&#160;</td>
-          <td class="paramname"><em>e</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>registers an entity to the applikation </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">a</td><td>shared pointer to an entity derived class </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="a669c90f37b98862a6c134d7100974272" name="a669c90f37b98862a6c134d7100974272"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a669c90f37b98862a6c134d7100974272">&#9670;&#160;</a></span>unregister_entity()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename E &gt; <br />
-requires std::is_base_of_v&lt;<a class="el" href="classPSInterfaces_1_1IEntity.html">PSInterfaces::IEntity</a>, E&gt;</div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void PSCore::Application::unregister_entity </td>
-          <td>(</td>
-          <td class="paramtype">std::shared_ptr&lt; E &gt;&#160;</td>
-          <td class="paramname"><em>e</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>removes an entity from the registry </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">e</td><td>a shared pointer to an entity derived class </td></tr>
   </table>
   </dd>
 </dl>

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['log_0',['log',['../classPSCore_1_1Application.html#acd8087b11723daecdbd8248f4fee9f69',1,'PSCore::Application']]]
+  ['map_5fborder_5fwrap_5faround_0',['map_border_wrap_around',['../namespacemisc_1_1map.html#ac6beb9d5e12a4a92e38a5efb5c86ff13',1,'misc::map']]]
 ];

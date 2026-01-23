@@ -6,6 +6,9 @@ var annotated_dup =
       ] ]
     ] ],
     [ "PSCore", null, [
+      [ "collision", null, [
+        [ "EntityCollider", "classPSCore_1_1collision_1_1EntityCollider.html", null ]
+      ] ],
       [ "sprites", null, [
         [ "Sprite", "structPSCore_1_1sprites_1_1Sprite.html", null ],
         [ "SpriteLoader", "classPSCore_1_1sprites_1_1SpriteLoader.html", null ]
@@ -23,7 +26,10 @@ var annotated_dup =
       ] ],
       [ "IEntity", "classPSInterfaces_1_1IEntity.html", null ],
       [ "IRenderable", "classPSInterfaces_1_1IRenderable.html", null ],
-      [ "Layer", "classPSInterfaces_1_1Layer.html", null ]
+      [ "Layer", "classPSInterfaces_1_1Layer.html", "classPSInterfaces_1_1Layer" ]
+    ] ],
+    [ "PSUtils", null, [
+      [ "Grid2D", "classPSUtils_1_1Grid2D.html", null ]
     ] ],
     [ "smear", null, [
       [ "SmearPoints", "structsmear_1_1SmearPoints.html", null ]

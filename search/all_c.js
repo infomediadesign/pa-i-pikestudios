@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['register_5fentity_0',['register_entity',['../classPSCore_1_1Application.html#a9758ad077c88cdda6ff1057ad4216539',1,'PSCore::Application']]],
+  ['register_5fentity_0',['register_entity',['../classPSInterfaces_1_1Layer.html#a5eb385c391a9e6458cfa16d7f53ff541',1,'PSInterfaces::Layer']]],
   ['remove_5frendarble_1',['remove_rendarble',['../classPSCore_1_1Renderer.html#a01eed56b61e822030cbcedd33533fd39',1,'PSCore::Renderer']]],
   ['render_2',['render',['../classPSCore_1_1Renderer.html#a6bd1a15c5064eeab9b46376859b464a6',1,'PSCore::Renderer']]],
   ['renderer_3',['Renderer',['../classPSCore_1_1Renderer.html',1,'PSCore']]],
