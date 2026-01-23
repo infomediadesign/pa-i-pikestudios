@@ -9,7 +9,7 @@
 
 #include <layers/applayer.h>
 #include <misc/smear.h>
-#include "psinterfaces/entity.h"
+#include <psinterfaces/entity.h>
 
 #include <coordinatesystem.h>
 
@@ -20,7 +20,7 @@
 Player::Player() : PSInterfaces::IEntity("player"), m_animation_controller(FETCH_SPRITE_TEXTURE(ident_), {{1, 1, PSCore::sprites::KeyFrame, 0}, {4, 1, PSCore::sprites::Forward, 0}})
 {
 	Vector2 frame_grid{4, 2};
-	PRELOAD_TEXTURE(ident_, "ressources/entity/SpaceShipSpriteSheet.png", frame_grid);
+	m_sprite = PRELOAD_TEXTURE(ident_, "ressources/entity/SpaceShipSpriteSheet.png", frame_grid);
 
 	m_animation_controller = PSCore::sprites::SpriteSheetAnimation(FETCH_SPRITE_TEXTURE(ident_), {{1, 1, PSCore::sprites::KeyFrame, 0}, {4, 1, PSCore::sprites::PingPong, 0}});
 
@@ -100,6 +100,11 @@ void Player::update(const float dt)
 	}
 }
 
+void Player::damage()
+{
+	PS_LOG(LOG_INFO, "player took damage");
+}
+
 void Player::render()
 {
 	if ( auto& vp = gApp()->viewport() ) {
@@ -117,7 +122,7 @@ void Player::render()
 	}
 }
 
-Vector2 Player::position()
+std::optional<Vector2> Player::position() const
 {
 	return m_position;
 }
@@ -222,16 +227,6 @@ void Player::set_texture_values(const Texture2D& texture, const float rotation_o
 	m_rotation_offset = rotation_offset;
 }
 
-bool Player::is_active()
-{
-	return m_is_active;
-}
-
-void Player::set_is_active(bool active)
-{
-	m_is_active = active;
-}
-
 void Player::initialize_cannon()
 {
 	auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
@@ -327,4 +322,19 @@ std::shared_ptr<Player> Player::shared_ptr_this()
 void Player::set_shared_ptr_this(std::shared_ptr<Player> ptr)
 {
 	m_shared_ptr_this = ptr;
+}
+
+std::optional<std::vector<Vector2>> Player::bounds() const
+{
+	Rectangle shark_rec;
+	shark_rec = m_sprite->frame_rect({0, 0});
+
+	std::vector<Vector2> v{
+			m_position, // Top-left
+			Vector2{m_position.x + shark_rec.width, m_position.y}, // Top-right
+			Vector2{m_position.x + shark_rec.width, m_position.y + shark_rec.height}, // Bottom-right
+			Vector2{m_position.x, m_position.y + shark_rec.height} // Bottom-left
+	};
+
+	return v;
 }

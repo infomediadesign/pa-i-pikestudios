@@ -1,12 +1,14 @@
 #pragma once
 
+#include <optional>
 #include <psinterfaces/renderable.h>
 
+#include <entities/cannon.h>
 #include <raylib.h>
 #include <valarray>
-#include <entities/cannon.h>
 
 #include <misc/smear.h>
+#include "pscore/sprite.h"
 
 class Player : public PSInterfaces::IRenderable
 {
@@ -17,7 +19,11 @@ public:
 
 	void render() override;
 
-	Vector2 position();
+	std::optional<Vector2> position() const override;
+	
+	std::optional<std::vector<Vector2>> bounds() const override;
+	
+	void damage();
 
 	Vector2 velocity();
 
@@ -49,10 +55,6 @@ public:
 
 	void set_texture_values(const Texture2D& texture, float rotation_offset);
 
-	bool is_active() override;
-
-	void set_is_active(bool active);
-
 	// Borderinteration Variables and Methods
 	void set_border_collision_active_horizontal(bool active);
 
@@ -81,7 +83,6 @@ public:
 
 	void add_cannons(int amount);
 
-
 private:
 	// Base Movement Variables
 	Vector2 m_position	 = {0};
@@ -102,6 +103,7 @@ private:
 	Texture2D m_texture		= {0};
 	float m_rotation_offset = 0;
 	Rectangle m_source		= {0};
+	std::shared_ptr<PSCore::sprites::Sprite> m_sprite;
 
 	// Variables for Animation
 	PSCore::sprites::SpriteSheetAnimation m_animation_controller;
@@ -114,8 +116,6 @@ private:
 	// Variabels and Methods for Cannons & Projectiles
 	std::vector<std::shared_ptr<Cannon>> m_cannon_container;
 	std::shared_ptr<Player> m_shared_ptr_this;
-	bool m_is_active = true;
-
 
 	// Smear Variables
 	float m_smear_rotation								= 0;

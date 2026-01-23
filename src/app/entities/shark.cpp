@@ -10,6 +10,9 @@
 #include <raylib.h>
 #include <raymath.h>
 #include <utilities.h>
+#include <vector>
+#include "layers/applayer.h"
+#include "pscore/collision.h"
 
 //
 // Fin of Shark
@@ -77,7 +80,7 @@ void Body::draw_debug()
 Shark::Shark() : PSInterfaces::IEntity("shark")
 {
 	Vector2 frame_grid{9, 2};
-	PRELOAD_TEXTURE(ident_, "ressources/entity/hai.png", frame_grid);
+	PRELOAD_TEXTURE(ident_, "ressources/entity/shark.png", frame_grid);
 	m_shark_sprite = FETCH_SPRITE(ident_);
 
 	m_body = std::make_shared<Body>(this);
@@ -90,12 +93,27 @@ Shark::Shark() : PSInterfaces::IEntity("shark")
 	m_marked = PSUtils::gen_rand(1, 100) > 50;
 }
 
+void Shark::init(std::shared_ptr<Shark> self, const Vector2& pos)
+{
+	m_self = self;
+	m_pos  = pos;
+
+	m_collider = std::make_unique<PSCore::collision::EntityCollider>(m_self);
+	m_collider->register_collision_handler([](std::weak_ptr<PSInterfaces::IEntity> other, const Vector2& pos) {
+		if (auto locked = other.lock()) {
+			if ( auto player = std::dynamic_pointer_cast<Player>(locked)) {
+				player->damage();
+			}
+		}
+	});
+}
+
 Shark::~Shark()
 {
-	if ( m_marked ) {
-		PS_LOG(LOG_INFO, "Dropped an upgrade");
-		// TODO: implement loot drop
-	}
+	// if ( m_marked ) {
+	// 	PS_LOG(LOG_INFO, "Dropped an upgrade");
+	// 	// TODO: implement loot drop
+	// }
 }
 
 void Shark::update(float dt)
@@ -104,21 +122,24 @@ void Shark::update(float dt)
 	m_fin->update(dt);
 
 	Player* player_entity = nullptr;
-	for ( auto entity: gApp()->entities() ) {
-		if ( auto locked = entity.lock() ) {
-			if ( auto player = dynamic_cast<Player*>(locked.get()) )
-				player_entity = player;
+
+	if ( auto app_layer = gApp()->get_layer<AppLayer>() ) {
+		for ( auto entity: app_layer->entities() ) {
+			if ( auto locked = entity.lock() ) {
+				if ( auto player = dynamic_cast<Player*>(locked.get()) )
+					player_entity = player;
+			}
 		}
 	}
 	if ( !player_entity )
 		return;
 
-	Vector2 player_pos = player_entity->position();
+	Vector2 player_pos = player_entity->position().value();
 
 	Vector2 direction = Vector2Subtract(player_pos, m_pos);
 	float distance	  = Vector2Length(direction);
 
-	m_shark_rotation = utilities::rotation_look_at(m_pos, player_entity->position());
+	m_shark_rotation = utilities::rotation_look_at(m_pos, player_pos);
 
 	switch ( m_state ) {
 		case Idle: {
@@ -141,6 +162,9 @@ void Shark::update(float dt)
 		case Attacking: {
 			m_state_string = "attacking";
 			PS_LOG(LOG_INFO, "Attacked the player");
+			if ( auto app_layer = gApp()->get_layer<AppLayer>()) {
+				m_collider->check_collision(app_layer->entities());
+			}
 			// TODO: implement damage
 			m_state = State::Retreat;
 			break;
@@ -205,3 +229,23 @@ void Shark::set_pos(const Vector2& pos)
 {
 	m_pos = pos;
 }
+
+std::optional<std::vector<Vector2>> Shark::bounds() const
+{
+	Rectangle shark_rec;
+	shark_rec = m_shark_sprite->frame_rect({0, 0});
+
+	std::vector<Vector2> v{
+			m_pos, // Top-left
+			Vector2{m_pos.x + shark_rec.width, m_pos.y}, // Top-right
+			Vector2{m_pos.x + shark_rec.width, m_pos.y + shark_rec.height}, // Bottom-right
+			Vector2{m_pos.x, m_pos.y + shark_rec.height} // Bottom-left
+	};
+
+	return v;
+};
+
+std::optional<Vector2> Shark::position() const
+{
+	return m_pos;
+};
