@@ -15,6 +15,166 @@ namespace PSCore {
 
 	namespace sprites {
 
+		enum PlayDirection {Forward, PingPong, KeyFrame};
+
+		struct SpriteSheetData
+		{
+			int frames;
+			float play_duration;
+			PlayDirection play_direction;
+			int z_index;
+		};
+
+		struct SpriteTimeDirectionData
+		{
+			float timestamp;
+			int direction;
+		};
+
+		struct SpriteSourceRectangle
+		{
+			Rectangle rectangle;
+			int z_index;
+		};
+
+		class SpriteSheetAnimation
+		{
+		public:
+			explicit SpriteSheetAnimation(Texture2D texture, const std::vector<SpriteSheetData>& sprite_sheet_data)
+			{
+				m_texture = texture;
+				m_sprite_sheet_data = sprite_sheet_data;
+
+				for (int i = 0; auto element : m_sprite_sheet_data) {
+
+					if ( m_sprite_time_direction_data.size() <= i ) {
+						if ( element.play_direction == KeyFrame ) {
+							m_sprite_time_direction_data.push_back({0,0});
+						}
+						else {
+							m_sprite_time_direction_data.push_back({0,1});
+						}
+					}
+					else {
+						if ( element.play_direction == KeyFrame ) {
+							m_sprite_time_direction_data.at(i) = {0,0};
+						}
+						else {
+							m_sprite_time_direction_data.at(i) = {0,1};
+						}
+					}
+
+					if ( element.frames > m_max_frame_in_animation ) {
+						m_max_frame_in_animation = element.frames;
+					}
+
+					i++;
+				}
+
+				m_frame_wight = static_cast<float>(m_texture.width) / static_cast<float>(m_max_frame_in_animation);
+				m_frame_height = static_cast<float>(m_texture.height) / static_cast<float>(m_sprite_sheet_data.size());
+			}
+
+			Rectangle get_source_rectangle(int z_index)
+			{
+				for ( auto element : m_sprite_source_rectangle ) {
+					if ( element.z_index == z_index ) {
+						return element.rectangle;
+					}
+				}
+				return {};
+			}
+
+			void add_animation_at_index(int sprite_sheet_animation_index, int z_index)
+			{
+				int c_sprite_sheet_animation_index = std::clamp(sprite_sheet_animation_index, 0, static_cast<int>(m_sprite_sheet_data.size() - 1));
+
+				for ( auto element : m_sprite_source_rectangle ) {
+					if ( element.z_index == z_index ) {
+						if ( m_sprite_sheet_data.at(c_sprite_sheet_animation_index).z_index == z_index ) {
+							m_sprite_time_direction_data.at(c_sprite_sheet_animation_index).timestamp = 0;
+							element.rectangle = {0, static_cast<float>(c_sprite_sheet_animation_index) * m_frame_height, m_frame_wight, m_frame_height};
+						}
+						return;
+					}
+				}
+				if ( m_sprite_sheet_data.at(c_sprite_sheet_animation_index).z_index == z_index ) {
+					m_sprite_source_rectangle.push_back({{0, static_cast<float>(c_sprite_sheet_animation_index) * m_frame_height, m_frame_wight, m_frame_height}, z_index});
+				}
+			}
+
+			void update_animation(float dt)
+			{
+				for ( auto element : m_sprite_source_rectangle ) {
+					SpriteSheetData animation_sprite_sheet_data = m_sprite_sheet_data.at(element.rectangle.y / m_frame_height);
+					SpriteTimeDirectionData animation_sprite_direction_data = m_sprite_time_direction_data.at(element.rectangle.y / m_frame_height);
+
+					if ( animation_sprite_sheet_data.play_direction == Forward ) {
+						m_sprite_time_direction_data.at(element.rectangle.y / m_frame_height).timestamp += dt;
+						if ( animation_sprite_direction_data.timestamp >= animation_sprite_sheet_data.play_duration ) {
+							m_sprite_time_direction_data.at(element.rectangle.y / m_frame_height).timestamp = 0;
+							play_animation_forward(element);
+						}
+					}
+					if ( animation_sprite_sheet_data.play_direction == PingPong ) {
+						m_sprite_time_direction_data.at(element.rectangle.y / m_frame_height).timestamp += dt;
+						if ( animation_sprite_direction_data.timestamp >= animation_sprite_sheet_data.play_duration ) {
+							m_sprite_time_direction_data.at(element.rectangle.y / m_frame_height).timestamp = 0;
+							play_animation_pingpong(element);
+						}
+					}
+				}
+			}
+
+			void set_animation_at_index(int sprite_sheet_animation_index, int sprite_sheet_frame_index, int z_index)
+			{
+				int c_sprite_sheet_animation_index = std::clamp(sprite_sheet_animation_index, 0, static_cast<int>(m_sprite_sheet_data.size() - 1));
+
+				for ( auto element : m_sprite_source_rectangle ) {
+					if ( element.z_index == z_index ) {
+						if ( m_sprite_sheet_data.at(c_sprite_sheet_animation_index).z_index == z_index ) {
+							int c_sprite_sheet_frame_index = std::clamp(sprite_sheet_frame_index, 0, m_sprite_sheet_data.at(element.rectangle.y / m_frame_height).frames - 1);
+
+							if ( m_sprite_sheet_data.at(c_sprite_sheet_animation_index).frames > c_sprite_sheet_frame_index ) {
+								m_sprite_time_direction_data.at(c_sprite_sheet_animation_index).timestamp = 0;
+								element.rectangle.y = static_cast<float>(c_sprite_sheet_animation_index) * m_frame_height;
+								element.rectangle.x = static_cast<float>(c_sprite_sheet_frame_index) * m_frame_wight;
+								return;
+							}
+						}
+					}
+				}
+			}
+
+		private:
+			void play_animation_forward(SpriteSourceRectangle& animation_rectangle)
+			{
+				animation_rectangle.rectangle.x += m_frame_wight;
+				if ( animation_rectangle.rectangle.x >= static_cast<float>(m_sprite_sheet_data.at(animation_rectangle.rectangle.y / m_frame_height).frames) * m_frame_wight) {
+					animation_rectangle.rectangle.x = 0;
+				}
+			}
+
+			void play_animation_pingpong(SpriteSourceRectangle& animation_rectangle)
+			{
+				animation_rectangle.rectangle.x += static_cast<float>(m_sprite_time_direction_data.at(animation_rectangle.rectangle.y / m_frame_height).direction) * m_frame_wight;
+				if ( animation_rectangle.rectangle.x >= static_cast<float>(m_sprite_sheet_data.at(animation_rectangle.rectangle.y / m_frame_height).frames) * m_frame_wight) {
+					m_sprite_time_direction_data.at(animation_rectangle.rectangle.y / m_frame_height).direction = -1;
+				}
+				if ( animation_rectangle.rectangle.x <= 0) {
+					m_sprite_time_direction_data.at(animation_rectangle.rectangle.y / m_frame_height).direction = 1;
+				}
+			}
+
+			Texture2D m_texture = {};
+			float m_frame_wight = 0;
+			float m_frame_height = 0;
+			int m_max_frame_in_animation = 0;
+			std::vector<SpriteSheetData> m_sprite_sheet_data;
+			std::vector<SpriteTimeDirectionData> m_sprite_time_direction_data;
+			std::vector<SpriteSourceRectangle> m_sprite_source_rectangle = {};
+		};
+
 		struct Sprite
 		{
 			std::valarray<int> m_s_sprite_sheet;
