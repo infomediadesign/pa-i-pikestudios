@@ -1,13 +1,13 @@
 #include "mapborderinteraction.h"
 
-#include <memory>
-#include <pscore/application.h>
-#include <vector>
+#include <entities/director.h>
 #include <entities/player.h>
 #include <layers/applayer.h>
-#include <raylib.h>
-#include <entities/director.h>
+#include <memory>
+#include <pscore/application.h>
 #include <pscore/viewport.h>
+#include <raylib.h>
+#include <vector>
 
 namespace misc {
 
@@ -39,13 +39,12 @@ namespace misc {
 			if ( auto& vp = gApp()->viewport() ) {
 				screen_w = static_cast<int>(vp->viewport_base_size().x);
 				screen_h = static_cast<int>(vp->viewport_base_size().y);
-			}
-			else {
+			} else {
 				screen_w = GetScreenWidth();
 				screen_h = GetScreenHeight();
 			}
 
-			Vector2 player_pos = p.position();
+			Vector2 player_pos = p.position().value();
 
 			switch ( wrapAroundMode ) {
 				case WrapAroundMode::OnScreen:
@@ -82,7 +81,7 @@ namespace misc {
 			float half_w = p.dest_width() / 2.0f;
 			float half_h = p.dest_height() / 2.0f;
 
-			Vector2 new_pos = calculate_opposite_position(p.position(), half_w, half_h, axis);
+			Vector2 new_pos = calculate_opposite_position(p.position().value(), half_w, half_h, axis);
 			p.set_position(new_pos);
 		}
 
@@ -94,13 +93,12 @@ namespace misc {
 			if ( auto& vp = gApp()->viewport() ) {
 				screen_w = static_cast<int>(vp->viewport_base_size().x);
 				screen_h = static_cast<int>(vp->viewport_base_size().y);
-			}
-			else {
+			} else {
 				screen_w = GetScreenWidth();
 				screen_h = GetScreenHeight();
 			}
 
-			Vector2 pos	 = p.position();
+			Vector2 pos = p.position().value();
 
 			float half_w = p.dest_width() / 2.0f;
 			float half_h = p.dest_height() / 2.0f;
@@ -145,7 +143,7 @@ namespace misc {
 				p.set_border_collision_active_vertical(true);
 
 			spawnRequests.push_back(
-					{.position = p.position(),
+					{.position = p.position().value(),
 					 .velocity = p.velocity(),
 					 .rotation = p.rotation(),
 					 .height   = p.dest_height(),
@@ -181,8 +179,7 @@ namespace misc {
 			if ( auto& vp = gApp()->viewport() ) {
 				screen_w = static_cast<int>(vp->viewport_base_size().x);
 				screen_h = static_cast<int>(vp->viewport_base_size().y);
-			}
-			else {
+			} else {
 				screen_w = GetScreenWidth();
 				screen_h = GetScreenHeight();
 			}
@@ -204,19 +201,22 @@ namespace misc {
 		{
 			if ( wrapAroundMode != OnScreen )
 				return;
-			
+
 			auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
 			if ( !director )
 				return;
-				
-			for ( auto& entity: gApp()->entities() ) {
+
+			auto app_layer = gApp()->get_layer<AppLayer>();
+			if ( !app_layer )
+				return;
+
+			for ( auto& entity: app_layer->entities() ) {
 				if ( auto player = std::dynamic_pointer_cast<Player>(entity.lock()) ) {
-					if ( misc::map::is_off_screen(*player) ) 
-					{
+					if ( misc::map::is_off_screen(*player) ) {
 						director->destroy_player(player);
-						//player->set_is_active(false);
-						/* 
-						for ( auto& cannons: player->cannon_container() ) 
+						// player->set_is_active(false);
+						/*
+						for ( auto& cannons: player->cannon_container() )
 						{
 							cannons->set_is_active(false);
 						}

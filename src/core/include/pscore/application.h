@@ -79,50 +79,11 @@ namespace PSCore {
 		void stop();
 
 		/*!
-		 * @brief registers an entity to the applikation
-		 * @param a shared pointer to an entity derived class
-		 */
-		template<typename E>
-			requires std::is_base_of_v<PSInterfaces::IEntity, E>
-		void register_entity(std::shared_ptr<E> e)
-		{
-			if ( auto entity = dynamic_cast<PSInterfaces::IEntity*>(e.get()) )
-				m_entity_registry.push_back(e);
-		};
-
-		/*!
-		 * @brief returns a list of weak_ptr of all registered entiteies
-		 * @return the list of registere entities
-		 */
-		std::vector<std::weak_ptr<PSInterfaces::IEntity>> entities() const;
-
-		/*!
 		 * @brief prints a log message, use the PS_LOG macro instead
 		 * @param type: a loglevel
 		 * @param text: the log message
 		 */
 		void log(TraceLogLevel type, const char* text) const;
-
-		/*!
-		 * @brief removes an entity from the registry
-		 * @param e: a shared pointer to an entity derived class
-		 */
-		template<typename E>
-			requires std::is_base_of_v<PSInterfaces::IEntity, E>
-		void unregister_entity(std::shared_ptr<E> e)
-		{
-			for ( auto itr = m_entity_registry.begin(); itr != m_entity_registry.end(); ) {
-				if ( auto locked = itr->lock() ) {
-					if ( locked.get() == e.get() ) {
-						itr = m_entity_registry.erase(itr);
-						return;
-					}
-					++itr;
-				} else {
-					itr = m_entity_registry.erase(itr);
-				}
-			}
-		}
 
 		template<typename E>
 			requires std::is_base_of_v<PSInterfaces::IEntity, E>
@@ -146,7 +107,6 @@ namespace PSCore {
 	private:
 		std::unique_ptr<ApplicationPriv> _p;
 		std::vector<std::unique_ptr<PSInterfaces::Layer>> m_layer_stack;
-		std::vector<std::weak_ptr<PSInterfaces::IEntity>> m_entity_registry;
 		std::unique_ptr<PSInterfaces::IEntity> m_game_director;
 	};
 } // namespace PSCore
