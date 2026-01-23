@@ -1,5 +1,6 @@
 #include "projectile.h"
 #include <entities/director.h>
+#include <memory>
 #include <optional>
 #include <pscore/application.h>
 #include <pscore/collision.h>
@@ -7,9 +8,10 @@
 #include <pscore/viewport.h>
 #include <raylib.h>
 
+#include <layers/applayer.h>
+#include <psinterfaces/entity.h>
 #include <raymath.h>
 #include <vector>
-#include "layers/applayer.h"
 
 Projectile::Projectile() : PSInterfaces::IEntity("projectile")
 {
@@ -24,40 +26,44 @@ Projectile::Projectile() : PSInterfaces::IEntity("projectile")
 	m_p_speed			= 200.0f;
 }
 
+void Projectile::init(const Vector2& position, std::shared_ptr<Projectile> self)
+{
+	set_position(position);
+	m_p_shared_ptr = self;
+	m_collider	   = std::make_unique<PSCore::collision::EntityCollider>(m_p_shared_ptr);
+	m_collider->register_collision_handler([this](std::weak_ptr<PSInterfaces::IEntity> other, const Vector2& pos) {
+		set_is_active(false);
+		if ( auto locked = other.lock() )
+			locked->set_is_active(false);
+	});
+}
+
 void Projectile::update(const float dt)
 {
-
 	m_p_target_position += m_p_owner_velocity * dt;
 	calculate_movement(dt, m_p_target_position);
-	
-	if (position()->x == 0 || position()->y == 0)
+
+	if ( position()->x == 0 || position()->y == 0 )
 		return;
 
 	if ( auto app_layer = gApp()->get_layer<AppLayer>() ) {
-		if ( auto collided_entity = PSCore::collision::check_entity_collision(this, app_layer->entities()) ) {
-			if ( collided_entity.has_value() ) {
-				app_layer->unregister_entity(collided_entity.value().first.lock());
-				if (auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director())) {
-					director->destroy_projectile(m_p_shared_ptr);
-				}
-			}
-		}
+		m_collider->check_collision(app_layer->entities(), [this](std::weak_ptr<PSInterfaces::IEntity> other, const Vector2& point) {
+			if ( auto l = other.lock() )
+				return l->ident() != ident_;
+
+			return true;
+		});
 	}
 }
 
 void Projectile::render()
 {
-	if ( m_p_is_active ) {
+	if ( is_active_ ) {
 		m_p_source = {0, 0, (float) m_p_texture.width, (float) m_p_texture.height};
 		if ( auto& vp = gApp()->viewport() ) {
 			vp->draw_in_viewport(m_p_texture, m_p_source, m_p_position, m_p_rotation, WHITE);
 		}
 	}
-}
-
-bool Projectile::is_active() const
-{
-	return m_p_is_active;
 }
 
 void Projectile::calculate_movement(const float dt, Vector2& target_position)
@@ -70,7 +76,7 @@ void Projectile::calculate_movement(const float dt, Vector2& target_position)
 		if ( !director ) {
 			return;
 		}
-		m_p_is_active = false;
+		is_active_ = false;
 		return;
 	}
 
@@ -205,21 +211,18 @@ void Projectile::set_owner_velocity(const Vector2& velocity)
 	m_p_owner_velocity = velocity;
 }
 
-void Projectile::set_is_active(const bool active)
-{
-	m_p_is_active = active;
-}
-
 std::optional<std::vector<Vector2>> Projectile::bounds() const
 {
-	if ( auto pos = position() ) {
-		std::vector<Vector2> v{
-				pos.value(),
-				{pos->x + m_p_texture.width, pos->y},
-				{pos->x + m_p_texture.width, pos->y + m_p_texture.height},
-				{pos->x, pos->y + m_p_texture.height}
-		};
-		return v;
-	}
+	if ( is_active() )
+		if ( auto pos = position() ) {
+			std::vector<Vector2> v{
+					pos.value(),
+					{pos->x + m_p_texture.width, pos->y},
+					{pos->x + m_p_texture.width, pos->y + m_p_texture.height},
+					{pos->x, pos->y + m_p_texture.height}
+			};
+			return v;
+		}
+
 	return std::nullopt;
 };

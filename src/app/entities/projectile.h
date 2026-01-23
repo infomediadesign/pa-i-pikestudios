@@ -2,6 +2,7 @@
 #include <memory>
 #include <optional>
 #include <pscore/sprite.h>
+#include <pscore/collision.h>
 #include <psinterfaces/renderable.h>
 #include <raylib.h>
 
@@ -14,9 +15,10 @@ public:
 	Projectile();
 	void update(const float dt) override;
 	void render() override;
-	bool is_active() const override;
 
 	std::optional<std::vector<Vector2>> bounds() const override;
+	
+	void init(const Vector2& position, std::shared_ptr<Projectile> self);
 
 	void calculate_movement(
 			const float dt, Vector2& target_position
@@ -58,9 +60,6 @@ public:
 	Vector2 owner_velocity(); // Returns the owner's velocity
 	void set_owner_velocity(const Vector2& velocity); // Sets the owner's velocity
 
-	void set_is_active(const bool active);
-
-
 private:
 	Vector2 m_p_position;
 	Vector2 m_p_velocity;
@@ -79,5 +78,6 @@ private:
 	bool m_p_is_first_tick = true;
 	std::shared_ptr<Projectile> m_p_shared_ptr;
 	std::shared_ptr<Player> m_p_owner;
-	bool m_p_is_active = true;
+	
+	std::unique_ptr<PSCore::collision::EntityCollider> m_collider;
 };

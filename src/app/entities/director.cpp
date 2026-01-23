@@ -35,17 +35,12 @@ void FortunaDirector::initialize_entities()
 	_p->players.push_back(initial_player);
 	initial_player->set_shared_ptr_this(initial_player);
 
-	//gApp()->register_entity(initial_player);
-	//gApp()->register_entity(_p->test_shark);
-
 	if ( auto app_layer = gApp()->get_layer<AppLayer>() ) {
-		//app_layer->renderer()->submit_renderable<Player>(initial_player);
-		//app_layer->renderer()->submit_renderable<Shark>(_p->test_shark);
-		// 
+		_p->test_shark->init(_p->test_shark, {(float) 100, (float) 100});
 		app_layer->register_entity(_p->test_shark, true);
 		app_layer->register_entity(initial_player, true);
 	}
-	initial_player->add_cannons(1);
+	initial_player->add_cannons(2);
 }
 
 
@@ -184,7 +179,8 @@ std::shared_ptr<Projectile> FortunaDirector::spawn_projectile(const Vector2& pos
 	}
 
 	auto new_projectile = std::make_shared<Projectile>();
-	new_projectile->set_position(position);
+	new_projectile->init(position, new_projectile);
+	// new_projectile->set_position(position);
 	_p->projectiles.push_back(new_projectile);
 	//gApp()->register_entity(new_projectile);
 	if ( auto app_layer = gApp()->get_layer<AppLayer>() )

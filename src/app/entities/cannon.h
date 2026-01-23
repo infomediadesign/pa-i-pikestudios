@@ -14,9 +14,6 @@ public:
 	Cannon();
 	void update(const float dt) override;
 	void render() override;
-	bool is_active() const override;
-
-	void set_is_active(const bool active);
 
 	enum class CannonPositioning { Left, Right };
 
@@ -80,7 +77,6 @@ private:
 	Rectangle m_c_source;
 	Rectangle m_c_dest;
 	std::shared_ptr<PSCore::sprites::Sprite> m_c_sprite;
-	bool m_c_is_active = true;
 
 	std::shared_ptr<Player> m_c_parent;
 };

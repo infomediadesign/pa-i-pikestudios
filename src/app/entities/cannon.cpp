@@ -45,22 +45,12 @@ void Cannon::update(const float dt)
 
 void Cannon::render()
 {
-	if ( m_c_is_active ) {
+	if ( is_active_ ) {
 		m_c_source = {0, 0, (float) m_c_texture.width, (float) m_c_texture.height};
 		if ( auto& vp = gApp()->viewport() ) {
 			vp->draw_in_viewport(m_c_texture, m_c_source, m_c_position, m_c_rotation, WHITE);
 		}
 	}
-}
-
-bool Cannon::is_active() const
-{
-	return m_c_is_active;
-}
-
-void Cannon::set_is_active(const bool active)
-{
-	m_c_is_active = active;
 }
 
 void Cannon::fire()

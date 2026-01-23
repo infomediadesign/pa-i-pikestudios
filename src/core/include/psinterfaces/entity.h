@@ -36,7 +36,11 @@ namespace PSInterfaces {
 
 		virtual bool is_active() const
 		{
-			return true;
+			return is_active_;
+		}
+		
+		virtual void set_is_active(bool active) {
+			is_active_ = active;
 		}
 
 		void add_event_manager(const Events::IEventManager* manager)
@@ -70,5 +74,7 @@ namespace PSInterfaces {
 		std::vector<const Events::IEventManager*> event_managers_;
 		const std::string ident_;
 		const std::string uid_ = PSUtils::generate_uid();
+		
+		bool is_active_ = true;
 	};
 } // namespace PSInterfaces

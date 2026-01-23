@@ -12,6 +12,7 @@
 #include <utilities.h>
 #include <vector>
 #include "layers/applayer.h"
+#include "pscore/collision.h"
 
 //
 // Fin of Shark
@@ -79,7 +80,7 @@ void Body::draw_debug()
 Shark::Shark() : PSInterfaces::IEntity("shark")
 {
 	Vector2 frame_grid{9, 2};
-	PRELOAD_TEXTURE(ident_, "ressources/entity/hai.png", frame_grid);
+	PRELOAD_TEXTURE(ident_, "ressources/entity/shark.png", frame_grid);
 	m_shark_sprite = FETCH_SPRITE(ident_);
 
 	m_body = std::make_shared<Body>(this);
@@ -92,12 +93,27 @@ Shark::Shark() : PSInterfaces::IEntity("shark")
 	m_marked = PSUtils::gen_rand(1, 100) > 50;
 }
 
+void Shark::init(std::shared_ptr<Shark> self, const Vector2& pos)
+{
+	m_self = self;
+	m_pos  = pos;
+
+	m_collider = std::make_unique<PSCore::collision::EntityCollider>(m_self);
+	m_collider->register_collision_handler([](std::weak_ptr<PSInterfaces::IEntity> other, const Vector2& pos) {
+		if (auto locked = other.lock()) {
+			if ( auto player = std::dynamic_pointer_cast<Player>(locked)) {
+				player->damage();
+			}
+		}
+	});
+}
+
 Shark::~Shark()
 {
-	if ( m_marked ) {
-		PS_LOG(LOG_INFO, "Dropped an upgrade");
-		// TODO: implement loot drop
-	}
+	// if ( m_marked ) {
+	// 	PS_LOG(LOG_INFO, "Dropped an upgrade");
+	// 	// TODO: implement loot drop
+	// }
 }
 
 void Shark::update(float dt)
@@ -146,6 +162,9 @@ void Shark::update(float dt)
 		case Attacking: {
 			m_state_string = "attacking";
 			PS_LOG(LOG_INFO, "Attacked the player");
+			if ( auto app_layer = gApp()->get_layer<AppLayer>()) {
+				m_collider->check_collision(app_layer->entities());
+			}
 			// TODO: implement damage
 			m_state = State::Retreat;
 			break;

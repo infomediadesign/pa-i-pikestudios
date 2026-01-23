@@ -72,7 +72,9 @@ namespace PSCore {
 		{
 			for ( auto itr = m_render_queue.begin(); itr != m_render_queue.end(); ) {
 				if ( auto r_locked = itr->lock() ) {
-					r_locked->render();
+					if ( r_locked->is_active() )
+						r_locked->render();
+					
 					++itr;
 				} else // renderable is expired; we dont need it
 					itr = m_render_queue.erase(itr);
