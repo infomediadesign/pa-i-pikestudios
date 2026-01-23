@@ -5,7 +5,6 @@
 
 #include <entities/cannon.h>
 #include <raylib.h>
-#include <valarray>
 
 #include <misc/smear.h>
 #include "pscore/sprite.h"

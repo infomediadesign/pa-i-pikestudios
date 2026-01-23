@@ -5,7 +5,6 @@
 #include <raylib.h>
 #include <stdexcept>
 #include <unordered_map>
-#include <valarray>
 
 #define PRELOAD_TEXTURE(ident, path, frame_grid) gApp()->sprite_loader()->preload(ident, path, frame_grid)
 #define FETCH_SPRITE(ident) gApp()->sprite_loader()->fetch_sprite(ident)
