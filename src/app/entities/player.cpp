@@ -92,7 +92,7 @@ void Player::update(const float dt)
 
 void Player::damage()
 {
-	PS_LOG(LOG_ERROR, "player took damage");
+	PS_LOG(LOG_INFO, "player took damage");
 }
 
 void Player::render()
