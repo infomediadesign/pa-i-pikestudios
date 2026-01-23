@@ -10,17 +10,10 @@
 Cannon::Cannon() : PSInterfaces::IEntity("cannon")
 {
 	IRenderable::propose_z_index(2);
-	m_c_position = {100.0f, 100.0f};
-	m_c_rotation = 0.0f;
 	Vector2 frame_grid{1, 1};
-	m_c_sprite	= PRELOAD_TEXTURE(ident_, "ressources/entity/test_cannon.png", frame_grid);
-	m_c_texture	= m_c_sprite->m_s_texture;
-	m_c_range	 = 500.0f;
+	m_c_sprite				 = PRELOAD_TEXTURE(ident_, "ressources/entity/test_cannon.png", frame_grid);
+	m_c_texture				 = m_c_sprite->m_s_texture;
 	m_c_time_since_last_shot = 0.0f;
-	m_c_fire_rate_in_s		 = 0.5f;
-	m_c_projectile_speed	 = 1000.0f;
-	m_c_parent_position_x_offset = 0.0f;
-	m_c_parent_position_y_offset = 10.0f;
 }
 
 void Cannon::update(const float dt)

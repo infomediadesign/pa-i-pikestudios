@@ -11,7 +11,7 @@
 
 #include <entities/player.h>
 #include <misc/mapborderinteraction.h>
-#include <layers/ui.h>
+#include <layers/uilayer.h>
 
 class AppLayerPriv
 {
