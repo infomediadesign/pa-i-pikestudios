@@ -9,11 +9,8 @@
 #include <misc/smear.h>
 
 class Player : public PSInterfaces::IRenderable
-
-
 {
 public:
-
 	Player();
 
 	void update(float dt) override;
@@ -51,10 +48,6 @@ public:
 	void calculate_movement(float dt);
 
 	void set_texture_values(const Texture2D& texture, float rotation_offset);
-
-	void set_animation_values(int animation_max_count, const std::valarray<int>& sprite_sheet, float animation_speed);
-
-	void calculate_animation(float dt);
 
 	bool is_active() override;
 
@@ -111,12 +104,7 @@ private:
 	Rectangle m_source		= {0};
 
 	// Variables for Animation
-	std::valarray<int> m_sprite_sheet = {1};
-	float m_animation_speed			  = 1;
-
-	float m_frame_counter	= 0;
-	float m_animation_count = 0;
-	float m_animation_frame = 0;
+	PSCore::sprites::SpriteSheetAnimation m_animation_controller;
 
 	// Variables for Borderinteration
 	bool m_border_collision_active_horizontal = false;

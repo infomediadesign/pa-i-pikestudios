@@ -17,10 +17,14 @@
 #define CALCULATION_VELOCITY_MIN 1
 #endif
 
-Player::Player() : PSInterfaces::IEntity("player")
+Player::Player() : PSInterfaces::IEntity("player"), m_animation_controller(FETCH_SPRITE_TEXTURE(ident_), {{1, 1, PSCore::sprites::KeyFrame, 0}, {4, 1, PSCore::sprites::Forward, 0}})
 {
 	Vector2 frame_grid{4, 2};
 	PRELOAD_TEXTURE(ident_, "ressources/entity/SpaceShipSpriteSheet.png", frame_grid);
+
+	m_animation_controller = PSCore::sprites::SpriteSheetAnimation(FETCH_SPRITE_TEXTURE(ident_), {{1, 1, PSCore::sprites::KeyFrame, 0}, {4, 1, PSCore::sprites::PingPong, 0}});
+
+	m_animation_controller.add_animation_at_index(0,0);
 
 	// WARNING: THIS IS ONLY FOR TESTING
 	if ( auto& vp = gApp()->viewport() ) {
@@ -30,7 +34,6 @@ Player::Player() : PSInterfaces::IEntity("player")
 	m_rotation	   = 0;
 	set_interpolation_values(6, 2, 4, 1500, 0.9);
 	set_texture_values(FETCH_SPRITE_TEXTURE(ident_), 90);
-	set_animation_values(2, {1, 4}, 4);
 	//
 	//
 }
@@ -57,7 +60,14 @@ void Player::update(const float dt)
 
 	// Animation Calculation
 
-	calculate_animation(dt);
+	if ( Vector2Length(m_velocity) >= CALCULATION_VELOCITY_MIN && m_animation_controller.get_sprite_sheet_animation_index(0) != 1 ) {
+		m_animation_controller.set_animation_at_index(1,0,0);
+	}
+	if ( Vector2Length(m_velocity) < CALCULATION_VELOCITY_MIN && m_animation_controller.get_sprite_sheet_animation_index(0) != 0 ) {
+		m_animation_controller.set_animation_at_index(0,0,0);
+	}
+
+	m_animation_controller.update_animation(dt);
 
 	// Smear Calculation
 
@@ -92,12 +102,8 @@ void Player::update(const float dt)
 
 void Player::render()
 {
-	m_source = {
-			m_animation_frame * (float) m_texture.width / m_sprite_sheet.max(), m_animation_count * (float) m_texture.height / m_sprite_sheet.size(),
-			(float) m_texture.width / m_sprite_sheet.max(), (float) m_texture.height / m_sprite_sheet.size()
-	};
 	if ( auto& vp = gApp()->viewport() ) {
-		vp->draw_in_viewport(m_texture, m_source, m_position, m_rotation + m_rotation_offset, WHITE);
+		vp->draw_in_viewport(m_texture, m_animation_controller.get_source_rectangle(0), m_position, m_rotation + m_rotation_offset, WHITE);
 	}
 
 	// Draw Smear
@@ -214,34 +220,6 @@ void Player::set_texture_values(const Texture2D& texture, const float rotation_o
 {
 	m_texture		  = texture;
 	m_rotation_offset = rotation_offset;
-}
-
-void Player::set_animation_values(const int animation_max_count, const std::valarray<int>& sprite_sheet, const float animation_speed)
-{
-	m_sprite_sheet.resize(animation_max_count);
-	m_sprite_sheet	  = sprite_sheet;
-	m_animation_speed = animation_speed;
-}
-
-void Player::calculate_animation(const float dt)
-{
-	if ( Vector2Length(m_velocity) >= CALCULATION_VELOCITY_MIN && m_animation_count == 0 ) {
-		m_animation_count = 1;
-		m_animation_frame = 0;
-	}
-	if ( Vector2Length(m_velocity) < CALCULATION_VELOCITY_MIN && m_animation_count == 1 ) {
-		m_animation_count = 0;
-		m_animation_frame = 0;
-	}
-
-	m_frame_counter++;
-	if ( m_frame_counter >= 1 / (dt * m_animation_speed) ) {
-		m_frame_counter = 0;
-		m_animation_frame++;
-		if ( m_animation_frame >= round(Lerp(0, (float) m_sprite_sheet[m_animation_count], Vector2Length(m_velocity) / m_max_velocity)) ) {
-			m_animation_frame = 0;
-		}
-	}
 }
 
 bool Player::is_active()
