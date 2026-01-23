@@ -1,7 +1,9 @@
 #include "projectile.h"
 #include <entities/director.h>
+#include <iostream>
 #include <memory>
 #include <optional>
+#include <ostream>
 #include <pscore/application.h>
 #include <pscore/collision.h>
 #include <pscore/sprite.h>
@@ -48,8 +50,11 @@ void Projectile::update(const float dt)
 
 	if ( auto app_layer = gApp()->get_layer<AppLayer>() ) {
 		m_collider->check_collision(app_layer->entities(), [this](std::weak_ptr<PSInterfaces::IEntity> other, const Vector2& point) {
-			if ( auto l = other.lock() )
-				return l->ident() != ident_;
+			if ( auto l = other.lock() ) {
+				bool is_player = l->ident() == "player";
+				bool is_same = l->ident() == ident_;
+				return !(is_player || is_same);
+			}
 
 			return true;
 		});
