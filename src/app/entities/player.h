@@ -19,9 +19,9 @@ public:
 	void render() override;
 
 	std::optional<Vector2> position() const override;
-	
+
 	std::optional<std::vector<Vector2>> bounds() const override;
-	
+
 	void damage();
 
 	Vector2 velocity();

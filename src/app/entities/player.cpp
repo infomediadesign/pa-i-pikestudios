@@ -22,9 +22,11 @@ Player::Player() : PSInterfaces::IEntity("player")
 	Vector2 frame_grid{4, 2};
 	m_sprite = PRELOAD_TEXTURE(ident_, "ressources/entity/SpaceShipSpriteSheet.png", frame_grid);
 
-	m_animation_controller = PSCore::sprites::SpriteSheetAnimation(FETCH_SPRITE_TEXTURE(ident_), {{1, 1, PSCore::sprites::KeyFrame, 0}, {4, 1, PSCore::sprites::PingPong, 0}});
+	m_animation_controller = PSCore::sprites::SpriteSheetAnimation(
+			FETCH_SPRITE_TEXTURE(ident_), {{1, 1, PSCore::sprites::KeyFrame, 0}, {4, 1, PSCore::sprites::PingPong, 0}}
+	);
 
-	m_animation_controller.add_animation_at_index(0,0);
+	m_animation_controller.add_animation_at_index(0, 0);
 
 	// WARNING: THIS IS ONLY FOR TESTING
 	if ( auto& vp = gApp()->viewport() ) {
@@ -61,10 +63,10 @@ void Player::update(const float dt)
 	// Animation Calculation
 
 	if ( Vector2Length(m_velocity) >= CALCULATION_VELOCITY_MIN && m_animation_controller.get_sprite_sheet_animation_index(0) != 1 ) {
-		m_animation_controller.set_animation_at_index(1,0,0);
+		m_animation_controller.set_animation_at_index(1, 0, 0);
 	}
 	if ( Vector2Length(m_velocity) < CALCULATION_VELOCITY_MIN && m_animation_controller.get_sprite_sheet_animation_index(0) != 0 ) {
-		m_animation_controller.set_animation_at_index(0,0,0);
+		m_animation_controller.set_animation_at_index(0, 0, 0);
 	}
 
 	m_animation_controller.update_animation(dt);
