@@ -39,6 +39,7 @@ namespace PSCore {
 		class SpriteSheetAnimation
 		{
 		public:
+			SpriteSheetAnimation() = default;
 			/**
 			 * @brief The Init Function for the Animation Controller
 			 * @details The Sprite Sheet Data is a description of every Animation in the Sprite Sheet

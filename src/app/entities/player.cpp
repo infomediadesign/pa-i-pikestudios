@@ -17,7 +17,7 @@
 #define CALCULATION_VELOCITY_MIN 1
 #endif
 
-Player::Player() : PSInterfaces::IEntity("player"), m_animation_controller(FETCH_SPRITE_TEXTURE(ident_), {{1, 1, PSCore::sprites::KeyFrame, 0}, {4, 1, PSCore::sprites::Forward, 0}})
+Player::Player() : PSInterfaces::IEntity("player")
 {
 	Vector2 frame_grid{4, 2};
 	m_sprite = PRELOAD_TEXTURE(ident_, "ressources/entity/SpaceShipSpriteSheet.png", frame_grid);

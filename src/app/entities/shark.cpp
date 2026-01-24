@@ -77,7 +77,7 @@ void Body::draw_debug()
 //
 // The Shark itself
 //
-Shark::Shark() : PSInterfaces::IEntity("shark")
+Shark::Shark() : PSInterfaces::IEntity("shark"     )
 {
 	Vector2 frame_grid{9, 2};
 	PRELOAD_TEXTURE(ident_, "ressources/entity/shark.png", frame_grid);
