@@ -33,7 +33,8 @@ void Fin::render()
 	if ( auto& vp = gApp()->viewport() ) {
 		auto tex = m_shark->m_shark_sprite;
 		vp->draw_in_viewport(
-				tex->m_s_texture, m_shark->m_animation_controller.get_source_rectangle(1), m_shark->m_pos, m_shark->m_shark_rotation + 90, RED
+				tex->m_s_texture, m_shark->m_animation_controller.get_source_rectangle(1).value_or(Rectangle{0}), m_shark->m_pos,
+				m_shark->m_shark_rotation + 90, RED
 		);
 	}
 }
@@ -65,7 +66,8 @@ void Body::render()
 	if ( auto& vp = gApp()->viewport() ) {
 		auto tex = m_shark->m_shark_sprite;
 		vp->draw_in_viewport(
-				tex->m_s_texture, m_shark->m_animation_controller.get_source_rectangle(-1), m_shark->m_pos, m_shark->m_shark_rotation + 90, WHITE
+				tex->m_s_texture, m_shark->m_animation_controller.get_source_rectangle(-1).value_or(Rectangle{0}), m_shark->m_pos,
+				m_shark->m_shark_rotation + 90, WHITE
 		);
 	}
 }

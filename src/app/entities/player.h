@@ -52,6 +52,8 @@ public:
 
 	void calculate_movement(float dt);
 
+	float calculate_rotation_velocity(float frequency, float dt);
+
 	void set_texture_values(const Texture2D& texture, float rotation_offset);
 
 	// Borderinteration Variables and Methods
@@ -97,11 +99,11 @@ private:
 	float m_rotation_fade			  = 0;
 	float m_input_velocity_multiplier = 0;
 	float m_input_rotation_multiplier = 0;
+	float m_rotation_velocity		  = 0;
 
 	// Variables for Texture Rendering
 	Texture2D m_texture		= {0};
 	float m_rotation_offset = 0;
-	Rectangle m_source		= {0};
 	std::shared_ptr<PSCore::sprites::Sprite> m_sprite;
 
 	// Variables for Animation
