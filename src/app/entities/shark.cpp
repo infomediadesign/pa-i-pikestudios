@@ -11,6 +11,7 @@
 #include <raymath.h>
 #include <utilities.h>
 #include <vector>
+#include "coordinatesystem.h"
 #include "layers/applayer.h"
 #include "pscore/collision.h"
 
@@ -100,8 +101,8 @@ void Shark::init(std::shared_ptr<Shark> self, const Vector2& pos)
 
 	m_collider = std::make_unique<PSCore::collision::EntityCollider>(m_self);
 	m_collider->register_collision_handler([](std::weak_ptr<PSInterfaces::IEntity> other, const Vector2& pos) {
-		if (auto locked = other.lock()) {
-			if ( auto player = std::dynamic_pointer_cast<Player>(locked)) {
+		if ( auto locked = other.lock() ) {
+			if ( auto player = std::dynamic_pointer_cast<Player>(locked) ) {
 				player->damage();
 			}
 		}
@@ -162,7 +163,7 @@ void Shark::update(float dt)
 		case Attacking: {
 			m_state_string = "attacking";
 			PS_LOG(LOG_INFO, "Attacked the player");
-			if ( auto app_layer = gApp()->get_layer<AppLayer>()) {
+			if ( auto app_layer = gApp()->get_layer<AppLayer>() ) {
 				m_collider->check_collision(app_layer->entities());
 			}
 			// TODO: implement damage
@@ -205,6 +206,10 @@ void Shark::draw_debug()
 	shark_rec.height *= scale;
 	PSUtils::DrawRectangleLinesRotated(shark_rec, m_shark_rotation + 90, RED);
 
+	if ( bounds().has_value() )
+		for ( const auto& p: bounds().value() )
+			DrawPixelV(p, GREEN);
+
 	DrawText(m_state_string.c_str(), shark_rec.x + 20, shark_rec.y + 20, 12, RED);
 
 	// Shark Debug values
@@ -234,15 +239,21 @@ std::optional<std::vector<Vector2>> Shark::bounds() const
 {
 	Rectangle shark_rec;
 	shark_rec = m_shark_sprite->frame_rect({0, 0});
+	if ( is_active() )
+		if ( auto& vp = gApp()->viewport() ) {
 
-	std::vector<Vector2> v{
-			m_pos, // Top-left
-			Vector2{m_pos.x + shark_rec.width, m_pos.y}, // Top-right
-			Vector2{m_pos.x + shark_rec.width, m_pos.y + shark_rec.height}, // Bottom-right
-			Vector2{m_pos.x, m_pos.y + shark_rec.height} // Bottom-left
-	};
+			auto scaled_pos = vp->position_viewport_to_global(m_pos);
 
-	return v;
+			auto p1 = coordinatesystem::point_relative_to_global_rightup(scaled_pos, m_shark_rotation, {shark_rec.width / 2, shark_rec.height / 2});
+			auto p2 = coordinatesystem::point_relative_to_global_rightup(scaled_pos, m_shark_rotation, {-shark_rec.width / 2, shark_rec.height / 2});
+			auto p3 = coordinatesystem::point_relative_to_global_rightup(scaled_pos, m_shark_rotation, {-shark_rec.width / 2, -shark_rec.height / 2});
+			auto p4 = coordinatesystem::point_relative_to_global_rightup(scaled_pos, m_shark_rotation, {shark_rec.width / 2, -shark_rec.height / 2});
+
+			std::vector<Vector2> v{p1, p2, p3, p4};
+			return v;
+		}
+
+	return std::nullopt;
 };
 
 std::optional<Vector2> Shark::position() const
