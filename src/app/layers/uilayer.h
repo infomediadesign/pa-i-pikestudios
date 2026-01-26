@@ -12,9 +12,9 @@ public:
 	struct UIBountyContainer
 	{
 		Rectangle bounds;
-		Texture2D icon;
+		Texture2D texture;
 		std::string text;
-		Rectangle icon_bounds;
+		Rectangle texture_bounds;
 		Rectangle text_bounds;
 		int padding;
 	};

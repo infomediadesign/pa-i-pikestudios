@@ -2,9 +2,15 @@
 #define RAYGUI_IMPLEMENTATION
 #include <iostream>
 #include <raygui.h>
+#include <pscore/application.h>
+#include <pscore/viewport.h>
+#include <raylib.h>
 
 UILayer::UILayer()
 {
+	m_ui_bounty_container.texture = LoadTexture("ressources/entity/test_projectile.png");
+	m_ui_bounty_container.bounds  = {50, 50, 200, 100};
+	m_ui_bounty_container.text	  = "Bounty: 100 Gold";
 }
 
 void UILayer::on_update(const float dt)
@@ -14,16 +20,27 @@ void UILayer::on_update(const float dt)
 
 void UILayer::on_render()
 {
-	// Render UI elements here
-	Rectangle rec{GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f, 100, 30};
-	if ( GuiButton(rec, "Open Image") ) {
-		/* ACTION */ std::cout << "clicked" << std::endl;
-	}
+	
+
+	//Rectangle rec{GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f, 100, 30};
+	//if ( GuiButton(rec, "Open Image") ) {
+	//	/* ACTION */ std::cout << "clicked" << std::endl;
+	//}
+	//draw_bounty_ui(m_ui_bounty_container);
 }
 
 void UILayer::draw_bounty_ui(UIBountyContainer container)
 {
-	//m_ui_bounty_container.icon.height =
+	calculate_texture_bounds(container.texture, container.texture_bounds, container.bounds, container.padding);
+	//calculate_text_bounds(container.text, container.text_bounds, container.bounds, container.padding, container.bounds.y);
+	container.bounds.width = container.texture_bounds.width + 100; // adjust width to fit texture and text
+	GuiPanel(container.bounds, NULL);
+	if ( auto& vp = gApp()->viewport() ) {
+		vp->draw_in_viewport(
+				container.texture, container.texture_bounds, {0, 0}, 0.0f,
+				WHITE
+		);
+	}
 }
 
 void UILayer::calculate_texture_bounds(Texture2D& texture, Rectangle& texture_bounds, Rectangle& bounds, int& padding)
@@ -38,12 +55,8 @@ void UILayer::calculate_text_bounds(std::string& text, Rectangle& text_bounds, R
 	float text_y = bound_height + padding;
 	text_bounds	 = {text_x, text_y, bounds.width - padding * 2, bounds.height - padding * 2};
 }
+
 /*
-#include "raylib.h"
-
-#define RAYGUI_IMPLEMENTATION
-#include "raygui.h"
-
 // Structure to hold container data
 typedef struct UIContainer
 {
