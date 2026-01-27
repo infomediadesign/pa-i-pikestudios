@@ -11,7 +11,11 @@ var annotated_dup =
       ] ],
       [ "sprites", null, [
         [ "Sprite", "structPSCore_1_1sprites_1_1Sprite.html", null ],
-        [ "SpriteLoader", "classPSCore_1_1sprites_1_1SpriteLoader.html", null ]
+        [ "SpriteLoader", "classPSCore_1_1sprites_1_1SpriteLoader.html", null ],
+        [ "SpriteSheetAnimation", "classPSCore_1_1sprites_1_1SpriteSheetAnimation.html", "classPSCore_1_1sprites_1_1SpriteSheetAnimation" ],
+        [ "SpriteSheetData", "structPSCore_1_1sprites_1_1SpriteSheetData.html", null ],
+        [ "SpriteSourceRectangle", "structPSCore_1_1sprites_1_1SpriteSourceRectangle.html", null ],
+        [ "SpriteTimeDirectionData", "structPSCore_1_1sprites_1_1SpriteTimeDirectionData.html", null ]
       ] ],
       [ "Application", "classPSCore_1_1Application.html", "classPSCore_1_1Application" ],
       [ "ApplicationPriv", "classPSCore_1_1ApplicationPriv.html", null ],

@@ -1,4 +1,7 @@
 var searchData=
 [
-  ['is_5foff_5fscreen_0',['is_off_screen',['../namespacemisc_1_1map.html#a3c5b541bddbbd015c395ed17b2564022',1,'misc::map']]]
+  ['get_5flayer_0',['get_layer',['../classPSCore_1_1Application.html#aac5407db21de1f55fe73848447917fe9',1,'PSCore::Application']]],
+  ['get_5fsource_5frectangle_1',['get_source_rectangle',['../classPSCore_1_1sprites_1_1SpriteSheetAnimation.html#aeb7ac9b147dbec567c95bc640fc73966',1,'PSCore::sprites::SpriteSheetAnimation']]],
+  ['get_5fsprite_5fsheet_5fanimation_5findex_2',['get_sprite_sheet_animation_index',['../classPSCore_1_1sprites_1_1SpriteSheetAnimation.html#ae5c69f2be23d20507de0d524831da1da',1,'PSCore::sprites::SpriteSheetAnimation']]],
+  ['get_5fsprite_5fsheet_5fframe_5findex_3',['get_sprite_sheet_frame_index',['../classPSCore_1_1sprites_1_1SpriteSheetAnimation.html#ae3878238fe7f8b3f771343c6c8af2ada',1,'PSCore::sprites::SpriteSheetAnimation']]]
 ];
