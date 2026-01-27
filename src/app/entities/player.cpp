@@ -9,7 +9,7 @@
 
 #include <layers/applayer.h>
 #include <misc/smear.h>
-#include "psinterfaces/entity.h"
+#include <psinterfaces/entity.h>
 
 #include <coordinatesystem.h>
 
@@ -17,10 +17,24 @@
 #define CALCULATION_VELOCITY_MIN 1
 #endif
 
+#ifndef CALCULATION_DELTA_ROTATION_MIN
+#define CALCULATION_DELTA_ROTATION_MIN 0.5
+#endif
+
 Player::Player() : PSInterfaces::IEntity("player")
 {
-	Vector2 frame_grid{4, 2};
-	PRELOAD_TEXTURE(ident_, "ressources/entity/SpaceShipSpriteSheet.png", frame_grid);
+	Vector2 frame_grid{3, 4};
+	m_sprite = PRELOAD_TEXTURE(ident_, "ressources/entity/Player.png", frame_grid);
+
+	m_animation_controller = PSCore::sprites::SpriteSheetAnimation(
+			FETCH_SPRITE_TEXTURE(ident_), {{3, 1, PSCore::sprites::KeyFrame, 1},
+										   {3, 1, PSCore::sprites::KeyFrame, 3},
+										   {3, 1, PSCore::sprites::KeyFrame, 3},
+										   {3, 1, PSCore::sprites::KeyFrame, 3}}
+	);
+
+	m_animation_controller.add_animation_at_index(0, 1);
+	m_animation_controller.add_animation_at_index(2, 3);
 
 	// WARNING: THIS IS ONLY FOR TESTING
 	if ( auto& vp = gApp()->viewport() ) {
@@ -30,7 +44,6 @@ Player::Player() : PSInterfaces::IEntity("player")
 	m_rotation	   = 0;
 	set_interpolation_values(6, 2, 4, 1500, 0.9);
 	set_texture_values(FETCH_SPRITE_TEXTURE(ident_), 90);
-	set_animation_values(2, {1, 4}, 4);
 	//
 	//
 }
@@ -55,9 +68,22 @@ void Player::update(const float dt)
 
 	calculate_movement(dt);
 
+	m_rotation_velocity = calculate_rotation_velocity(0.01, dt);
+
 	// Animation Calculation
 
-	calculate_animation(dt);
+	int sprite_sheet_animation_index;
+	if ( m_rotation_velocity > CALCULATION_DELTA_ROTATION_MIN || m_rotation_velocity < -CALCULATION_DELTA_ROTATION_MIN ) {
+		sprite_sheet_animation_index = m_rotation_velocity < 0 ? 1 : 3;
+	} else {
+		sprite_sheet_animation_index = 2;
+	}
+
+	int sprite_sheet_frame_index = static_cast<int>(round((Vector2Length(m_velocity) / m_max_velocity) * 2));
+
+	m_animation_controller.set_animation_at_index(sprite_sheet_animation_index, sprite_sheet_frame_index, 3);
+
+	m_animation_controller.update_animation(dt);
 
 	// Smear Calculation
 
@@ -66,15 +92,15 @@ void Player::update(const float dt)
 	if ( auto& vp = gApp()->viewport() ) {
 		Vector2 m_position_absolute = vp->position_viewport_to_global(m_position);
 		Vector2 m_smear_right_position =
-				coordinatesystem::point_relative_to_global_leftup(m_position_absolute, m_rotation, Vector2Scale({9, 8}, vp->viewport_scale()));
+				coordinatesystem::point_relative_to_global_leftup(m_position_absolute, m_rotation, Vector2Scale({18, 5}, vp->viewport_scale()));
 		Vector2 m_smear_left_position =
-				coordinatesystem::point_relative_to_global_leftdown(m_position_absolute, m_rotation, Vector2Scale({9, 8}, vp->viewport_scale()));
+				coordinatesystem::point_relative_to_global_leftdown(m_position_absolute, m_rotation, Vector2Scale({18, 5}, vp->viewport_scale()));
 
 		m_smear_points[0] = smear::calculate_smear_linear_points(
-				m_smear_right_position, Vector2Length(m_velocity), m_rotation, m_smear_rotation, 0.2 * vp->viewport_scale(), 0
+				m_smear_right_position, Vector2Length(m_velocity), m_rotation, m_smear_rotation, 0.15 * vp->viewport_scale(), 0
 		);
 		m_smear_points[1] = smear::calculate_smear_linear_points(
-				m_smear_left_position, Vector2Length(m_velocity), m_rotation, m_smear_rotation, 0.2 * vp->viewport_scale(), 0
+				m_smear_left_position, Vector2Length(m_velocity), m_rotation, m_smear_rotation, 0.15 * vp->viewport_scale(), 0
 		);
 
 		m_smear_wave_time += dt;
@@ -90,16 +116,13 @@ void Player::update(const float dt)
 	}
 }
 
+void Player::damage()
+{
+	PS_LOG(LOG_INFO, "player took damage");
+}
+
 void Player::render()
 {
-	m_source = {
-			m_animation_frame * (float) m_texture.width / m_sprite_sheet.max(), m_animation_count * (float) m_texture.height / m_sprite_sheet.size(),
-			(float) m_texture.width / m_sprite_sheet.max(), (float) m_texture.height / m_sprite_sheet.size()
-	};
-	if ( auto& vp = gApp()->viewport() ) {
-		vp->draw_in_viewport(m_texture, m_source, m_position, m_rotation + m_rotation_offset, WHITE);
-	}
-
 	// Draw Smear
 
 	if ( auto& vp = gApp()->viewport() ) {
@@ -109,9 +132,20 @@ void Player::render()
 				m_smear_wave_points, m_smear_wave, Vector2Length(m_velocity), m_max_velocity, 2 * vp->viewport_scale(), 1, SKYBLUE
 		);
 	}
+
+	// Draw Ship
+
+	if ( auto& vp = gApp()->viewport() ) {
+		vp->draw_in_viewport(
+				m_texture, m_animation_controller.get_source_rectangle(1).value_or(Rectangle{0}), m_position, m_rotation + m_rotation_offset, WHITE
+		);
+		vp->draw_in_viewport(
+				m_texture, m_animation_controller.get_source_rectangle(3).value_or(Rectangle{0}), m_position, m_rotation + m_rotation_offset, WHITE
+		);
+	}
 }
 
-Vector2 Player::position()
+std::optional<Vector2> Player::position() const
 {
 	return m_position;
 }
@@ -210,48 +244,30 @@ void Player::calculate_movement(const float dt)
 	m_position.y += m_velocity.y * dt;
 }
 
+float Player::calculate_rotation_velocity(float frequency, float dt)
+{
+	static float timer			   = 0;
+	static float last_rotation	   = 0;
+	static float rotation_velocity = 0;
+
+	timer += dt;
+
+	if ( timer >= frequency ) {
+		timer = 0;
+
+		rotation_velocity = m_rotation - last_rotation;
+
+		last_rotation = m_rotation;
+	}
+
+	return rotation_velocity;
+}
+
+
 void Player::set_texture_values(const Texture2D& texture, const float rotation_offset)
 {
 	m_texture		  = texture;
 	m_rotation_offset = rotation_offset;
-}
-
-void Player::set_animation_values(const int animation_max_count, const std::valarray<int>& sprite_sheet, const float animation_speed)
-{
-	m_sprite_sheet.resize(animation_max_count);
-	m_sprite_sheet	  = sprite_sheet;
-	m_animation_speed = animation_speed;
-}
-
-void Player::calculate_animation(const float dt)
-{
-	if ( Vector2Length(m_velocity) >= CALCULATION_VELOCITY_MIN && m_animation_count == 0 ) {
-		m_animation_count = 1;
-		m_animation_frame = 0;
-	}
-	if ( Vector2Length(m_velocity) < CALCULATION_VELOCITY_MIN && m_animation_count == 1 ) {
-		m_animation_count = 0;
-		m_animation_frame = 0;
-	}
-
-	m_frame_counter++;
-	if ( m_frame_counter >= 1 / (dt * m_animation_speed) ) {
-		m_frame_counter = 0;
-		m_animation_frame++;
-		if ( m_animation_frame >= round(Lerp(0, (float) m_sprite_sheet[m_animation_count], Vector2Length(m_velocity) / m_max_velocity)) ) {
-			m_animation_frame = 0;
-		}
-	}
-}
-
-bool Player::is_active()
-{
-	return m_is_active;
-}
-
-void Player::set_is_active(bool active)
-{
-	m_is_active = active;
 }
 
 void Player::initialize_cannon()
@@ -323,12 +339,12 @@ bool Player::is_clone() const
 
 float Player::dest_width() const
 {
-	return m_source.width;
+	return m_animation_controller.get_source_rectangle(1).value_or(Rectangle{0}).width;
 }
 
 float Player::dest_height() const
 {
-	return m_source.height;
+	return m_animation_controller.get_source_rectangle(1).value_or(Rectangle{0}).height;
 }
 
 std::vector<std::shared_ptr<Cannon>>& Player::cannon_container()
@@ -349,4 +365,19 @@ std::shared_ptr<Player> Player::shared_ptr_this()
 void Player::set_shared_ptr_this(std::shared_ptr<Player> ptr)
 {
 	m_shared_ptr_this = ptr;
+}
+
+std::optional<std::vector<Vector2>> Player::bounds() const
+{
+	Rectangle shark_rec;
+	shark_rec = m_sprite->frame_rect({0, 0});
+
+	std::vector<Vector2> v{
+			m_position, // Top-left
+			Vector2{m_position.x + shark_rec.width, m_position.y}, // Top-right
+			Vector2{m_position.x + shark_rec.width, m_position.y + shark_rec.height}, // Bottom-right
+			Vector2{m_position.x, m_position.y + shark_rec.height} // Bottom-left
+	};
+
+	return v;
 }

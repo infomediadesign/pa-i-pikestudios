@@ -1,11 +1,13 @@
 #pragma once
 
 #include <memory>
+#include <optional>
 #include <psinterfaces/entity.h>
 #include <psinterfaces/renderable.h>
 #include <raylib.h>
 #include <string>
 #include <pscore/sprite.h>
+#include "pscore/collision.h"
 
 class Fin;
 class Body;
@@ -23,12 +25,19 @@ public:
 	void draw_debug() override;
 	
 	void set_pos(const Vector2& pos);
+	
+	void init(std::shared_ptr<Shark> self, const Vector2& pos);
+
+	std::optional<Vector2> position() const override;
+
+	std::optional<std::vector<Vector2>> bounds() const override;
 
 	enum State { Idle = 0, Pursuing, Attacking, Retreat };
 
 private:
 	bool m_marked;
 	
+	std::shared_ptr<Shark> m_self;
 	std::shared_ptr<Body> m_body;
 	std::shared_ptr<Fin> m_fin;
 
@@ -38,8 +47,11 @@ private:
 	std::string m_state_string;
 
 	std::shared_ptr<PSCore::sprites::Sprite> m_shark_sprite;
+	std::unique_ptr<PSCore::collision::EntityCollider> m_collider;
 
 	float m_shark_rotation = 0;
+
+	PSCore::sprites::SpriteSheetAnimation m_animation_controller;
 };
 
 class Fin : public PSInterfaces::IRenderable
@@ -66,7 +78,7 @@ class Body : public PSInterfaces::IRenderable
 public:
 	Body(Shark* shark);
 	~Body();
-
+	
 	void render() override;
 	void update(float dt) override;
 	void draw_debug() override;

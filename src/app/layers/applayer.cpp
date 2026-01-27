@@ -60,13 +60,12 @@ void AppLayer::on_update(const float dt)
 	if ( !active )
 		return;
 
-	for ( auto entity: PSCore::Application::get()->entities() ) {
+	for ( const auto& entity: entities() ) {
 		if ( auto locked_entity = entity.lock() ) {
 
 			if ( locked_entity->is_active() ) {
 				locked_entity->update(dt);
 			}
-			
 
 			if ( auto player = dynamic_cast<Player*>(locked_entity.get()) ) {
 				misc::map::map_border_wrap_around(*player);
@@ -74,7 +73,7 @@ void AppLayer::on_update(const float dt)
 		}
 	}
 
-	if (auto& vp = gApp()->viewport()) {
+	if ( auto& vp = gApp()->viewport() ) {
 		vp->update(dt);
 	}
 }
@@ -84,8 +83,7 @@ void AppLayer::on_render()
 	if ( renderer_ )
 		renderer_->render();
 
-	if (auto& vp = gApp()->viewport()) {
+	if ( auto& vp = gApp()->viewport() ) {
 		vp->render();
 	}
-
 }
