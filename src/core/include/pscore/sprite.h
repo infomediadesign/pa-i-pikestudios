@@ -99,13 +99,13 @@ namespace PSCore {
 			 * @brief Set the Animation one Frame forward in a Forward loop
 			 * @param animation_rectangle The Reference to an Animation
 			 */
-			void play_animation_forward(SpriteSourceRectangle& animation_rectangle);
+			void play_animation_forward(SpriteSourceRectangle* animation_rectangle);
 
 			/**
 			 * @Set the Animation one Frame forward or backward in a PingPong loop
 			 * @param animation_rectangle The Reference to an Animation
 			 */
-			void play_animation_pingpong(SpriteSourceRectangle& animation_rectangle);
+			void play_animation_pingpong(SpriteSourceRectangle* animation_rectangle);
 
 			Texture2D m_texture			 = {};
 			float m_frame_wight			 = 0;

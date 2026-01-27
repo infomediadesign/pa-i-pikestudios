@@ -79,7 +79,7 @@ void SpriteSheetAnimation::update_animation(float dt)
 			m_sprite_time_direction_data.at(element.rectangle.y / m_frame_height).timestamp += dt;
 			if ( animation_sprite_direction_data.timestamp >= animation_sprite_sheet_data.play_duration ) {
 				m_sprite_time_direction_data.at(element.rectangle.y / m_frame_height).timestamp = 0;
-				play_animation_forward(element);
+				play_animation_forward(&element);
 			}
 		}
 		// Updates the Animation if the Play style is PingPong
@@ -87,7 +87,7 @@ void SpriteSheetAnimation::update_animation(float dt)
 			m_sprite_time_direction_data.at(element.rectangle.y / m_frame_height).timestamp += dt;
 			if ( animation_sprite_direction_data.timestamp >= animation_sprite_sheet_data.play_duration ) {
 				m_sprite_time_direction_data.at(element.rectangle.y / m_frame_height).timestamp = 0;
-				play_animation_pingpong(element);
+				play_animation_pingpong(&element);
 			}
 		}
 	}
@@ -135,32 +135,32 @@ void SpriteSheetAnimation::set_animation_at_index(int sprite_sheet_animation_ind
 	}
 }
 
-void SpriteSheetAnimation::play_animation_forward(SpriteSourceRectangle& animation_rectangle)
+void SpriteSheetAnimation::play_animation_forward(SpriteSourceRectangle* animation_rectangle)
 {
-	animation_rectangle.rectangle.x += m_frame_wight;
+	animation_rectangle->rectangle.x += m_frame_wight;
 
 	// If the current Frame is greater as the max Frame, sets Frame to 0
-	if ( animation_rectangle.rectangle.x >=
-		 static_cast<float>(m_sprite_sheet_data.at(animation_rectangle.rectangle.y / m_frame_height).frames) * m_frame_wight ) {
-		animation_rectangle.rectangle.x = 0;
+	if ( animation_rectangle->rectangle.x >=
+		 static_cast<float>(m_sprite_sheet_data.at(animation_rectangle->rectangle.y / m_frame_height).frames) * m_frame_wight ) {
+		animation_rectangle->rectangle.x = 0;
 	}
 }
 
-void SpriteSheetAnimation::play_animation_pingpong(SpriteSourceRectangle& animation_rectangle)
+void SpriteSheetAnimation::play_animation_pingpong(SpriteSourceRectangle* animation_rectangle)
 {
 	// Updates the Animation Frame by one based on the Direction
-	animation_rectangle.rectangle.x +=
-			static_cast<float>(m_sprite_time_direction_data.at(animation_rectangle.rectangle.y / m_frame_height).direction) * m_frame_wight;
+	animation_rectangle->rectangle.x +=
+			static_cast<float>(m_sprite_time_direction_data.at(animation_rectangle->rectangle.y / m_frame_height).direction) * m_frame_wight;
 
 	// If the current Frame is at the max Frame, sets Play direction to -1
-	if ( animation_rectangle.rectangle.x >=
-		 static_cast<float>(m_sprite_sheet_data.at(animation_rectangle.rectangle.y / m_frame_height).frames - 1) * m_frame_wight ) {
-		m_sprite_time_direction_data.at(animation_rectangle.rectangle.y / m_frame_height).direction = -1;
+	if ( animation_rectangle->rectangle.x >=
+		 static_cast<float>(m_sprite_sheet_data.at(animation_rectangle->rectangle.y / m_frame_height).frames - 1) * m_frame_wight ) {
+		m_sprite_time_direction_data.at(animation_rectangle->rectangle.y / m_frame_height).direction = -1;
 	}
 
 	// If the current Frame is at 0, sets Play direction to 1
-	if ( animation_rectangle.rectangle.x <= 0 ) {
-		m_sprite_time_direction_data.at(animation_rectangle.rectangle.y / m_frame_height).direction = 1;
+	if ( animation_rectangle->rectangle.x <= 0 ) {
+		m_sprite_time_direction_data.at(animation_rectangle->rectangle.y / m_frame_height).direction = 1;
 	}
 }
 
