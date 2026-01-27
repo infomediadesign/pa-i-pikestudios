@@ -1,8 +1,11 @@
 #pragma once
 
+#include <optional>
+#include <psinterfaces/events.h>
 #include <string>
 #include <vector>
-#include <psinterfaces/events.h>
+#include <raylib.h>
+#include "pscore/utils.h"
 
 namespace PSInterfaces {
 
@@ -21,9 +24,23 @@ namespace PSInterfaces {
 
 		virtual void draw_debug() {};
 
-		virtual bool is_active()
+		virtual std::optional<std::vector<Vector2>> bounds() const
 		{
-			return true;
+			return std::nullopt;
+		};
+
+		virtual std::optional<Vector2> position() const
+		{
+			return std::nullopt;
+		}
+
+		virtual bool is_active() const
+		{
+			return is_active_;
+		}
+		
+		virtual void set_is_active(bool active) {
+			is_active_ = active;
 		}
 
 		void add_event_manager(const Events::IEventManager* manager)
@@ -43,13 +60,21 @@ namespace PSInterfaces {
 			for ( auto manager: event_managers_ )
 				manager->notify(event);
 		}
-		
-		const std::string ident() const {
+
+		const std::string ident() const
+		{
 			return ident_;
+		}
+		
+		const std::string uid() const {
+			return uid_;
 		}
 
 	protected:
 		std::vector<const Events::IEventManager*> event_managers_;
 		const std::string ident_;
+		const std::string uid_ = PSUtils::generate_uid();
+		
+		bool is_active_ = true;
 	};
 } // namespace PSInterfaces

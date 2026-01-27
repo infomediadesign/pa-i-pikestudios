@@ -5,6 +5,7 @@
 #include <pscore/application.h>
 #include <pscore/viewport.h>
 #include <rlImGui.h>
+#include "layers/applayer.h"
 
 DebugLayer::DebugLayer()
 {
@@ -56,13 +57,15 @@ void DebugLayer::on_render()
 				ImGui::EndTabItem();
 		}
 
-		for ( auto entity: gApp()->entities() ) {
-			if ( auto locked_entity = entity.lock() ) {
-				if ( m_draw_all || ImGui::BeginTabItem(locked_entity->ident().c_str()) ) {
-					locked_entity->draw_debug();
+		if ( auto app_layer = gApp()->get_layer<AppLayer>() ) {
+			for ( auto entity: app_layer->entities() ) {
+				if ( auto locked_entity = entity.lock() ) {
+					if ( m_draw_all || ImGui::BeginTabItem(locked_entity->ident().c_str()) ) {
+						locked_entity->draw_debug();
 
-					if ( !m_draw_all )
-						ImGui::EndTabItem();
+						if ( !m_draw_all )
+							ImGui::EndTabItem();
+					}
 				}
 			}
 		}

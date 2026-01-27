@@ -1,26 +1,28 @@
 #pragma once
 
+#include <optional>
 #include <psinterfaces/renderable.h>
 
-#include <raylib.h>
-#include <valarray>
 #include <entities/cannon.h>
+#include <raylib.h>
 
 #include <misc/smear.h>
+#include "pscore/sprite.h"
 
 class Player : public PSInterfaces::IRenderable
-
-
 {
 public:
-
 	Player();
 
 	void update(float dt) override;
 
 	void render() override;
 
-	Vector2 position();
+	std::optional<Vector2> position() const override;
+
+	std::optional<std::vector<Vector2>> bounds() const override;
+
+	void damage();
 
 	Vector2 velocity();
 
@@ -50,15 +52,9 @@ public:
 
 	void calculate_movement(float dt);
 
+	float calculate_rotation_velocity(float frequency, float dt);
+
 	void set_texture_values(const Texture2D& texture, float rotation_offset);
-
-	void set_animation_values(int animation_max_count, const std::valarray<int>& sprite_sheet, float animation_speed);
-
-	void calculate_animation(float dt);
-
-	bool is_active() override;
-
-	void set_is_active(bool active);
 
 	// Borderinteration Variables and Methods
 	void set_border_collision_active_horizontal(bool active);
@@ -88,7 +84,6 @@ public:
 
 	void add_cannons(int amount);
 
-
 private:
 	// Base Movement Variables
 	Vector2 m_position	 = {0};
@@ -104,19 +99,15 @@ private:
 	float m_rotation_fade			  = 0;
 	float m_input_velocity_multiplier = 0;
 	float m_input_rotation_multiplier = 0;
+	float m_rotation_velocity		  = 0;
 
 	// Variables for Texture Rendering
 	Texture2D m_texture		= {0};
 	float m_rotation_offset = 0;
-	Rectangle m_source		= {0};
+	std::shared_ptr<PSCore::sprites::Sprite> m_sprite;
 
 	// Variables for Animation
-	std::valarray<int> m_sprite_sheet = {1};
-	float m_animation_speed			  = 1;
-
-	float m_frame_counter	= 0;
-	float m_animation_count = 0;
-	float m_animation_frame = 0;
+	PSCore::sprites::SpriteSheetAnimation m_animation_controller;
 
 	// Variables for Borderinteration
 	bool m_border_collision_active_horizontal = false;
@@ -126,8 +117,6 @@ private:
 	// Variabels and Methods for Cannons & Projectiles
 	std::vector<std::shared_ptr<Cannon>> m_cannon_container;
 	std::shared_ptr<Player> m_shared_ptr_this;
-	bool m_is_active = true;
-
 
 	// Smear Variables
 	float m_smear_rotation								= 0;
