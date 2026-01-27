@@ -3,7 +3,6 @@
 //
 
 #include "scorelayer.h"
-
 #include <algorithm>
 #include <filesystem>
 #include <fstream>
@@ -20,7 +19,7 @@ void ScoreLayer::on_render()
 void ScoreLayer::load_highscore(const std::string& filename)
 {
 	// does the file exist? create it if not. / delete highscore / open txt file and check
-	ensurefileexists(filename);
+	m_filemanager.ensurefileexists(filename);
 	highscore.clear();
 	std::ifstream infile(filename);
 	if ( !infile.is_open() )
@@ -41,7 +40,7 @@ void ScoreLayer::load_highscore(const std::string& filename)
 void ScoreLayer::save_highscore(const std::string& filename)
 {
 	// check whether the file exists and open the file
-	ensurefileexists(filename);
+	m_filemanager.ensurefileexists(filename);
 	std::ofstream outfile(filename);
 	if ( !outfile.is_open() )
 		return;
@@ -60,20 +59,7 @@ bool ScoreLayer::check_for_new_highscore(int currentscore)
 	}
 	return true;
 }
-// check whether the txt file exists; if not, create a new one
-void ScoreLayer::ensurefileexists(std::string filename)
-{
-	namespace fs = std::filesystem;
-	std::error_code ec;
-	fs::path p(filename.c_str());
-	if ( p.has_parent_path() ) {
-		fs::create_directory(p.parent_path(), ec);
-	}
 
-	if ( !fs::exists(p) ) {
-		std::ofstream f(filename, std::ios::out);
-	}
-}
 // Checks if the score qualifies as a new highscore and saves it with the player name if applicable
 void ScoreLayer::save_new_highscore(int score)
 {

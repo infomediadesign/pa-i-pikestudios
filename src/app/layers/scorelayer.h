@@ -25,11 +25,13 @@ class ScoreLayer : public PSInterfaces::Layer
 	void load_highscore(const std::string& filename = "noahistgay.txt");
 	void save_highscore(const std::string& filename = "noahistgay.txt");
 	bool check_for_new_highscore(int);
-	void ensurefileexists(std::string filename);
 	void save_new_highscore(int);
 	std::string player_name_input;
 	const int max_name_length = 15;
 	void update_typing();
 	enum liststate { VIEWING, AWAITING_INPUT, TYPING_NAME, INPUT_MADE };
 	liststate list_state = VIEWING;
+
+	Filemanager m_filemanager;
+
 };

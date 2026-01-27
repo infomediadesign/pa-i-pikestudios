@@ -6,12 +6,12 @@
 #include <fstream>
 #include <pscore/filemanager.h>
 
-filemanager::filemanager(std::string filename)
+Filemanager::Filemanager(std::string filename)
 {
 	filename = filename + ".txt";
 }
 
-void filemanager::write(const std::string& mes)
+void Filemanager::write(const std::string& mes)
 {
 	// check whether the file exists and open the file
 	ensurefileexists(filename);
@@ -24,7 +24,7 @@ void filemanager::write(const std::string& mes)
 	outfile.close();
 };
 
-std::string filemanager::load()
+std::string Filemanager::load()
 {
 	// does the file exist? create it if not. / delete highscore / open txt file and check
 	ensurefileexists(filename);
@@ -41,7 +41,7 @@ std::string filemanager::load()
 	infile.close();
 	return file;
 }
-void filemanager::ensurefileexists(std::string filename)
+void Filemanager::ensurefileexists(std::string filename)
 {
 	namespace fs = std::filesystem;
 	std::error_code ec;

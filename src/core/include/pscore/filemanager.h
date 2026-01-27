@@ -5,7 +5,7 @@
 #pragma once
 #include <string>
 
-class filemanager
+class Filemanager
 {
 
 public:
