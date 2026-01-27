@@ -2,10 +2,15 @@
 
 #include <memory>
 
-#include <entities/player.h>
-#include <psinterfaces/entity.h>
-#include <entities/projectile.h>
 #include <entities/cannon.h>
+#include <entities/player.h>
+#include <entities/projectile.h>
+#include <psinterfaces/entity.h>
+#include <pscore/application.h>
+
+#include <entities/shark.h>
+#include <layers/applayer.h>
+#include <pscore/spawner.h>
 
 class FortunaDirectorPriv;
 class FortunaDirector : public PSInterfaces::IEntity
@@ -17,7 +22,7 @@ public:
 	void initialize_entities();
 
 	void update(float dt) override;
-	
+
 	void draw_debug() override;
 
 	// Functions to spawn and destroy players
@@ -26,13 +31,15 @@ public:
 	void sync_player_entities();
 
 	// Functions to spawn and destroy projectiles
-	std::shared_ptr<Projectile> spawn_projectile(const Vector2& position);
-	void destroy_projectile(std::shared_ptr<Projectile> projectile);
-
+	// std::shared_ptr<Projectile> spawn_projectile(const Vector2& position);
+	// void destroy_projectile(std::shared_ptr<Projectile> projectile);
 
 	// Functions to spawn and destroy cannons
 	std::shared_ptr<Cannon> spawn_cannon(const Vector2& position);
 	void destroy_cannon(std::shared_ptr<Cannon> cannon);
+
+	template<class E, PSCore::ILayerDerived L>
+	std::unique_ptr<PSCore::Spawner<E, L>>& spawner();
 
 	// Upgrade functions
 	void upgrade_player_fire_rate(float amount);

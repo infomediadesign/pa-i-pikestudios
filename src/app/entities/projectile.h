@@ -13,6 +13,7 @@ class Projectile : public PSInterfaces::IRenderable
 {
 public:
 	Projectile();
+	~Projectile() {}
 	void update(const float dt) override;
 	void render() override;
 
