@@ -50,6 +50,8 @@ private:
 	std::unique_ptr<PSCore::collision::EntityCollider> m_collider;
 
 	float m_shark_rotation = 0;
+
+	PSCore::sprites::SpriteSheetAnimation m_animation_controller;
 };
 
 class Fin : public PSInterfaces::IRenderable
