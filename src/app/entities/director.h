@@ -50,11 +50,12 @@ public:
 		void subtract_bounty(const int amount);
 
 		private:
-			int m_b_bounty_amount = 0;
+			int m_b_bounty_amount = 666;
 
 	};
+	Bounty m_b_bounty;
 
 private:
 	std::unique_ptr<FortunaDirectorPriv> _p;
-	Bounty m_b_bounty;
+	
 };

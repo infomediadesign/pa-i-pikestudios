@@ -2,6 +2,7 @@
 #include <psinterfaces/layer.h>
 #include <raylib.h>
 #include <iostream>
+#include <entities/director.h>
 
 class UILayer : public PSInterfaces::Layer
 {
@@ -31,5 +32,8 @@ public:
 
 private:
 	Texture2D m_ui_bounty_icon;
+	Texture2D kurt = LoadTexture("ressources/icon/test_coin.png");
 	UIBountyContainer m_ui_bounty_container;
+	bool m_ui_do_once = false;
+	std::shared_ptr<FortunaDirector> m_ui_director;
 };
