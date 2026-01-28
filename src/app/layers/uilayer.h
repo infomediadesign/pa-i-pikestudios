@@ -26,15 +26,20 @@ public:
 	void on_update(const float dt) override;
 	void on_render() override;
 
-	void draw_bounty_ui(UIBountyContainer container);
+	void draw_bounty_ui();
 
 	void calculate_texture_bounds(Texture2D& texture, Rectangle& texture_bounds, Rectangle& bounds, int& padding);
 	void calculate_text_bounds(std::string& text, Rectangle& text_bounds, Rectangle& bounds, int padding, int bound_height);
 
+	void draw_text(std::string text, Rectangle bounds, int text_size, Color color);
+	void draw_panel(Rectangle bounds, Color color, Color border_color);
+
 private:
 	Texture2D m_ui_bounty_icon;
-	Texture2D kurt = LoadTexture("ressources/icon/test_coin.png");
+	Texture2D bounty_coin = LoadTexture("ressources/icon/test_coin.png");
 	UIBountyContainer m_ui_bounty_container;
 	bool m_ui_do_once = false;
-	std::shared_ptr<FortunaDirector> m_ui_director;
+	//std::shared_ptr<FortunaDirector> m_ui_director;
+	FortunaDirector* m_ui_director;
+	std::shared_ptr<PSCore::Viewport> m_ui_viewport;
 };
