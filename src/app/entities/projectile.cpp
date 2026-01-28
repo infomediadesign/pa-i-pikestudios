@@ -25,8 +25,6 @@ Projectile::Projectile() : PSInterfaces::IEntity("projectile")
 	Vector2 frame_grid{1, 1};
 	m_p_sprite			= PRELOAD_TEXTURE(ident_, "ressources/entity/test_projectile.png", frame_grid);
 	m_p_texture			= m_p_sprite->m_s_texture;
-	m_p_target_position = {360.0f, 360.f};
-	m_p_speed			= 200.0f;
 }
 
 void Projectile::init(const Vector2& position, std::shared_ptr<Projectile> self)
@@ -35,9 +33,13 @@ void Projectile::init(const Vector2& position, std::shared_ptr<Projectile> self)
 	m_p_shared_ptr = self;
 	m_collider	   = std::make_unique<PSCore::collision::EntityCollider>(m_p_shared_ptr);
 	m_collider->register_collision_handler([this](std::weak_ptr<PSInterfaces::IEntity> other, const Vector2& pos) {
-		set_is_active(false);
 		if ( auto locked = other.lock() )
-			locked->set_is_active(false);
+			if ( locked->is_active() ) {
+				set_is_active(false);
+				locked->on_hit();
+			}
+
+			
 	});
 }
 

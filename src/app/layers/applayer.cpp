@@ -11,6 +11,7 @@
 
 #include <entities/player.h>
 #include <misc/mapborderinteraction.h>
+#include <layers/uilayer.h>
 
 class AppLayerPriv
 {
@@ -20,6 +21,12 @@ class AppLayerPriv
 AppLayer::AppLayer()
 {
 	_p = std::make_unique<AppLayerPriv>();
+	// Push the UI layer
+	auto app = PSCore::Application::get();
+	if (!app->get_layer<UILayer>() ) {
+		app->push_layer<UILayer>();
+		}
+
 }
 
 AppLayer::~AppLayer()
