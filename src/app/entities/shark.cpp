@@ -33,7 +33,10 @@ void Fin::render()
 {
 	if ( auto& vp = gApp()->viewport() ) {
 		auto tex = m_shark->m_shark_sprite;
-		vp->draw_in_viewport(tex->m_s_texture, tex->frame_rect({0, 1}), m_shark->m_pos, m_shark->m_shark_rotation + 90, RED);
+		vp->draw_in_viewport(
+				tex->m_s_texture, m_shark->m_animation_controller.get_source_rectangle(1).value_or(Rectangle{0}), m_shark->m_pos,
+				m_shark->m_shark_rotation + 90, RED
+		);
 	}
 }
 
@@ -63,7 +66,10 @@ void Body::render()
 {
 	if ( auto& vp = gApp()->viewport() ) {
 		auto tex = m_shark->m_shark_sprite;
-		vp->draw_in_viewport(tex->m_s_texture, tex->frame_rect({0, 0}), m_shark->m_pos, m_shark->m_shark_rotation + 90, WHITE);
+		vp->draw_in_viewport(
+				tex->m_s_texture, m_shark->m_animation_controller.get_source_rectangle(-1).value_or(Rectangle{0}), m_shark->m_pos,
+				m_shark->m_shark_rotation + 90, WHITE
+		);
 	}
 }
 
@@ -83,6 +89,13 @@ Shark::Shark() : PSInterfaces::IEntity("shark")
 	Vector2 frame_grid{9, 2};
 	PRELOAD_TEXTURE(ident_, "ressources/entity/shark.png", frame_grid);
 	m_shark_sprite = FETCH_SPRITE(ident_);
+
+	m_animation_controller = PSCore::sprites::SpriteSheetAnimation(
+			FETCH_SPRITE_TEXTURE(ident_), {{9, 0.1, PSCore::sprites::Forward, -1}, {9, 0.1, PSCore::sprites::Forward, 1}}
+	);
+
+	m_animation_controller.add_animation_at_index(0, -1);
+	m_animation_controller.add_animation_at_index(1, 1);
 
 	m_body = std::make_shared<Body>(this);
 	m_fin  = std::make_shared<Fin>(this);
@@ -121,6 +134,8 @@ void Shark::update(float dt)
 {
 	m_body->update(dt);
 	m_fin->update(dt);
+
+	m_animation_controller.update_animation(dt);
 
 	Player* player_entity = nullptr;
 

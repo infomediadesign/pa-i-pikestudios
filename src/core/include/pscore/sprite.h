@@ -5,7 +5,6 @@
 #include <raylib.h>
 #include <stdexcept>
 #include <unordered_map>
-#include <valarray>
 
 #define PRELOAD_TEXTURE(ident, path, frame_grid) gApp()->sprite_loader()->preload(ident, path, frame_grid)
 #define FETCH_SPRITE(ident) gApp()->sprite_loader()->fetch_sprite(ident)
@@ -15,75 +14,127 @@ namespace PSCore {
 
 	namespace sprites {
 
+		enum PlayStyle { Forward, PingPong, KeyFrame };
+
+		struct SpriteSheetData
+		{
+			int frames;
+			float play_duration;
+			PlayStyle play_style;
+			int z_index;
+		};
+
+		struct SpriteTimeDirectionData
+		{
+			float timestamp;
+			int direction;
+		};
+
+		struct SpriteSourceRectangle
+		{
+			Rectangle rectangle;
+			int z_index;
+		};
+
+		class SpriteSheetAnimation
+		{
+		public:
+			SpriteSheetAnimation() = default;
+
+			/**
+			 * @brief The Init Function for the Animation Controller
+			 * @details The Sprite Sheet Data is a description of every Animation in the Sprite Sheet
+			 * {Frames in this Animation, Play duration of every Frame, The Play style of the Animation, The Z Index of the Animation}, {...}, ...
+			 * @param texture A Reference to the Sprite Sheet Texture
+			 * @param sprite_sheet_data A Reference to the Data of the Sprite Sheet
+			 */
+			SpriteSheetAnimation(const Texture2D& texture, const std::vector<SpriteSheetData>& sprite_sheet_data);
+
+			/**
+			 * @brief Returns the Source Rectangle of the Animation aat the given Index
+			 * @param z_index The Z Index of the Animation
+			 * @return The Source Rectangle of the Animation at that Index
+			 */
+			std::optional<Rectangle> get_source_rectangle(int z_index) const;
+
+			/**
+			 * @brief Add an Animation to the Animation Controller at the given Animation Index and Z Index
+			 * @details If the animation on the Z Index already exists the Animation Jumps to the first Frame of the Animation on the given Animation
+			 * Index (Do not on Purpose)
+			 * @param sprite_sheet_animation_index The Index of the Animation to add to the Animation
+			 * @param z_index The Z Index of the Animation
+			 */
+			void add_animation_at_index(int sprite_sheet_animation_index, int z_index);
+
+			/**
+			 * @brief Updates the added Animation based on the given Play style
+			 * @param dt Delta Time
+			 */
+			void update_animation(float dt);
+
+			/**
+			 * @brief Calculates the Animation Index of the Animation based on the Z Index
+			 * @param z_index The Z Index of the Animation
+			 * @return The Animation Index of the Sprite Sheet
+			 */
+			std::optional<int> get_sprite_sheet_animation_index(int z_index);
+
+			/**
+			 * @brief Calculates the Frame Index of the Animation based on the Z Index
+			 * @param z_index The Z Index of the Animation
+			 * @return The Frame Index of the Sprite Sheet
+			 */
+			std::optional<int> get_sprite_sheet_frame_index(int z_index);
+
+			/**
+			 * @brief Sets an Animation of an Z Index to another Animation with the given Frame in the Animation
+			 * @param sprite_sheet_animation_index The Index of the Animation in the Sprite Sheet
+			 * @param sprite_sheet_frame_index The Index of the Frame in the Animation
+			 * @param z_index The Z Index of the Animation
+			 */
+			void set_animation_at_index(int sprite_sheet_animation_index, int sprite_sheet_frame_index, int z_index);
+
+		private:
+			/**
+			 * @brief Set the Animation one Frame forward in a Forward loop
+			 * @param animation_rectangle The Reference to an Animation
+			 */
+			void play_animation_forward(SpriteSourceRectangle* animation_rectangle);
+
+			/**
+			 * @Set the Animation one Frame forward or backward in a PingPong loop
+			 * @param animation_rectangle The Reference to an Animation
+			 */
+			void play_animation_pingpong(SpriteSourceRectangle* animation_rectangle);
+
+			Texture2D m_texture			 = {};
+			float m_frame_wight			 = 0;
+			float m_frame_height		 = 0;
+			int m_max_frame_in_animation = 0;
+			std::vector<SpriteSheetData> m_sprite_sheet_data;
+			std::vector<SpriteTimeDirectionData> m_sprite_time_direction_data;
+			std::vector<SpriteSourceRectangle> m_sprite_source_rectangle = {};
+		};
+
 		struct Sprite
 		{
-			std::valarray<int> m_s_sprite_sheet;
-
-			float m_s_animation_speed = 1;
-			float m_s_frame_counter	  = 0;
-			float m_s_animation_count = 0;
-			float m_s_animation_frame = 0;
-
 			Texture2D m_s_texture;
 			Vector2 m_s_frame_grid;
 
-			Rectangle frame_rect(const Vector2& pos)
-			{
-				Rectangle rect;
-				
-				rect.width	= m_s_texture.width / m_s_frame_grid.x;
-				rect.height = m_s_texture.height / m_s_frame_grid.y;
-				rect.x		= pos.x * rect.width;
-				rect.y		= pos.y * rect.height;
-				return rect;
-			};
+			Rectangle frame_rect(const Vector2& pos);
 		};
 
 		class SpriteLoader
 		{
 		public:
 			SpriteLoader() {};
-			~SpriteLoader()
-			{
-				for ( auto it = m_texture_cache.begin(); it != m_texture_cache.end(); ) {
-					unload(it->first);
-					it = m_texture_cache.begin();
-				}
-			}
+			~SpriteLoader();
 
-			std::shared_ptr<Sprite> preload(const std::string& ident, const std::string& texture_path, const Vector2& frame_grid)
-			{
-				if ( m_texture_cache.contains(ident) )
-					return fetch_sprite(ident);
+			std::shared_ptr<Sprite> preload(const std::string& ident, const std::string& texture_path, const Vector2& frame_grid);
 
-				auto sp			   = std::make_shared<Sprite>();
-				sp->m_s_texture	   = LoadTexture(texture_path.data());
-				sp->m_s_frame_grid = frame_grid;
+			int unload(const std::string& ident);
 
-				m_texture_cache.insert({ident, std::move(sp)});
-				PS_LOG(LOG_INFO, TextFormat("Loaded texture '%s' into cache!", ident.c_str()));
-				PS_LOG(LOG_INFO, TextFormat("Texture cache size updated to: %i!", m_texture_cache.size()));
-				
-				return fetch_sprite(ident);
-			}
-
-			int unload(const std::string& ident)
-			{
-				auto sp = m_texture_cache.at(ident);
-				UnloadTexture(sp->m_s_texture);
-
-				return m_texture_cache.erase(ident);
-			}
-
-			std::shared_ptr<Sprite> fetch_sprite(const std::string& ident)
-			{
-				try {
-					return m_texture_cache.at(ident);
-				} catch ( const std::out_of_range& e ) {
-					PS_LOG(LOG_ERROR, TextFormat("Could not accsses Sprite: %s", ident.c_str()));
-					return std::make_shared<Sprite>();
-				}
-			}
+			std::shared_ptr<Sprite> fetch_sprite(const std::string& ident);
 
 		private:
 			std::unordered_map<std::string, std::shared_ptr<Sprite>> m_texture_cache;

@@ -9,6 +9,7 @@
 #include <raylib.h>
 #include "entities/projectile.h"
 #include "layers/applayer.h"
+#include <cmath>
 
 Cannon::Cannon() : PSInterfaces::IEntity("cannon")
 {
@@ -104,7 +105,7 @@ void Cannon::set_position_to_parent()
 		case Cannon::CannonPositioning::Right:
 			set_position(
 					coordinatesystem::point_relative_to_global_rightup(
-							m_c_parent->position().value_or({0, 0}), m_c_parent->rotation(),
+							m_c_parent->position().value_or(Vector2{0, 0}), m_c_parent->rotation(),
 							Vector2{m_c_parent_position_x_offset, m_c_parent_position_y_offset}
 					)
 			);
@@ -113,7 +114,7 @@ void Cannon::set_position_to_parent()
 		case Cannon::CannonPositioning::Left:
 			set_position(
 					coordinatesystem::point_relative_to_global_rightdown(
-							m_c_parent->position().value_or({0, 0}), m_c_parent->rotation(),
+							m_c_parent->position().value_or(Vector2{0, 0}), m_c_parent->rotation(),
 							Vector2{m_c_parent_position_x_offset, m_c_parent_position_y_offset}
 					)
 			);

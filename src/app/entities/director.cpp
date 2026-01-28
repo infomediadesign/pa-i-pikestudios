@@ -28,6 +28,9 @@ class FortunaDirectorPriv
 
 	std::unique_ptr<PSCore::Spawner<Shark, AppLayer>> shark_spawner;
 	std::unique_ptr<PSCore::Spawner<Projectile, AppLayer>> projectile_spawner;
+	float player_max_velocity		 = 200.0f;
+	float player_input_rotation_mult = 0.9f;
+	float player_input_velocity_mult = 1500;
 };
 
 FortunaDirector::FortunaDirector() : PSInterfaces::IEntity("fortuna_director")
@@ -56,6 +59,7 @@ void FortunaDirector::initialize_entities()
 	initial_player->add_cannons(2);
 }
 
+
 FortunaDirector::~FortunaDirector()
 {
 }
@@ -72,6 +76,27 @@ void FortunaDirector::draw_debug()
 {
 	if ( ImGui::Checkbox("On Screen Wrap", &_p->on_screen_warp_around) ) {
 		misc::map::set_wrap_around_mode(_p->on_screen_warp_around);
+	}
+
+	ImGui::Separator();
+	ImGui::Text("Player Speed");
+
+	if ( ImGui::SliderFloat("Max Velocity", &_p->player_max_velocity, 0, 500) ) {
+		for ( auto& player: _p->players ) {
+			player->set_max_velocity(_p->player_max_velocity);
+		}
+	}
+
+	if ( ImGui::SliderFloat("Input Velocity Mult.", &_p->player_input_velocity_mult, 0, 3000) ) {
+		for ( auto& player: _p->players ) {
+			player->set_input_velocity_multiplier(_p->player_input_velocity_mult);
+		}
+	}
+
+	if ( ImGui::SliderFloat("Input Rotation Mult.", &_p->player_input_rotation_mult, 0, 2) ) {
+		for ( auto& player: _p->players ) {
+			player->set_input_rotation_multiplier(_p->player_input_rotation_mult);
+		}
 	}
 
 	ImGui::Separator();
