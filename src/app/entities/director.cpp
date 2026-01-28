@@ -1,13 +1,13 @@
+#include <entities/cannon.h>
 #include <entities/director.h>
+#include <entities/projectile.h>
 #include <layers/applayer.h>
 #include <memory>
 #include <misc/mapborderinteraction.h>
 #include <pscore/application.h>
-#include <entities/projectile.h>
-#include <entities/cannon.h>
 
-#include <imgui.h>
 #include <entities/shark.h>
+#include <imgui.h>
 #include "psinterfaces/entity.h"
 
 class FortunaDirectorPriv
@@ -18,10 +18,14 @@ class FortunaDirectorPriv
 	std::vector<std::shared_ptr<Cannon>> cannons;
 	bool on_screen_warp_around = true;
 
-	std::shared_ptr<Shark> test_shark = std::make_shared<Shark>();
-	float player_current_fire_rate = 0.5f;
+	std::shared_ptr<Shark> test_shark	  = std::make_shared<Shark>();
+	float player_current_fire_rate		  = 0.5f;
 	float player_current_projectile_speed = 300.0f;
-	float player_current_fire_range = 100.0f;
+	float player_current_fire_range		  = 100.0f;
+
+	float player_max_velocity		 = 200.0f;
+	float player_input_rotation_mult = 0.9f;
+	float player_input_velocity_mult = 1500;
 };
 
 FortunaDirector::FortunaDirector() : PSInterfaces::IEntity("fortuna_director")
@@ -44,7 +48,6 @@ void FortunaDirector::initialize_entities()
 }
 
 
-
 FortunaDirector::~FortunaDirector()
 {
 }
@@ -61,7 +64,28 @@ void FortunaDirector::draw_debug()
 		misc::map::set_wrap_around_mode(_p->on_screen_warp_around);
 	}
 
-		ImGui::Separator();
+	ImGui::Separator();
+	ImGui::Text("Player Speed");
+
+	if ( ImGui::SliderFloat("Max Velocity", &_p->player_max_velocity, 0, 500) ) {
+		for ( auto& player: _p->players ) {
+			player->set_max_velocity(_p->player_max_velocity);
+		}
+	}
+
+	if ( ImGui::SliderFloat("Input Velocity Mult.", &_p->player_input_velocity_mult, 0, 3000) ) {
+		for ( auto& player: _p->players ) {
+			player->set_input_velocity_multiplier(_p->player_input_velocity_mult);
+		}
+	}
+
+	if ( ImGui::SliderFloat("Input Rotation Mult.", &_p->player_input_rotation_mult, 0, 2) ) {
+		for ( auto& player: _p->players ) {
+			player->set_input_rotation_multiplier(_p->player_input_rotation_mult);
+		}
+	}
+
+	ImGui::Separator();
 	ImGui::Text("Player Upgrades");
 
 	// Fire Rate
@@ -107,16 +131,13 @@ void FortunaDirector::draw_debug()
 	if ( ImGui::Button("Add Cannons") ) {
 		upgrade_player_add_cannon(cannon_amount);
 	}
-
 }
 
 std::shared_ptr<Player> FortunaDirector::spawn_player(const Vector2& position)
 {
 
-	for (auto player: _p->players)
-		{
-		if (!player->is_active())
-		{
+	for ( auto player: _p->players ) {
+		if ( !player->is_active() ) {
 			player->set_position(position);
 			player->set_is_active(true);
 			return player;
@@ -127,7 +148,7 @@ std::shared_ptr<Player> FortunaDirector::spawn_player(const Vector2& position)
 
 	_p->players.push_back(new_player);
 
-	//gApp()->register_entity(new_player);
+	// gApp()->register_entity(new_player);
 	if ( auto app_layer = gApp()->get_layer<AppLayer>() )
 		app_layer->register_entity(new_player, true);
 	new_player->set_shared_ptr_this(new_player);
@@ -145,9 +166,9 @@ void FortunaDirector::destroy_player(std::shared_ptr<Player> player)
 
 	if ( auto app_layer = gApp()->get_layer<AppLayer>() )
 		app_layer->unregister_entity(player);
-		//app_layer->renderer()->remove_rendarble<Player>(player);
+	// app_layer->renderer()->remove_rendarble<Player>(player);
 
-	//gApp()->unregister_entity(player);
+	// gApp()->unregister_entity(player);
 	auto& players = _p->players;
 	players.erase(std::remove(players.begin(), players.end(), player), players.end());
 }
@@ -168,10 +189,8 @@ void FortunaDirector::sync_player_entities()
 std::shared_ptr<Projectile> FortunaDirector::spawn_projectile(const Vector2& position)
 {
 
-	for (auto projectile: _p->projectiles)
-		{
-		if (!projectile->is_active())
-		{
+	for ( auto projectile: _p->projectiles ) {
+		if ( !projectile->is_active() ) {
 			projectile->set_position(position);
 			projectile->set_is_active(true);
 			return projectile;
@@ -182,10 +201,10 @@ std::shared_ptr<Projectile> FortunaDirector::spawn_projectile(const Vector2& pos
 	new_projectile->init(position, new_projectile);
 	// new_projectile->set_position(position);
 	_p->projectiles.push_back(new_projectile);
-	//gApp()->register_entity(new_projectile);
+	// gApp()->register_entity(new_projectile);
 	if ( auto app_layer = gApp()->get_layer<AppLayer>() )
 		app_layer->register_entity(new_projectile, true);
-		//app_layer->renderer()->submit_renderable<Projectile>(new_projectile);
+	// app_layer->renderer()->submit_renderable<Projectile>(new_projectile);
 	return new_projectile;
 }
 
@@ -193,8 +212,8 @@ void FortunaDirector::destroy_projectile(std::shared_ptr<Projectile> projectile)
 {
 	if ( auto app_layer = gApp()->get_layer<AppLayer>() )
 		app_layer->unregister_entity(projectile);
-		//app_layer->renderer()->remove_rendarble<Projectile>(projectile);
-	//gApp()->unregister_entity(projectile);
+	// app_layer->renderer()->remove_rendarble<Projectile>(projectile);
+	// gApp()->unregister_entity(projectile);
 	auto& projectiles = _p->projectiles;
 	projectiles.erase(std::remove(projectiles.begin(), projectiles.end(), projectile), projectiles.end());
 }
@@ -202,10 +221,8 @@ void FortunaDirector::destroy_projectile(std::shared_ptr<Projectile> projectile)
 std::shared_ptr<Cannon> FortunaDirector::spawn_cannon(const Vector2& position)
 {
 
-	for ( auto cannon: _p->cannons ) 
-	{
-		if ( !cannon->is_active() ) 
-		{
+	for ( auto cannon: _p->cannons ) {
+		if ( !cannon->is_active() ) {
 			cannon->set_position(position);
 			cannon->set_is_active(true);
 			cannon->set_fire_rate(_p->player_current_fire_rate);
@@ -220,10 +237,10 @@ std::shared_ptr<Cannon> FortunaDirector::spawn_cannon(const Vector2& position)
 	new_cannon->set_projectile_speed(_p->player_current_projectile_speed);
 	new_cannon->set_range(_p->player_current_fire_range);
 	_p->cannons.push_back(new_cannon);
-	//gApp()->register_entity(new_cannon);
+	// gApp()->register_entity(new_cannon);
 	if ( auto app_layer = gApp()->get_layer<AppLayer>() )
 		app_layer->register_entity(new_cannon, true);
-		//app_layer->renderer()->submit_renderable<Cannon>(new_cannon);
+	// app_layer->renderer()->submit_renderable<Cannon>(new_cannon);
 	return new_cannon;
 }
 
@@ -231,8 +248,8 @@ void FortunaDirector::destroy_cannon(std::shared_ptr<Cannon> cannon)
 {
 	if ( auto app_layer = gApp()->get_layer<AppLayer>() )
 		app_layer->unregister_entity(cannon);
-		//app_layer->renderer()->remove_rendarble<Cannon>(cannon);
-	//gApp()->unregister_entity(cannon);
+	// app_layer->renderer()->remove_rendarble<Cannon>(cannon);
+	// gApp()->unregister_entity(cannon);
 	auto& cannons = _p->cannons;
 	cannons.erase(std::remove(cannons.begin(), cannons.end(), cannon), cannons.end());
 }

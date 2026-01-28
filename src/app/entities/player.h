@@ -42,6 +42,9 @@ public:
 
 	void set_max_velocity(float max_velocity);
 
+	void set_input_velocity_multiplier(float val);
+	void set_input_rotation_multiplier(float val);
+
 	void set_rotation(float rotation);
 
 	void set_target_rotation(float target_rotation);
