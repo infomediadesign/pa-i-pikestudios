@@ -57,8 +57,8 @@ void UILayer::draw_bounty_ui()
 
 	draw_panel({panel_pos.x, panel_pos.y, panel_size.x * scale, panel_size.y * scale }, {50, 50, 50, 200}, {0, 0, 0, 0});
 	vp->draw_in_viewport(
-			bounty_coin, {0, 0, (float) bounty_coin.width, (float) bounty_coin.height},
-			{(float) bounty_coin.width / 2, (float) bounty_coin.height / 2}, 0.0f, WHITE);
+			bounty_coin, {0, 0, static_cast<float>(bounty_coin.width), static_cast<float>(bounty_coin.height)},
+			{static_cast<float>(bounty_coin.width) / 2, static_cast<float>(bounty_coin.height / 2)}, 0.0f, WHITE);
 
 	float text_size	 = 12;
 	Vector2 text_pos = vp->position_viewport_to_global({20, (panel_size.y - text_size) / 2}); 
