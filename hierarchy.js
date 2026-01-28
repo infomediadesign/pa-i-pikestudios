@@ -7,8 +7,10 @@ var hierarchy =
     [ "PSCore::DeltaTimeManager", "classPSCore_1_1DeltaTimeManager.html", null ],
     [ "PSCore::collision::EntityCollider", "classPSCore_1_1collision_1_1EntityCollider.html", null ],
     [ "PSInterfaces::Events::Event", "structPSInterfaces_1_1Events_1_1Event.html", null ],
+    [ "Filemanager", "classFilemanager.html", null ],
     [ "FortunaDirectorPriv", "classFortunaDirectorPriv.html", null ],
     [ "PSUtils::Grid2D< T >", "classPSUtils_1_1Grid2D.html", null ],
+    [ "HighscoreEntries", "structHighscoreEntries.html", null ],
     [ "PSInterfaces::IEntity", "classPSInterfaces_1_1IEntity.html", [
       [ "FortunaDirector", "classFortunaDirector.html", null ],
       [ "PSInterfaces::IRenderable", "classPSInterfaces_1_1IRenderable.html", [
@@ -25,7 +27,8 @@ var hierarchy =
     [ "PSInterfaces::Layer", "classPSInterfaces_1_1Layer.html", [
       [ "AppLayer", "classAppLayer.html", null ],
       [ "DebugLayer", "classDebugLayer.html", null ],
-      [ "PauseLayer", "classPauseLayer.html", null ]
+      [ "PauseLayer", "classPauseLayer.html", null ],
+      [ "ScoreLayer", "classScoreLayer.html", null ]
     ] ],
     [ "PSCore::Renderer", "classPSCore_1_1Renderer.html", null ],
     [ "smear::SmearPoints", "structsmear_1_1SmearPoints.html", null ],
