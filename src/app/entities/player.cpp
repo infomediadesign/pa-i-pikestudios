@@ -381,3 +381,9 @@ std::optional<std::vector<Vector2>> Player::bounds() const
 
 	return v;
 }
+void Player::set_input_velocity_multiplier(float val) {
+	m_input_velocity_multiplier = val;
+};
+void Player::set_input_rotation_multiplier(float val) {
+	m_input_rotation_multiplier = val;
+};

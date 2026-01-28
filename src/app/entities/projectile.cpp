@@ -1,4 +1,5 @@
 #include "projectile.h"
+#include <coordinatesystem.h>
 #include <entities/director.h>
 #include <iostream>
 #include <memory>
@@ -54,7 +55,7 @@ void Projectile::update(const float dt)
 		m_collider->check_collision(app_layer->entities(), [this](std::weak_ptr<PSInterfaces::IEntity> other, const Vector2& point) {
 			if ( auto l = other.lock() ) {
 				bool is_player = l->ident() == "player";
-				bool is_same = l->ident() == ident_;
+				bool is_same   = l->ident() == ident_;
 				return !(is_player || is_same);
 			}
 
@@ -220,14 +221,28 @@ void Projectile::set_owner_velocity(const Vector2& velocity)
 
 std::optional<std::vector<Vector2>> Projectile::bounds() const
 {
+	Rectangle projectile_rec;
+	projectile_rec = m_p_sprite->frame_rect({0, 0});
+
 	if ( is_active() )
-		if ( auto pos = position() ) {
-			std::vector<Vector2> v{
-					pos.value(),
-					{pos->x + m_p_texture.width, pos->y},
-					{pos->x + m_p_texture.width, pos->y + m_p_texture.height},
-					{pos->x, pos->y + m_p_texture.height}
-			};
+		if ( auto& vp = gApp()->viewport() ) {
+
+			auto scaled_pos = vp->position_viewport_to_global(m_p_position);
+
+			auto p1 = coordinatesystem::point_relative_to_global_rightup(
+					scaled_pos, m_p_rotation, {projectile_rec.width / 2, projectile_rec.height / 2}
+			);
+			auto p2 = coordinatesystem::point_relative_to_global_rightup(
+					scaled_pos, m_p_rotation, {-projectile_rec.width / 2, projectile_rec.height / 2}
+			);
+			auto p3 = coordinatesystem::point_relative_to_global_rightup(
+					scaled_pos, m_p_rotation, {-projectile_rec.width / 2, -projectile_rec.height / 2}
+			);
+			auto p4 = coordinatesystem::point_relative_to_global_rightup(
+					scaled_pos, m_p_rotation, {projectile_rec.width / 2, -projectile_rec.height / 2}
+			);
+
+			std::vector<Vector2> v{p1, p2, p3, p4};
 			return v;
 		}
 

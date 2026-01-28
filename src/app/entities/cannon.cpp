@@ -1,11 +1,14 @@
 #include "cannon.h"
 #include <coordinatesystem.h>
 #include <entities/director.h>
+#include <iostream>
 #include <memory>
 #include <pscore/application.h>
 #include <pscore/sprite.h>
 #include <pscore/viewport.h>
 #include <raylib.h>
+#include "entities/projectile.h"
+#include "layers/applayer.h"
 #include <cmath>
 
 Cannon::Cannon() : PSInterfaces::IEntity("cannon")
@@ -54,13 +57,26 @@ void Cannon::fire()
 		if ( !director ) {
 			return;
 		}
-		auto new_projectile = director->spawn_projectile(m_c_position);
-		new_projectile->set_speed(m_c_projectile_speed);
-		new_projectile->set_target_position(calculate_projectile_target_position());
-		new_projectile->set_shared_ptr(new_projectile);
-		if ( m_c_parent ) {
-			new_projectile->set_owner_velocity(m_c_parent->velocity());
+
+		if ( auto& spawner = director->spawner<Projectile, AppLayer>() ) {
+			spawner->register_spawn_callback([this](std::shared_ptr<Projectile> projectile) {
+				auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
+				if ( !director ) {
+					return;
+				}
+
+				projectile->init(m_c_position, projectile);
+				projectile->set_speed(m_c_projectile_speed);
+				projectile->set_target_position(calculate_projectile_target_position());
+
+				if ( m_c_parent ) {
+					projectile->set_owner_velocity(m_c_parent->velocity());
+				}
+			});
+			
+			spawner->spawn();
 		}
+	
 		m_c_time_since_last_shot = 0.0f;
 	}
 }
