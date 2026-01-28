@@ -61,6 +61,8 @@ public:
 	Texture2D texture(); // Returns the cannon's texture
 	void set_texture(const Texture2D& texture); // Sets the cannon's texture
 
+	void set_shared_ptr_this(std::shared_ptr<Cannon> ptr); // Sets the shared pointer to this cannon
+
 private:
 	Vector2 m_c_position;
 	float m_c_rotation;
@@ -77,6 +79,7 @@ private:
 	Rectangle m_c_source;
 	Rectangle m_c_dest;
 	std::shared_ptr<PSCore::sprites::Sprite> m_c_sprite;
+	std::shared_ptr<Cannon> m_c_shared_ptr_this;
 
 	std::shared_ptr<Player> m_c_parent;
 };

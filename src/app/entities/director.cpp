@@ -243,6 +243,7 @@ std::shared_ptr<Cannon> FortunaDirector::spawn_cannon(const Vector2& position)
 			cannon->set_fire_rate(_p->player_current_fire_rate);
 			cannon->set_projectile_speed(_p->player_current_projectile_speed);
 			cannon->set_range(_p->player_current_fire_range);
+			cannon->set_shared_ptr_this(cannon);
 			return cannon;
 		}
 	}
