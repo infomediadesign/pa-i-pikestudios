@@ -8,13 +8,14 @@ var searchData=
   ['shark_5',['Shark',['../classShark.html',1,'']]],
   ['smearpoints_6',['SmearPoints',['../structsmear_1_1SmearPoints.html',1,'smear']]],
   ['spawn_5fnew_5fplayer_5fat_5fopposite_5fborder_7',['spawn_new_player_at_opposite_border',['../namespacemisc_1_1map.html#a73d666d5d54fa4dbf0e5969f2ce94e7f',1,'misc::map']]],
-  ['spawnrequest_8',['SpawnRequest',['../structmisc_1_1map_1_1SpawnRequest.html',1,'misc::map']]],
-  ['sprite_9',['Sprite',['../structPSCore_1_1sprites_1_1Sprite.html',1,'PSCore::sprites']]],
-  ['spriteloader_10',['SpriteLoader',['../classPSCore_1_1sprites_1_1SpriteLoader.html',1,'PSCore::sprites']]],
-  ['spritesheetanimation_11',['spritesheetanimation',['../classPSCore_1_1sprites_1_1SpriteSheetAnimation.html',1,'PSCore::sprites::SpriteSheetAnimation'],['../classPSCore_1_1sprites_1_1SpriteSheetAnimation.html#a1bf8dba87e45334918a2d2158e611672',1,'PSCore::sprites::SpriteSheetAnimation::SpriteSheetAnimation()']]],
-  ['spritesheetdata_12',['SpriteSheetData',['../structPSCore_1_1sprites_1_1SpriteSheetData.html',1,'PSCore::sprites']]],
-  ['spritesourcerectangle_13',['SpriteSourceRectangle',['../structPSCore_1_1sprites_1_1SpriteSourceRectangle.html',1,'PSCore::sprites']]],
-  ['spritetimedirectiondata_14',['SpriteTimeDirectionData',['../structPSCore_1_1sprites_1_1SpriteTimeDirectionData.html',1,'PSCore::sprites']]],
-  ['stop_15',['stop',['../classPSCore_1_1Application.html#a2e5dee1fbe413783d3500fe8da567ad4',1,'PSCore::Application']]],
-  ['submit_5frenderable_16',['submit_renderable',['../classPSCore_1_1Renderer.html#a3bfa539d23da7eb4afbe0bc142938744',1,'PSCore::Renderer']]]
+  ['spawner_8',['Spawner',['../classPSCore_1_1Spawner.html',1,'PSCore']]],
+  ['spawnrequest_9',['SpawnRequest',['../structmisc_1_1map_1_1SpawnRequest.html',1,'misc::map']]],
+  ['sprite_10',['Sprite',['../structPSCore_1_1sprites_1_1Sprite.html',1,'PSCore::sprites']]],
+  ['spriteloader_11',['SpriteLoader',['../classPSCore_1_1sprites_1_1SpriteLoader.html',1,'PSCore::sprites']]],
+  ['spritesheetanimation_12',['spritesheetanimation',['../classPSCore_1_1sprites_1_1SpriteSheetAnimation.html',1,'PSCore::sprites::SpriteSheetAnimation'],['../classPSCore_1_1sprites_1_1SpriteSheetAnimation.html#a1bf8dba87e45334918a2d2158e611672',1,'PSCore::sprites::SpriteSheetAnimation::SpriteSheetAnimation()']]],
+  ['spritesheetdata_13',['SpriteSheetData',['../structPSCore_1_1sprites_1_1SpriteSheetData.html',1,'PSCore::sprites']]],
+  ['spritesourcerectangle_14',['SpriteSourceRectangle',['../structPSCore_1_1sprites_1_1SpriteSourceRectangle.html',1,'PSCore::sprites']]],
+  ['spritetimedirectiondata_15',['SpriteTimeDirectionData',['../structPSCore_1_1sprites_1_1SpriteTimeDirectionData.html',1,'PSCore::sprites']]],
+  ['stop_16',['stop',['../classPSCore_1_1Application.html#a2e5dee1fbe413783d3500fe8da567ad4',1,'PSCore::Application']]],
+  ['submit_5frenderable_17',['submit_renderable',['../classPSCore_1_1Renderer.html#a3bfa539d23da7eb4afbe0bc142938744',1,'PSCore::Renderer']]]
 ];

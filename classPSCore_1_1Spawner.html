@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Fortunas Echo: FortunaDirector Class Reference</title>
+<title>Fortunas Echo: PSCore::Spawner&lt; T, L &gt; Class Template Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -63,7 +63,7 @@ $(function() {
 </div>
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
-$(document).ready(function(){initNavTree('classFortunaDirector.html',''); initResizable(); });
+$(document).ready(function(){initNavTree('classPSCore_1_1Spawner.html',''); initResizable(); });
 /* @license-end */
 </script>
 <div id="doc-content">
@@ -91,72 +91,52 @@ $(document).ready(function(){initNavTree('classFortunaDirector.html',''); initRe
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="classFortunaDirector-members.html">List of all members</a>  </div>
-  <div class="headertitle"><div class="title">FortunaDirector Class Reference</div></div>
+<a href="classPSCore_1_1Spawner-members.html">List of all members</a>  </div>
+  <div class="headertitle"><div class="title">PSCore::Spawner&lt; T, L &gt; Class Template Reference</div></div>
 </div><!--header-->
 <div class="contents">
 <div class="dynheader">
-Inheritance diagram for FortunaDirector:</div>
+Inheritance diagram for PSCore::Spawner&lt; T, L &gt;:</div>
 <div class="dyncontent">
  <div class="center">
-  <img src="classFortunaDirector.png" usemap="#FortunaDirector_map" alt=""/>
-  <map id="FortunaDirector_map" name="FortunaDirector_map">
-<area href="classPSInterfaces_1_1IEntity.html" alt="PSInterfaces::IEntity" shape="rect" coords="0,0,124,24"/>
+  <img src="classPSCore_1_1Spawner.png" usemap="#PSCore::Spawner_3C_20T_2C_20L_20_3E_map" alt=""/>
+  <map id="PSCore::Spawner_3C_20T_2C_20L_20_3E_map" name="PSCore::Spawner_3C_20T_2C_20L_20_3E_map">
+<area href="classPSInterfaces_1_1IEntity.html" alt="PSInterfaces::IEntity" shape="rect" coords="0,0,159,24"/>
   </map>
 </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:aa39f8e3b9fb7b600805f366e17ab6370" id="r_aa39f8e3b9fb7b600805f366e17ab6370"><td class="memItemLeft" align="right" valign="top"><a id="aa39f8e3b9fb7b600805f366e17ab6370" name="aa39f8e3b9fb7b600805f366e17ab6370"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>initialize_entities</b> ()</td></tr>
-<tr class="separator:aa39f8e3b9fb7b600805f366e17ab6370"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6b01cd3802b121d85bd4bdaf8af3388a" id="r_a6b01cd3802b121d85bd4bdaf8af3388a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFortunaDirector.html#a6b01cd3802b121d85bd4bdaf8af3388a">update</a> (float dt) override</td></tr>
-<tr class="separator:a6b01cd3802b121d85bd4bdaf8af3388a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa1e961eba3653c01b2a79fde72de8d2d" id="r_aa1e961eba3653c01b2a79fde72de8d2d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFortunaDirector.html#aa1e961eba3653c01b2a79fde72de8d2d">draw_debug</a> () override</td></tr>
-<tr class="separator:aa1e961eba3653c01b2a79fde72de8d2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a992e20ad39ce89deba83e040f5b0adc5" id="r_a992e20ad39ce89deba83e040f5b0adc5"><td class="memItemLeft" align="right" valign="top"><a id="a992e20ad39ce89deba83e040f5b0adc5" name="a992e20ad39ce89deba83e040f5b0adc5"></a>
-std::shared_ptr&lt; <a class="el" href="classPlayer.html">Player</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>spawn_player</b> (const Vector2 &amp;position)</td></tr>
-<tr class="separator:a992e20ad39ce89deba83e040f5b0adc5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aba96f8e3008fd47d0a5256b9c25f0137" id="r_aba96f8e3008fd47d0a5256b9c25f0137"><td class="memItemLeft" align="right" valign="top"><a id="aba96f8e3008fd47d0a5256b9c25f0137" name="aba96f8e3008fd47d0a5256b9c25f0137"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>destroy_player</b> (std::shared_ptr&lt; <a class="el" href="classPlayer.html">Player</a> &gt; player)</td></tr>
-<tr class="separator:aba96f8e3008fd47d0a5256b9c25f0137"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a03bd2f0791aefb8a9e834a252225f52c" id="r_a03bd2f0791aefb8a9e834a252225f52c"><td class="memItemLeft" align="right" valign="top"><a id="a03bd2f0791aefb8a9e834a252225f52c" name="a03bd2f0791aefb8a9e834a252225f52c"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>sync_player_entities</b> ()</td></tr>
-<tr class="separator:a03bd2f0791aefb8a9e834a252225f52c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adb7ae3f8d61886c0252e259045bd82ba" id="r_adb7ae3f8d61886c0252e259045bd82ba"><td class="memItemLeft" align="right" valign="top"><a id="adb7ae3f8d61886c0252e259045bd82ba" name="adb7ae3f8d61886c0252e259045bd82ba"></a>
-std::shared_ptr&lt; <a class="el" href="classCannon.html">Cannon</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>spawn_cannon</b> (const Vector2 &amp;position)</td></tr>
-<tr class="separator:adb7ae3f8d61886c0252e259045bd82ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a20ee669e5816eef26d9a2f0c159fa0bc" id="r_a20ee669e5816eef26d9a2f0c159fa0bc"><td class="memItemLeft" align="right" valign="top"><a id="a20ee669e5816eef26d9a2f0c159fa0bc" name="a20ee669e5816eef26d9a2f0c159fa0bc"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>destroy_cannon</b> (std::shared_ptr&lt; <a class="el" href="classCannon.html">Cannon</a> &gt; cannon)</td></tr>
-<tr class="separator:a20ee669e5816eef26d9a2f0c159fa0bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a762f0f06266468e40d2286fc582785de" id="r_a762f0f06266468e40d2286fc582785de"><td class="memTemplParams" colspan="2"><a id="a762f0f06266468e40d2286fc582785de" name="a762f0f06266468e40d2286fc582785de"></a>
-template&lt;class E , <a class="el" href="conceptPSCore_1_1ILayerDerived.html">PSCore::ILayerDerived</a> L&gt; </td></tr>
-<tr class="memitem:a762f0f06266468e40d2286fc582785de"><td class="memTemplItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classPSCore_1_1Spawner.html">PSCore::Spawner</a>&lt; E, L &gt; &gt; &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><b>spawner</b> ()</td></tr>
-<tr class="separator:a762f0f06266468e40d2286fc582785de"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaf887622ea8df99e117708ea0171e505" id="r_aaf887622ea8df99e117708ea0171e505"><td class="memItemLeft" align="right" valign="top"><a id="aaf887622ea8df99e117708ea0171e505" name="aaf887622ea8df99e117708ea0171e505"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>upgrade_player_fire_rate</b> (float amount)</td></tr>
-<tr class="separator:aaf887622ea8df99e117708ea0171e505"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adaba6669929c2a78761d4cb96ac5339c" id="r_adaba6669929c2a78761d4cb96ac5339c"><td class="memItemLeft" align="right" valign="top"><a id="adaba6669929c2a78761d4cb96ac5339c" name="adaba6669929c2a78761d4cb96ac5339c"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>upgrade_player_projectile_speed</b> (float amount)</td></tr>
-<tr class="separator:adaba6669929c2a78761d4cb96ac5339c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0e872a0d1cf4e3efb69646eb5b873d2f" id="r_a0e872a0d1cf4e3efb69646eb5b873d2f"><td class="memItemLeft" align="right" valign="top"><a id="a0e872a0d1cf4e3efb69646eb5b873d2f" name="a0e872a0d1cf4e3efb69646eb5b873d2f"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>upgrade_player_fire_range</b> (float amount)</td></tr>
-<tr class="separator:a0e872a0d1cf4e3efb69646eb5b873d2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae91ec1debf081a5806f83d11d00dc99c" id="r_ae91ec1debf081a5806f83d11d00dc99c"><td class="memItemLeft" align="right" valign="top"><a id="ae91ec1debf081a5806f83d11d00dc99c" name="ae91ec1debf081a5806f83d11d00dc99c"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>upgrade_player_add_cannon</b> (int amount)</td></tr>
-<tr class="separator:ae91ec1debf081a5806f83d11d00dc99c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a531a72479f7cab72231d772892a0a1e8" id="r_a531a72479f7cab72231d772892a0a1e8"><td class="memItemLeft" align="right" valign="top"><a id="a531a72479f7cab72231d772892a0a1e8" name="a531a72479f7cab72231d772892a0a1e8"></a>
-template&lt;&gt; </td></tr>
-<tr class="memitem:a531a72479f7cab72231d772892a0a1e8"><td class="memTemplItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classPSCore_1_1Spawner.html">PSCore::Spawner</a>&lt; <a class="el" href="classShark.html">Shark</a>, <a class="el" href="classAppLayer.html">AppLayer</a> &gt; &gt; &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><b>spawner</b> ()</td></tr>
-<tr class="separator:a531a72479f7cab72231d772892a0a1e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adc212185be9c198a053af6995baa041b" id="r_adc212185be9c198a053af6995baa041b"><td class="memItemLeft" align="right" valign="top"><a id="adc212185be9c198a053af6995baa041b" name="adc212185be9c198a053af6995baa041b"></a>
-template&lt;&gt; </td></tr>
-<tr class="memitem:adc212185be9c198a053af6995baa041b"><td class="memTemplItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classPSCore_1_1Spawner.html">PSCore::Spawner</a>&lt; <a class="el" href="classProjectile.html">Projectile</a>, <a class="el" href="classAppLayer.html">AppLayer</a> &gt; &gt; &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><b>spawner</b> ()</td></tr>
-<tr class="separator:adc212185be9c198a053af6995baa041b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a42d11a226ce4d38bb0b474944749f3db" id="r_a42d11a226ce4d38bb0b474944749f3db"><td class="memItemLeft" align="right" valign="top"><a id="a42d11a226ce4d38bb0b474944749f3db" name="a42d11a226ce4d38bb0b474944749f3db"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>Spawner</b> (std::chrono::duration&lt; double &gt; interval, int variation=0, int limit=100)</td></tr>
+<tr class="separator:a42d11a226ce4d38bb0b474944749f3db"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5340b4b675ca2807fa9ddce55c74f6a3" id="r_a5340b4b675ca2807fa9ddce55c74f6a3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPSCore_1_1Spawner.html#a5340b4b675ca2807fa9ddce55c74f6a3">update</a> (float dt) override</td></tr>
+<tr class="separator:a5340b4b675ca2807fa9ddce55c74f6a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa5e0e2b38a222c7351bf2f2a6b4c7f1d" id="r_aa5e0e2b38a222c7351bf2f2a6b4c7f1d"><td class="memItemLeft" align="right" valign="top"><a id="aa5e0e2b38a222c7351bf2f2a6b4c7f1d" name="aa5e0e2b38a222c7351bf2f2a6b4c7f1d"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>resume</b> ()</td></tr>
+<tr class="separator:aa5e0e2b38a222c7351bf2f2a6b4c7f1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5ea81af7b5ce67b314a327ef451d55b4" id="r_a5ea81af7b5ce67b314a327ef451d55b4"><td class="memItemLeft" align="right" valign="top"><a id="a5ea81af7b5ce67b314a327ef451d55b4" name="a5ea81af7b5ce67b314a327ef451d55b4"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>suspend</b> ()</td></tr>
+<tr class="separator:a5ea81af7b5ce67b314a327ef451d55b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3e9d09ac7198909d9a0c9bc2fcb47d17" id="r_a3e9d09ac7198909d9a0c9bc2fcb47d17"><td class="memItemLeft" align="right" valign="top"><a id="a3e9d09ac7198909d9a0c9bc2fcb47d17" name="a3e9d09ac7198909d9a0c9bc2fcb47d17"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>spawn</b> ()</td></tr>
+<tr class="separator:a3e9d09ac7198909d9a0c9bc2fcb47d17"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a53f4584add45a3e014f6ad9997271c18" id="r_a53f4584add45a3e014f6ad9997271c18"><td class="memItemLeft" align="right" valign="top"><a id="a53f4584add45a3e014f6ad9997271c18" name="a53f4584add45a3e014f6ad9997271c18"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>despawn</b> (std::shared_ptr&lt; T &gt; entity, bool suspend=true)</td></tr>
+<tr class="separator:a53f4584add45a3e014f6ad9997271c18"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a14b3b1fff5ce5e62460c0a222c7b525c" id="r_a14b3b1fff5ce5e62460c0a222c7b525c"><td class="memItemLeft" align="right" valign="top"><a id="a14b3b1fff5ce5e62460c0a222c7b525c" name="a14b3b1fff5ce5e62460c0a222c7b525c"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>register_spawn_callback</b> (std::function&lt; void(std::shared_ptr&lt; T &gt; entity)&gt; cb)</td></tr>
+<tr class="separator:a14b3b1fff5ce5e62460c0a222c7b525c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8a0ca22c1619be706645b75921a3233a" id="r_a8a0ca22c1619be706645b75921a3233a"><td class="memItemLeft" align="right" valign="top"><a id="a8a0ca22c1619be706645b75921a3233a" name="a8a0ca22c1619be706645b75921a3233a"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>register_custom_spawn</b> (std::function&lt; bool(<a class="el" href="classPSInterfaces_1_1Layer.html">PSInterfaces::Layer</a> *layer)&gt; spawn)</td></tr>
+<tr class="separator:a8a0ca22c1619be706645b75921a3233a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classPSInterfaces_1_1IEntity"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classPSInterfaces_1_1IEntity')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classPSInterfaces_1_1IEntity.html">PSInterfaces::IEntity</a></td></tr>
 <tr class="memitem:a817942d790f3a6178098cb99206bc125 inherit pub_methods_classPSInterfaces_1_1IEntity" id="r_a817942d790f3a6178098cb99206bc125"><td class="memItemLeft" align="right" valign="top">
 &#160;</td><td class="memItemRight" valign="bottom"><b>IEntity</b> (const std::string &amp;ident)</td></tr>
 <tr class="separator:a817942d790f3a6178098cb99206bc125 inherit pub_methods_classPSInterfaces_1_1IEntity"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa99369d20cc462f18ae483c3bbb725aa inherit pub_methods_classPSInterfaces_1_1IEntity" id="r_aa99369d20cc462f18ae483c3bbb725aa"><td class="memItemLeft" align="right" valign="top">
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>draw_debug</b> ()</td></tr>
+<tr class="separator:aa99369d20cc462f18ae483c3bbb725aa inherit pub_methods_classPSInterfaces_1_1IEntity"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afd1f980e5bd9df303a2b2d61e0b25943 inherit pub_methods_classPSInterfaces_1_1IEntity" id="r_afd1f980e5bd9df303a2b2d61e0b25943"><td class="memItemLeft" align="right" valign="top">
 virtual std::optional&lt; std::vector&lt; Vector2 &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>bounds</b> () const</td></tr>
 <tr class="separator:afd1f980e5bd9df303a2b2d61e0b25943 inherit pub_methods_classPSInterfaces_1_1IEntity"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -202,44 +182,19 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>is_active_</b> = true
 <tr class="separator:aa625c34f31f54a7aeb6cff570e25acf5 inherit pro_attribs_classPSInterfaces_1_1IEntity"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="aa1e961eba3653c01b2a79fde72de8d2d" name="aa1e961eba3653c01b2a79fde72de8d2d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa1e961eba3653c01b2a79fde72de8d2d">&#9670;&#160;</a></span>draw_debug()</h2>
+<a id="a5340b4b675ca2807fa9ddce55c74f6a3" name="a5340b4b675ca2807fa9ddce55c74f6a3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5340b4b675ca2807fa9ddce55c74f6a3">&#9670;&#160;</a></span>update()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;class T , ILayerDerived L&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void FortunaDirector::draw_debug </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Reimplemented from <a class="el" href="classPSInterfaces_1_1IEntity.html">PSInterfaces::IEntity</a>.</p>
-
-</div>
-</div>
-<a id="a6b01cd3802b121d85bd4bdaf8af3388a" name="a6b01cd3802b121d85bd4bdaf8af3388a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6b01cd3802b121d85bd4bdaf8af3388a">&#9670;&#160;</a></span>update()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void FortunaDirector::update </td>
+          <td class="memname">void <a class="el" href="classPSCore_1_1Spawner.html">PSCore::Spawner</a>&lt; T, L &gt;::update </td>
           <td>(</td>
           <td class="paramtype">float&#160;</td>
           <td class="paramname"><em>dt</em></td><td>)</td>
@@ -248,7 +203,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>is_active_</b> = true
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -257,16 +212,15 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>is_active_</b> = true
 
 </div>
 </div>
-<hr/>The documentation for this class was generated from the following files:<ul>
-<li>/github/workspace/src/app/entities/<a class="el" href="director_8h_source.html">director.h</a></li>
-<li>/github/workspace/src/app/entities/<b>director.cpp</b></li>
+<hr/>The documentation for this class was generated from the following file:<ul>
+<li>/github/workspace/src/core/include/pscore/<a class="el" href="spawner_8h_source.html">spawner.h</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="classFortunaDirector.html">FortunaDirector</a></li>
+    <li class="navelem"><b>PSCore</b></li><li class="navelem"><a class="el" href="classPSCore_1_1Spawner.html">Spawner</a></li>
     <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>

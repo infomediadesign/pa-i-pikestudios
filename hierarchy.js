@@ -13,6 +13,7 @@ var hierarchy =
     [ "HighscoreEntries", "structHighscoreEntries.html", null ],
     [ "PSInterfaces::IEntity", "classPSInterfaces_1_1IEntity.html", [
       [ "FortunaDirector", "classFortunaDirector.html", null ],
+      [ "PSCore::Spawner< T, L >", "classPSCore_1_1Spawner.html", null ],
       [ "PSInterfaces::IRenderable", "classPSInterfaces_1_1IRenderable.html", [
         [ "Body", "classBody.html", null ],
         [ "Cannon", "classCannon.html", null ],
