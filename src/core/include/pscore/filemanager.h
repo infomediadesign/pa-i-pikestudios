@@ -11,7 +11,7 @@ class Filemanager
 public:
 	void ensurefileexists(std::string filename);
 
-	filemanager(std::string filename);
+	Filemanager(std::string filename);
 
 	void write(const std::string& mes);
 	std::string load();
