@@ -47,19 +47,19 @@ void UILayer::draw_panel(Rectangle bounds, Color color, Color border_color)
 
 void UILayer::draw_bounty_ui()
 {
+	//40 + (float) bounty_text.length() * 15, (float) bounty_coin.height* 2
 	auto& vp = gApp()->viewport();
 	Vector2 panel_pos = vp->position_viewport_to_global({0, 0});
-	draw_panel({panel_pos.x, panel_pos.y, 184, 55}, {50, 50, 50, 200}, {0, 0, 0, 0});
+	std::string bounty_text = std::to_string(
+			dynamic_cast<FortunaDirector*>(gApp()->game_director())->m_b_bounty.bounty());
+	draw_panel({panel_pos.x, panel_pos.y, 184, 55 }, {50, 50, 50, 200}, {0, 0, 0, 0});
 	vp->draw_in_viewport(
 			bounty_coin, {0, 0, (float) bounty_coin.width, (float) bounty_coin.height},
 			{(float) bounty_coin.width / 2, (float) bounty_coin.height / 2}, 0.0f, WHITE);
 
 
-	Vector2 text_pos = vp->position_viewport_to_global({120 / 6, 40 / 6});
-	draw_text(
-			std::to_string(dynamic_cast<FortunaDirector*>(gApp()->game_director())->m_b_bounty.bounty()), {text_pos.x, text_pos.y, 72, 24}, 24,
-			RED
-		);
+	Vector2 text_pos = vp->position_viewport_to_global({120 / 6, 40 / 6}); 
+	draw_text(bounty_text, {text_pos.x, text_pos.y, (float) bounty_text.length() * 15, 24}, 24, RED);
 	
 }
 
