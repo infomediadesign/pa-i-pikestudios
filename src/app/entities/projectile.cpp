@@ -77,7 +77,6 @@ void Projectile::calculate_movment(const float dt)
 	parent_to_cannon();
 }
 
-
 void Projectile::calculate_parenting()
 {
 	if ( !m_p_fiering_cannon ) {
