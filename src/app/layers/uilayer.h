@@ -1,5 +1,6 @@
 #pragma once
 #include <psinterfaces/layer.h>
+#include <psinterfaces/renderable.h>
 #include <raylib.h>
 #include <iostream>
 #include <entities/director.h>

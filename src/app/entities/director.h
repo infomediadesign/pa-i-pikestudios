@@ -50,12 +50,21 @@ public:
 		void subtract_bounty(const int amount);
 
 		private:
-			int m_b_bounty_amount = 666;
+			int m_b_bounty_amount = 0;
 
 	};
+
+	struct BountyAmount
+	{
+		int shark_bounty	= 40;
+		int ship_bounty		= 150;
+		int tentacle_bounty = 225;
+	};
 	Bounty m_b_bounty;
+	BountyAmount m_b_bounty_amounts;
 
 private:
+	
 	std::unique_ptr<FortunaDirectorPriv> _p;
 	
 };
