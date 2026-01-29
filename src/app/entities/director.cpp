@@ -243,6 +243,7 @@ std::shared_ptr<Cannon> FortunaDirector::spawn_cannon(const Vector2& position)
 			cannon->set_fire_rate(_p->player_current_fire_rate);
 			cannon->set_projectile_speed(_p->player_current_projectile_speed);
 			cannon->set_range(_p->player_current_fire_range);
+			cannon->set_shared_ptr_this(cannon);
 			return cannon;
 		}
 	}
@@ -342,3 +343,14 @@ void FortunaDirector::Bounty::subtract_bounty(const int amount)
 {
 	m_b_bounty_amount -= amount;
 }
+
+/*
+ImGui::Text("Projectile Speed: %.0f", _p->player_current_projectile_speed);
+ImGui::SameLine();
+ImGui::SetNextItemWidth(60);
+ImGui::InputFloat("##speed_amount", &speed_amount, 0.0f, 0.0f, "%.0f");
+ImGui::SameLine();
+if ( ImGui::Button("Upgrade##Speed") ) {
+	upgrade_player_projectile_speed(speed_amount);
+}
+*/
