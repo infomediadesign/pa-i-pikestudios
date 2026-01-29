@@ -291,6 +291,7 @@ void Player::initialize_cannon()
 		new_cannon->set_parent(m_shared_ptr_this);
 		new_cannon->set_parent_position_x_offset(x_offset);
 		new_cannon->set_parent_position_y_offset(new_cannon->texture().height);
+		new_cannon->set_shared_ptr_this(new_cannon);
 		if ( i == 0 ) {
 			new_cannon->set_positioning(Cannon::CannonPositioning::Left);
 		} else {

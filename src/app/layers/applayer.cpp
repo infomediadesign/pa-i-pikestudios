@@ -10,8 +10,8 @@
 #include <psinterfaces/renderable.h>
 
 #include <entities/player.h>
-#include <misc/mapborderinteraction.h>
 #include <layers/uilayer.h>
+#include <misc/mapborderinteraction.h>
 
 class AppLayerPriv
 {
@@ -22,11 +22,16 @@ AppLayer::AppLayer()
 {
 	_p = std::make_unique<AppLayerPriv>();
 	// Push the UI layer
-	auto app = PSCore::Application::get();
-	if (!app->get_layer<UILayer>() ) {
-		app->push_layer<UILayer>();
+
+	gApp()->call_later([]() {
+		auto app = PSCore::Application::get();
+		if ( !app->get_layer<UILayer>() ) {
+			app->push_layer<UILayer>();
 		}
 
+		if ( auto director = dynamic_cast<FortunaDirector*>(app->game_director()) )
+			director->initialize_entities();
+	});
 }
 
 AppLayer::~AppLayer()
@@ -72,18 +77,10 @@ void AppLayer::on_update(const float dt)
 			}
 		}
 	}
-
-	if ( auto& vp = gApp()->viewport() ) {
-		vp->update(dt);
-	}
 }
 
 void AppLayer::on_render()
 {
 	if ( renderer_ )
 		renderer_->render();
-
-	if ( auto& vp = gApp()->viewport() ) {
-		vp->render();
-	}
 }

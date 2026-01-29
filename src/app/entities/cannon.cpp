@@ -72,6 +72,9 @@ void Cannon::fire()
 				if ( m_c_parent ) {
 					projectile->set_owner_velocity(m_c_parent->velocity());
 				}
+
+				projectile->set_fiering_cannon(m_c_shared_ptr_this);
+				projectile->calculate_parenting();
 			});
 			
 			spawner->spawn();
@@ -249,4 +252,9 @@ Cannon::CannonPositioning Cannon::positioning()
 void Cannon::set_positioning(const Cannon::CannonPositioning positioning)
 {
 	m_c_positioning = positioning;
+}
+
+void Cannon::set_shared_ptr_this(std::shared_ptr<Cannon> ptr)
+{
+	m_c_shared_ptr_this = ptr;
 }
