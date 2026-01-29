@@ -1,5 +1,7 @@
 #pragma once
 
+#include <deque>
+#include <functional>
 #include <memory>
 #include <psinterfaces/layer.h>
 #include <raylib.h>
@@ -39,7 +41,14 @@ namespace PSCore {
 		void push_layer()
 		{
 			m_layer_stack.push_back(std::make_unique<TL>());
-		};
+		}
+		
+		template<ILayerDerived TL, ILayerDerived TO>
+		void switch_layer()
+		{
+			push_layer<TO>();
+			pop_layer<TL>();
+		}
 
 		/*!
 		 * @brief returns an instance to a layer of type T or a nullptr
@@ -103,11 +112,17 @@ namespace PSCore {
 		std::unique_ptr<PSCore::Viewport>& viewport();
 
 		std::unique_ptr<PSCore::sprites::SpriteLoader>& sprite_loader();
+		
+		void call_later(std::function<void()> fn)
+		{
+			m_call_stack.push_back(fn);
+		}
 
 	private:
 		std::unique_ptr<ApplicationPriv> _p;
 		std::vector<std::unique_ptr<PSInterfaces::Layer>> m_layer_stack;
 		std::unique_ptr<PSInterfaces::IEntity> m_game_director;
+		std::deque<std::function<void()>> m_call_stack;
 	};
 } // namespace PSCore
 
