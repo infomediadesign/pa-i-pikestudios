@@ -116,11 +116,9 @@ void Player::render()
 	// Draw Smear
 
 	if ( auto& vp = gApp()->viewport() ) {
-		smear::draw_smear_linear(m_smear_points[0], 2 * vp->viewport_scale(), 1, BLUE);
-		smear::draw_smear_linear(m_smear_points[1], 2 * vp->viewport_scale(), 1, BLUE);
-		smear::draw_smear_wave_between_smears(
-				m_smear_wave_points, m_smear_wave, Vector2Length(m_velocity), m_max_velocity, 2 * vp->viewport_scale(), 1, SKYBLUE
-		);
+		m_smear.draw_smear(0,Linear,2 * vp->viewport_scale(), 1, BLUE);
+		m_smear.draw_smear(1,Linear,2 * vp->viewport_scale(), 1, BLUE);
+		m_smear.draw_smear_wave(Vector2Length(m_velocity), m_max_velocity, 2 * vp->viewport_scale(), 1, SKYBLUE);
 	}
 
 	// Draw Ship
