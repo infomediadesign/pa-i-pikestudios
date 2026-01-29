@@ -1,6 +1,7 @@
 #pragma once
 
 #include <raylib.h>
+#include <vector>
 
 /**
  * @details Functions are based on a Normal Coordinate-system
@@ -120,5 +121,16 @@ namespace coordinatesystem {
 	 * @return The Relative Version of the Global Point
 	 */
 	Vector2 point_global_to_relative_leftdown(Vector2 origin, float rotation, Vector2 point);
+
+	/**
+	 * @brief Calculates Points in a Relative Coordinate system with positive Axis in right and up direction
+	 * to a Point in the Global Coordinate system
+	 * @details The Relative Coordinate system of these Function are used to Position Objects relative to an Other Position or Object
+	 * @param origin The Origin of the Relative Coordinate system
+	 * @param rotation The Rotation of the Relative Coordinate system
+	 * @param point The Relative Points
+	 * @return The Coordinate of the Point in the Global Coordinate system
+	 */
+	std::vector<Vector2> points_relative_to_globle_rightup(Vector2 origin, float rotation, std::vector<Vector2>& points);
 
 } // namespace coordinatesystem

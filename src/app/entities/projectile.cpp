@@ -72,6 +72,20 @@ void Projectile::render()
 	}
 }
 
+void Projectile::draw_debug()
+{
+	if ( bounds().has_value() ) {
+		for ( int i = 0; i < bounds().value().size(); i++ ) {
+			if ( i < bounds().value().size() - 1 ) {
+				DrawLineV(bounds().value().at(i), bounds().value().at(i + 1), GREEN);
+			} else {
+				DrawLineV(bounds().value().at(i), bounds().value().at(0), GREEN);
+			}
+		}
+	}
+}
+
+
 void Projectile::calculate_movement(const float dt, Vector2& target_position)
 {
 	m_p_direction		= Vector2Subtract(target_position, m_p_position);
@@ -219,30 +233,20 @@ void Projectile::set_owner_velocity(const Vector2& velocity)
 
 std::optional<std::vector<Vector2>> Projectile::bounds() const
 {
-	Rectangle projectile_rec;
-	projectile_rec = m_p_sprite->frame_rect({0, 0});
-
 	if ( is_active() )
 		if ( auto& vp = gApp()->viewport() ) {
 
-			auto scaled_pos = vp->position_viewport_to_global(m_p_position);
+			Vector2 vp_pos = vp->position_viewport_to_global(m_p_position);
+			float scale	   = vp->viewport_scale();
 
-			auto p1 = coordinatesystem::point_relative_to_global_rightup(
-					scaled_pos, m_p_rotation, {projectile_rec.width / 2, projectile_rec.height / 2}
-			);
-			auto p2 = coordinatesystem::point_relative_to_global_rightup(
-					scaled_pos, m_p_rotation, {-projectile_rec.width / 2, projectile_rec.height / 2}
-			);
-			auto p3 = coordinatesystem::point_relative_to_global_rightup(
-					scaled_pos, m_p_rotation, {-projectile_rec.width / 2, -projectile_rec.height / 2}
-			);
-			auto p4 = coordinatesystem::point_relative_to_global_rightup(
-					scaled_pos, m_p_rotation, {projectile_rec.width / 2, -projectile_rec.height / 2}
-			);
+			std::vector<Vector2> hitbox_points = {
+					{1 * scale, 1 * scale}, {1 * scale, -1 * scale}, {-1 * scale, -1 * scale}, {-1 * scale, 1 * scale}
+			};
 
-			std::vector<Vector2> v{p1, p2, p3, p4};
-			return v;
+			return coordinatesystem::points_relative_to_globle_rightup(vp_pos, m_p_rotation, hitbox_points);
 		}
+
+	return std::nullopt;
 
 	return std::nullopt;
 };

@@ -18,6 +18,8 @@ public:
 
 	void render() override;
 
+	void draw_debug() override;
+
 	std::optional<Vector2> position() const override;
 
 	std::optional<std::vector<Vector2>> bounds() const override;

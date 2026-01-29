@@ -96,13 +96,12 @@ void Player::update(const float dt)
 		Vector2 m_smear_left_position =
 				coordinatesystem::point_relative_to_global_leftdown(m_position_absolute, m_rotation, Vector2Scale({18, 5}, vp->viewport_scale()));
 
-		m_smear.calculate_linear_smear(m_smear_right_position, Vector2Length(m_velocity), m_rotation, 0.15 * vp->viewport_scale(), 0,0);
-		m_smear.calculate_linear_smear(m_smear_left_position, Vector2Length(m_velocity), m_rotation, 0.15 * vp->viewport_scale(), 0,1);
+		m_smear.calculate_linear_smear(m_smear_right_position, Vector2Length(m_velocity), m_rotation, 0.15 * vp->viewport_scale(), 0, 0);
+		m_smear.calculate_linear_smear(m_smear_left_position, Vector2Length(m_velocity), m_rotation, 0.15 * vp->viewport_scale(), 0, 1);
 
-		m_smear.add_smear_wave(0.1, 0.25, Vector2Length(m_velocity), m_max_velocity, dt,0);
+		m_smear.add_smear_wave(0.1, 0.25, Vector2Length(m_velocity), m_max_velocity, dt, 0);
 
-		m_smear.update_smear_wave({0,1},Linear,1,10,Vector2Length(m_velocity), m_max_velocity, dt);
-
+		m_smear.update_smear_wave({0, 1}, Linear, 1, 10, Vector2Length(m_velocity), m_max_velocity, dt);
 	}
 }
 
@@ -116,8 +115,8 @@ void Player::render()
 	// Draw Smear
 
 	if ( auto& vp = gApp()->viewport() ) {
-		m_smear.draw_smear(0,Linear,2 * vp->viewport_scale(), 1, BLUE);
-		m_smear.draw_smear(1,Linear,2 * vp->viewport_scale(), 1, BLUE);
+		m_smear.draw_smear(0, Linear, 2 * vp->viewport_scale(), 1, BLUE);
+		m_smear.draw_smear(1, Linear, 2 * vp->viewport_scale(), 1, BLUE);
 		m_smear.draw_smear_wave(Vector2Length(m_velocity), m_max_velocity, 2 * vp->viewport_scale(), 1, SKYBLUE);
 	}
 
@@ -132,6 +131,20 @@ void Player::render()
 		);
 	}
 }
+
+void Player::draw_debug()
+{
+	if ( bounds().has_value() ) {
+		for ( int i = 0; i < bounds().value().size(); i++ ) {
+			if ( i < bounds().value().size() - 1 ) {
+				DrawLineV(bounds().value().at(i), bounds().value().at(i + 1), GREEN);
+			} else {
+				DrawLineV(bounds().value().at(i), bounds().value().at(0), GREEN);
+			}
+		}
+	}
+}
+
 
 std::optional<Vector2> Player::position() const
 {
@@ -357,21 +370,25 @@ void Player::set_shared_ptr_this(std::shared_ptr<Player> ptr)
 
 std::optional<std::vector<Vector2>> Player::bounds() const
 {
-	Rectangle shark_rec;
-	shark_rec = m_sprite->frame_rect({0, 0});
+	if ( is_active() )
+		if ( auto& vp = gApp()->viewport() ) {
 
-	std::vector<Vector2> v{
-			m_position, // Top-left
-			Vector2{m_position.x + shark_rec.width, m_position.y}, // Top-right
-			Vector2{m_position.x + shark_rec.width, m_position.y + shark_rec.height}, // Bottom-right
-			Vector2{m_position.x, m_position.y + shark_rec.height} // Bottom-left
-	};
+			Vector2 vp_pos = vp->position_viewport_to_global(m_position);
+			float scale	   = vp->viewport_scale();
 
-	return v;
+			std::vector<Vector2> hitbox_points = {{20 * scale, 0 * scale}, {8 * scale, 6 * scale},	{-15 * scale, 6 * scale},
+												  {-20 * scale, 0 * scale}, {-15 * scale, -6 * scale}, {8 * scale, -6 * scale}};
+
+			return coordinatesystem::points_relative_to_globle_rightup(vp_pos, m_rotation, hitbox_points);
+		}
+
+	return std::nullopt;
 }
-void Player::set_input_velocity_multiplier(float val) {
+void Player::set_input_velocity_multiplier(float val)
+{
 	m_input_velocity_multiplier = val;
 };
-void Player::set_input_rotation_multiplier(float val) {
+void Player::set_input_rotation_multiplier(float val)
+{
 	m_input_rotation_multiplier = val;
 };
