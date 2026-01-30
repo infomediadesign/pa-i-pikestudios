@@ -172,7 +172,7 @@ void ScoreLayer::draw_score_board()
 
 	for ( const auto& entry: highscore ) 
 	{
-		Rectangle label_rect = {(float) vp->viewport_base_size().x / 2 - 100, y_offset, 400, line_height};
+		Rectangle label_rect = {(float) vp->viewport_base_size().x / 2 - 100, y_offset, 200, line_height};
 
 
 		std::string text = entry.name + " " + std::to_string(entry.score);
