@@ -18,6 +18,8 @@ public:
 
 	void render() override;
 
+	void draw_debug() override;
+
 	std::optional<Vector2> position() const override;
 
 	std::optional<std::vector<Vector2>> bounds() const override;
@@ -122,11 +124,5 @@ private:
 	std::shared_ptr<Player> m_shared_ptr_this;
 
 	// Smear Variables
-	float m_smear_rotation								= 0;
-	std::vector<smear::SmearPoints> m_smear_points		= {{0}, {0}};
-	std::vector<float> m_smear_wave						= {0};
-	int m_smear_wave_index								= 0;
-	float m_smear_wave_time								= 0;
-	float m_smear_wave_per_second						= 0.25;
-	std::vector<smear::SmearPoints> m_smear_wave_points = {{0}, {0}};
+	Smear m_smear;
 };
