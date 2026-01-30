@@ -10,11 +10,12 @@ var searchData=
   ['point_5frelative_5fto_5fglobal_5fleftup_7',['point_relative_to_global_leftup',['../namespacecoordinatesystem.html#ab05133ef0916a581bd5de3436f269a16',1,'coordinatesystem']]],
   ['point_5frelative_5fto_5fglobal_5frightdown_8',['point_relative_to_global_rightdown',['../namespacecoordinatesystem.html#adaad406aefbb42e60b456c5c6668ddb8',1,'coordinatesystem']]],
   ['point_5frelative_5fto_5fglobal_5frightup_9',['point_relative_to_global_rightup',['../namespacecoordinatesystem.html#ad1766f0fb2bd3f12e31b78a17acfc45b',1,'coordinatesystem']]],
-  ['pop_5flayer_10',['pop_layer',['../classPSCore_1_1Application.html#a96dd5207a3997a0ea518e1365802d170',1,'PSCore::Application']]],
-  ['position_11',['position',['../structmisc_1_1map_1_1SpawnRequest.html#a8356e880742191d0745d82f6fe229859',1,'misc::map::SpawnRequest']]],
-  ['position_5fviewport_5fto_5fglobal_12',['position_viewport_to_global',['../classPSCore_1_1Viewport.html#aecec3a02f94be6e14cb21e201044bada',1,'PSCore::Viewport']]],
-  ['process_5foff_5fscreen_5fentities_13',['process_off_screen_entities',['../namespacemisc_1_1map.html#a23c4771f11fd1972405b97c686b41060',1,'misc::map']]],
-  ['projectile_14',['Projectile',['../classProjectile.html',1,'']]],
-  ['pscore_3a_3ailayerderived_15',['ILayerDerived',['../conceptPSCore_1_1ILayerDerived.html',1,'PSCore']]],
-  ['push_5flayer_16',['push_layer',['../classPSCore_1_1Application.html#ab14fb509b3de1dd8d4ba871a14ba6cc2',1,'PSCore::Application']]]
+  ['points_5frelative_5fto_5fgloble_5frightup_10',['points_relative_to_globle_rightup',['../namespacecoordinatesystem.html#af48531aeaf3ff9a44a204c0927ee0693',1,'coordinatesystem']]],
+  ['pop_5flayer_11',['pop_layer',['../classPSCore_1_1Application.html#a96dd5207a3997a0ea518e1365802d170',1,'PSCore::Application']]],
+  ['position_12',['position',['../structmisc_1_1map_1_1SpawnRequest.html#a8356e880742191d0745d82f6fe229859',1,'misc::map::SpawnRequest']]],
+  ['position_5fviewport_5fto_5fglobal_13',['position_viewport_to_global',['../classPSCore_1_1Viewport.html#aecec3a02f94be6e14cb21e201044bada',1,'PSCore::Viewport']]],
+  ['process_5foff_5fscreen_5fentities_14',['process_off_screen_entities',['../namespacemisc_1_1map.html#a23c4771f11fd1972405b97c686b41060',1,'misc::map']]],
+  ['projectile_15',['Projectile',['../classProjectile.html',1,'']]],
+  ['pscore_3a_3ailayerderived_16',['ILayerDerived',['../conceptPSCore_1_1ILayerDerived.html',1,'PSCore']]],
+  ['push_5flayer_17',['push_layer',['../classPSCore_1_1Application.html#ab14fb509b3de1dd8d4ba871a14ba6cc2',1,'PSCore::Application']]]
 ];

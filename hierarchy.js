@@ -32,7 +32,8 @@ var hierarchy =
       [ "ScoreLayer", "classScoreLayer.html", null ]
     ] ],
     [ "PSCore::Renderer", "classPSCore_1_1Renderer.html", null ],
-    [ "smear::SmearPoints", "structsmear_1_1SmearPoints.html", null ],
+    [ "Smear", "classSmear.html", null ],
+    [ "SmearPoints", "structSmearPoints.html", null ],
     [ "misc::map::SpawnRequest", "structmisc_1_1map_1_1SpawnRequest.html", null ],
     [ "PSCore::sprites::Sprite", "structPSCore_1_1sprites_1_1Sprite.html", null ],
     [ "PSCore::sprites::SpriteLoader", "classPSCore_1_1sprites_1_1SpriteLoader.html", null ],

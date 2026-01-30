@@ -133,6 +133,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a7d5ec20471731ef2a5c00b4c9e6fcb85" id="r_a7d5ec20471731ef2a5c00b4c9e6fcb85"><td class="memItemLeft" align="right" valign="top">Vector2&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecoordinatesystem.html#a7d5ec20471731ef2a5c00b4c9e6fcb85">point_global_to_relative_leftdown</a> (Vector2 origin, float rotation, Vector2 point)</td></tr>
 <tr class="memdesc:a7d5ec20471731ef2a5c00b4c9e6fcb85"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculates a Global Point to a Point in a Relative Coordinate system with positive Axis in left and down direction.  <br /></td></tr>
 <tr class="separator:a7d5ec20471731ef2a5c00b4c9e6fcb85"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af48531aeaf3ff9a44a204c0927ee0693" id="r_af48531aeaf3ff9a44a204c0927ee0693"><td class="memItemLeft" align="right" valign="top">std::vector&lt; Vector2 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecoordinatesystem.html#af48531aeaf3ff9a44a204c0927ee0693">points_relative_to_globle_rightup</a> (Vector2 origin, float rotation, std::vector&lt; Vector2 &gt; &amp;points)</td></tr>
+<tr class="memdesc:af48531aeaf3ff9a44a204c0927ee0693"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculates Points in a Relative Coordinate system with positive Axis in right and up direction to a Point in the Global Coordinate system.  <br /></td></tr>
+<tr class="separator:af48531aeaf3ff9a44a204c0927ee0693"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Functions are based on a Normal Coordinate-system if you use it in an Image-Coordinate-system have in mind that you must swap the left and right Destination Vectors and the Up and Down Coordinate-system Functions </p>
@@ -490,6 +493,51 @@ Functions</h2></td></tr>
     <tr><td class="paramname">origin</td><td>The Origin of the Relative Coordinate system </td></tr>
     <tr><td class="paramname">rotation</td><td>The Rotation of the Relative Coordinate system </td></tr>
     <tr><td class="paramname">point</td><td>The Relative Point </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The Coordinate of the Point in the Global Coordinate system </dd></dl>
+
+</div>
+</div>
+<a id="af48531aeaf3ff9a44a204c0927ee0693" name="af48531aeaf3ff9a44a204c0927ee0693"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af48531aeaf3ff9a44a204c0927ee0693">&#9670;&#160;</a></span>points_relative_to_globle_rightup()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; Vector2 &gt; coordinatesystem::points_relative_to_globle_rightup </td>
+          <td>(</td>
+          <td class="paramtype">Vector2&#160;</td>
+          <td class="paramname"><em>origin</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>rotation</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; Vector2 &gt; &amp;&#160;</td>
+          <td class="paramname"><em>points</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Calculates Points in a Relative Coordinate system with positive Axis in right and up direction to a Point in the Global Coordinate system. </p>
+<p>The Relative Coordinate system of these Function are used to Position Objects relative to an Other Position or Object </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">origin</td><td>The Origin of the Relative Coordinate system </td></tr>
+    <tr><td class="paramname">rotation</td><td>The Rotation of the Relative Coordinate system </td></tr>
+    <tr><td class="paramname">point</td><td>The Relative Points </td></tr>
   </table>
   </dd>
 </dl>

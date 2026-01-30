@@ -9,6 +9,7 @@ var namespaces_dup =
       [ "point_relative_to_global_leftup", "namespacecoordinatesystem.html#ab05133ef0916a581bd5de3436f269a16", null ],
       [ "point_relative_to_global_rightdown", "namespacecoordinatesystem.html#adaad406aefbb42e60b456c5c6668ddb8", null ],
       [ "point_relative_to_global_rightup", "namespacecoordinatesystem.html#ad1766f0fb2bd3f12e31b78a17acfc45b", null ],
+      [ "points_relative_to_globle_rightup", "namespacecoordinatesystem.html#af48531aeaf3ff9a44a204c0927ee0693", null ],
       [ "vector_backward", "namespacecoordinatesystem.html#a05d64924624731b370843324838e7ec8", null ],
       [ "vector_forward", "namespacecoordinatesystem.html#a1680893c27dc53613ed92df865f0d1c3", null ],
       [ "vector_left", "namespacecoordinatesystem.html#a484f560e9bcf89654a2e22dd5064f28a", null ],

@@ -110,57 +110,74 @@ $(document).ready(function(){initNavTree('smear_8h_source.html',''); initResizab
 <div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="preprocessor">#define WAVE_VECTOR_SIZE_MIN 10 </span><span class="comment">// The minimum size of the Vector for Wave Calculation</span></div>
 <div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span> </div>
-<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="keyword">namespace </span>smear {</div>
-<div class="foldopen" id="foldopen00015" data-start="{" data-end="};">
-<div class="line"><a id="l00015" name="l00015"></a><span class="lineno"><a class="line" href="structsmear_1_1SmearPoints.html">   15</a></span>    <span class="keyword">struct </span><a class="code hl_struct" href="structsmear_1_1SmearPoints.html">SmearPoints</a></div>
-<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>    {</div>
-<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>        Vector2 p1;</div>
-<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>        Vector2 c2;</div>
-<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>        Vector2 c3;</div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>        Vector2 p4;</div>
-<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>    };</div>
+<div class="foldopen" id="foldopen00014" data-start="{" data-end="};">
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno"><a class="line" href="structSmearPoints.html">   14</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structSmearPoints.html">SmearPoints</a></div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>{</div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>    Vector2 p1;</div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>    Vector2 c2;</div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>    Vector2 c3;</div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>    Vector2 p4;</div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>};</div>
 </div>
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span> </div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>    <span class="keyword">enum</span> UseSmearPointsForWaveCalculation { linear_points, exponential_points };</div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span> </div>
-<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>    <span class="keywordtype">void</span></div>
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>    update_smear_rotation(<span class="keywordtype">float</span>* smear_rotation, <span class="keywordtype">float</span> actor_rotation_velocity, <span class="keywordtype">float</span> deflection_scale, <span class="keywordtype">float</span> deflection_velocity, <span class="keywordtype">float</span> delta_time);</div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span> </div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="keyword">enum</span> SmearType { Linear, Exponential };</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span> </div>
+<div class="foldopen" id="foldopen00024" data-start="{" data-end="};">
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno"><a class="line" href="classSmear.html">   24</a></span><span class="keyword">class </span><a class="code hl_class" href="classSmear.html">Smear</a></div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>{</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="keyword">public</span>:</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classSmear.html#a8b11c102df31c53c6e3c21647ada73df">update_smear</a>(<span class="keywordtype">float</span> actor_rotation_velocity, <span class="keywordtype">float</span> deflection_scale, <span class="keywordtype">float</span> deflection_velocity, <span class="keywordtype">float</span> delta_time);</div>
 <div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span> </div>
-<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>    SmearPoints calculate_smear_linear_points(</div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>            Vector2&amp; position_start, <span class="keywordtype">float</span> actor_velocity, <span class="keywordtype">float</span> actor_rotation, <span class="keywordtype">float</span> smear_rotation, <span class="keywordtype">float</span> smear_length, <span class="keywordtype">float</span> smear_rotation_offset</div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>    );</div>
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span> </div>
-<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>    <span class="keywordtype">void</span> draw_smear_linear(SmearPoints&amp; smear_points, <span class="keywordtype">float</span> smear_line_thickness, <span class="keywordtype">float</span> smear_line_thickness_falloff, Color smear_color);</div>
-<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span> </div>
-<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>    SmearPoints calculate_smear_exponential_points(</div>
-<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>            Vector2&amp; position_start, <span class="keywordtype">float</span> actor_velocity, <span class="keywordtype">float</span> actor_rotation, <span class="keywordtype">float</span> smear_rotation, <span class="keywordtype">float</span> smear_length,</div>
-<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>            <span class="keywordtype">float</span> smear_rotation_offset, <span class="keywordtype">float</span> smear_deflection_start, <span class="keywordtype">float</span> smear_deflection_length</div>
-<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>    );</div>
-<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span> </div>
-<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>    <span class="keywordtype">void</span> draw_smear_exponential(SmearPoints&amp; smear_points, <span class="keywordtype">float</span> smear_line_thickness, <span class="keywordtype">float</span> smear_line_thickness_falloff, Color smear_color);</div>
-<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span> </div>
-<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>    <span class="keywordtype">void</span> send_smear_wave(</div>
-<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>            std::vector&lt;float&gt;* smear_waves, <span class="keywordtype">int</span>* smear_wave_index, <span class="keywordtype">float</span> smear_wave_velocity, <span class="keywordtype">float</span> actor_velocity, <span class="keywordtype">float</span> actor_max_velocity,</div>
-<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>            <span class="keywordtype">float</span> delta_time</div>
-<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>    );</div>
-<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span> </div>
-<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>    <span class="keywordtype">void</span> send_smear_wave_at_start(std::vector&lt;float&gt;* smear_waves, <span class="keywordtype">int</span>* smear_wave_index, <span class="keywordtype">float</span> smear_wave_start);</div>
-<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span> </div>
-<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span>    <span class="keywordtype">void</span></div>
-<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span>    update_smear_wave(std::vector&lt;float&gt;* smear_waves, <span class="keywordtype">float</span> smear_wave_velocity, <span class="keywordtype">float</span> actor_velocity, <span class="keywordtype">float</span> actor_max_velocity, <span class="keywordtype">float</span> delta_time);</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classSmear.html#a87306c590b348313368d7abc97be1bfe">calculate_linear_smear</a>(</div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>            Vector2&amp; start_position, <span class="keywordtype">float</span> actor_velocity, <span class="keywordtype">float</span> actor_rotation, <span class="keywordtype">float</span> smear_length, <span class="keywordtype">float</span> smear_rotation_offset, <span class="keywordtype">int</span> smear_index</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>    );</div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span> </div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classSmear.html#aff8d5c35bb37147007ea9fd10de1d865">calculate_exponential_smear</a>(</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>            Vector2&amp; start_position, <span class="keywordtype">float</span> actor_velocity, <span class="keywordtype">float</span> actor_rotation, <span class="keywordtype">float</span> smear_length, <span class="keywordtype">float</span> smear_rotation_offset,</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>            <span class="keywordtype">float</span> smear_deflection_start, <span class="keywordtype">float</span> smear_deflection_length, <span class="keywordtype">int</span> smear_index</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>    );</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span> </div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classSmear.html#a9efa170ab118228ddf9875c54eb10543">draw_smear</a>(<span class="keywordtype">int</span> smear_index, SmearType smear_type, <span class="keywordtype">float</span> smear_line_thickness, <span class="keywordtype">float</span> smear_line_thickness_falloff, Color smear_color);</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span> </div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classSmear.html#ae658fb06ba6b83c7607944a99e5a762c">update_smear_wave</a>(</div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>            Vector2 smear_indices, SmearType smear_type, <span class="keywordtype">float</span> smear_wave_velocity, <span class="keywordtype">float</span> smear_wave_height, <span class="keywordtype">float</span> actor_velocity,</div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>            <span class="keywordtype">float</span> actor_max_velocity, <span class="keywordtype">float</span> delta_time</div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>    );</div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span> </div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classSmear.html#aba579eca384cbdc3265f57aead606be9">add_smear_wave</a>(</div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>            <span class="keywordtype">float</span> smear_wave_velocity, <span class="keywordtype">float</span> smear_wave_frequency, <span class="keywordtype">float</span> actor_velocity, <span class="keywordtype">float</span> actor_max_velocity, <span class="keywordtype">float</span> delta_time,</div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>            <span class="keywordtype">int</span> smear_timer_index</div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>    );</div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span> </div>
+<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classSmear.html#a86b0b6cab56eb7d573ae4665ac3a77f0">add_smear_wave_at_location</a>(</div>
+<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span>            <span class="keywordtype">float</span> smear_wave_start, <span class="keywordtype">float</span> smear_wave_frequency, <span class="keywordtype">float</span> actor_velocity, <span class="keywordtype">float</span> actor_max_velocity, <span class="keywordtype">float</span> delta_time,</div>
+<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span>            <span class="keywordtype">int</span> smear_timer_index</div>
+<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span>    );</div>
 <div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span> </div>
-<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span>    <span class="keywordtype">void</span> calculate_smear_wave_points(</div>
-<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span>            std::vector&lt;SmearPoints&gt;* smear_wave_points, std::vector&lt;float&gt;&amp; smear_waves, std::vector&lt;SmearPoints&gt;&amp; smear_points,</div>
-<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span>            Vector2 smear_points_vector_index, <span class="keywordtype">float</span> smear_rotation, <span class="keywordtype">float</span> smear_wave_height, <span class="keywordtype">float</span> actor_velocity, <span class="keywordtype">float</span> actor_max_velocity,</div>
-<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span>            UseSmearPointsForWaveCalculation smear_type_of_smear_points</div>
-<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span>    );</div>
-<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span> </div>
-<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span>    <span class="keywordtype">void</span> draw_smear_wave_between_smears(</div>
-<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span>            std::vector&lt;SmearPoints&gt;&amp; smear_wave_points, std::vector&lt;float&gt;&amp; smear_waves, <span class="keywordtype">float</span> actor_velocity, <span class="keywordtype">float</span> actor_max_velocity,</div>
-<div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span>            <span class="keywordtype">float</span> smear_wave_line_thickness, <span class="keywordtype">float</span> smear_wave_line_thickness_falloff, Color smear_wave_color</div>
-<div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span>    );</div>
-<div class="line"><a id="l00151" name="l00151"></a><span class="lineno">  151</span>}; <span class="comment">// namespace smear</span></div>
-<div class="ttc" id="astructsmear_1_1SmearPoints_html"><div class="ttname"><a href="structsmear_1_1SmearPoints.html">smear::SmearPoints</a></div><div class="ttdef"><b>Definition</b> smear.h:16</div></div>
+<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classSmear.html#ae87228404adb3abeaeea24e118b90de8">draw_smear_wave</a>(</div>
+<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span>            <span class="keywordtype">float</span> actor_velocity, <span class="keywordtype">float</span> actor_max_velocity, <span class="keywordtype">float</span> smear_wave_line_thickness, <span class="keywordtype">float</span> smear_wave_line_thickness_falloff,</div>
+<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span>            Color smear_wave_color</div>
+<div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span>    );</div>
+<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span> </div>
+<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span><span class="keyword">private</span>:</div>
+<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span>    <span class="keywordtype">float</span> m_smear_rotation                       = 0;</div>
+<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span>    std::vector&lt;SmearPoints&gt; m_smear_points      = {{0}};</div>
+<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span>    <span class="keywordtype">int</span> m_smear_wave_index                       = 0;</div>
+<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span>    std::vector&lt;float&gt; m_smear_wave              = {0};</div>
+<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span>    std::vector&lt;float&gt; m_smear_wave_timer        = {0};</div>
+<div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span>    std::vector&lt;SmearPoints&gt; m_smear_wave_points = {{0}};</div>
+<div class="line"><a id="l00139" name="l00139"></a><span class="lineno">  139</span>};</div>
+</div>
+<div class="ttc" id="aclassSmear_html"><div class="ttname"><a href="classSmear.html">Smear</a></div><div class="ttdef"><b>Definition</b> smear.h:25</div></div>
+<div class="ttc" id="aclassSmear_html_a86b0b6cab56eb7d573ae4665ac3a77f0"><div class="ttname"><a href="classSmear.html#a86b0b6cab56eb7d573ae4665ac3a77f0">Smear::add_smear_wave_at_location</a></div><div class="ttdeci">void add_smear_wave_at_location(float smear_wave_start, float smear_wave_frequency, float actor_velocity, float actor_max_velocity, float delta_time, int smear_timer_index)</div><div class="ttdoc">Sends a new Wave to the smear_wave_start Value.</div><div class="ttdef"><b>Definition</b> smear.cpp:254</div></div>
+<div class="ttc" id="aclassSmear_html_a87306c590b348313368d7abc97be1bfe"><div class="ttname"><a href="classSmear.html#a87306c590b348313368d7abc97be1bfe">Smear::calculate_linear_smear</a></div><div class="ttdeci">void calculate_linear_smear(Vector2 &amp;start_position, float actor_velocity, float actor_rotation, float smear_length, float smear_rotation_offset, int smear_index)</div><div class="ttdoc">Calculates the Points for a Linear Smear.</div><div class="ttdef"><b>Definition</b> smear.cpp:14</div></div>
+<div class="ttc" id="aclassSmear_html_a8b11c102df31c53c6e3c21647ada73df"><div class="ttname"><a href="classSmear.html#a8b11c102df31c53c6e3c21647ada73df">Smear::update_smear</a></div><div class="ttdeci">void update_smear(float actor_rotation_velocity, float deflection_scale, float deflection_velocity, float delta_time)</div><div class="ttdoc">Updates the given smear_rotation to the given Value.</div><div class="ttdef"><b>Definition</b> smear.cpp:9</div></div>
+<div class="ttc" id="aclassSmear_html_a9efa170ab118228ddf9875c54eb10543"><div class="ttname"><a href="classSmear.html#a9efa170ab118228ddf9875c54eb10543">Smear::draw_smear</a></div><div class="ttdeci">void draw_smear(int smear_index, SmearType smear_type, float smear_line_thickness, float smear_line_thickness_falloff, Color smear_color)</div><div class="ttdoc">Draws a Smear on the given Values.</div><div class="ttdef"><b>Definition</b> smear.cpp:60</div></div>
+<div class="ttc" id="aclassSmear_html_aba579eca384cbdc3265f57aead606be9"><div class="ttname"><a href="classSmear.html#aba579eca384cbdc3265f57aead606be9">Smear::add_smear_wave</a></div><div class="ttdeci">void add_smear_wave(float smear_wave_velocity, float smear_wave_frequency, float actor_velocity, float actor_max_velocity, float delta_time, int smear_timer_index)</div><div class="ttdoc">Sends a new Wave at the start Location of the Smear.</div><div class="ttdef"><b>Definition</b> smear.cpp:224</div></div>
+<div class="ttc" id="aclassSmear_html_ae658fb06ba6b83c7607944a99e5a762c"><div class="ttname"><a href="classSmear.html#ae658fb06ba6b83c7607944a99e5a762c">Smear::update_smear_wave</a></div><div class="ttdeci">void update_smear_wave(Vector2 smear_indices, SmearType smear_type, float smear_wave_velocity, float smear_wave_height, float actor_velocity, float actor_max_velocity, float delta_time)</div><div class="ttdoc">Updates the Location of the Smear Waves.</div><div class="ttdef"><b>Definition</b> smear.cpp:164</div></div>
+<div class="ttc" id="aclassSmear_html_ae87228404adb3abeaeea24e118b90de8"><div class="ttname"><a href="classSmear.html#ae87228404adb3abeaeea24e118b90de8">Smear::draw_smear_wave</a></div><div class="ttdeci">void draw_smear_wave(float actor_velocity, float actor_max_velocity, float smear_wave_line_thickness, float smear_wave_line_thickness_falloff, Color smear_wave_color)</div><div class="ttdoc">Draw the Smear Waves between 2 Smears.</div><div class="ttdef"><b>Definition</b> smear.cpp:283</div></div>
+<div class="ttc" id="aclassSmear_html_aff8d5c35bb37147007ea9fd10de1d865"><div class="ttname"><a href="classSmear.html#aff8d5c35bb37147007ea9fd10de1d865">Smear::calculate_exponential_smear</a></div><div class="ttdeci">void calculate_exponential_smear(Vector2 &amp;start_position, float actor_velocity, float actor_rotation, float smear_length, float smear_rotation_offset, float smear_deflection_start, float smear_deflection_length, int smear_index)</div><div class="ttdoc">Calculates the Points for an Exponential Smear.</div><div class="ttdef"><b>Definition</b> smear.cpp:32</div></div>
+<div class="ttc" id="astructSmearPoints_html"><div class="ttname"><a href="structSmearPoints.html">SmearPoints</a></div><div class="ttdef"><b>Definition</b> smear.h:15</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

@@ -36,9 +36,6 @@ var annotated_dup =
     [ "PSUtils", null, [
       [ "Grid2D", "classPSUtils_1_1Grid2D.html", null ]
     ] ],
-    [ "smear", null, [
-      [ "SmearPoints", "structsmear_1_1SmearPoints.html", null ]
-    ] ],
     [ "AppLayer", "classAppLayer.html", null ],
     [ "AppLayerPriv", "classAppLayerPriv.html", null ],
     [ "Body", "classBody.html", null ],
@@ -53,5 +50,7 @@ var annotated_dup =
     [ "Player", "classPlayer.html", null ],
     [ "Projectile", "classProjectile.html", null ],
     [ "ScoreLayer", "classScoreLayer.html", null ],
-    [ "Shark", "classShark.html", null ]
+    [ "Shark", "classShark.html", null ],
+    [ "Smear", "classSmear.html", "classSmear" ],
+    [ "SmearPoints", "structSmearPoints.html", null ]
 ];
