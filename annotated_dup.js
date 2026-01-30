@@ -43,14 +43,17 @@ var annotated_dup =
     [ "DebugLayer", "classDebugLayer.html", null ],
     [ "Filemanager", "classFilemanager.html", null ],
     [ "Fin", "classFin.html", null ],
-    [ "FortunaDirector", "classFortunaDirector.html", null ],
+    [ "FortunaDirector", "classFortunaDirector.html", "classFortunaDirector" ],
     [ "FortunaDirectorPriv", "classFortunaDirectorPriv.html", null ],
+    [ "GuiStyleProp", "structGuiStyleProp.html", null ],
     [ "HighscoreEntries", "structHighscoreEntries.html", null ],
+    [ "MainMenuLayer", "classMainMenuLayer.html", null ],
     [ "PauseLayer", "classPauseLayer.html", null ],
     [ "Player", "classPlayer.html", null ],
     [ "Projectile", "classProjectile.html", null ],
     [ "ScoreLayer", "classScoreLayer.html", null ],
     [ "Shark", "classShark.html", null ],
     [ "Smear", "classSmear.html", "classSmear" ],
-    [ "SmearPoints", "structSmearPoints.html", null ]
+    [ "SmearPoints", "structSmearPoints.html", null ],
+    [ "UILayer", "classUILayer.html", "classUILayer" ]
 ];

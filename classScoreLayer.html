@@ -90,6 +90,9 @@ $(document).ready(function(){initNavTree('classScoreLayer.html',''); initResizab
 
 <div class="header">
   <div class="summary">
+<a href="#pub-types">Public Types</a> &#124;
+<a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="classScoreLayer-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">ScoreLayer Class Reference</div></div>
 </div><!--header-->
@@ -104,8 +107,42 @@ Inheritance diagram for ScoreLayer:</div>
   </map>
 </div></div>
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
-Additional Inherited Members</h2></td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
+Public Types</h2></td></tr>
+<tr class="memitem:ab89f78e73916134287d48ec5ea9cc0e0" id="r_ab89f78e73916134287d48ec5ea9cc0e0"><td class="memItemLeft" align="right" valign="top"><a id="ab89f78e73916134287d48ec5ea9cc0e0" name="ab89f78e73916134287d48ec5ea9cc0e0"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><b>liststate</b> { <b>VIEWING</b>
+, <b>AWAITING_INPUT</b>
+, <b>TYPING_NAME</b>
+, <b>INPUT_MADE</b>
+ }</td></tr>
+<tr class="separator:ab89f78e73916134287d48ec5ea9cc0e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public Member Functions</h2></td></tr>
+<tr class="memitem:aaaba274455c399cc6232abf5bf05267c" id="r_aaaba274455c399cc6232abf5bf05267c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classScoreLayer.html#aaaba274455c399cc6232abf5bf05267c">on_update</a> (float dt) override</td></tr>
+<tr class="separator:aaaba274455c399cc6232abf5bf05267c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aee97e212286d48746e405a0a2629d8a4" id="r_aee97e212286d48746e405a0a2629d8a4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classScoreLayer.html#aee97e212286d48746e405a0a2629d8a4">on_render</a> () override</td></tr>
+<tr class="separator:aee97e212286d48746e405a0a2629d8a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a506a64b79f5ae47fd75db3cdeec76630" id="r_a506a64b79f5ae47fd75db3cdeec76630"><td class="memItemLeft" align="right" valign="top"><a id="a506a64b79f5ae47fd75db3cdeec76630" name="a506a64b79f5ae47fd75db3cdeec76630"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>load_highscore</b> (const std::string &amp;filename=&quot;noahistgay.txt&quot;)</td></tr>
+<tr class="separator:a506a64b79f5ae47fd75db3cdeec76630"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9f77e45c69b982a7ccca1b7a58e3ef7a" id="r_a9f77e45c69b982a7ccca1b7a58e3ef7a"><td class="memItemLeft" align="right" valign="top"><a id="a9f77e45c69b982a7ccca1b7a58e3ef7a" name="a9f77e45c69b982a7ccca1b7a58e3ef7a"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>save_highscore</b> (const std::string &amp;filename=&quot;noahistgay.txt&quot;)</td></tr>
+<tr class="separator:a9f77e45c69b982a7ccca1b7a58e3ef7a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7a168c5ff0e7a1274f0a17500b7602b8" id="r_a7a168c5ff0e7a1274f0a17500b7602b8"><td class="memItemLeft" align="right" valign="top"><a id="a7a168c5ff0e7a1274f0a17500b7602b8" name="a7a168c5ff0e7a1274f0a17500b7602b8"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>check_for_new_highscore</b> (int)</td></tr>
+<tr class="separator:a7a168c5ff0e7a1274f0a17500b7602b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa5301df67f5a2109c97a140ec7b03933" id="r_aa5301df67f5a2109c97a140ec7b03933"><td class="memItemLeft" align="right" valign="top"><a id="aa5301df67f5a2109c97a140ec7b03933" name="aa5301df67f5a2109c97a140ec7b03933"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>save_new_highscore</b> (int)</td></tr>
+<tr class="separator:aa5301df67f5a2109c97a140ec7b03933"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a526ec91e2f6ba92272050d205bacaf56" id="r_a526ec91e2f6ba92272050d205bacaf56"><td class="memItemLeft" align="right" valign="top"><a id="a526ec91e2f6ba92272050d205bacaf56" name="a526ec91e2f6ba92272050d205bacaf56"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>update_typing</b> ()</td></tr>
+<tr class="separator:a526ec91e2f6ba92272050d205bacaf56"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a371b6ea268e2176fd75b295bbe763869" id="r_a371b6ea268e2176fd75b295bbe763869"><td class="memItemLeft" align="right" valign="top"><a id="a371b6ea268e2176fd75b295bbe763869" name="a371b6ea268e2176fd75b295bbe763869"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set_highscore</b> (std::string name, int score)</td></tr>
+<tr class="separator:a371b6ea268e2176fd75b295bbe763869"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9c5d142abfbe3796a1a2628a4a2ff988" id="r_a9c5d142abfbe3796a1a2628a4a2ff988"><td class="memItemLeft" align="right" valign="top"><a id="a9c5d142abfbe3796a1a2628a4a2ff988" name="a9c5d142abfbe3796a1a2628a4a2ff988"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>draw_score_board</b> ()</td></tr>
+<tr class="separator:a9c5d142abfbe3796a1a2628a4a2ff988"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classPSInterfaces_1_1Layer"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classPSInterfaces_1_1Layer')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classPSInterfaces_1_1Layer.html">PSInterfaces::Layer</a></td></tr>
 <tr class="memitem:af24293a5ef531b849cacc205f8a6390a inherit pub_methods_classPSInterfaces_1_1Layer" id="r_af24293a5ef531b849cacc205f8a6390a"><td class="memItemLeft" align="right" valign="top">
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>on_event</b> ()</td></tr>
@@ -132,6 +169,30 @@ requires std::is_base_of_v&lt;<a class="el" href="classPSInterfaces_1_1IEntity.h
 <tr class="memitem:a203a951a791dc02361e78b98f22c6d33 inherit pub_methods_classPSInterfaces_1_1Layer" id="r_a203a951a791dc02361e78b98f22c6d33"><td class="memItemLeft" align="right" valign="top">
 std::vector&lt; std::weak_ptr&lt; <a class="el" href="classPSInterfaces_1_1IEntity.html">PSInterfaces::IEntity</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>entities</b> () const</td></tr>
 <tr class="separator:a203a951a791dc02361e78b98f22c6d33 inherit pub_methods_classPSInterfaces_1_1Layer"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
+Public Attributes</h2></td></tr>
+<tr class="memitem:a41da761a1f5545cb3c6ff54f3f951ccf" id="r_a41da761a1f5545cb3c6ff54f3f951ccf"><td class="memItemLeft" align="right" valign="top"><a id="a41da761a1f5545cb3c6ff54f3f951ccf" name="a41da761a1f5545cb3c6ff54f3f951ccf"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>highscores_loaded</b> = false</td></tr>
+<tr class="separator:a41da761a1f5545cb3c6ff54f3f951ccf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3e1093c3aa531820ea6c086e309037b9" id="r_a3e1093c3aa531820ea6c086e309037b9"><td class="memItemLeft" align="right" valign="top"><a id="a3e1093c3aa531820ea6c086e309037b9" name="a3e1093c3aa531820ea6c086e309037b9"></a>
+std::vector&lt; <a class="el" href="structHighscoreEntries.html">HighscoreEntries</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>highscore</b></td></tr>
+<tr class="separator:a3e1093c3aa531820ea6c086e309037b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2873f7ecf95787920030914d884e0837" id="r_a2873f7ecf95787920030914d884e0837"><td class="memItemLeft" align="right" valign="top"><a id="a2873f7ecf95787920030914d884e0837" name="a2873f7ecf95787920030914d884e0837"></a>
+std::string&#160;</td><td class="memItemRight" valign="bottom"><b>player_name_input</b></td></tr>
+<tr class="separator:a2873f7ecf95787920030914d884e0837"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acfaaea05877ca91a359ad8b70c13b04d" id="r_acfaaea05877ca91a359ad8b70c13b04d"><td class="memItemLeft" align="right" valign="top"><a id="acfaaea05877ca91a359ad8b70c13b04d" name="acfaaea05877ca91a359ad8b70c13b04d"></a>
+const int&#160;</td><td class="memItemRight" valign="bottom"><b>max_name_length</b> = 15</td></tr>
+<tr class="separator:acfaaea05877ca91a359ad8b70c13b04d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5d26bbe42a71b2d9d39f759ae287d820" id="r_a5d26bbe42a71b2d9d39f759ae287d820"><td class="memItemLeft" align="right" valign="top"><a id="a5d26bbe42a71b2d9d39f759ae287d820" name="a5d26bbe42a71b2d9d39f759ae287d820"></a>
+liststate&#160;</td><td class="memItemRight" valign="bottom"><b>list_state</b> = VIEWING</td></tr>
+<tr class="separator:a5d26bbe42a71b2d9d39f759ae287d820"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9269859cc0113aa7fbcf43becf21d97c" id="r_a9269859cc0113aa7fbcf43becf21d97c"><td class="memItemLeft" align="right" valign="top"><a id="a9269859cc0113aa7fbcf43becf21d97c" name="a9269859cc0113aa7fbcf43becf21d97c"></a>
+<a class="el" href="classFilemanager.html">Filemanager</a>&#160;</td><td class="memItemRight" valign="bottom"><b>m_filemanager</b></td></tr>
+<tr class="separator:a9269859cc0113aa7fbcf43becf21d97c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
+Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pro_attribs_classPSInterfaces_1_1Layer"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classPSInterfaces_1_1Layer')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classPSInterfaces_1_1Layer.html">PSInterfaces::Layer</a></td></tr>
 <tr class="memitem:aa759d36bb56976a73b4974ec7bbaa0c0 inherit pro_attribs_classPSInterfaces_1_1Layer" id="r_aa759d36bb56976a73b4974ec7bbaa0c0"><td class="memItemLeft" align="right" valign="top">
 const std::unique_ptr&lt; <a class="el" href="classPSCore_1_1Renderer.html">PSCore::Renderer</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>renderer_</b> = std::make_unique&lt;<a class="el" href="classPSCore_1_1Renderer.html">PSCore::Renderer</a>&gt;()</td></tr>
@@ -140,6 +201,62 @@ const std::unique_ptr&lt; <a class="el" href="classPSCore_1_1Renderer.html">PSCo
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>active</b> = true</td></tr>
 <tr class="separator:a8592b9407ebe64a8d16bc48be79d9c73 inherit pro_attribs_classPSInterfaces_1_1Layer"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="aee97e212286d48746e405a0a2629d8a4" name="aee97e212286d48746e405a0a2629d8a4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aee97e212286d48746e405a0a2629d8a4">&#9670;&#160;</a></span>on_render()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ScoreLayer::on_render </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implements <a class="el" href="classPSInterfaces_1_1Layer.html">PSInterfaces::Layer</a>.</p>
+
+</div>
+</div>
+<a id="aaaba274455c399cc6232abf5bf05267c" name="aaaba274455c399cc6232abf5bf05267c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaaba274455c399cc6232abf5bf05267c">&#9670;&#160;</a></span>on_update()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ScoreLayer::on_update </td>
+          <td>(</td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>dt</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implements <a class="el" href="classPSInterfaces_1_1Layer.html">PSInterfaces::Layer</a>.</p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>/github/workspace/src/app/layers/<a class="el" href="scorelayer_8h_source.html">scorelayer.h</a></li>
 <li>/github/workspace/src/app/layers/<b>scorelayer.cpp</b></li>

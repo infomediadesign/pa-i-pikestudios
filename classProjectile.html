@@ -112,16 +112,11 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a1f0e7d38ee1c530f12c0cba7a5aa934e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acb13375bffc02090bd3a209c696f483a" id="r_acb13375bffc02090bd3a209c696f483a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classProjectile.html#acb13375bffc02090bd3a209c696f483a">render</a> () override</td></tr>
 <tr class="separator:acb13375bffc02090bd3a209c696f483a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac922b4b19470777b2640563b6a35c65b" id="r_ac922b4b19470777b2640563b6a35c65b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classProjectile.html#ac922b4b19470777b2640563b6a35c65b">draw_debug</a> () override</td></tr>
-<tr class="separator:ac922b4b19470777b2640563b6a35c65b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a28bf87c68c7ed29f53427c37ff77a490" id="r_a28bf87c68c7ed29f53427c37ff77a490"><td class="memItemLeft" align="right" valign="top">std::optional&lt; std::vector&lt; Vector2 &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classProjectile.html#a28bf87c68c7ed29f53427c37ff77a490">bounds</a> () const override</td></tr>
 <tr class="separator:a28bf87c68c7ed29f53427c37ff77a490"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4e4ff822ec85f7dd99f06e174876d354" id="r_a4e4ff822ec85f7dd99f06e174876d354"><td class="memItemLeft" align="right" valign="top"><a id="a4e4ff822ec85f7dd99f06e174876d354" name="a4e4ff822ec85f7dd99f06e174876d354"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>init</b> (const Vector2 &amp;position, std::shared_ptr&lt; <a class="el" href="classProjectile.html">Projectile</a> &gt; self)</td></tr>
 <tr class="separator:a4e4ff822ec85f7dd99f06e174876d354"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a39169c2fb1f060a8c820645ac9766239" id="r_a39169c2fb1f060a8c820645ac9766239"><td class="memItemLeft" align="right" valign="top"><a id="a39169c2fb1f060a8c820645ac9766239" name="a39169c2fb1f060a8c820645ac9766239"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>calculate_movement</b> (const float dt, Vector2 &amp;target_position)</td></tr>
-<tr class="separator:a39169c2fb1f060a8c820645ac9766239"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acb8ff3f71738dc1c1508cb65e84b7938" id="r_acb8ff3f71738dc1c1508cb65e84b7938"><td class="memItemLeft" align="right" valign="top"><a id="acb8ff3f71738dc1c1508cb65e84b7938" name="acb8ff3f71738dc1c1508cb65e84b7938"></a>
 Texture2D&#160;</td><td class="memItemRight" valign="bottom"><b>texture</b> ()</td></tr>
 <tr class="separator:acb8ff3f71738dc1c1508cb65e84b7938"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -176,7 +171,7 @@ float&#160;</td><td class="memItemRight" valign="bottom"><b>travel_distance</b> 
 void&#160;</td><td class="memItemRight" valign="bottom"><b>set_travel_distance</b> (const float travel_distance)</td></tr>
 <tr class="separator:ad425e1c0eca9dfcd37ce5a4a9c511e88"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a96f96969303a1bb62dc3f81f5b4fc24f" id="r_a96f96969303a1bb62dc3f81f5b4fc24f"><td class="memItemLeft" align="right" valign="top"><a id="a96f96969303a1bb62dc3f81f5b4fc24f" name="a96f96969303a1bb62dc3f81f5b4fc24f"></a>
-std ::shared_ptr&lt; <a class="el" href="classProjectile.html">Projectile</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>shared_ptr</b> ()</td></tr>
+std::shared_ptr&lt; <a class="el" href="classProjectile.html">Projectile</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>shared_ptr</b> ()</td></tr>
 <tr class="separator:a96f96969303a1bb62dc3f81f5b4fc24f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a58f2be050295033c8afe16519488adcf" id="r_a58f2be050295033c8afe16519488adcf"><td class="memItemLeft" align="right" valign="top"><a id="a58f2be050295033c8afe16519488adcf" name="a58f2be050295033c8afe16519488adcf"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>set_shared_ptr</b> (std::shared_ptr&lt; <a class="el" href="classProjectile.html">Projectile</a> &gt; &amp;ptr)</td></tr>
@@ -193,6 +188,26 @@ Vector2&#160;</td><td class="memItemRight" valign="bottom"><b>owner_velocity</b>
 <tr class="memitem:ab2257fd50e49ed418ce21ec284409ccd" id="r_ab2257fd50e49ed418ce21ec284409ccd"><td class="memItemLeft" align="right" valign="top"><a id="ab2257fd50e49ed418ce21ec284409ccd" name="ab2257fd50e49ed418ce21ec284409ccd"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>set_owner_velocity</b> (const Vector2 &amp;velocity)</td></tr>
 <tr class="separator:ab2257fd50e49ed418ce21ec284409ccd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab19c6fe47b6a064a1f6d1702f4ded514" id="r_ab19c6fe47b6a064a1f6d1702f4ded514"><td class="memItemLeft" align="right" valign="top"><a id="ab19c6fe47b6a064a1f6d1702f4ded514" name="ab19c6fe47b6a064a1f6d1702f4ded514"></a>
+std::shared_ptr&lt; <a class="el" href="classCannon.html">Cannon</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>fiering_cannon</b> ()</td></tr>
+<tr class="separator:ab19c6fe47b6a064a1f6d1702f4ded514"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a53e97f915e6c2b94019e86218f360847" id="r_a53e97f915e6c2b94019e86218f360847"><td class="memItemLeft" align="right" valign="top"><a id="a53e97f915e6c2b94019e86218f360847" name="a53e97f915e6c2b94019e86218f360847"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set_fiering_cannon</b> (const std::shared_ptr&lt; <a class="el" href="classCannon.html">Cannon</a> &gt; &amp;cannon)</td></tr>
+<tr class="separator:a53e97f915e6c2b94019e86218f360847"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aae784751f6ea73ed996cf00611364270" id="r_aae784751f6ea73ed996cf00611364270"><td class="memItemLeft" align="right" valign="top"><a id="aae784751f6ea73ed996cf00611364270" name="aae784751f6ea73ed996cf00611364270"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>calculate_movment</b> (const float dt)</td></tr>
+<tr class="separator:aae784751f6ea73ed996cf00611364270"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaa5ac7a42827a75d0d6e9f344486586c" id="r_aaa5ac7a42827a75d0d6e9f344486586c"><td class="memItemLeft" align="right" valign="top"><a id="aaa5ac7a42827a75d0d6e9f344486586c" name="aaa5ac7a42827a75d0d6e9f344486586c"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>parent_to_cannon</b> ()</td></tr>
+<tr class="separator:aaa5ac7a42827a75d0d6e9f344486586c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7654a05b1670f7ad1b5b25d5a70df6d7" id="r_a7654a05b1670f7ad1b5b25d5a70df6d7"><td class="memItemLeft" align="right" valign="top"><a id="a7654a05b1670f7ad1b5b25d5a70df6d7" name="a7654a05b1670f7ad1b5b25d5a70df6d7"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>calculate_parenting</b> ()</td></tr>
+<tr class="separator:a7654a05b1670f7ad1b5b25d5a70df6d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af2226ca93e40ba5f457b12c48c361eb7" id="r_af2226ca93e40ba5f457b12c48c361eb7"><td class="memItemLeft" align="right" valign="top"><a id="af2226ca93e40ba5f457b12c48c361eb7" name="af2226ca93e40ba5f457b12c48c361eb7"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>fire_from_cannon</b> (const float dt)</td></tr>
+<tr class="separator:af2226ca93e40ba5f457b12c48c361eb7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a56b2bd198660fd6702893fdec76d36a9" id="r_a56b2bd198660fd6702893fdec76d36a9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classProjectile.html#a56b2bd198660fd6702893fdec76d36a9">draw_debug</a> ()</td></tr>
+<tr class="separator:a56b2bd198660fd6702893fdec76d36a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classPSInterfaces_1_1IRenderable"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classPSInterfaces_1_1IRenderable')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classPSInterfaces_1_1IRenderable.html">PSInterfaces::IRenderable</a></td></tr>
 <tr class="memitem:ab27dbdf6a0e7fda9f3d7da3cae80433d inherit pub_methods_classPSInterfaces_1_1IRenderable" id="r_ab27dbdf6a0e7fda9f3d7da3cae80433d"><td class="memItemLeft" align="right" valign="top">
 int&#160;</td><td class="memItemRight" valign="bottom"><b>z_index</b> ()</td></tr>
@@ -210,6 +225,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>is_active</b>
 <tr class="memitem:a18fea2dfcee0593fa39d83a55db16382 inherit pub_methods_classPSInterfaces_1_1IEntity" id="r_a18fea2dfcee0593fa39d83a55db16382"><td class="memItemLeft" align="right" valign="top">
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>set_is_active</b> (bool active)</td></tr>
 <tr class="separator:a18fea2dfcee0593fa39d83a55db16382 inherit pub_methods_classPSInterfaces_1_1IEntity"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2d17d78babb79159a36b7e0e07b4ca2d inherit pub_methods_classPSInterfaces_1_1IEntity" id="r_a2d17d78babb79159a36b7e0e07b4ca2d"><td class="memItemLeft" align="right" valign="top">
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>on_hit</b> ()</td></tr>
+<tr class="separator:a2d17d78babb79159a36b7e0e07b4ca2d inherit pub_methods_classPSInterfaces_1_1IEntity"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af981a0b96f5bd9936b229afe84b66165 inherit pub_methods_classPSInterfaces_1_1IEntity" id="r_af981a0b96f5bd9936b229afe84b66165"><td class="memItemLeft" align="right" valign="top">
 void&#160;</td><td class="memItemRight" valign="bottom"><b>add_event_manager</b> (const <a class="el" href="classPSInterfaces_1_1Events_1_1IEventManager.html">Events::IEventManager</a> *manager)</td></tr>
 <tr class="separator:af981a0b96f5bd9936b229afe84b66165 inherit pub_methods_classPSInterfaces_1_1IEntity"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -274,8 +292,8 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>is_active_</b> = true
 
 </div>
 </div>
-<a id="ac922b4b19470777b2640563b6a35c65b" name="ac922b4b19470777b2640563b6a35c65b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac922b4b19470777b2640563b6a35c65b">&#9670;&#160;</a></span>draw_debug()</h2>
+<a id="a56b2bd198660fd6702893fdec76d36a9" name="a56b2bd198660fd6702893fdec76d36a9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a56b2bd198660fd6702893fdec76d36a9">&#9670;&#160;</a></span>draw_debug()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -292,7 +310,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>is_active_</b> = true
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">

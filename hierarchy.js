@@ -4,12 +4,15 @@ var hierarchy =
     [ "PSCore::Application", "classPSCore_1_1Application.html", null ],
     [ "PSCore::ApplicationPriv", "classPSCore_1_1ApplicationPriv.html", null ],
     [ "PSCore::Application::AppSpec", "structPSCore_1_1Application_1_1AppSpec.html", null ],
+    [ "FortunaDirector::Bounty", "structFortunaDirector_1_1Bounty.html", null ],
+    [ "FortunaDirector::BountyAmount", "structFortunaDirector_1_1BountyAmount.html", null ],
     [ "PSCore::DeltaTimeManager", "classPSCore_1_1DeltaTimeManager.html", null ],
     [ "PSCore::collision::EntityCollider", "classPSCore_1_1collision_1_1EntityCollider.html", null ],
     [ "PSInterfaces::Events::Event", "structPSInterfaces_1_1Events_1_1Event.html", null ],
     [ "Filemanager", "classFilemanager.html", null ],
     [ "FortunaDirectorPriv", "classFortunaDirectorPriv.html", null ],
     [ "PSUtils::Grid2D< T >", "classPSUtils_1_1Grid2D.html", null ],
+    [ "GuiStyleProp", "structGuiStyleProp.html", null ],
     [ "HighscoreEntries", "structHighscoreEntries.html", null ],
     [ "PSInterfaces::IEntity", "classPSInterfaces_1_1IEntity.html", [
       [ "FortunaDirector", "classFortunaDirector.html", null ],
@@ -28,8 +31,10 @@ var hierarchy =
     [ "PSInterfaces::Layer", "classPSInterfaces_1_1Layer.html", [
       [ "AppLayer", "classAppLayer.html", null ],
       [ "DebugLayer", "classDebugLayer.html", null ],
+      [ "MainMenuLayer", "classMainMenuLayer.html", null ],
       [ "PauseLayer", "classPauseLayer.html", null ],
-      [ "ScoreLayer", "classScoreLayer.html", null ]
+      [ "ScoreLayer", "classScoreLayer.html", null ],
+      [ "UILayer", "classUILayer.html", null ]
     ] ],
     [ "PSCore::Renderer", "classPSCore_1_1Renderer.html", null ],
     [ "Smear", "classSmear.html", null ],
@@ -40,5 +45,6 @@ var hierarchy =
     [ "PSCore::sprites::SpriteSheetAnimation", "classPSCore_1_1sprites_1_1SpriteSheetAnimation.html", null ],
     [ "PSCore::sprites::SpriteSheetData", "structPSCore_1_1sprites_1_1SpriteSheetData.html", null ],
     [ "PSCore::sprites::SpriteSourceRectangle", "structPSCore_1_1sprites_1_1SpriteSourceRectangle.html", null ],
-    [ "PSCore::sprites::SpriteTimeDirectionData", "structPSCore_1_1sprites_1_1SpriteTimeDirectionData.html", null ]
+    [ "PSCore::sprites::SpriteTimeDirectionData", "structPSCore_1_1sprites_1_1SpriteTimeDirectionData.html", null ],
+    [ "UILayer::UIBountyContainer", "structUILayer_1_1UIBountyContainer.html", null ]
 ];
