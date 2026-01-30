@@ -46,18 +46,18 @@ namespace PSCore {
 
 		void spawn()
 		{
-			if ( m_entities.size() >= m_limit )
+			const auto is_suspended = [](std::shared_ptr<T> entity) -> bool {
+				if ( std::shared_ptr<PSInterfaces::IEntity> casted = std::dynamic_pointer_cast<PSInterfaces::IEntity>(entity) ) {
+					return !casted->is_active();
+				}
+			};
+
+			if ( std::count_if(m_entities.begin(), m_entities.end(), [is_suspended](std::shared_ptr<T> entity) { return !is_suspended(entity); }) >= m_limit )
 				return;
 
 			if ( auto layer = dynamic_cast<PSInterfaces::Layer*>(gApp()->get_layer<L>()) ) {
 				if ( m_custom_spawn && m_custom_spawn(layer) )
 					return;
-
-				const auto is_suspended = [](std::shared_ptr<T> entity) -> bool {
-					if ( std::shared_ptr<PSInterfaces::IEntity> casted = std::dynamic_pointer_cast<PSInterfaces::IEntity>(entity) ) {
-						return !casted->is_active();
-					}
-				};
 
 				std::shared_ptr<T> entity;
 
