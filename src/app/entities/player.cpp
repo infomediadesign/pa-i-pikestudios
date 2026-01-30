@@ -54,6 +54,7 @@ Player::Player() : PSInterfaces::IEntity("player")
 
 void Player::update(const float dt)
 {
+	PS_LOG(LOG_DEBUG, "Player Update");
 	if ( !m_is_clone ) {
 		// Input Functions to set Target Velocity and Target Rotation
 		if ( IsKeyDown(KEY_W) ) {
@@ -309,6 +310,7 @@ void Player::initialize_cannon()
 		new_cannon->set_parent(m_shared_ptr_this);
 		new_cannon->set_parent_position_x_offset(x_offset);
 		new_cannon->set_parent_position_y_offset(new_cannon->texture().height);
+		new_cannon->set_shared_ptr_this(new_cannon);
 		if ( i == 0 ) {
 			new_cannon->set_positioning(Cannon::CannonPositioning::Left);
 		} else {

@@ -23,6 +23,7 @@ public:
 	void update(float dt) override;
 	void render() override;
 	void draw_debug() override;
+	void on_hit() override;
 	
 	void set_pos(const Vector2& pos);
 	
@@ -40,6 +41,7 @@ private:
 	std::shared_ptr<Shark> m_self;
 	std::shared_ptr<Body> m_body;
 	std::shared_ptr<Fin> m_fin;
+	FortunaDirector* m_director;
 
 	Vector2 m_pos{(float) 100, (float) 100};
 	float m_speed = 100.0f;

@@ -14,6 +14,7 @@
 #include "coordinatesystem.h"
 #include "layers/applayer.h"
 #include "pscore/collision.h"
+#include <entities/director.h>
 
 //
 // Fin of Shark
@@ -47,6 +48,7 @@ void Fin::update(float dt)
 void Fin::draw_debug()
 {
 }
+
 
 //
 // Body of Shark
@@ -111,6 +113,8 @@ void Shark::init(std::shared_ptr<Shark> self, const Vector2& pos)
 {
 	m_self = self;
 	m_pos  = pos;
+
+	m_director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
 
 	m_collider = std::make_unique<PSCore::collision::EntityCollider>(m_self);
 	m_collider->register_collision_handler([](std::weak_ptr<PSInterfaces::IEntity> other, const Vector2& pos) {
@@ -198,6 +202,13 @@ void Shark::update(float dt)
 			break;
 		}
 	}
+}
+
+void Shark::on_hit()
+{
+	set_is_active(false);
+	printf("hit shark\n");
+	m_director->m_b_bounty.add_bounty(m_director->m_b_bounty_amounts.shark_bounty);
 }
 
 void Shark::draw_debug()
