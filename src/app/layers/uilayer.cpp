@@ -13,6 +13,7 @@ static const Color STANDARD_TEXT_COLOR	= DARKGRAY;
 UILayer::UILayer()
 {
 	m_ui_bounty_container.texture = LoadTexture("ressources/icon/test_coin.png");
+	m_health_icon				  = LoadTexture("ressources/icon/test_health.png");
 }
 
 void UILayer::on_update(const float dt)
@@ -24,6 +25,7 @@ void UILayer::on_update(const float dt)
 void UILayer::on_render()
 {
 	draw_bounty_ui();
+	draw_health_ui();
 }
 
 
@@ -72,4 +74,28 @@ void UILayer::draw_bounty_ui()
 	float text_size	 = 12;
 	Vector2 text_pos = vp->position_viewport_to_global({20, (panel_size.y - text_size) / 2}); 
 	draw_text(bounty_text, {text_pos.x, text_pos.y, 36 * scale, text_size * scale}, static_cast<int>(text_size * scale), RED);
+}
+
+void UILayer::draw_health_ui()
+{
+	if ( auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director()) ) {
+		int health	   = director->player_health();
+		int max_health = director->player_max_health();
+		auto& vp	   = gApp()->viewport();
+
+		float heart_size = 20.0f;
+		float padding	 = 10.0f;
+
+		float vp_height = vp->viewport_base_size().y;
+
+		float y_pos = vp_height - heart_size / 2 - padding;
+
+		for ( int i = 0; i < max_health; ++i ) {
+			Color color = i < health ? RED : DARKGRAY;
+			vp->draw_in_viewport(
+					m_health_icon, {0, 0, static_cast<float>(m_health_icon.width), static_cast<float>(m_health_icon.height)},
+					{padding + heart_size / 2 + i * (heart_size + 5), y_pos}, 0.0f, color
+			);
+		}
+	}
 }

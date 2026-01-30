@@ -68,6 +68,9 @@ public:
 
 	};
 
+	float player_iframe_duration() const;
+
+
 	struct BountyAmount
 	{
 		int shark_bounty	= 40;
@@ -82,5 +85,4 @@ private:
 	std::unique_ptr<FortunaDirectorPriv> _p;
 	int m_player_max_health = 3;
 	int m_player_health		= 3;
-	
 };
