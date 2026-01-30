@@ -17,7 +17,6 @@ public:
 	~Projectile() {}
 	void update(const float dt) override;
 	void render() override;
-	void draw_debug() override;
 
 	std::optional<std::vector<Vector2>> bounds() const override;
 	
