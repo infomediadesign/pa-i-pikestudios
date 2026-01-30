@@ -6,6 +6,7 @@
 #include <entities/director.h>
 #include <raygui.h>
 #include <pscore/viewport.h>
+#include <layers/mainmenulayer.h>
 
 ScoreLayer::ScoreLayer() : m_filemanager("noahistgay.txt")
 {
@@ -23,12 +24,32 @@ void ScoreLayer::on_update(float dt)
 	
 	if ( list_state == AWAITING_INPUT ) {
 		update_typing();
-		printf("%s\n", player_name_input.c_str());
-	
 	}
 }
 void ScoreLayer::on_render()
 {
+	auto& vp	   = gApp()->viewport();
+	Vector2 origin = vp->viewport_origin();
+	float scale	   = vp->viewport_scale();
+	float spacing  = 10 * scale;
+
+	Vector2 button_size{50 * scale, 25 * scale};
+
+	Rectangle button_rect{origin.x, origin.y, button_size.x, button_size.y};
+	auto next_btn_rect = [&button_rect, spacing]() {
+		Rectangle rec{button_rect.x, button_rect.y + button_rect.height + spacing, button_rect.width, button_rect.height};
+		button_rect = rec;
+		return rec;
+	};
+
+
+	GuiSetStyle(DEFAULT, TEXT_SIZE, 6 * scale);
+
+	if ( GuiButton(button_rect, "Main Menu") ) {
+		gApp()->call_later([]() { gApp()->pop_layer<ScoreLayer>(); });
+		gApp()->call_later([]() { gApp()->switch_layer<AppLayer, MainMenuLayer>(); });
+	}
+	draw_score_board();
 }
 void ScoreLayer::load_highscore(const std::string& filename)
 {
@@ -137,19 +158,26 @@ void ScoreLayer::draw_score_board()
 
 	float y_offset	  = 100.0f;
 	float line_height = 30.0f;
+	
+	
 
-	for ( const auto& entry: highscore ) {
-		Rectangle label_rect = {
-				(float) vp->viewport_base_size().x / 2 - 100,
-				y_offset,
-				200,
-				line_height
-		};
+	for ( const auto& entry: highscore ) 
+	{
+		Rectangle label_rect = {(float) vp->viewport_base_size().x / 2 - 100, y_offset, 200, line_height};
+
 
 		std::string text = entry.name + " " + std::to_string(entry.score);
 		GuiLabel(label_rect, text.c_str());
 
 		y_offset += line_height;
+	}
+	if ( list_state == AWAITING_INPUT ) {
+		Rectangle prompt_label_rect = {(float) vp->viewport_base_size().x / 2 - 100, y_offset - line_height, 200, line_height * highscore.size()};
+		std::string prompt_text		= "Enter Name: " + player_name_input;
+		std::string your_score_text = "Your Score: " + std::to_string(dynamic_cast<FortunaDirector*>(gApp()->game_director())->m_b_bounty.bounty());
+		GuiLabel(prompt_label_rect, your_score_text.c_str());
+		prompt_label_rect = {(float) vp->viewport_base_size().x / 2 - 100, y_offset - line_height, 200, line_height * (highscore.size() + 2)};
+		GuiLabel(prompt_label_rect, prompt_text.c_str());
 	}
 
 	GuiSetStyle(DEFAULT, TEXT_SIZE, 10);

@@ -50,6 +50,7 @@ Player::Player() : PSInterfaces::IEntity("player")
 
 void Player::update(const float dt)
 {
+	PS_LOG(LOG_DEBUG, "Player Update");
 	if ( !m_is_clone ) {
 		// Input Functions to set Target Velocity and Target Rotation
 		if ( IsKeyDown(KEY_W) ) {
