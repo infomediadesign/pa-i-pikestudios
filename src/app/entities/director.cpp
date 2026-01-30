@@ -344,6 +344,27 @@ void FortunaDirector::Bounty::subtract_bounty(const int amount)
 	m_b_bounty_amount -= amount;
 }
 
+// Player Health functions
+void FortunaDirector::set_player_health(const int health)
+{
+	m_player_health = health;
+}
+
+int FortunaDirector::player_health() const
+{
+	return m_player_health;
+}
+
+void FortunaDirector::set_player_max_health(const int max_health)
+{
+	m_player_max_health = max_health;
+}
+
+int FortunaDirector::player_max_health() const
+{
+	return m_player_max_health;
+}
+
 /*
 ImGui::Text("Projectile Speed: %.0f", _p->player_current_projectile_speed);
 ImGui::SameLine();

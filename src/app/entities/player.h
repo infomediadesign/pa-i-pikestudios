@@ -20,6 +20,8 @@ public:
 
 	void draw_debug() override;
 
+	void on_hit() override;
+
 	std::optional<Vector2> position() const override;
 
 	std::optional<std::vector<Vector2>> bounds() const override;

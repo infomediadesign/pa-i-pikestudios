@@ -10,6 +10,7 @@
 #include <layers/applayer.h>
 #include <misc/smear.h>
 #include <psinterfaces/entity.h>
+#include <layers/scorelayer.h>
 
 #include <coordinatesystem.h>
 
@@ -118,9 +119,25 @@ void Player::update(const float dt)
 	}
 }
 
-void Player::damage()
+void Player::on_hit()
 {
-	PS_LOG(LOG_INFO, "player took damage");
+	if (auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director()))
+		{
+		director->set_player_health(director->player_health() - 1);
+		if ( director->player_health() <= 0 ) {
+			set_is_active(false);
+			gApp()->push_layer<ScoreLayer>();
+			auto score_layer = gApp()->get_layer<ScoreLayer>();
+			if ( score_layer ) {
+				score_layer->save_new_highscore(0);
+				score_layer->load_highscore("noahistgay.txt");
+				for ( auto cannon: m_cannon_container ) {
+					cannon->set_is_active(false);
+				}
+			}
+		}
+	}
+
 }
 
 void Player::render()
