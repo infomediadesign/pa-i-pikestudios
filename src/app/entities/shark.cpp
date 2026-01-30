@@ -141,12 +141,12 @@ void Shark::update(float dt)
 
 	m_animation_controller.update_animation(dt);
 
-	Player* player_entity = nullptr;
+	std::shared_ptr<Player> player_entity;
 
 	if ( auto app_layer = gApp()->get_layer<AppLayer>() ) {
 		for ( auto entity: app_layer->entities() ) {
 			if ( auto locked = entity.lock() ) {
-				if ( auto player = dynamic_cast<Player*>(locked.get()) )
+				if ( auto player = std::dynamic_pointer_cast<Player>(locked) )
 					player_entity = player;
 			}
 		}
@@ -232,9 +232,15 @@ void Shark::draw_debug()
 	shark_rec.height *= scale;
 	PSUtils::DrawRectangleLinesRotated(shark_rec, m_shark_rotation + 90, RED);
 
-	if ( bounds().has_value() )
-		for ( const auto& p: bounds().value() )
-			DrawPixelV(p, GREEN);
+	if ( bounds().has_value() ) {
+		for ( int i = 0; i < bounds().value().size(); i++ ) {
+			if ( i < bounds().value().size() - 1 ) {
+				DrawLineV(bounds().value().at(i), bounds().value().at(i + 1), GREEN);
+			} else {
+				DrawLineV(bounds().value().at(i), bounds().value().at(0), GREEN);
+			}
+		}
+	}
 
 	DrawText(m_state_string.c_str(), shark_rec.x + 20, shark_rec.y + 20, 12, RED);
 
@@ -263,20 +269,17 @@ void Shark::set_pos(const Vector2& pos)
 
 std::optional<std::vector<Vector2>> Shark::bounds() const
 {
-	Rectangle shark_rec;
-	shark_rec = m_shark_sprite->frame_rect({0, 0});
 	if ( is_active() )
 		if ( auto& vp = gApp()->viewport() ) {
 
-			auto scaled_pos = vp->position_viewport_to_global(m_pos);
+			Vector2 vp_pos = vp->position_viewport_to_global(m_pos);
+			float scale	   = vp->viewport_scale();
 
-			auto p1 = coordinatesystem::point_relative_to_global_rightup(scaled_pos, m_shark_rotation, {shark_rec.width / 2, shark_rec.height / 2});
-			auto p2 = coordinatesystem::point_relative_to_global_rightup(scaled_pos, m_shark_rotation, {-shark_rec.width / 2, shark_rec.height / 2});
-			auto p3 = coordinatesystem::point_relative_to_global_rightup(scaled_pos, m_shark_rotation, {-shark_rec.width / 2, -shark_rec.height / 2});
-			auto p4 = coordinatesystem::point_relative_to_global_rightup(scaled_pos, m_shark_rotation, {shark_rec.width / 2, -shark_rec.height / 2});
+			std::vector<Vector2> hitbox_points = {
+					{15 * scale, 0 * scale}, {0 * scale, 8 * scale}, {-15 * scale, 0 * scale}, {0 * scale, -8 * scale}
+			};
 
-			std::vector<Vector2> v{p1, p2, p3, p4};
-			return v;
+			return coordinatesystem::points_relative_to_globle_rightup(vp_pos, m_shark_rotation, hitbox_points);
 		}
 
 	return std::nullopt;
