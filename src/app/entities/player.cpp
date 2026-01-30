@@ -121,6 +121,7 @@ void Player::update(const float dt)
 
 void Player::on_hit()
 {
+	/*
 	if (auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director()))
 		{
 		director->set_player_health(director->player_health() - 1);
@@ -137,6 +138,7 @@ void Player::on_hit()
 			}
 		}
 	}
+	*/
 
 }
 

@@ -7,6 +7,7 @@
 #include <layers/applayer.h>
 #include <pscore/viewport.h>
 #include <layers/scorelayer.h>
+#include <entities/director.h>
 
 PauseLayer::PauseLayer()
 {
@@ -52,8 +53,9 @@ void PauseLayer::on_render()
         
         auto score_layer = gApp()->get_layer<ScoreLayer>();
         if ( score_layer ) {
-            score_layer->save_new_highscore(0);
-            score_layer->load_highscore("noahistgay.txt");
+			score_layer->load_highscore("noahistgay.txt");
+			score_layer->save_new_highscore(dynamic_cast<FortunaDirector*>(gApp()->game_director())->m_b_bounty.bounty());
+
         }
     });
 }

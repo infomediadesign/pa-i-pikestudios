@@ -10,10 +10,10 @@
 
 ScoreLayer::ScoreLayer() : m_filemanager("noahistgay.txt")
 {
-	HighscoreEntries default_entry = {0, "Default1"};
-
+	HighscoreEntries default_entry	= {0, "No score yet"};
 	highscore.push_back(default_entry);
-	}
+
+}
 
 ScoreLayer::~ScoreLayer()
 {
@@ -92,16 +92,20 @@ void ScoreLayer::save_highscore(const std::string& filename)
 // if the achieved high score fits into the top 10 list: true, otherwise false
 bool ScoreLayer::check_for_new_highscore(int currentscore)
 {
-	if ( currentscore < highscore[highscore.size() - 1].score ) {
-		return false;
-	}
-	return true;
+    if (highscore.empty()) {
+        return true;
+    }
+    
+    if (currentscore < highscore[highscore.size() - 1].score) {
+        return false;
+    }
+    return true;
 }
 
 // Checks if the score qualifies as a new highscore and saves it with the player name if applicable
 void ScoreLayer::save_new_highscore(int score)
 {
-	if ( check_for_new_highscore(score) ) {
+	if ( check_for_new_highscore(dynamic_cast<FortunaDirector*>(gApp()->game_director())->m_b_bounty.bounty()) ) {
 		if ( list_state == VIEWING ) {
 			list_state = AWAITING_INPUT;
 			return;
@@ -135,9 +139,14 @@ void ScoreLayer::update_typing()
 		player_name_input.pop_back();
 	}
 	if ( IsKeyPressed(KEY_ENTER) ) {
+		if ( player_name_input.size() > 0 ) 
+		{
 		list_state = INPUT_MADE;
 		save_new_highscore(dynamic_cast<FortunaDirector*>(gApp()->game_director())->m_b_bounty.bounty());
 		save_highscore("noahistgay.txt");
+		
+		}
+		
 	}
 }
 
