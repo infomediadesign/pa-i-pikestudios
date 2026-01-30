@@ -47,6 +47,31 @@ public:
 	void upgrade_player_fire_range(float amount);
 	void upgrade_player_add_cannon(int amount);
 
+	//Bounty
+	struct Bounty
+	{
+		public:
+		void set_bounty(const int amount);
+		int bounty() const;
+		void add_bounty(const int amount);
+		void subtract_bounty(const int amount);
+
+		private:
+			int m_b_bounty_amount = 0;
+
+	};
+
+	struct BountyAmount
+	{
+		int shark_bounty	= 40;
+		int ship_bounty		= 150;
+		int tentacle_bounty = 225;
+	};
+	Bounty m_b_bounty;
+	BountyAmount m_b_bounty_amounts;
+
 private:
+	
 	std::unique_ptr<FortunaDirectorPriv> _p;
+	
 };
