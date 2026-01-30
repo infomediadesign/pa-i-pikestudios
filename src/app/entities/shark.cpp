@@ -137,12 +137,12 @@ void Shark::update(float dt)
 
 	m_animation_controller.update_animation(dt);
 
-	Player* player_entity = nullptr;
+	std::shared_ptr<Player> player_entity;
 
 	if ( auto app_layer = gApp()->get_layer<AppLayer>() ) {
 		for ( auto entity: app_layer->entities() ) {
 			if ( auto locked = entity.lock() ) {
-				if ( auto player = dynamic_cast<Player*>(locked.get()) )
+				if ( auto player = std::dynamic_pointer_cast<Player>(locked) )
 					player_entity = player;
 			}
 		}
