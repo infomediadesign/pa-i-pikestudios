@@ -96,7 +96,7 @@ bool ScoreLayer::check_for_new_highscore(int currentscore)
         return true;
     }
     
-    if (currentscore < highscore[highscore.size() - 1].score) {
+    if ( currentscore < highscore[highscore.size() - 1].score && !highscore.size() >= 10 ) {
         return false;
     }
     return true;
@@ -172,7 +172,7 @@ void ScoreLayer::draw_score_board()
 
 	for ( const auto& entry: highscore ) 
 	{
-		Rectangle label_rect = {(float) vp->viewport_base_size().x / 2 - 100, y_offset, 200, line_height};
+		Rectangle label_rect = {(float) vp->viewport_base_size().x / 2 - 100, y_offset, 400, line_height};
 
 
 		std::string text = entry.name + " " + std::to_string(entry.score);
@@ -181,11 +181,11 @@ void ScoreLayer::draw_score_board()
 		y_offset += line_height;
 	}
 	if ( list_state == AWAITING_INPUT ) {
-		Rectangle prompt_label_rect = {(float) vp->viewport_base_size().x / 2 - 100, y_offset - line_height, 200, line_height * highscore.size()};
+		Rectangle prompt_label_rect = {(float) vp->viewport_base_size().x / 2 - 100, y_offset - line_height, 400, line_height * highscore.size()};
 		std::string prompt_text		= "Enter Name: " + player_name_input;
 		std::string your_score_text = "Your Score: " + std::to_string(dynamic_cast<FortunaDirector*>(gApp()->game_director())->m_b_bounty.bounty());
 		GuiLabel(prompt_label_rect, your_score_text.c_str());
-		prompt_label_rect = {(float) vp->viewport_base_size().x / 2 - 100, y_offset - line_height, 200, line_height * (highscore.size() + 2)};
+		prompt_label_rect = {(float) vp->viewport_base_size().x / 2 - 100, y_offset - line_height, 400, line_height * (highscore.size() + 2)};
 		GuiLabel(prompt_label_rect, prompt_text.c_str());
 	}
 
