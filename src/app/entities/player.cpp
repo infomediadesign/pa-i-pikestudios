@@ -14,11 +14,15 @@
 #include <coordinatesystem.h>
 
 #ifndef CALCULATION_VELOCITY_MIN
-#define CALCULATION_VELOCITY_MIN 1
+#define CALCULATION_VELOCITY_MIN 2
 #endif
 
-#ifndef CALCULATION_DELTA_ROTATION_MIN
-#define CALCULATION_DELTA_ROTATION_MIN 0.5
+#ifndef SCHMITT_TRIGGER_DELTA_ROTATION_MIN
+#define SCHMITT_TRIGGER_DELTA_ROTATION_MIN 0.4
+#endif
+
+#ifndef SCHMITT_TRIGGER_DELTA_ROTATION_MAX
+#define SCHMITT_TRIGGER_DELTA_ROTATION_MAX 0.5
 #endif
 
 Player::Player() : PSInterfaces::IEntity("player")
@@ -42,7 +46,7 @@ Player::Player() : PSInterfaces::IEntity("player")
 	}
 	m_max_velocity = 200;
 	m_rotation	   = 0;
-	set_interpolation_values(6, 2, 4, 1500, 0.9);
+	set_interpolation_values(6, 2, 4, 1500, 200, 30);
 	set_texture_values(FETCH_SPRITE_TEXTURE(ident_), 90);
 	//
 	//
@@ -58,11 +62,11 @@ void Player::update(const float dt)
 		if ( IsKeyDown(KEY_S) ) {
 			m_target_velocity -= m_target_velocity > 0 ? m_input_velocity_multiplier * dt : 0;
 		}
-		if ( IsKeyDown(KEY_D) && Vector2Length(m_velocity) > CALCULATION_VELOCITY_MIN ) {
-			m_target_rotation += m_input_rotation_multiplier * Vector2Length(m_velocity) * dt;
+		if ( IsKeyDown(KEY_D) && Vector2Length(m_velocity) - (m_velocity_rotation_downscale * fabsf(m_rotation_velocity)) > CALCULATION_VELOCITY_MIN ) {
+			m_target_rotation += m_input_rotation_multiplier * dt;
 		}
-		if ( IsKeyDown(KEY_A) && Vector2Length(m_velocity) > CALCULATION_VELOCITY_MIN ) {
-			m_target_rotation -= m_input_rotation_multiplier * Vector2Length(m_velocity) * dt;
+		if ( IsKeyDown(KEY_A) && Vector2Length(m_velocity) - (m_velocity_rotation_downscale * fabsf(m_rotation_velocity)) > CALCULATION_VELOCITY_MIN ) {
+			m_target_rotation -= m_input_rotation_multiplier * dt;
 		}
 	}
 
@@ -72,16 +76,24 @@ void Player::update(const float dt)
 
 	// Animation Calculation
 
-	int sprite_sheet_animation_index;
-	if ( m_rotation_velocity > CALCULATION_DELTA_ROTATION_MIN || m_rotation_velocity < -CALCULATION_DELTA_ROTATION_MIN ) {
+	/*if ( m_rotation_velocity > CALCULATION_DELTA_ROTATION_MIN || m_rotation_velocity < -CALCULATION_DELTA_ROTATION_MIN ) {
 		sprite_sheet_animation_index = m_rotation_velocity < 0 ? 1 : 3;
 	} else {
 		sprite_sheet_animation_index = 2;
+	}*/
+
+	if ( m_animation_controller.get_sprite_sheet_animation_index(3).value_or(2) == 2 &&
+		 fabsf(m_rotation_velocity) > SCHMITT_TRIGGER_DELTA_ROTATION_MAX ) {
+		m_sprite_sheet_animation_index = m_rotation_velocity < 0 ? 1 : 3;
+	}
+	if ( m_animation_controller.get_sprite_sheet_animation_index(3).value_or(2) != 2 &&
+		 fabsf(m_rotation_velocity) < SCHMITT_TRIGGER_DELTA_ROTATION_MIN ) {
+		m_sprite_sheet_animation_index = 2;
 	}
 
-	int sprite_sheet_frame_index = static_cast<int>(round((Vector2Length(m_velocity) / m_max_velocity) * 2));
+	m_sprite_sheet_frame_index = static_cast<int>(round((Vector2Length(m_velocity) / m_max_velocity) * 2));
 
-	m_animation_controller.set_animation_at_index(sprite_sheet_animation_index, sprite_sheet_frame_index, 3);
+	m_animation_controller.set_animation_at_index(m_sprite_sheet_animation_index, m_sprite_sheet_frame_index, 3);
 
 	m_animation_controller.update_animation(dt);
 
@@ -213,14 +225,15 @@ void Player::set_target_rotation(const float target_rotation)
 
 void Player::set_interpolation_values(
 		const float acceleration_fade, const float deceleration_fade, const float rotation_fade, const float input_velocity_multiplier,
-		const float input_rotation_multiplier
+		const float input_rotation_multiplier, const float velocity_rotation_downscale
 )
 {
-	m_acceleration_fade			= acceleration_fade;
-	m_deceleration_fade			= deceleration_fade;
-	m_rotation_fade				= rotation_fade;
-	m_input_velocity_multiplier = input_velocity_multiplier;
-	m_input_rotation_multiplier = input_rotation_multiplier;
+	m_acceleration_fade			  = acceleration_fade;
+	m_deceleration_fade			  = deceleration_fade;
+	m_rotation_fade				  = rotation_fade;
+	m_input_velocity_multiplier	  = input_velocity_multiplier;
+	m_input_rotation_multiplier	  = input_rotation_multiplier;
+	m_velocity_rotation_downscale = velocity_rotation_downscale;
 }
 
 void Player::calculate_movement(const float dt)
@@ -233,8 +246,12 @@ void Player::calculate_movement(const float dt)
 	// Velocity and a static Alpha which ends in an exponential approximation to calculate the Value of the Velocity
 	float velocity_value =
 			(m_target_velocity - Vector2Length(m_velocity)) > 0
-					? Vector2Length(m_velocity) + (m_target_velocity - Vector2Length(m_velocity)) * std::clamp(m_acceleration_fade * dt, 0.0f, 1.0f)
-					: Vector2Length(m_velocity) + (m_target_velocity - Vector2Length(m_velocity)) * std::clamp(m_deceleration_fade * dt, 0.0f, 1.0f);
+					? Vector2Length(m_velocity) +
+							  (m_target_velocity - Vector2Length(m_velocity) - (m_velocity_rotation_downscale * fabsf(m_rotation_velocity))) *
+									  std::clamp(m_acceleration_fade * dt, 0.0f, 1.0f)
+					: Vector2Length(m_velocity) +
+							  (m_target_velocity - Vector2Length(m_velocity) - (m_velocity_rotation_downscale * fabsf(m_rotation_velocity))) *
+									  std::clamp(m_deceleration_fade * dt, 0.0f, 1.0f);
 
 	// Calculate with the Velocity Value and the Rotation the actual 2 Dimensional Velocity
 	m_velocity.x = velocity_value * cos(m_rotation * DEG2RAD);
@@ -376,7 +393,7 @@ std::optional<std::vector<Vector2>> Player::bounds() const
 			Vector2 vp_pos = vp->position_viewport_to_global(m_position);
 			float scale	   = vp->viewport_scale();
 
-			std::vector<Vector2> hitbox_points = {{20 * scale, 0 * scale}, {8 * scale, 6 * scale},	{-15 * scale, 6 * scale},
+			std::vector<Vector2> hitbox_points = {{20 * scale, 0 * scale},	{8 * scale, 6 * scale},	   {-15 * scale, 6 * scale},
 												  {-20 * scale, 0 * scale}, {-15 * scale, -6 * scale}, {8 * scale, -6 * scale}};
 
 			return coordinatesystem::points_relative_to_globle_rightup(vp_pos, m_rotation, hitbox_points);
