@@ -134,7 +134,7 @@ void Player::on_hit()
 				auto score_layer = gApp()->get_layer<ScoreLayer>();
 				if ( score_layer ) {
 					score_layer->save_new_highscore(dynamic_cast<FortunaDirector*>(gApp()->game_director())->m_b_bounty.bounty());
-					score_layer->load_highscore("noahistgay.txt");
+					score_layer->load_highscore(score_layer->score_filename());
 					for ( auto cannon: m_cannon_container ) {
 						cannon->set_is_active(false);
 					}

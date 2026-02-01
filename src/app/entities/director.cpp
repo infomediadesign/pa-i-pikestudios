@@ -33,10 +33,10 @@ class FortunaDirectorPriv
 	float player_input_velocity_mult = 1500;
 	int player_max_health			 = 3;
 	int player_health				 = 3;
-};
-
 	float player_iframe_duration	 = 0.5f;
 };
+
+	
 
 FortunaDirector::FortunaDirector() : PSInterfaces::IEntity("fortuna_director")
 {
