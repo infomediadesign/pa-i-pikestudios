@@ -31,6 +31,8 @@ class FortunaDirectorPriv
 	float player_max_velocity		 = 200.0f;
 	float player_input_rotation_mult = 0.9f;
 	float player_input_velocity_mult = 1500;
+	int player_max_health			 = 3;
+	int player_health				 = 3;
 };
 
 FortunaDirector::FortunaDirector() : PSInterfaces::IEntity("fortuna_director")
@@ -342,6 +344,27 @@ void FortunaDirector::Bounty::add_bounty(const int amount)
 void FortunaDirector::Bounty::subtract_bounty(const int amount)
 {
 	m_b_bounty_amount -= amount;
+}
+
+// Player Health functions
+void FortunaDirector::set_player_health(const int health)
+{
+	_p->player_health = health;
+}
+
+int FortunaDirector::player_health() const
+{
+	return _p->player_health;
+}
+
+void FortunaDirector::set_player_max_health(const int max_health)
+{
+	_p->player_max_health = max_health;
+}
+
+int FortunaDirector::player_max_health() const
+{
+	return _p->player_max_health;
 }
 
 /*
