@@ -114,6 +114,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:abc5e1bf310b37b68566bd2c0a0932424"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a560c254bec29384ed7fafd32674b4138" id="r_a560c254bec29384ed7fafd32674b4138"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlayer.html#a560c254bec29384ed7fafd32674b4138">draw_debug</a> () override</td></tr>
 <tr class="separator:a560c254bec29384ed7fafd32674b4138"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a711dafd39155deb08b82a68cab81d9b6" id="r_a711dafd39155deb08b82a68cab81d9b6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlayer.html#a711dafd39155deb08b82a68cab81d9b6">on_hit</a> () override</td></tr>
+<tr class="separator:a711dafd39155deb08b82a68cab81d9b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a86b5b928e2fec171f0c4eeaf2769190d" id="r_a86b5b928e2fec171f0c4eeaf2769190d"><td class="memItemLeft" align="right" valign="top">std::optional&lt; Vector2 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlayer.html#a86b5b928e2fec171f0c4eeaf2769190d">position</a> () const override</td></tr>
 <tr class="separator:a86b5b928e2fec171f0c4eeaf2769190d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5141dc0987fe7ea3bf5158d6aa175bc5" id="r_a5141dc0987fe7ea3bf5158d6aa175bc5"><td class="memItemLeft" align="right" valign="top">std::optional&lt; std::vector&lt; Vector2 &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlayer.html#a5141dc0987fe7ea3bf5158d6aa175bc5">bounds</a> () const override</td></tr>
@@ -231,9 +233,6 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>is_active</b>
 <tr class="memitem:a18fea2dfcee0593fa39d83a55db16382 inherit pub_methods_classPSInterfaces_1_1IEntity" id="r_a18fea2dfcee0593fa39d83a55db16382"><td class="memItemLeft" align="right" valign="top">
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>set_is_active</b> (bool active)</td></tr>
 <tr class="separator:a18fea2dfcee0593fa39d83a55db16382 inherit pub_methods_classPSInterfaces_1_1IEntity"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2d17d78babb79159a36b7e0e07b4ca2d inherit pub_methods_classPSInterfaces_1_1IEntity" id="r_a2d17d78babb79159a36b7e0e07b4ca2d"><td class="memItemLeft" align="right" valign="top">
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>on_hit</b> ()</td></tr>
-<tr class="separator:a2d17d78babb79159a36b7e0e07b4ca2d inherit pub_methods_classPSInterfaces_1_1IEntity"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af981a0b96f5bd9936b229afe84b66165 inherit pub_methods_classPSInterfaces_1_1IEntity" id="r_af981a0b96f5bd9936b229afe84b66165"><td class="memItemLeft" align="right" valign="top">
 void&#160;</td><td class="memItemRight" valign="bottom"><b>add_event_manager</b> (const <a class="el" href="classPSInterfaces_1_1Events_1_1IEventManager.html">Events::IEventManager</a> *manager)</td></tr>
 <tr class="separator:af981a0b96f5bd9936b229afe84b66165 inherit pub_methods_classPSInterfaces_1_1IEntity"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -309,6 +308,33 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>is_active_</b> = true
       <table class="memname">
         <tr>
           <td class="memname">void Player::draw_debug </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Reimplemented from <a class="el" href="classPSInterfaces_1_1IEntity.html">PSInterfaces::IEntity</a>.</p>
+
+</div>
+</div>
+<a id="a711dafd39155deb08b82a68cab81d9b6" name="a711dafd39155deb08b82a68cab81d9b6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a711dafd39155deb08b82a68cab81d9b6">&#9670;&#160;</a></span>on_hit()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Player::on_hit </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
