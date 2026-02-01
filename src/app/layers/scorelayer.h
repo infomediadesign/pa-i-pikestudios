@@ -27,8 +27,8 @@ public:
 	std::vector<HighscoreEntries> highscore;
 	void on_update(float dt) override;
 	void on_render() override;
-	void load_highscore(const std::string& filename = "noahistgay.txt");
-	void save_highscore(const std::string& filename = "noahistgay.txt");
+	void load_highscore(const std::string& filename = m_score_filename);
+	void save_highscore(const std::string& filename = m_score_filename);
 	bool check_for_new_highscore(int);
 	void save_new_highscore(int);
 	std::string player_name_input;
@@ -38,7 +38,12 @@ public:
 	liststate list_state = VIEWING;
 	void set_highscore(std::string name, int score);
 	void draw_score_board();
+	std::string score_filename() const;
+	
 
 	Filemanager m_filemanager;
+
+	private:
+	static inline const std::string m_score_filename = "fortunascore.txt";
 
 };
