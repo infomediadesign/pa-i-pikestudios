@@ -96,11 +96,11 @@ bool ScoreLayer::check_for_new_highscore(int currentscore)
         return true;
     }
     
-    if ( currentscore < highscore.back().score || highscore.size() < 10 ) {
-        return false;
+    if (highscore.size() < 10) {
+        return true;
     }
-    return true;
-	
+    
+    return currentscore > highscore.back().score;
 }
 
 // Checks if the score qualifies as a new highscore and saves it with the player name if applicable
