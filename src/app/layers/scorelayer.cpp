@@ -8,7 +8,7 @@
 #include <pscore/viewport.h>
 #include <layers/mainmenulayer.h>
 
-ScoreLayer::ScoreLayer() : m_filemanager("noahistgay.txt")
+ScoreLayer::ScoreLayer() : m_filemanager(m_score_filename)
 {
 	HighscoreEntries default_entry	= {0, "No score yet"};
 	highscore.push_back(default_entry);
@@ -96,10 +96,11 @@ bool ScoreLayer::check_for_new_highscore(int currentscore)
         return true;
     }
     
-    if ( currentscore < highscore[highscore.size() - 1].score && !highscore.size() >= 10 ) {
+    if ( currentscore < highscore.back().score || highscore.size() < 10 ) {
         return false;
     }
     return true;
+	
 }
 
 // Checks if the score qualifies as a new highscore and saves it with the player name if applicable
@@ -113,8 +114,8 @@ void ScoreLayer::save_new_highscore(int score)
 		{
 			if ( highscore.size() >= 10 ) 
 			{
-				highscore[highscore.size() - 1].score = score;
-				highscore[highscore.size() - 1].name  = player_name_input;
+				highscore.back().score				 = score;
+				highscore.back().name   = player_name_input;
 			} 
 			else 
 			{
@@ -143,7 +144,7 @@ void ScoreLayer::update_typing()
 		{
 		list_state = INPUT_MADE;
 		save_new_highscore(dynamic_cast<FortunaDirector*>(gApp()->game_director())->m_b_bounty.bounty());
-		save_highscore("noahistgay.txt");
+		save_highscore(m_score_filename);
 		
 		}
 		
@@ -191,4 +192,9 @@ void ScoreLayer::draw_score_board()
 
 	GuiSetStyle(DEFAULT, TEXT_SIZE, 10);
 	GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt(DARKGRAY));
+}
+
+std::string ScoreLayer::score_filename() const
+{
+	return m_score_filename;
 }

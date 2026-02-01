@@ -31,6 +31,10 @@ class FortunaDirectorPriv
 	float player_max_velocity		 = 200.0f;
 	float player_input_rotation_mult = 0.9f;
 	float player_input_velocity_mult = 1500;
+	int player_max_health			 = 3;
+	int player_health				 = 3;
+};
+
 	float player_iframe_duration	 = 0.5f;
 };
 
@@ -365,22 +369,22 @@ void FortunaDirector::Bounty::subtract_bounty(const int amount)
 // Player Health functions
 void FortunaDirector::set_player_health(const int health)
 {
-	m_player_health = health;
+	_p->player_health = health;
 }
 
 int FortunaDirector::player_health() const
 {
-	return m_player_health;
+	return _p->player_health;
 }
 
 void FortunaDirector::set_player_max_health(const int max_health)
 {
-	m_player_max_health = max_health;
+	_p->player_max_health = max_health;
 }
 
 int FortunaDirector::player_max_health() const
 {
-	return m_player_max_health;
+	return _p->player_max_health;
 }
 
 float FortunaDirector::player_iframe_duration() const

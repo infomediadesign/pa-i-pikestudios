@@ -53,7 +53,7 @@ void PauseLayer::on_render()
         
         auto score_layer = gApp()->get_layer<ScoreLayer>();
         if ( score_layer ) {
-			score_layer->load_highscore("noahistgay.txt");
+			score_layer->load_highscore(score_layer->score_filename());
 			score_layer->save_new_highscore(dynamic_cast<FortunaDirector*>(gApp()->game_director())->m_b_bounty.bounty());
 
         }
