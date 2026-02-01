@@ -92,15 +92,15 @@ void ScoreLayer::save_highscore(const std::string& filename)
 // if the achieved high score fits into the top 10 list: true, otherwise false
 bool ScoreLayer::check_for_new_highscore(int currentscore)
 {
-    if (highscore.empty()) {
-        return true;
-    }
-    
-    if ( currentscore < highscore.back().score || highscore.size() < 10 ) {
-        return false;
-    }
-    return true;
-	
+	if ( highscore.empty() ) {
+		return true;
+	}
+
+	if ( highscore.size() < 10 ) {
+		return true;
+	}
+
+	return currentscore > highscore.back().score;
 }
 
 // Checks if the score qualifies as a new highscore and saves it with the player name if applicable
