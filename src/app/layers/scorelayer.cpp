@@ -8,12 +8,12 @@
 #include <pscore/viewport.h>
 #include <layers/mainmenulayer.h>
 
-ScoreLayer::ScoreLayer() : m_filemanager("noahistgay.txt")
+ScoreLayer::ScoreLayer() : m_filemanager(m_score_filename)
 {
-	HighscoreEntries default_entry = {0, "Default1"};
-
+	HighscoreEntries default_entry	= {0, "No score yet"};
 	highscore.push_back(default_entry);
-	}
+
+}
 
 ScoreLayer::~ScoreLayer()
 {
@@ -92,16 +92,21 @@ void ScoreLayer::save_highscore(const std::string& filename)
 // if the achieved high score fits into the top 10 list: true, otherwise false
 bool ScoreLayer::check_for_new_highscore(int currentscore)
 {
-	if ( currentscore < highscore[highscore.size() - 1].score ) {
-		return false;
-	}
-	return true;
+    if (highscore.empty()) {
+        return true;
+    }
+    
+    if (highscore.size() < 10) {
+        return true;
+    }
+    
+    return currentscore > highscore.back().score;
 }
 
 // Checks if the score qualifies as a new highscore and saves it with the player name if applicable
 void ScoreLayer::save_new_highscore(int score)
 {
-	if ( check_for_new_highscore(score) ) {
+	if ( check_for_new_highscore(dynamic_cast<FortunaDirector*>(gApp()->game_director())->m_b_bounty.bounty()) ) {
 		if ( list_state == VIEWING ) {
 			list_state = AWAITING_INPUT;
 			return;
@@ -109,8 +114,8 @@ void ScoreLayer::save_new_highscore(int score)
 		{
 			if ( highscore.size() >= 10 ) 
 			{
-				highscore[highscore.size() - 1].score = score;
-				highscore[highscore.size() - 1].name  = player_name_input;
+				highscore.back().score				 = score;
+				highscore.back().name   = player_name_input;
 			} 
 			else 
 			{
@@ -135,9 +140,14 @@ void ScoreLayer::update_typing()
 		player_name_input.pop_back();
 	}
 	if ( IsKeyPressed(KEY_ENTER) ) {
+		if ( player_name_input.size() > 0 ) 
+		{
 		list_state = INPUT_MADE;
 		save_new_highscore(dynamic_cast<FortunaDirector*>(gApp()->game_director())->m_b_bounty.bounty());
-		save_highscore("noahistgay.txt");
+		save_highscore(m_score_filename);
+		
+		}
+		
 	}
 }
 
@@ -163,7 +173,7 @@ void ScoreLayer::draw_score_board()
 
 	for ( const auto& entry: highscore ) 
 	{
-		Rectangle label_rect = {(float) vp->viewport_base_size().x / 2 - 100, y_offset, 200, line_height};
+		Rectangle label_rect = {(float) vp->viewport_base_size().x / 2 - 100, y_offset, 400, line_height};
 
 
 		std::string text = entry.name + " " + std::to_string(entry.score);
@@ -172,14 +182,19 @@ void ScoreLayer::draw_score_board()
 		y_offset += line_height;
 	}
 	if ( list_state == AWAITING_INPUT ) {
-		Rectangle prompt_label_rect = {(float) vp->viewport_base_size().x / 2 - 100, y_offset - line_height, 200, line_height * highscore.size()};
+		Rectangle prompt_label_rect = {(float) vp->viewport_base_size().x / 2 - 100, y_offset - line_height, 400, 200 + line_height * highscore.size()};
 		std::string prompt_text		= "Enter Name: " + player_name_input;
 		std::string your_score_text = "Your Score: " + std::to_string(dynamic_cast<FortunaDirector*>(gApp()->game_director())->m_b_bounty.bounty());
 		GuiLabel(prompt_label_rect, your_score_text.c_str());
-		prompt_label_rect = {(float) vp->viewport_base_size().x / 2 - 100, y_offset - line_height, 200, line_height * (highscore.size() + 2)};
+		prompt_label_rect = {(float) vp->viewport_base_size().x / 2 - 100, y_offset - line_height, 400, 200 + line_height * (highscore.size() + 2)};
 		GuiLabel(prompt_label_rect, prompt_text.c_str());
 	}
 
 	GuiSetStyle(DEFAULT, TEXT_SIZE, 10);
 	GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt(DARKGRAY));
+}
+
+std::string ScoreLayer::score_filename() const
+{
+	return m_score_filename;
 }

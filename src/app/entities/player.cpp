@@ -10,6 +10,8 @@
 #include <layers/applayer.h>
 #include <misc/smear.h>
 #include <psinterfaces/entity.h>
+#include <layers/scorelayer.h>
+#include <layers/uilayer.h>
 
 #include <coordinatesystem.h>
 
@@ -54,7 +56,6 @@ Player::Player() : PSInterfaces::IEntity("player")
 
 void Player::update(const float dt)
 {
-	PS_LOG(LOG_DEBUG, "Player Update");
 	if ( !m_is_clone ) {
 		// Input Functions to set Target Velocity and Target Rotation
 		if ( IsKeyDown(KEY_W) ) {
@@ -74,6 +75,8 @@ void Player::update(const float dt)
 	calculate_movement(dt);
 
 	m_rotation_velocity = calculate_rotation_velocity(0.01, dt);
+
+	reset_iframe(dt);
 
 	// Animation Calculation
 
@@ -118,9 +121,27 @@ void Player::update(const float dt)
 	}
 }
 
-void Player::damage()
+void Player::on_hit()
 {
-	PS_LOG(LOG_INFO, "player took damage");
+	if ( m_can_be_hit ) {
+		m_can_be_hit = false;
+		if ( auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director()) ) {
+			director->set_player_health(director->player_health() - 1);
+			if ( director->player_health() <= 0 ) {
+				set_is_active(false);
+				gApp()->push_layer<ScoreLayer>();
+				gApp()->pop_layer<UILayer>();
+				auto score_layer = gApp()->get_layer<ScoreLayer>();
+				if ( score_layer ) {
+					score_layer->save_new_highscore(dynamic_cast<FortunaDirector*>(gApp()->game_director())->m_b_bounty.bounty());
+					score_layer->load_highscore(score_layer->score_filename());
+					for ( auto cannon: m_cannon_container ) {
+						cannon->set_is_active(false);
+					}
+				}
+			}
+		}
+	}
 }
 
 void Player::render()
@@ -142,6 +163,19 @@ void Player::render()
 		vp->draw_in_viewport(
 				m_texture, m_animation_controller.get_source_rectangle(3).value_or(Rectangle{0}), m_position, m_rotation + m_rotation_offset, WHITE
 		);
+	}
+}
+
+void Player::reset_iframe(float dt)
+{
+	if ( !m_can_be_hit ) {
+		if ( auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director()) ) {
+			m_iframe_timer += dt;
+			if ( m_iframe_timer >= director->player_iframe_duration()) {
+				m_can_be_hit   = true;
+				m_iframe_timer = 0;
+			}
+		}
 	}
 }
 

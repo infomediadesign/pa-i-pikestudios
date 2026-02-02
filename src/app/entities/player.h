@@ -20,6 +20,9 @@ public:
 
 	void draw_debug() override;
 
+	void on_hit() override;
+
+
 	std::optional<Vector2> position() const override;
 
 	std::optional<std::vector<Vector2>> bounds() const override;
@@ -90,6 +93,9 @@ public:
 
 	void add_cannons(int amount);
 
+	// Invincibility
+	void reset_iframe(float dt);
+
 private:
 	// Base Movement Variables
 	Vector2 m_position	 = {0};
@@ -129,4 +135,9 @@ private:
 
 	// Smear Variables
 	Smear m_smear;
+
+	// Invincibility Variables
+	bool m_can_be_hit = true;
+	float m_iframe_timer	  = 0;
+	float m_iframe_duration = 5;
 };

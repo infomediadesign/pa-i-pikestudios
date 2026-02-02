@@ -35,7 +35,12 @@ class FortunaDirectorPriv
 	float player_max_velocity		 = 200.0f;
 	float player_input_rotation_mult = 0.9f;
 	float player_input_velocity_mult = 1500;
+	int player_max_health			 = 3;
+	int player_health				 = 3;
+	float player_iframe_duration	 = 0.5f;
 };
+
+
 
 FortunaDirector::FortunaDirector() : PSInterfaces::IEntity("fortuna_director")
 {
@@ -155,6 +160,23 @@ void FortunaDirector::draw_debug()
 	ImGui::SameLine();
 	if ( ImGui::Button("Add Cannons") ) {
 		upgrade_player_add_cannon(cannon_amount);
+	}
+
+	// Add Health
+	static int health_amount = 1;
+	ImGui::Text("Player Health: %d / %d", player_health(), player_max_health());
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(80);
+	ImGui::InputInt("##health_amount", &health_amount);
+	ImGui::SameLine();
+	if ( ImGui::Button("Add Health") ) {
+		if ( player_health() + health_amount > player_max_health() ) {
+			set_player_max_health(player_max_health() + health_amount);
+			set_player_health(player_health() + health_amount);
+		}
+		else {
+			set_player_health(player_health() + health_amount);
+		}
 	}
 }
 
@@ -331,3 +353,62 @@ std::unique_ptr<PSCore::Spawner<Projectile, AppLayer>>& FortunaDirector::spawner
 {
 	return _p->projectile_spawner;
 };
+
+// Bounty functions
+
+void FortunaDirector::Bounty::set_bounty(const int amount)
+{
+	m_b_bounty_amount = amount;
+}
+
+int FortunaDirector::Bounty::bounty() const
+{
+	return m_b_bounty_amount;
+}
+
+void FortunaDirector::Bounty::add_bounty(const int amount)
+{
+	m_b_bounty_amount += amount;
+}
+
+void FortunaDirector::Bounty::subtract_bounty(const int amount)
+{
+	m_b_bounty_amount -= amount;
+}
+
+// Player Health functions
+void FortunaDirector::set_player_health(const int health)
+{
+	_p->player_health = health;
+}
+
+int FortunaDirector::player_health() const
+{
+	return _p->player_health;
+}
+
+void FortunaDirector::set_player_max_health(const int max_health)
+{
+	_p->player_max_health = max_health;
+}
+
+int FortunaDirector::player_max_health() const
+{
+	return _p->player_max_health;
+}
+
+float FortunaDirector::player_iframe_duration() const
+{
+	return _p->player_iframe_duration;
+}
+
+/*
+ImGui::Text("Projectile Speed: %.0f", _p->player_current_projectile_speed);
+ImGui::SameLine();
+ImGui::SetNextItemWidth(60);
+ImGui::InputFloat("##speed_amount", &speed_amount, 0.0f, 0.0f, "%.0f");
+ImGui::SameLine();
+if ( ImGui::Button("Upgrade##Speed") ) {
+	upgrade_player_projectile_speed(speed_amount);
+}
+*/

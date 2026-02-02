@@ -31,8 +31,11 @@ public:
 	void draw_text(std::string text, Rectangle bounds, int text_size, Color color);
 	void draw_panel(Rectangle bounds, Color color, Color border_color);
 
+	void draw_health_ui();
+
 private:
 	Texture2D m_ui_bounty_icon;
 	Texture2D bounty_coin = LoadTexture("ressources/icon/test_coin.png");
+	Texture2D m_health_icon = LoadTexture("ressources/icon/health_icon.png");
 	UIBountyContainer m_ui_bounty_container;
 };
