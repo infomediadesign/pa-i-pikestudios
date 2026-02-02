@@ -3,6 +3,8 @@
 //
 
 #include "Tentacle.h"
+
+#include <iostream>
 #include <pscore/application.h>
 #include <pscore/viewport.h>
 
@@ -21,7 +23,7 @@ Tentacle::Tentacle() : PSInterfaces::IEntity("tentacle")
 
 	std::vector<PSCore::sprites::SpriteSheetData> sp_data;
 	sp_data.push_back({8, 0.1, PSCore::sprites::Forward, 0});
-	sp_data.push_back({6, 0.3, PSCore::sprites::Backward, 1});
+	sp_data.push_back({6, 0.1, PSCore::sprites::Backward, 1});
 	sp_data.push_back({1, 1, PSCore::sprites::Forward, 2});
 
 	m_animation_controller = PSCore::sprites::SpriteSheetAnimation(FETCH_SPRITE_TEXTURE(ident_), sp_data);
@@ -41,6 +43,7 @@ void Tentacle::init(std::shared_ptr<Tentacle> self, const Vector2& pos)
 	m_collider->register_collision_handler([](std::weak_ptr<PSInterfaces::IEntity> other, const Vector2& pos) {
 		if ( auto locked = other.lock() ) {
 			if ( auto player = std::dynamic_pointer_cast<Player>(locked) ) {
+				std::cout << "HOIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIt" << std::endl;
 				player->on_hit();
 			}
 		}
@@ -139,7 +142,7 @@ void Tentacle::AttackingUpdate(float dt)
 	}
 
 	if ( time_until_retreat <= 0 ) {
-		m_animation_controller.set_animation_at_index(1, 0, 1);
+		m_animation_controller.set_animation_at_index(1, 5, 1);
 		m_state = State::Retreat;
 	}
 }
@@ -191,7 +194,7 @@ std::optional<std::vector<Vector2>> Tentacle::bounds() const
 			Vector2 vp_pos = vp->position_viewport_to_global(m_pos);
 			float scale	   = vp->viewport_scale();
 
-			std::vector<Vector2> hitbox_points = {{-10 * scale, 20 * scale}, {20 * scale, -10 * scale}, {-20 * scale, -20 * scale}};
+			std::vector<Vector2> hitbox_points = {{-10 * scale, 39 * scale}, {25 * scale, 9 * scale}, {-20 * scale, -1 * scale}};
 
 			return coordinatesystem::points_relative_to_globle_rightup(vp_pos, 0, hitbox_points);
 		}

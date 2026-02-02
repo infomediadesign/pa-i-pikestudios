@@ -53,8 +53,8 @@ private:
 
 	float max_time_until_water_break=2.5;;
 	float max_time_until_attack=0.8;
-	float max_time_until_retreat=2;
-	float max_until_reposition=1;
+	float max_time_until_retreat=0.5;
+	float max_until_reposition=0.6;
 
 	void IdleUpdate(float dt);
 	void WaterBreakUpdate(float dt);
