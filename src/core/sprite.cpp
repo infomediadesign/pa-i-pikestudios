@@ -122,7 +122,7 @@ void SpriteSheetAnimation::set_animation_at_index(int sprite_sheet_animation_ind
 		if ( element.z_index == z_index ) {
 			if ( m_sprite_sheet_data.at(c_sprite_sheet_animation_index).z_index == z_index ) {
 				int c_sprite_sheet_frame_index =
-						std::clamp(sprite_sheet_frame_index, 0, m_sprite_sheet_data.at(element.rectangle.y / m_frame_height).frames - 1);
+						std::clamp(sprite_sheet_frame_index, 0, m_sprite_sheet_data.at(c_sprite_sheet_animation_index).frames - 1);
 
 				if ( m_sprite_sheet_data.at(c_sprite_sheet_animation_index).frames > c_sprite_sheet_frame_index ) {
 					// Sets the Animation to the given Values

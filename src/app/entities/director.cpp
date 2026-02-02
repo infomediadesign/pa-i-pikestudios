@@ -34,6 +34,7 @@ class FortunaDirectorPriv
 	int player_max_health			 = 3;
 	int player_health				 = 3;
 	float player_iframe_duration	 = 0.5f;
+	bool player_invincibility		 = false;
 };
 
 	
@@ -106,6 +107,11 @@ void FortunaDirector::draw_debug()
 
 	ImGui::Separator();
 	ImGui::Text("Player Upgrades");
+
+	// Invincibility
+	if ( ImGui::Checkbox("Invincibil", &_p->player_invincibility) ) {
+		upgrade_player_invincibility(_p->player_invincibility);
+	}
 
 	// Fire Rate
 	static float fire_rate_amount = 0.05f;
@@ -330,6 +336,13 @@ void FortunaDirector::upgrade_player_add_cannon(int amount)
 	for ( auto player: _p->players ) {
 		player->add_cannons(amount);
 	}
+}
+
+void FortunaDirector::upgrade_player_invincibility(bool invincibility)
+{
+	for ( auto player: _p->players ) {
+		player->set_is_invincibil(invincibility);
+	};
 }
 
 template<>

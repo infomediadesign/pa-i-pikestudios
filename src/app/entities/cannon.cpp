@@ -15,9 +15,13 @@ Cannon::Cannon() : PSInterfaces::IEntity("cannon")
 {
 	IRenderable::propose_z_index(2);
 	Vector2 frame_grid{1, 1};
-	m_c_sprite				 = PRELOAD_TEXTURE(ident_, "ressources/entity/test_cannon.png", frame_grid);
+	m_c_sprite				 = PRELOAD_TEXTURE(ident_, "ressources/entity/Cannon.png", frame_grid);
 	m_c_texture				 = m_c_sprite->m_s_texture;
 	m_c_time_since_last_shot = 0.0f;
+	m_c_animation_controller = PSCore::sprites::SpriteSheetAnimation(
+			FETCH_SPRITE_TEXTURE(ident_), {{1, 1, PSCore::sprites::KeyFrame, 2}, {7, 0.1, PSCore::sprites::Forward, 2}}
+	);
+	m_c_animation_controller.add_animation_at_index(0, 2);
 }
 
 void Cannon::update(const float dt)
@@ -25,7 +29,7 @@ void Cannon::update(const float dt)
 
 	set_position_to_parent();
 	set_rotation_to_parent();
-
+	
 	m_c_time_since_last_shot += dt;
 	if ( IsMouseButtonDown(MOUSE_BUTTON_LEFT) ) {
 		if ( m_c_positioning == CannonPositioning::Left ) {
@@ -38,14 +42,21 @@ void Cannon::update(const float dt)
 			fire();
 		}
 	}
+
+		m_c_animation_controller.update_animation(dt);
+
+	if ( m_c_animation_controller.get_sprite_sheet_animation_index(2).value_or(-1) == 1 &&
+		 m_c_animation_controller.get_sprite_sheet_frame_index(2).value_or(-1) == 0 ) {
+		m_c_animation_controller.set_animation_at_index(0, 0, 2);
+	}
 }
 
 void Cannon::render()
 {
 	if ( is_active_ ) {
-		m_c_source = {0, 0, (float) m_c_texture.width, (float) m_c_texture.height};
+	//	m_c_source = {0, 0, (float) m_c_texture.width, (float) m_c_texture.height};
 		if ( auto& vp = gApp()->viewport() ) {
-			vp->draw_in_viewport(m_c_texture, m_c_source, m_c_position, m_c_rotation, WHITE);
+		vp->draw_in_viewport(m_c_texture, m_c_animation_controller.get_source_rectangle(2).value_or(Rectangle{0}), m_c_position, m_c_rotation, WHITE);
 		}
 	}
 }
@@ -57,6 +68,9 @@ void Cannon::fire()
 		if ( !director ) {
 			return;
 		}
+
+		
+		
 
 		if ( auto& spawner = director->spawner<Projectile, AppLayer>() ) {
 			spawner->register_spawn_callback([this](std::shared_ptr<Projectile> projectile) {
@@ -79,8 +93,9 @@ void Cannon::fire()
 			
 			spawner->spawn();
 		}
-	
+
 		m_c_time_since_last_shot = 0.0f;
+		m_c_animation_controller.set_animation_at_index(1, 1, 2);
 	}
 }
 
