@@ -11,16 +11,34 @@ SpriteSheetAnimation::SpriteSheetAnimation(const Texture2D& texture, const std::
 
 		// Sets the m_sprite_time_direction_data Vector based on the m_m_sprite_sheet_data
 		if ( m_sprite_time_direction_data.size() <= i ) {
-			if ( element.play_style == KeyFrame ) {
-				m_sprite_time_direction_data.push_back({0, 0});
-			} else {
-				m_sprite_time_direction_data.push_back({0, 1});
+			switch ( element.play_style ) {
+				case Forward:
+					m_sprite_time_direction_data.push_back({0, 1});
+					break;
+				case Backward:
+					m_sprite_time_direction_data.push_back({0, -1});
+					break;
+				case PingPong:
+					m_sprite_time_direction_data.push_back({0, 1});
+					break;
+				case KeyFrame:
+					m_sprite_time_direction_data.push_back({0, 0});
+					break;
 			}
 		} else {
-			if ( element.play_style == KeyFrame ) {
-				m_sprite_time_direction_data.at(i) = {0, 0};
-			} else {
-				m_sprite_time_direction_data.at(i) = {0, 1};
+			switch ( element.play_style ) {
+				case Forward:
+					m_sprite_time_direction_data.at(i) = {0, 1};
+					break;
+				case Backward:
+					m_sprite_time_direction_data.at(i) = {0, -1};
+					break;
+				case PingPong:
+					m_sprite_time_direction_data.at(i) = {0, 1};
+					break;
+				case KeyFrame:
+					m_sprite_time_direction_data.at(i) = {0, 0};
+					break;
 			}
 		}
 
@@ -82,6 +100,14 @@ void SpriteSheetAnimation::update_animation(float dt)
 				play_animation_forward(&element);
 			}
 		}
+		// Updates the Animation if the Play style is Backward
+		if ( animation_sprite_sheet_data.play_style == Backward ) {
+			m_sprite_time_direction_data.at(element.rectangle.y / m_frame_height).timestamp += dt;
+			if ( animation_sprite_direction_data.timestamp >= animation_sprite_sheet_data.play_duration ) {
+				m_sprite_time_direction_data.at(element.rectangle.y / m_frame_height).timestamp = 0;
+				play_animation_backward(&element);
+			}
+		}
 		// Updates the Animation if the Play style is PingPong
 		if ( animation_sprite_sheet_data.play_style == PingPong ) {
 			m_sprite_time_direction_data.at(element.rectangle.y / m_frame_height).timestamp += dt;
@@ -122,7 +148,7 @@ void SpriteSheetAnimation::set_animation_at_index(int sprite_sheet_animation_ind
 		if ( element.z_index == z_index ) {
 			if ( m_sprite_sheet_data.at(c_sprite_sheet_animation_index).z_index == z_index ) {
 				int c_sprite_sheet_frame_index =
-						std::clamp(sprite_sheet_frame_index, 0, m_sprite_sheet_data.at(element.rectangle.y / m_frame_height).frames - 1);
+						std::clamp(sprite_sheet_frame_index, 0, m_sprite_sheet_data.at(c_sprite_sheet_animation_index).frames - 1);
 
 				if ( m_sprite_sheet_data.at(c_sprite_sheet_animation_index).frames > c_sprite_sheet_frame_index ) {
 					// Sets the Animation to the given Values
@@ -145,6 +171,18 @@ void SpriteSheetAnimation::play_animation_forward(SpriteSourceRectangle* animati
 		animation_rectangle->rectangle.x = 0;
 	}
 }
+
+void SpriteSheetAnimation::play_animation_backward(SpriteSourceRectangle* animation_rectangle)
+{
+	animation_rectangle->rectangle.x -= m_frame_wight;
+
+	// If the current Frame is smaller as 0, sets Frame to the Max Frame
+	if ( animation_rectangle->rectangle.x < 0 ) {
+		animation_rectangle->rectangle.x =
+				static_cast<float>(m_sprite_sheet_data.at(animation_rectangle->rectangle.y / m_frame_height).frames - 1) * m_frame_wight;
+	}
+}
+
 
 void SpriteSheetAnimation::play_animation_pingpong(SpriteSourceRectangle* animation_rectangle)
 {
