@@ -11,8 +11,10 @@
 #include <raymath.h>
 #include <utilities.h>
 #include <vector>
+#include "coordinatesystem.h"
 #include "layers/applayer.h"
 #include "pscore/collision.h"
+#include <entities/director.h>
 
 //
 // Fin of Shark
@@ -46,6 +48,7 @@ void Fin::update(float dt)
 void Fin::draw_debug()
 {
 }
+
 
 //
 // Body of Shark
@@ -111,11 +114,13 @@ void Shark::init(std::shared_ptr<Shark> self, const Vector2& pos)
 	m_self = self;
 	m_pos  = pos;
 
+	m_director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
+
 	m_collider = std::make_unique<PSCore::collision::EntityCollider>(m_self);
 	m_collider->register_collision_handler([](std::weak_ptr<PSInterfaces::IEntity> other, const Vector2& pos) {
 		if ( auto locked = other.lock() ) {
 			if ( auto player = std::dynamic_pointer_cast<Player>(locked) ) {
-				player->damage();
+				player->on_hit();
 			}
 		}
 	});
@@ -136,12 +141,12 @@ void Shark::update(float dt)
 
 	m_animation_controller.update_animation(dt);
 
-	Player* player_entity = nullptr;
+	std::shared_ptr<Player> player_entity;
 
 	if ( auto app_layer = gApp()->get_layer<AppLayer>() ) {
 		for ( auto entity: app_layer->entities() ) {
 			if ( auto locked = entity.lock() ) {
-				if ( auto player = dynamic_cast<Player*>(locked.get()) )
+				if ( auto player = std::dynamic_pointer_cast<Player>(locked) )
 					player_entity = player;
 			}
 		}
@@ -199,6 +204,13 @@ void Shark::update(float dt)
 	}
 }
 
+void Shark::on_hit()
+{
+	set_is_active(false);
+	printf("hit shark\n");
+	m_director->m_b_bounty.add_bounty(m_director->m_b_bounty_amounts.shark_bounty);
+}
+
 void Shark::draw_debug()
 {
 	m_body->draw_debug();
@@ -219,6 +231,16 @@ void Shark::draw_debug()
 	shark_rec.width *= scale;
 	shark_rec.height *= scale;
 	PSUtils::DrawRectangleLinesRotated(shark_rec, m_shark_rotation + 90, RED);
+
+	if ( bounds().has_value() ) {
+		for ( int i = 0; i < bounds().value().size(); i++ ) {
+			if ( i < bounds().value().size() - 1 ) {
+				DrawLineV(bounds().value().at(i), bounds().value().at(i + 1), GREEN);
+			} else {
+				DrawLineV(bounds().value().at(i), bounds().value().at(0), GREEN);
+			}
+		}
+	}
 
 	DrawText(m_state_string.c_str(), shark_rec.x + 20, shark_rec.y + 20, 12, RED);
 
@@ -247,17 +269,20 @@ void Shark::set_pos(const Vector2& pos)
 
 std::optional<std::vector<Vector2>> Shark::bounds() const
 {
-	Rectangle shark_rec;
-	shark_rec = m_shark_sprite->frame_rect({0, 0});
+	if ( is_active() )
+		if ( auto& vp = gApp()->viewport() ) {
 
-	std::vector<Vector2> v{
-			m_pos, // Top-left
-			Vector2{m_pos.x + shark_rec.width, m_pos.y}, // Top-right
-			Vector2{m_pos.x + shark_rec.width, m_pos.y + shark_rec.height}, // Bottom-right
-			Vector2{m_pos.x, m_pos.y + shark_rec.height} // Bottom-left
-	};
+			Vector2 vp_pos = vp->position_viewport_to_global(m_pos);
+			float scale	   = vp->viewport_scale();
 
-	return v;
+			std::vector<Vector2> hitbox_points = {
+					{15 * scale, 0 * scale}, {0 * scale, 8 * scale}, {-15 * scale, 0 * scale}, {0 * scale, -8 * scale}
+			};
+
+			return coordinatesystem::points_relative_to_globle_rightup(vp_pos, m_shark_rotation, hitbox_points);
+		}
+
+	return std::nullopt;
 };
 
 std::optional<Vector2> Shark::position() const

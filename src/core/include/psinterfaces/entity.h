@@ -43,6 +43,9 @@ namespace PSInterfaces {
 			is_active_ = active;
 		}
 
+		virtual void on_hit(){
+		}
+
 		void add_event_manager(const Events::IEventManager* manager)
 		{
 			if ( std::find(event_managers_.begin(), event_managers_.end(), manager) == event_managers_.end() ) {

@@ -113,10 +113,17 @@ void Application::run()
 			break;
 		}
 
+		while ( m_call_stack.size() > 0 ) {
+			m_call_stack.at(0)();
+			m_call_stack.pop_front();
+		}
+
 		try { // call the update of every layer
 			auto dt = _p->m_time_manager->delta_t().count();
 			if ( m_game_director )
 				m_game_director->update(dt);
+
+			_p->m_viewport->update(dt);
 
 			for ( int i = 0; i < m_layer_stack.size(); ++i )
 				m_layer_stack.at(i)->on_update(dt);
@@ -130,6 +137,8 @@ void Application::run()
 		// call render of every layer
 		for ( const std::unique_ptr<PSInterfaces::Layer>& layer: m_layer_stack )
 			layer->on_render();
+
+		_p->m_viewport->render();
 
 		EndDrawing();
 		SwapScreenBuffer();

@@ -8,11 +8,13 @@
 
 class Player;
 class FortunaDirector;
+class Cannon;
 
 class Projectile : public PSInterfaces::IRenderable
 {
 public:
 	Projectile();
+	~Projectile() {}
 	void update(const float dt) override;
 	void render() override;
 
@@ -20,45 +22,50 @@ public:
 	
 	void init(const Vector2& position, std::shared_ptr<Projectile> self);
 
-	void calculate_movement(
-			const float dt, Vector2& target_position
-	); // Calculates the movement towards the target position wihle keeping the forward velocity of the owner
+	Texture2D texture();
+	void set_texture(const Texture2D& texture);
 
-	Texture2D texture(); // Returns the texture of the projectile
-	void set_texture(const Texture2D& texture); // Sets the texture of the projectile
+	std::optional<Vector2> position() const override;
+	void set_position(const Vector2& position);
 
-	std::optional<Vector2> position() const override; // Returns the position of the projectile
-	void set_position(const Vector2& position); // Sets the position of the projectile
+	float rotation();
+	void set_rotation(const float& rotation);
 
-	float rotation(); // Returns the rotation of the projectile
-	void set_rotation(const float& rotation); // Sets the rotation of the projectile
+	Vector2 velocity();
+	void set_velocity(const Vector2& velocity);
 
-	Vector2 velocity(); // Returns the velocity of the projectile
-	void set_velocity(const Vector2& velocity); // Sets the velocity of the projectile
+	Vector2 target_position();
+	void set_target_position(const Vector2& target_position);
 
-	Vector2 target_position(); // Returns the target position of the projectile
-	void set_target_position(const Vector2& target_position); // Sets the target position of the projectile
+	Vector2 direction();
+	void set_direction(const Vector2& direction);
 
-	Vector2 direction(); // Returns the direction of the projectile
-	void set_direction(const Vector2& direction); // Sets the direction of the projectile
+	Vector2 movement();
+	void set_movement(const Vector2& movement);
 
-	Vector2 movement(); // Returns the movement of the projectile
-	void set_movement(const Vector2& movement); // Sets the movement of the projectile
+	float speed();
+	void set_speed(const float speed);
 
-	float speed(); // Returns the speed of the projectile
-	void set_speed(const float speed); // Sets the speed of the projectile
+	float travel_distance();
+	void set_travel_distance(const float travel_distance);
 
-	float travel_distance(); // Returns the travel distance of the projectile
-	void set_travel_distance(const float travel_distance); // Sets the travel distance of the projectile
+	std::shared_ptr<Projectile> shared_ptr();
+	void set_shared_ptr(std::shared_ptr<Projectile>& ptr);
 
-	std ::shared_ptr<Projectile> shared_ptr(); // Returns the shared pointer to this projectile
-	void set_shared_ptr(std::shared_ptr<Projectile>& ptr); // Sets the shared pointer to this projectile
+	std::shared_ptr<Player> owner();
+	void set_owner(std::shared_ptr<Player>& owner);
 
-	std::shared_ptr<Player> owner(); // Returns shared pointer to the owner of the projectile
-	void set_owner(std::shared_ptr<Player>& owner); // Sets shared pointer to the owner of the projectile
+	Vector2 owner_velocity();
+	void set_owner_velocity(const Vector2& velocity);
 
-	Vector2 owner_velocity(); // Returns the owner's velocity
-	void set_owner_velocity(const Vector2& velocity); // Sets the owner's velocity
+	std::shared_ptr<Cannon> fiering_cannon();
+	void set_fiering_cannon(const std::shared_ptr<Cannon>& cannon);
+
+	void calculate_movment(const float dt);
+	void parent_to_cannon();
+	void calculate_parenting();
+	void fire_from_cannon(const float dt);
+	void draw_debug();
 
 private:
 	Vector2 m_p_position;
@@ -66,6 +73,8 @@ private:
 	Vector2 m_p_target_position;
 	Vector2 m_p_direction;
 	Vector2 m_p_movement;
+	Vector2 m_p_local_offset;
+	float m_p_initial_distance;
 	float m_p_rotation;
 	float m_p_speed;
 	float m_p_travel_distance;
@@ -78,6 +87,9 @@ private:
 	bool m_p_is_first_tick = true;
 	std::shared_ptr<Projectile> m_p_shared_ptr;
 	std::shared_ptr<Player> m_p_owner;
+	std::shared_ptr<Cannon> m_p_fiering_cannon;
 	
 	std::unique_ptr<PSCore::collision::EntityCollider> m_collider;
+
+	Vector2 m_p_local_direction;
 };

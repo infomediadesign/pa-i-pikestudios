@@ -18,6 +18,11 @@ public:
 
 	void render() override;
 
+	void draw_debug() override;
+
+	void on_hit() override;
+
+
 	std::optional<Vector2> position() const override;
 
 	std::optional<std::vector<Vector2>> bounds() const override;
@@ -42,12 +47,16 @@ public:
 
 	void set_max_velocity(float max_velocity);
 
+	void set_input_velocity_multiplier(float val);
+	void set_input_rotation_multiplier(float val);
+
 	void set_rotation(float rotation);
 
 	void set_target_rotation(float target_rotation);
 
 	void set_interpolation_values(
-			float acceleration_fade, float deceleration_fade, float rotation_fade, float input_velocity_multiplier, float input_rotation_multiplier
+			float acceleration_fade, float deceleration_fade, float rotation_fade, float input_velocity_multiplier, float input_rotation_multiplier,
+			float velocity_rotation_downscale
 	);
 
 	void calculate_movement(float dt);
@@ -84,6 +93,9 @@ public:
 
 	void add_cannons(int amount);
 
+	// Invincibility
+	void reset_iframe(float dt);
+
 private:
 	// Base Movement Variables
 	Vector2 m_position	 = {0};
@@ -92,14 +104,15 @@ private:
 	float m_rotation	 = 0;
 
 	// Interpolation Values for the Movement Calculation
-	float m_target_velocity			  = 0;
-	float m_target_rotation			  = 0;
-	float m_acceleration_fade		  = 0;
-	float m_deceleration_fade		  = 0;
-	float m_rotation_fade			  = 0;
-	float m_input_velocity_multiplier = 0;
-	float m_input_rotation_multiplier = 0;
-	float m_rotation_velocity		  = 0;
+	float m_target_velocity				= 0;
+	float m_target_rotation				= 0;
+	float m_acceleration_fade			= 0;
+	float m_deceleration_fade			= 0;
+	float m_rotation_fade				= 0;
+	float m_input_velocity_multiplier	= 0;
+	float m_input_rotation_multiplier	= 0;
+	float m_rotation_velocity			= 0;
+	float m_velocity_rotation_downscale = 0;
 
 	// Variables for Texture Rendering
 	Texture2D m_texture		= {0};
@@ -108,6 +121,8 @@ private:
 
 	// Variables for Animation
 	PSCore::sprites::SpriteSheetAnimation m_animation_controller;
+	int m_sprite_sheet_animation_index = 2;
+	int m_sprite_sheet_frame_index;
 
 	// Variables for Borderinteration
 	bool m_border_collision_active_horizontal = false;
@@ -119,11 +134,10 @@ private:
 	std::shared_ptr<Player> m_shared_ptr_this;
 
 	// Smear Variables
-	float m_smear_rotation								= 0;
-	std::vector<smear::SmearPoints> m_smear_points		= {{0}, {0}};
-	std::vector<float> m_smear_wave						= {0};
-	int m_smear_wave_index								= 0;
-	float m_smear_wave_time								= 0;
-	float m_smear_wave_per_second						= 0.25;
-	std::vector<smear::SmearPoints> m_smear_wave_points = {{0}, {0}};
+	Smear m_smear;
+
+	// Invincibility Variables
+	bool m_can_be_hit = true;
+	float m_iframe_timer	  = 0;
+	float m_iframe_duration = 5;
 };

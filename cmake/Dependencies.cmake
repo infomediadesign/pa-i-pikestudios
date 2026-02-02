@@ -31,5 +31,5 @@ function(raylib_imgui_setup_dependencies)
     target_link_libraries(rlimgui PRIVATE imgui raylib)
     target_include_directories(rlimgui INTERFACE ${rlimgui_SOURCE_DIR})
 
-	CPMAddPackage("gh:raysan5/raylib#5.5")
+	CPMAddPackage("gh:raysan5/raylib#5.5") 
 endfunction()

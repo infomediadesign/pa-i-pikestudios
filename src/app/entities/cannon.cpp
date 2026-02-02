@@ -1,27 +1,23 @@
 #include "cannon.h"
 #include <coordinatesystem.h>
 #include <entities/director.h>
+#include <iostream>
 #include <memory>
 #include <pscore/application.h>
 #include <pscore/sprite.h>
 #include <pscore/viewport.h>
 #include <raylib.h>
+#include "entities/projectile.h"
+#include "layers/applayer.h"
 #include <cmath>
 
 Cannon::Cannon() : PSInterfaces::IEntity("cannon")
 {
 	IRenderable::propose_z_index(2);
-	m_c_position = {100.0f, 100.0f};
-	m_c_rotation = 0.0f;
 	Vector2 frame_grid{1, 1};
-	m_c_sprite	= PRELOAD_TEXTURE(ident_, "ressources/entity/test_cannon.png", frame_grid);
-	m_c_texture	= m_c_sprite->m_s_texture;
-	m_c_range	 = 500.0f;
+	m_c_sprite				 = PRELOAD_TEXTURE(ident_, "ressources/entity/test_cannon.png", frame_grid);
+	m_c_texture				 = m_c_sprite->m_s_texture;
 	m_c_time_since_last_shot = 0.0f;
-	m_c_fire_rate_in_s		 = 0.5f;
-	m_c_projectile_speed	 = 1000.0f;
-	m_c_parent_position_x_offset = 0.0f;
-	m_c_parent_position_y_offset = 10.0f;
 }
 
 void Cannon::update(const float dt)
@@ -61,13 +57,29 @@ void Cannon::fire()
 		if ( !director ) {
 			return;
 		}
-		auto new_projectile = director->spawn_projectile(m_c_position);
-		new_projectile->set_speed(m_c_projectile_speed);
-		new_projectile->set_target_position(calculate_projectile_target_position());
-		new_projectile->set_shared_ptr(new_projectile);
-		if ( m_c_parent ) {
-			new_projectile->set_owner_velocity(m_c_parent->velocity());
+
+		if ( auto& spawner = director->spawner<Projectile, AppLayer>() ) {
+			spawner->register_spawn_callback([this](std::shared_ptr<Projectile> projectile) {
+				auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
+				if ( !director ) {
+					return;
+				}
+
+				projectile->init(m_c_position, projectile);
+				projectile->set_speed(m_c_projectile_speed);
+				projectile->set_target_position(calculate_projectile_target_position());
+
+				if ( m_c_parent ) {
+					projectile->set_owner_velocity(m_c_parent->velocity());
+				}
+
+				projectile->set_fiering_cannon(m_c_shared_ptr_this);
+				projectile->calculate_parenting();
+			});
+			
+			spawner->spawn();
 		}
+	
 		m_c_time_since_last_shot = 0.0f;
 	}
 }
@@ -240,4 +252,9 @@ Cannon::CannonPositioning Cannon::positioning()
 void Cannon::set_positioning(const Cannon::CannonPositioning positioning)
 {
 	m_c_positioning = positioning;
+}
+
+void Cannon::set_shared_ptr_this(std::shared_ptr<Cannon> ptr)
+{
+	m_c_shared_ptr_this = ptr;
 }
