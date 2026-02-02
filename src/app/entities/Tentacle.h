@@ -2,15 +2,14 @@
 // Created by tylor on 30/01/2026.
 //
 
-#ifndef FORTUNASECHO_TANTACLE_H
-#define FORTUNASECHO_TANTACLE_H
+#pragma once
+
 #include <memory>
 
 
 #include "pscore/collision.h"
 #include "pscore/sprite.h"
 #include "psinterfaces/renderable.h"
-
 
 class Tentacle : public PSInterfaces::IRenderable
 {
@@ -32,13 +31,14 @@ public:
 
 	void on_hit() override;
 
-	enum State { Idle = 0, Attacking, Retreat };
+	enum State { Idle = 0, WaterBreak, Attacking, Retreat };
 
 private:
 	std::shared_ptr<Tentacle> m_self;
 
 	Vector2 m_pos{(float) 100, (float) 100};
 	State m_state = State::Idle;
+	State m_prev_state = m_state;
 	std::string m_state_string;
 
 	std::shared_ptr<PSCore::sprites::Sprite> m_Tentacle_sprite;
@@ -46,29 +46,20 @@ private:
 
 	PSCore::sprites::SpriteSheetAnimation m_animation_controller;
 
+	float time_until_water_break;;
 	float time_until_attack;
 	float time_until_retreat;
 	float until_reposition;
 
-	float max_time_until_attack=1;
-	float max_time_until_retreat=1;
+	float max_time_until_water_break=2.5;;
+	float max_time_until_attack=0.8;
+	float max_time_until_retreat=2;
 	float max_until_reposition=1;
 
 	void IdleUpdate(float dt);
+	void WaterBreakUpdate(float dt);
 	void AttackingUpdate(float dt);
 	void RetreatingUpdate(float dt);
 
 	void SetNewPos();
-
-
-
-
-
-
-
-
-
 };
-
-
-#endif // FORTUNASECHO_TANTACLE_H

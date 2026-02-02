@@ -9,6 +9,7 @@
 #include <pscore/utils.h>
 
 #include "coordinatesystem.h"
+#include "director.h"
 #include "layers/applayer.h"
 #include "player.h"
 
@@ -18,9 +19,16 @@ Tentacle::Tentacle() : PSInterfaces::IEntity("tentacle")
 	PRELOAD_TEXTURE(ident_, "ressources/entity/tentacle.png", frame_grid);
 	m_Tentacle_sprite = FETCH_SPRITE(ident_);
 
-	m_animation_controller = PSCore::sprites::SpriteSheetAnimation(FETCH_SPRITE_TEXTURE(ident_), {{1, 1, PSCore::sprites::Forward, 0}});
+	std::vector<PSCore::sprites::SpriteSheetData> sp_data;
+	sp_data.push_back({8, 0.1, PSCore::sprites::Forward, 0});
+	sp_data.push_back({6, 0.3, PSCore::sprites::Backward, 1});
+	sp_data.push_back({1, 1, PSCore::sprites::Forward, 2});
+
+	m_animation_controller = PSCore::sprites::SpriteSheetAnimation(FETCH_SPRITE_TEXTURE(ident_), sp_data);
 
 	m_animation_controller.add_animation_at_index(0, 0);
+	m_animation_controller.add_animation_at_index(1, 1);
+	m_animation_controller.add_animation_at_index(2, 2);
 }
 
 
@@ -33,7 +41,7 @@ void Tentacle::init(std::shared_ptr<Tentacle> self, const Vector2& pos)
 	m_collider->register_collision_handler([](std::weak_ptr<PSInterfaces::IEntity> other, const Vector2& pos) {
 		if ( auto locked = other.lock() ) {
 			if ( auto player = std::dynamic_pointer_cast<Player>(locked) ) {
-				player->damage();
+				player->on_hit();
 			}
 		}
 	});
@@ -51,9 +59,30 @@ Tentacle::~Tentacle()
 
 void Tentacle::render()
 {
-	if ( auto& vp = gApp()->viewport() ) {
-		auto tex = m_Tentacle_sprite;
-		vp->draw_in_viewport(tex->m_s_texture, m_animation_controller.get_source_rectangle(0).value_or(Rectangle{0}), m_pos, 0, RED);
+	if ( const auto& vp = gApp()->viewport() ) {
+		switch ( m_state ) {
+			case Idle: {
+				Color clr{0, 0, 255, 255};
+				Vector2 pos{m_pos.x * vp->viewport_scale(), m_pos.y * vp->viewport_scale()};
+				DrawCircleV(pos, 20 * vp->viewport_scale(), clr);
+				break;
+			}
+			case WaterBreak: {
+				auto tex = m_Tentacle_sprite;
+				vp->draw_in_viewport(tex->m_s_texture, m_animation_controller.get_source_rectangle(0).value_or(Rectangle{0}), m_pos, 0, WHITE);
+				break;
+			}
+			case Attacking: {
+				auto tex = m_Tentacle_sprite;
+				vp->draw_in_viewport(tex->m_s_texture, m_animation_controller.get_source_rectangle(2).value_or(Rectangle{0}), m_pos, 0, WHITE);
+				break;
+			}
+			case Retreat: {
+				auto tex = m_Tentacle_sprite;
+				vp->draw_in_viewport(tex->m_s_texture, m_animation_controller.get_source_rectangle(1).value_or(Rectangle{0}), m_pos, 0, WHITE);
+				break;
+			}
+		}
 	}
 }
 
@@ -62,15 +91,20 @@ void Tentacle::update(float dt)
 	m_animation_controller.update_animation(dt);
 
 	switch ( m_state ) {
-		case 0: {
+		case Idle: {
 			IdleUpdate(dt);
 			break;
 		}
-		case 1: {
+		case WaterBreak: {
+			WaterBreakUpdate(dt);
+			break;
+			;
+		}
+		case Attacking: {
 			AttackingUpdate(dt);
 			break;
 		}
-		case 2: {
+		case Retreat: {
 			RetreatingUpdate(dt);
 			break;
 		}
@@ -80,12 +114,22 @@ void Tentacle::update(float dt)
 
 void Tentacle::IdleUpdate(float dt)
 {
-	time_until_attack -= dt;
-	if ( time_until_attack <= 0 ) {
-		m_state = State::Attacking;
+	time_until_water_break -= dt;
+	if ( time_until_water_break <= 0 ) {
+		m_state = State::WaterBreak;
 		m_animation_controller.set_animation_at_index(0, 0, 0);
 	}
 }
+
+void Tentacle::WaterBreakUpdate(float dt)
+{
+	time_until_attack -= dt;
+	if ( time_until_attack <= 0 ) {
+		m_state = State::Attacking;
+		m_animation_controller.set_animation_at_index(2, 0, 2);
+	}
+}
+
 void Tentacle::AttackingUpdate(float dt)
 {
 	time_until_retreat -= dt;
@@ -95,6 +139,7 @@ void Tentacle::AttackingUpdate(float dt)
 	}
 
 	if ( time_until_retreat <= 0 ) {
+		m_animation_controller.set_animation_at_index(1, 0, 1);
 		m_state = State::Retreat;
 	}
 }
@@ -104,10 +149,10 @@ void Tentacle::RetreatingUpdate(float dt)
 	if ( until_reposition <= 0 ) {
 		m_state = State::Idle;
 
-
-		time_until_attack  = max_time_until_attack;
-		time_until_retreat = max_time_until_retreat;
-		until_reposition   = max_until_reposition;
+		time_until_water_break = max_time_until_water_break;
+		time_until_attack	   = max_time_until_attack;
+		time_until_retreat	   = max_time_until_retreat;
+		until_reposition	   = max_until_reposition;
 
 		SetNewPos();
 	}
@@ -119,21 +164,25 @@ void Tentacle::SetNewPos()
 		coords.x = PSUtils::gen_rand(0, vp->viewport_base_size().x);
 		coords.y = PSUtils::gen_rand(0, vp->viewport_base_size().y);
 		set_pos(coords);
-
 	}
 }
 
 void Tentacle::on_hit()
 {
-
+	set_is_active(false);
+	if ( const auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director()) ) {
+		director->m_b_bounty.add_bounty(225);
+	}
 }
+
 void Tentacle::set_pos(const Vector2& pos)
 {
-	 m_pos=pos;
+	m_pos = pos;
 }
+
 std::optional<std::vector<Vector2>> Tentacle::bounds() const
 {
-	if ( m_state!=State::Attacking ) {
+	if ( m_state == State::Idle ) {
 		return std::nullopt;
 	}
 	if ( is_active() )
@@ -142,15 +191,14 @@ std::optional<std::vector<Vector2>> Tentacle::bounds() const
 			Vector2 vp_pos = vp->position_viewport_to_global(m_pos);
 			float scale	   = vp->viewport_scale();
 
-			std::vector<Vector2> hitbox_points = {
-				{-10 * scale, 20 * scale}, {20 * scale, -10 * scale}, {-20 * scale, -20 * scale}
-			};
+			std::vector<Vector2> hitbox_points = {{-10 * scale, 20 * scale}, {20 * scale, -10 * scale}, {-20 * scale, -20 * scale}};
 
 			return coordinatesystem::points_relative_to_globle_rightup(vp_pos, 0, hitbox_points);
 		}
 
 	return std::nullopt;
 };
+
 void Tentacle::draw_debug()
 {
 	if ( bounds().has_value() ) {
@@ -163,4 +211,3 @@ void Tentacle::draw_debug()
 		}
 	}
 }
-
