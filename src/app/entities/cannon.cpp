@@ -196,6 +196,7 @@ float Cannon::fire_rate()
 
 void Cannon::set_fire_rate(const float fire_rate)
 {
+	m_c_animation_controller.set_new_animation_framerate(1, fire_rate / 7);
 	m_c_fire_rate_in_s = fire_rate;
 }
 
