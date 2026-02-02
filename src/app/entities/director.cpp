@@ -33,7 +33,10 @@ class FortunaDirectorPriv
 	float player_input_velocity_mult = 1500;
 	int player_max_health			 = 3;
 	int player_health				 = 3;
+	float player_iframe_duration	 = 0.5f;
 };
+
+	
 
 FortunaDirector::FortunaDirector() : PSInterfaces::IEntity("fortuna_director")
 {
@@ -146,6 +149,23 @@ void FortunaDirector::draw_debug()
 	ImGui::SameLine();
 	if ( ImGui::Button("Add Cannons") ) {
 		upgrade_player_add_cannon(cannon_amount);
+	}
+
+	// Add Health
+	static int health_amount = 1;
+	ImGui::Text("Player Health: %d / %d", player_health(), player_max_health());
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(80);
+	ImGui::InputInt("##health_amount", &health_amount);
+	ImGui::SameLine();
+	if ( ImGui::Button("Add Health") ) {
+		if ( player_health() + health_amount > player_max_health() ) {
+			set_player_max_health(player_max_health() + health_amount);
+			set_player_health(player_health() + health_amount);
+		} 
+		else {
+			set_player_health(player_health() + health_amount);
+		}
 	}
 }
 
@@ -365,6 +385,11 @@ void FortunaDirector::set_player_max_health(const int max_health)
 int FortunaDirector::player_max_health() const
 {
 	return _p->player_max_health;
+}
+
+float FortunaDirector::player_iframe_duration() const
+{
+	return _p->player_iframe_duration;
 }
 
 /*
