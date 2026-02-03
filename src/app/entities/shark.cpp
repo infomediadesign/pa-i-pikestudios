@@ -1,3 +1,4 @@
+#include <entities/director.h>
 #include <entities/player.h>
 #include <entities/shark.h>
 #include <imgui.h>
@@ -14,7 +15,6 @@
 #include "coordinatesystem.h"
 #include "layers/applayer.h"
 #include "pscore/collision.h"
-#include <entities/director.h>
 
 //
 // Fin of Shark
@@ -124,6 +124,11 @@ void Shark::init(std::shared_ptr<Shark> self, const Vector2& pos)
 			}
 		}
 	});
+
+	if ( auto app_layer = gApp()->get_layer<AppLayer>() ) {
+		app_layer->renderer()->submit_renderable(m_body);
+		app_layer->renderer()->submit_renderable(m_fin);
+	}
 }
 
 Shark::~Shark()
@@ -275,9 +280,7 @@ std::optional<std::vector<Vector2>> Shark::bounds() const
 			Vector2 vp_pos = vp->position_viewport_to_global(m_pos);
 			float scale	   = vp->viewport_scale();
 
-			std::vector<Vector2> hitbox_points = {
-					{15 * scale, 0 * scale}, {0 * scale, 8 * scale}, {-15 * scale, 0 * scale}, {0 * scale, -8 * scale}
-			};
+			std::vector<Vector2> hitbox_points = {{15 * scale, 0 * scale}, {0 * scale, 8 * scale}, {-15 * scale, 0 * scale}, {0 * scale, -8 * scale}};
 
 			return coordinatesystem::points_relative_to_globle_rightup(vp_pos, m_shark_rotation, hitbox_points);
 		}
