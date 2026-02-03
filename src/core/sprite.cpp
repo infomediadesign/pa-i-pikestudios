@@ -161,6 +161,12 @@ void SpriteSheetAnimation::set_animation_at_index(int sprite_sheet_animation_ind
 	}
 }
 
+void SpriteSheetAnimation::set_new_animation_framerate(int sprite_sheet_animation_index, float framerate)
+{
+	int c_sprite_sheet_animation_index = std::clamp(sprite_sheet_animation_index, 0, static_cast<int>(m_sprite_sheet_data.size() - 1));
+	m_sprite_sheet_data.at(c_sprite_sheet_animation_index).play_duration = framerate;
+}
+
 void SpriteSheetAnimation::play_animation_forward(SpriteSourceRectangle* animation_rectangle)
 {
 	animation_rectangle->rectangle.x += m_frame_wight;

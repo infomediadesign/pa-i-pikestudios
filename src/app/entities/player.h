@@ -95,6 +95,7 @@ public:
 
 	// Invincibility
 	void reset_iframe(float dt);
+	void set_is_invincibil(bool invincibil);
 
 private:
 	// Base Movement Variables
@@ -138,6 +139,7 @@ private:
 
 	// Invincibility Variables
 	bool m_can_be_hit = true;
+	bool m_is_invincibil	= false;
 	float m_iframe_timer	  = 0;
 	float m_iframe_duration = 5;
 };
