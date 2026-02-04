@@ -7,6 +7,8 @@
 #include <raylib.h>
 
 #include <misc/smear.h>
+
+#include "misc/waveshader.h"
 #include "pscore/sprite.h"
 
 class Player : public PSInterfaces::IRenderable
@@ -138,8 +140,20 @@ private:
 	Smear m_smear;
 
 	// Invincibility Variables
-	bool m_can_be_hit = true;
+	bool m_can_be_hit		= true;
 	bool m_is_invincibil	= false;
-	float m_iframe_timer	  = 0;
+	float m_iframe_timer	= 0;
 	float m_iframe_duration = 5;
+
+	// Shader
+	Shader m_wave_shader;
+	Vector2 m_size			   = {1, 1};
+	Vector2 m_main_frequency   = {0};
+	Vector2 m_main_amplitude   = {0};
+	Vector2 m_main_velocity	   = {0};
+	Vector2 m_sub_frequency	   = {0};
+	Vector2 m_sub_amplitude	   = {0};
+	Vector2 m_sub_velocity	   = {0};
+	int m_shader_time_location = 0;
+	float m_shader_time		   = 0;
 };
