@@ -45,9 +45,12 @@ Player::Player() : PSInterfaces::IEntity("player")
 	m_wave_shader = LoadShader(NULL, "ressources/shader/wave.fs");
 
 	m_size			 = {24, 42};
-	m_main_frequency = {1, 1};
-	m_main_amplitude = {1, 1};
-	m_main_velocity	 = {1, 1};
+	m_main_frequency = {2, 2};
+	m_main_amplitude = {2, 2};
+	m_main_velocity	 = {2, 2};
+	m_sub_frequency	 = {0.5, 0.5};
+	m_sub_amplitude	 = {0.5, 0.5};
+	m_sub_velocity	 = {0.5, 0.5};
 
 	SetShaderValue(m_wave_shader, GetShaderLocation(m_wave_shader, "size"), &m_size, SHADER_UNIFORM_VEC2);
 	SetShaderValue(m_wave_shader, GetShaderLocation(m_wave_shader, "main_freq"), &m_main_frequency, SHADER_UNIFORM_VEC2);

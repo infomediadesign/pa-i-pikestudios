@@ -7,8 +7,6 @@
 #include <raylib.h>
 
 #include <misc/smear.h>
-
-#include "misc/waveshader.h"
 #include "pscore/sprite.h"
 
 class Player : public PSInterfaces::IRenderable
