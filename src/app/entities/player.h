@@ -93,8 +93,9 @@ public:
 
 	void add_cannons(int amount);
 
-	// Invincibility
+	// invincibleity
 	void reset_iframe(float dt);
+	void set_is_invincible(bool invincible);
 
 private:
 	// Base Movement Variables
@@ -136,8 +137,9 @@ private:
 	// Smear Variables
 	Smear m_smear;
 
-	// Invincibility Variables
+	// invincibleity Variables
 	bool m_can_be_hit = true;
+	bool m_is_invincible	= false;
 	float m_iframe_timer	  = 0;
 	float m_iframe_duration = 5;
 };

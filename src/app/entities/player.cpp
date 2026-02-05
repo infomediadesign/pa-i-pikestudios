@@ -123,7 +123,7 @@ void Player::update(const float dt)
 
 void Player::on_hit()
 {
-	if ( m_can_be_hit ) {
+	if ( m_can_be_hit && !m_is_invincible) {
 		m_can_be_hit = false;
 		if ( auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director()) ) {
 			director->set_player_health(director->player_health() - 1);
@@ -142,6 +142,11 @@ void Player::on_hit()
 			}
 		}
 	}
+}
+
+void Player::set_is_invincible(bool invincible)
+{
+	m_is_invincible = invincible;
 }
 
 void Player::render()
@@ -334,16 +339,16 @@ void Player::initialize_cannon()
 
 	float x_offset = 0;
 	if ( !m_cannon_container.empty() ) {
-		cannon_width = static_cast<float>(m_cannon_container[0]->texture().width);
+		cannon_width = static_cast<float>(m_cannon_container[0]->texture().width / 7);
 	}
-	x_offset = -((cannon_width + cannon_width / 4) * m_cannon_container.size()) / 2;
+	x_offset = -(((cannon_width / 4)) * m_cannon_container.size()) / 2;
 
 	for ( int i = 0; i < 2; i++ ) {
 		auto new_cannon = director->spawn_cannon(m_position);
 		m_cannon_container.push_back(new_cannon);
 		new_cannon->set_parent(m_shared_ptr_this);
 		new_cannon->set_parent_position_x_offset(x_offset);
-		new_cannon->set_parent_position_y_offset(new_cannon->texture().height);
+		new_cannon->set_parent_position_y_offset(new_cannon->texture().height / 3);
 		new_cannon->set_shared_ptr_this(new_cannon);
 		if ( i == 0 ) {
 			new_cannon->set_positioning(Cannon::CannonPositioning::Left);
