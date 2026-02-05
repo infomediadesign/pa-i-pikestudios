@@ -68,6 +68,7 @@ var NAVTREEINDEX0 =
 "classSmear.html#ae87228404adb3abeaeea24e118b90de8":[2,0,21,5],
 "classSmear.html#aff8d5c35bb37147007ea9fd10de1d865":[2,0,21,2],
 "classUILayer.html":[2,0,23],
+"classWater.html":[2,0,24],
 "classes.html":[2,1],
 "collision_8h_source.html":[3,0,0,2,0,0,1],
 "conceptPSCore_1_1ILayerDerived.html":[1,0,0],

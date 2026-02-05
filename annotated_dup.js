@@ -55,5 +55,6 @@ var annotated_dup =
     [ "Shark", "classShark.html", null ],
     [ "Smear", "classSmear.html", "classSmear" ],
     [ "SmearPoints", "structSmearPoints.html", null ],
-    [ "UILayer", "classUILayer.html", "classUILayer" ]
+    [ "UILayer", "classUILayer.html", "classUILayer" ],
+    [ "Water", "classWater.html", null ]
 ];
