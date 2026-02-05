@@ -109,7 +109,7 @@ void FortunaDirector::draw_debug()
 	ImGui::Text("Player Upgrades");
 
 	// Invincibility
-	if ( ImGui::Checkbox("Invincibil", &_p->player_invincibility) ) {
+	if ( ImGui::Checkbox("invincible", &_p->player_invincibility) ) {
 		upgrade_player_invincibility(_p->player_invincibility);
 	}
 
@@ -341,7 +341,7 @@ void FortunaDirector::upgrade_player_add_cannon(int amount)
 void FortunaDirector::upgrade_player_invincibility(bool invincibility)
 {
 	for ( auto player: _p->players ) {
-		player->set_is_invincibil(invincibility);
+		player->set_is_invincible(invincibility);
 	};
 }
 
