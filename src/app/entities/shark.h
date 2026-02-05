@@ -2,12 +2,14 @@
 
 #include <memory>
 #include <optional>
+#include <pscore/collision.h>
+#include <pscore/sprite.h>
 #include <psinterfaces/entity.h>
 #include <psinterfaces/renderable.h>
 #include <raylib.h>
 #include <string>
-#include <pscore/sprite.h>
-#include "pscore/collision.h"
+
+class FortunaDirector;
 
 class Fin;
 class Body;
@@ -24,9 +26,9 @@ public:
 	void render() override;
 	void draw_debug() override;
 	void on_hit() override;
-	
+
 	void set_pos(const Vector2& pos);
-	
+
 	void init(std::shared_ptr<Shark> self, const Vector2& pos);
 
 	std::optional<Vector2> position() const override;
@@ -37,7 +39,7 @@ public:
 
 private:
 	bool m_marked;
-	
+
 	std::shared_ptr<Shark> m_self;
 	std::shared_ptr<Body> m_body;
 	std::shared_ptr<Fin> m_fin;
@@ -80,7 +82,7 @@ class Body : public PSInterfaces::IRenderable
 public:
 	Body(Shark* shark);
 	~Body();
-	
+
 	void render() override;
 	void update(float dt) override;
 	void draw_debug() override;
