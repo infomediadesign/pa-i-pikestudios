@@ -16,20 +16,69 @@
 class Water : public PSInterfaces::IRenderable
 {
 public:
-	Water() : PSInterfaces::IEntity("water") {};
-	~Water() {};
-	void update(float dt) override {};
+	Water() : PSInterfaces::IEntity("water")
+	{
+		SetShaderValue(m_wave_shader, GetShaderLocation(m_wave_shader, "size"), &m_size, SHADER_UNIFORM_VEC2);
+		SetShaderValue(m_wave_shader, GetShaderLocation(m_wave_shader, "main_freq"), &m_main_frequency, SHADER_UNIFORM_VEC2);
+		SetShaderValue(m_wave_shader, GetShaderLocation(m_wave_shader, "main_amp"), &m_main_amplitude, SHADER_UNIFORM_VEC2);
+		SetShaderValue(m_wave_shader, GetShaderLocation(m_wave_shader, "main_vel"), &m_main_velocity, SHADER_UNIFORM_VEC2);
+		SetShaderValue(m_wave_shader, GetShaderLocation(m_wave_shader, "sub_freq"), &m_sub_frequency, SHADER_UNIFORM_VEC2);
+		SetShaderValue(m_wave_shader, GetShaderLocation(m_wave_shader, "sub_amp"), &m_sub_amplitude, SHADER_UNIFORM_VEC2);
+		SetShaderValue(m_wave_shader, GetShaderLocation(m_wave_shader, "sub_vel"), &m_sub_velocity, SHADER_UNIFORM_VEC2);
+
+		m_shader_time_location = GetShaderLocation(m_wave_shader, "time");
+		SetShaderValue(m_wave_shader, m_shader_time_location, &m_shader_time, SHADER_UNIFORM_FLOAT);
+	}
+
+	~Water() override
+	{
+		UnloadTexture(m_water);
+
+		UnloadShader(m_wave_shader);
+	}
+
+	void update(float dt) override
+	{
+		m_shader_time += dt;
+		SetShaderValue(m_wave_shader, m_shader_time_location, &m_shader_time, SHADER_UNIFORM_FLOAT);
+
+		BeginTextureMode(m_render_water);
+		BeginShaderMode(m_wave_shader);
+
+		DrawTextureV(m_water, {0, 0}, clr);
+
+		EndShaderMode();
+		EndTextureMode();
+	}
+
 	void render() override
 	{
+		BeginShaderMode(m_wave_shader);
 		if ( auto& vp = gApp()->viewport() ) {
 			auto sc = vp->viewport_scale();
 			vp->draw_in_viewport(m_water, {0, 0, (float) m_water.width * sc, (float) m_water.height * sc}, {0, 0}, 0, clr);
 		}
+		EndShaderMode();
+		// DrawTextureV(m_render_water.texture, {0,0}, WHITE);
 	}
 
 private:
 	Color clr		  = {255, 255, 255, 150};
 	Texture2D m_water = LoadTexture("ressources/enviroment/water.png");
+
+	RenderTexture2D m_render_water = LoadRenderTexture(m_water.width, m_water.width);
+
+	// Shader
+	Shader m_wave_shader	   = LoadShader(NULL, "ressources/shader/wave.fs");
+	Vector2 m_size			   = {4000, 3000};
+	Vector2 m_main_frequency   = {0.01, 0.005};
+	Vector2 m_main_amplitude   = {10, 20};
+	Vector2 m_main_velocity	   = {2, 1};
+	Vector2 m_sub_frequency	   = {0, 0};
+	Vector2 m_sub_amplitude	   = {0, 0};
+	Vector2 m_sub_velocity	   = {0, 0};
+	int m_shader_time_location = 0;
+	float m_shader_time		   = 0;
 };
 
 class AppLayerPriv
@@ -56,6 +105,7 @@ AppLayer::AppLayer()
 
 	_p->water->propose_z_index(-10);
 	renderer_->submit_renderable(_p->water);
+	register_entity(_p->water);
 }
 
 AppLayer::~AppLayer()

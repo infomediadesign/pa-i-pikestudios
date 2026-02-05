@@ -42,27 +42,6 @@ Player::Player() : PSInterfaces::IEntity("player")
 	m_animation_controller.add_animation_at_index(0, 1);
 	m_animation_controller.add_animation_at_index(2, 3);
 
-	m_wave_shader = LoadShader(NULL, "ressources/shader/wave.fs");
-
-	m_size			 = {24, 42};
-	m_main_frequency = {2, 2};
-	m_main_amplitude = {2, 2};
-	m_main_velocity	 = {2, 2};
-	m_sub_frequency	 = {0.5, 0.5};
-	m_sub_amplitude	 = {0.5, 0.5};
-	m_sub_velocity	 = {0.5, 0.5};
-
-	SetShaderValue(m_wave_shader, GetShaderLocation(m_wave_shader, "size"), &m_size, SHADER_UNIFORM_VEC2);
-	SetShaderValue(m_wave_shader, GetShaderLocation(m_wave_shader, "main_freq"), &m_main_frequency, SHADER_UNIFORM_VEC2);
-	SetShaderValue(m_wave_shader, GetShaderLocation(m_wave_shader, "main_amp"), &m_main_amplitude, SHADER_UNIFORM_VEC2);
-	SetShaderValue(m_wave_shader, GetShaderLocation(m_wave_shader, "main_vel"), &m_main_velocity, SHADER_UNIFORM_VEC2);
-	SetShaderValue(m_wave_shader, GetShaderLocation(m_wave_shader, "sub_freq"), &m_sub_frequency, SHADER_UNIFORM_VEC2);
-	SetShaderValue(m_wave_shader, GetShaderLocation(m_wave_shader, "sub_amp"), &m_sub_amplitude, SHADER_UNIFORM_VEC2);
-	SetShaderValue(m_wave_shader, GetShaderLocation(m_wave_shader, "sub_vel"), &m_sub_velocity, SHADER_UNIFORM_VEC2);
-
-	m_shader_time_location = GetShaderLocation(m_wave_shader, "time");
-	SetShaderValue(m_wave_shader, m_shader_time_location, &m_shader_time, SHADER_UNIFORM_FLOAT);
-
 	// WARNING: THIS IS ONLY FOR TESTING
 	if ( auto& vp = gApp()->viewport() ) {
 		m_position = vp->viewport_base_size() / 2;
@@ -142,9 +121,6 @@ void Player::update(const float dt)
 
 		m_smear.update_smear_wave({0, 1}, Linear, 1, 10, Vector2Length(m_velocity), m_max_velocity, dt);
 	}
-
-	m_shader_time += dt;
-	SetShaderValue(m_wave_shader, m_shader_time_location, &m_shader_time, SHADER_UNIFORM_FLOAT);
 }
 
 void Player::on_hit()
@@ -195,12 +171,6 @@ void Player::render()
 				m_texture, m_animation_controller.get_source_rectangle(3).value_or(Rectangle{0}), m_position, m_rotation + m_rotation_offset, WHITE
 		);
 	}
-
-	BeginShaderMode(m_wave_shader);
-
-	DrawTextureV(m_texture, {200, 200}, WHITE);
-
-	EndShaderMode();
 }
 
 void Player::reset_iframe(float dt)

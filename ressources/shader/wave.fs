@@ -30,8 +30,8 @@ void main() {
 
     vec2 p = fragTexCoord;
 
-    p.x += (cos((fragTexCoord.y - boxTop) * main_freq.x * pixelWidth + (time * main_vel.x)) * main_amp.x * pixelWidth) + (cos((fragTexCoord.y - boxTop) * sub_freq.x * pixelWidth + (time * sub_vel.x)) * sub_amp.x * pixelWidth);
-    p.y += (sin((fragTexCoord.x - boxLeft) * main_freq.y * pixelHeight + (time * main_vel.y)) * main_amp.y * pixelHeight) + (sin((fragTexCoord.x - boxLeft) * sub_freq.y * pixelHeight + (time * sub_vel.y)) * sub_amp.y * pixelHeight);
+    p.x += (cos((fragTexCoord.y - boxTop) * main_freq.x /  pixelWidth + (time * main_vel.x)) * main_amp.x * pixelWidth) + (cos((fragTexCoord.y - boxTop) * sub_freq.x / pixelWidth + (time * sub_vel.x)) * sub_amp.x * pixelWidth);
+    p.y += (sin((fragTexCoord.x - boxLeft) * main_freq.y / pixelHeight + (time * main_vel.y)) * main_amp.y * pixelHeight) + (sin((fragTexCoord.x - boxLeft) * sub_freq.y / pixelHeight + (time * sub_vel.y)) * sub_amp.y * pixelHeight);
 
     finalColor = texture(texture0, p) * colDiffuse * fragColor;
 }
