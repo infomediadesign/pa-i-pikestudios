@@ -13,9 +13,30 @@
 #include <layers/uilayer.h>
 #include <misc/mapborderinteraction.h>
 
+class Water : public PSInterfaces::IRenderable
+{
+public:
+	Water() : PSInterfaces::IEntity("water") {};
+	~Water() {};
+	void update(float dt) override {};
+	void render() override
+	{
+		if ( auto& vp = gApp()->viewport() ) {
+			auto sc = vp->viewport_scale();
+			vp->draw_in_viewport(m_water, {0, 0, (float) m_water.width * sc, (float) m_water.height * sc}, {0, 0}, 0, clr);
+		}
+	}
+
+private:
+	Color clr		  = {255, 255, 255, 150};
+	Texture2D m_water = LoadTexture("ressources/enviroment/water.png");
+};
+
 class AppLayerPriv
 {
 	friend class AppLayer;
+
+	std::shared_ptr<Water> water = std::make_shared<Water>();
 };
 
 AppLayer::AppLayer()
@@ -32,6 +53,9 @@ AppLayer::AppLayer()
 		if ( auto director = dynamic_cast<FortunaDirector*>(app->game_director()) )
 			director->initialize_entities();
 	});
+
+	_p->water->propose_z_index(-10);
+	renderer_->submit_renderable(_p->water);
 }
 
 AppLayer::~AppLayer()
