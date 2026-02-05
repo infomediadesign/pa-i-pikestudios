@@ -26,7 +26,7 @@ void PauseLayer::on_render()
 	PSUtils::DrawTextBoxed(f, "Quit", m_quit_bounding_rect, 24 , 2, false, BLACK);
 }
 
-void PauseLayer::on_update(const float dt)
+void PauseLayer::on_update(float dt)
 {
 	float btn_width	 = 100;
 	float btn_height = 50;

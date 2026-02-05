@@ -8,7 +8,7 @@ class PauseLayer: public PSInterfaces::Layer
 	public:
 	PauseLayer();
 	
-	void on_update(const float dt) override;
+	void on_update(float dt) override;
 	void on_render() override;
 	
 	enum BtnState {
