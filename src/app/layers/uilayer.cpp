@@ -13,6 +13,7 @@ static const Color STANDARD_TEXT_COLOR	= DARKGRAY;
 UILayer::UILayer()
 {
 	m_ui_bounty_container.texture = LoadTexture("ressources/icon/test_coin.png");
+	m_health_icon				  = LoadTexture("ressources/icon/test_health.png");
 }
 
 void UILayer::on_update(const float dt)
@@ -24,11 +25,21 @@ void UILayer::on_update(const float dt)
 void UILayer::on_render()
 {
 	draw_bounty_ui();
+	draw_health_ui();
 }
 
 
 void UILayer::draw_text(std::string text, Rectangle bounds, int text_size, Color color )
 {
+	/*
+	auto& vp	= gApp()->viewport();
+	float scale = vp->viewport_scale();
+
+	 bounds.x *= scale;
+	bounds.y *= scale;
+	text_size *= scale;
+	*/
+
 	GuiSetStyle(DEFAULT, TEXT_SIZE, text_size);
 	GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt(color));
 	GuiLabel(bounds, text.c_str());
@@ -63,18 +74,28 @@ void UILayer::draw_bounty_ui()
 	float text_size	 = 12;
 	Vector2 text_pos = vp->position_viewport_to_global({20, (panel_size.y - text_size) / 2}); 
 	draw_text(bounty_text, {text_pos.x, text_pos.y, 36 * scale, text_size * scale}, static_cast<int>(text_size * scale), RED);
-	
 }
 
-void UILayer::calculate_texture_bounds(Texture2D& texture, Rectangle& texture_bounds, Rectangle& bounds, int& padding)
+void UILayer::draw_health_ui()
 {
-	Vector2 texture_size = {static_cast<float>(bounds.width) - padding *2 , static_cast<float>(bounds.height) - padding *2};
-	texture_bounds		 = {bounds.x + padding, bounds.y + padding, texture_size.x, texture_size.y};
-}
+	if ( auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director()) ) {
+		int health	   = director->player_health();
+		int max_health = director->player_max_health();
+		auto& vp	   = gApp()->viewport();
 
-void UILayer::calculate_text_bounds(std::string& text, Rectangle& text_bounds, Rectangle& bounds, int padding, int bound_height)
-{
-	float text_x = bounds.x + (bounds.width + text.length() * 5);
-	float text_y = bound_height + padding;
-	text_bounds	 = {text_x, text_y, bounds.width - padding * 2, bounds.height - padding * 2};
+		float heart_size = 20.0f;
+		float padding	 = 10.0f;
+
+		float vp_height = vp->viewport_base_size().y;
+
+		float y_pos = vp_height - heart_size / 2 - padding;
+
+		for ( int i = 0; i < max_health; ++i ) {
+			Color color = i < health ? RED : DARKGRAY;
+			vp->draw_in_viewport(
+					m_health_icon, {0, 0, static_cast<float>(m_health_icon.width), static_cast<float>(m_health_icon.height)},
+					{padding + heart_size / 2 + i * (heart_size + 5), y_pos}, 0.0f, color
+			);
+		}
+	}
 }

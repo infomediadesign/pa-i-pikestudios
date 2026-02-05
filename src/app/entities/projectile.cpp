@@ -271,30 +271,20 @@ void Projectile::set_fiering_cannon(const std::shared_ptr<Cannon>& cannon)
 
 std::optional<std::vector<Vector2>> Projectile::bounds() const
 {
-	Rectangle projectile_rec;
-	projectile_rec = m_p_sprite->frame_rect({0, 0});
-
 	if ( is_active() )
 		if ( auto& vp = gApp()->viewport() ) {
 
-			auto scaled_pos = vp->position_viewport_to_global(m_p_position);
+			Vector2 vp_pos = vp->position_viewport_to_global(m_p_position);
+			float scale	   = vp->viewport_scale();
 
-			auto p1 = coordinatesystem::point_relative_to_global_rightup(
-					scaled_pos, m_p_rotation, {projectile_rec.width / 2, projectile_rec.height / 2}
-			);
-			auto p2 = coordinatesystem::point_relative_to_global_rightup(
-					scaled_pos, m_p_rotation, {-projectile_rec.width / 2, projectile_rec.height / 2}
-			);
-			auto p3 = coordinatesystem::point_relative_to_global_rightup(
-					scaled_pos, m_p_rotation, {-projectile_rec.width / 2, -projectile_rec.height / 2}
-			);
-			auto p4 = coordinatesystem::point_relative_to_global_rightup(
-					scaled_pos, m_p_rotation, {projectile_rec.width / 2, -projectile_rec.height / 2}
-			);
+			std::vector<Vector2> hitbox_points = {
+					{1 * scale, 1 * scale}, {1 * scale, -1 * scale}, {-1 * scale, -1 * scale}, {-1 * scale, 1 * scale}
+			};
 
-			std::vector<Vector2> v{p1, p2, p3, p4};
-			return v;
+			return coordinatesystem::points_relative_to_globle_rightup(vp_pos, m_p_rotation, hitbox_points);
 		}
+
+	return std::nullopt;
 
 	return std::nullopt;
 };

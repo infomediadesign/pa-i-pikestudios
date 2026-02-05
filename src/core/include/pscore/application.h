@@ -109,6 +109,10 @@ namespace PSCore {
 			return nullptr;
 		};
 
+		std::unique_ptr<PSInterfaces::IEntity>& game_director_ref() {
+			return m_game_director;
+		};
+
 		std::unique_ptr<PSCore::Viewport>& viewport();
 
 		std::unique_ptr<PSCore::sprites::SpriteLoader>& sprite_loader();

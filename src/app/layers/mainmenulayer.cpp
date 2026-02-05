@@ -2,6 +2,8 @@
 #include <layers/mainmenulayer.h>
 #include <pscore/application.h>
 #include <pscore/viewport.h>
+#include <layers/scorelayer.h>
+#include <entities/director.h>
 #include <raygui.h>
 #include <raylib.h>
 
@@ -30,6 +32,11 @@ void MainMenuLayer::on_render()
 	GuiSetStyle(DEFAULT, TEXT_SIZE, 6 * scale);
 
 	if ( GuiButton(button_rect, "Start Game") ) {
+		gApp()->call_later([]() {
+			if ( auto& director = gApp()->game_director_ref() ) {
+				director.reset(new FortunaDirector());
+			}
+		});
 		gApp()->call_later([]() { gApp()->switch_layer<MainMenuLayer, AppLayer>(); });
 	}
 	if ( GuiButton(next_btn_rect(), "Options") ) {
@@ -37,6 +44,12 @@ void MainMenuLayer::on_render()
 	}
 	if ( GuiButton(next_btn_rect(), "Leader Board") ) {
 		gApp()->call_later([]() { PS_LOG(LOG_INFO, "Clicked Leader Board"); });
+		gApp()->call_later([]() { gApp()->switch_layer<MainMenuLayer, ScoreLayer>(); });
+		gApp()->call_later([]() { 
+			auto score_layer = gApp()->get_layer<ScoreLayer>();
+			if ( score_layer )
+				score_layer->load_highscore(score_layer->score_filename());
+		});
 	}
 	if ( GuiButton(next_btn_rect(), "Quit") ) {
 		gApp()->stop();

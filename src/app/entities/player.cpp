@@ -10,15 +10,21 @@
 #include <layers/applayer.h>
 #include <misc/smear.h>
 #include <psinterfaces/entity.h>
+#include <layers/scorelayer.h>
+#include <layers/uilayer.h>
 
 #include <coordinatesystem.h>
 
 #ifndef CALCULATION_VELOCITY_MIN
-#define CALCULATION_VELOCITY_MIN 1
+#define CALCULATION_VELOCITY_MIN 2
 #endif
 
-#ifndef CALCULATION_DELTA_ROTATION_MIN
-#define CALCULATION_DELTA_ROTATION_MIN 0.5
+#ifndef SCHMITT_TRIGGER_DELTA_ROTATION_MIN
+#define SCHMITT_TRIGGER_DELTA_ROTATION_MIN 0.4
+#endif
+
+#ifndef SCHMITT_TRIGGER_DELTA_ROTATION_MAX
+#define SCHMITT_TRIGGER_DELTA_ROTATION_MAX 0.5
 #endif
 
 Player::Player() : PSInterfaces::IEntity("player")
@@ -42,7 +48,7 @@ Player::Player() : PSInterfaces::IEntity("player")
 	}
 	m_max_velocity = 200;
 	m_rotation	   = 0;
-	set_interpolation_values(6, 2, 4, 1500, 0.9);
+	set_interpolation_values(6, 2, 4, 1500, 200, 30);
 	set_texture_values(FETCH_SPRITE_TEXTURE(ident_), 90);
 	//
 	//
@@ -58,11 +64,11 @@ void Player::update(const float dt)
 		if ( IsKeyDown(KEY_S) ) {
 			m_target_velocity -= m_target_velocity > 0 ? m_input_velocity_multiplier * dt : 0;
 		}
-		if ( IsKeyDown(KEY_D) && Vector2Length(m_velocity) > CALCULATION_VELOCITY_MIN ) {
-			m_target_rotation += m_input_rotation_multiplier * Vector2Length(m_velocity) * dt;
+		if ( IsKeyDown(KEY_D) && Vector2Length(m_velocity) - (m_velocity_rotation_downscale * fabsf(m_rotation_velocity)) > CALCULATION_VELOCITY_MIN ) {
+			m_target_rotation += m_input_rotation_multiplier * dt;
 		}
-		if ( IsKeyDown(KEY_A) && Vector2Length(m_velocity) > CALCULATION_VELOCITY_MIN ) {
-			m_target_rotation -= m_input_rotation_multiplier * Vector2Length(m_velocity) * dt;
+		if ( IsKeyDown(KEY_A) && Vector2Length(m_velocity) - (m_velocity_rotation_downscale * fabsf(m_rotation_velocity)) > CALCULATION_VELOCITY_MIN ) {
+			m_target_rotation -= m_input_rotation_multiplier * dt;
 		}
 	}
 
@@ -70,24 +76,34 @@ void Player::update(const float dt)
 
 	m_rotation_velocity = calculate_rotation_velocity(0.01, dt);
 
+	reset_iframe(dt);
+
 	// Animation Calculation
 
-	int sprite_sheet_animation_index;
-	if ( m_rotation_velocity > CALCULATION_DELTA_ROTATION_MIN || m_rotation_velocity < -CALCULATION_DELTA_ROTATION_MIN ) {
+	/*if ( m_rotation_velocity > CALCULATION_DELTA_ROTATION_MIN || m_rotation_velocity < -CALCULATION_DELTA_ROTATION_MIN ) {
 		sprite_sheet_animation_index = m_rotation_velocity < 0 ? 1 : 3;
 	} else {
 		sprite_sheet_animation_index = 2;
+	}*/
+
+	if ( m_animation_controller.get_sprite_sheet_animation_index(3).value_or(2) == 2 &&
+		 fabsf(m_rotation_velocity) > SCHMITT_TRIGGER_DELTA_ROTATION_MAX ) {
+		m_sprite_sheet_animation_index = m_rotation_velocity < 0 ? 1 : 3;
+	}
+	if ( m_animation_controller.get_sprite_sheet_animation_index(3).value_or(2) != 2 &&
+		 fabsf(m_rotation_velocity) < SCHMITT_TRIGGER_DELTA_ROTATION_MIN ) {
+		m_sprite_sheet_animation_index = 2;
 	}
 
-	int sprite_sheet_frame_index = static_cast<int>(round((Vector2Length(m_velocity) / m_max_velocity) * 2));
+	m_sprite_sheet_frame_index = static_cast<int>(round((Vector2Length(m_velocity) / m_max_velocity) * 2));
 
-	m_animation_controller.set_animation_at_index(sprite_sheet_animation_index, sprite_sheet_frame_index, 3);
+	m_animation_controller.set_animation_at_index(m_sprite_sheet_animation_index, m_sprite_sheet_frame_index, 3);
 
 	m_animation_controller.update_animation(dt);
 
 	// Smear Calculation
 
-	smear::update_smear_rotation(&m_smear_rotation, m_rotation - m_target_rotation, 0.5, 10, dt);
+	m_smear.update_smear(m_rotation - m_target_rotation, 0.5, 10, dt);
 
 	if ( auto& vp = gApp()->viewport() ) {
 		Vector2 m_position_absolute = vp->position_viewport_to_global(m_position);
@@ -96,29 +112,41 @@ void Player::update(const float dt)
 		Vector2 m_smear_left_position =
 				coordinatesystem::point_relative_to_global_leftdown(m_position_absolute, m_rotation, Vector2Scale({18, 5}, vp->viewport_scale()));
 
-		m_smear_points[0] = smear::calculate_smear_linear_points(
-				m_smear_right_position, Vector2Length(m_velocity), m_rotation, m_smear_rotation, 0.15 * vp->viewport_scale(), 0
-		);
-		m_smear_points[1] = smear::calculate_smear_linear_points(
-				m_smear_left_position, Vector2Length(m_velocity), m_rotation, m_smear_rotation, 0.15 * vp->viewport_scale(), 0
-		);
+		m_smear.calculate_linear_smear(m_smear_right_position, Vector2Length(m_velocity), m_rotation, 0.15 * vp->viewport_scale(), 0, 0);
+		m_smear.calculate_linear_smear(m_smear_left_position, Vector2Length(m_velocity), m_rotation, 0.15 * vp->viewport_scale(), 0, 1);
 
-		m_smear_wave_time += dt;
-		if ( m_smear_wave_time >= m_smear_wave_per_second / (Vector2Length(m_velocity) / m_max_velocity) ) {
-			m_smear_wave_time = 0;
-			smear::send_smear_wave(&m_smear_wave, &m_smear_wave_index, 0.1, Vector2Length(m_velocity), m_max_velocity, dt);
-		}
-		smear::update_smear_wave(&m_smear_wave, 1, Vector2Length(m_velocity), m_max_velocity, dt);
-		smear::calculate_smear_wave_points(
-				&m_smear_wave_points, m_smear_wave, m_smear_points, {0, 1}, m_smear_rotation, 10, Vector2Length(m_velocity), m_max_velocity,
-				smear::linear_points
-		);
+		m_smear.add_smear_wave(0.1, 0.25, Vector2Length(m_velocity), m_max_velocity, dt, 0);
+
+		m_smear.update_smear_wave({0, 1}, Linear, 1, 10, Vector2Length(m_velocity), m_max_velocity, dt);
 	}
 }
 
-void Player::damage()
+void Player::on_hit()
 {
-	PS_LOG(LOG_INFO, "player took damage");
+	if ( m_can_be_hit && !m_is_invincible) {
+		m_can_be_hit = false;
+		if ( auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director()) ) {
+			director->set_player_health(director->player_health() - 1);
+			if ( director->player_health() <= 0 ) {
+				set_is_active(false);
+				gApp()->push_layer<ScoreLayer>();
+				gApp()->pop_layer<UILayer>();
+				auto score_layer = gApp()->get_layer<ScoreLayer>();
+				if ( score_layer ) {
+					score_layer->save_new_highscore(dynamic_cast<FortunaDirector*>(gApp()->game_director())->m_b_bounty.bounty());
+					score_layer->load_highscore(score_layer->score_filename());
+					for ( auto cannon: m_cannon_container ) {
+						cannon->set_is_active(false);
+					}
+				}
+			}
+		}
+	}
+}
+
+void Player::set_is_invincible(bool invincible)
+{
+	m_is_invincible = invincible;
 }
 
 void Player::render()
@@ -126,11 +154,9 @@ void Player::render()
 	// Draw Smear
 
 	if ( auto& vp = gApp()->viewport() ) {
-		smear::draw_smear_linear(m_smear_points[0], 2 * vp->viewport_scale(), 1, BLUE);
-		smear::draw_smear_linear(m_smear_points[1], 2 * vp->viewport_scale(), 1, BLUE);
-		smear::draw_smear_wave_between_smears(
-				m_smear_wave_points, m_smear_wave, Vector2Length(m_velocity), m_max_velocity, 2 * vp->viewport_scale(), 1, SKYBLUE
-		);
+		m_smear.draw_smear(0, Linear, 2 * vp->viewport_scale(), 1, BLUE);
+		m_smear.draw_smear(1, Linear, 2 * vp->viewport_scale(), 1, BLUE);
+		m_smear.draw_smear_wave(Vector2Length(m_velocity), m_max_velocity, 2 * vp->viewport_scale(), 1, SKYBLUE);
 	}
 
 	// Draw Ship
@@ -144,6 +170,33 @@ void Player::render()
 		);
 	}
 }
+
+void Player::reset_iframe(float dt)
+{
+	if ( !m_can_be_hit ) {
+		if ( auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director()) ) {
+			m_iframe_timer += dt;
+			if ( m_iframe_timer >= director->player_iframe_duration()) {
+				m_can_be_hit   = true;
+				m_iframe_timer = 0;
+			}
+		}
+	}
+}
+
+void Player::draw_debug()
+{
+	if ( bounds().has_value() ) {
+		for ( int i = 0; i < bounds().value().size(); i++ ) {
+			if ( i < bounds().value().size() - 1 ) {
+				DrawLineV(bounds().value().at(i), bounds().value().at(i + 1), GREEN);
+			} else {
+				DrawLineV(bounds().value().at(i), bounds().value().at(0), GREEN);
+			}
+		}
+	}
+}
+
 
 std::optional<Vector2> Player::position() const
 {
@@ -212,14 +265,15 @@ void Player::set_target_rotation(const float target_rotation)
 
 void Player::set_interpolation_values(
 		const float acceleration_fade, const float deceleration_fade, const float rotation_fade, const float input_velocity_multiplier,
-		const float input_rotation_multiplier
+		const float input_rotation_multiplier, const float velocity_rotation_downscale
 )
 {
-	m_acceleration_fade			= acceleration_fade;
-	m_deceleration_fade			= deceleration_fade;
-	m_rotation_fade				= rotation_fade;
-	m_input_velocity_multiplier = input_velocity_multiplier;
-	m_input_rotation_multiplier = input_rotation_multiplier;
+	m_acceleration_fade			  = acceleration_fade;
+	m_deceleration_fade			  = deceleration_fade;
+	m_rotation_fade				  = rotation_fade;
+	m_input_velocity_multiplier	  = input_velocity_multiplier;
+	m_input_rotation_multiplier	  = input_rotation_multiplier;
+	m_velocity_rotation_downscale = velocity_rotation_downscale;
 }
 
 void Player::calculate_movement(const float dt)
@@ -232,8 +286,12 @@ void Player::calculate_movement(const float dt)
 	// Velocity and a static Alpha which ends in an exponential approximation to calculate the Value of the Velocity
 	float velocity_value =
 			(m_target_velocity - Vector2Length(m_velocity)) > 0
-					? Vector2Length(m_velocity) + (m_target_velocity - Vector2Length(m_velocity)) * std::clamp(m_acceleration_fade * dt, 0.0f, 1.0f)
-					: Vector2Length(m_velocity) + (m_target_velocity - Vector2Length(m_velocity)) * std::clamp(m_deceleration_fade * dt, 0.0f, 1.0f);
+					? Vector2Length(m_velocity) +
+							  (m_target_velocity - Vector2Length(m_velocity) - (m_velocity_rotation_downscale * fabsf(m_rotation_velocity))) *
+									  std::clamp(m_acceleration_fade * dt, 0.0f, 1.0f)
+					: Vector2Length(m_velocity) +
+							  (m_target_velocity - Vector2Length(m_velocity) - (m_velocity_rotation_downscale * fabsf(m_rotation_velocity))) *
+									  std::clamp(m_deceleration_fade * dt, 0.0f, 1.0f);
 
 	// Calculate with the Velocity Value and the Rotation the actual 2 Dimensional Velocity
 	m_velocity.x = velocity_value * cos(m_rotation * DEG2RAD);
@@ -281,16 +339,16 @@ void Player::initialize_cannon()
 
 	float x_offset = 0;
 	if ( !m_cannon_container.empty() ) {
-		cannon_width = static_cast<float>(m_cannon_container[0]->texture().width);
+		cannon_width = static_cast<float>(m_cannon_container[0]->texture().width / 7);
 	}
-	x_offset = -((cannon_width + cannon_width / 4) * m_cannon_container.size()) / 2;
+	x_offset = -(((cannon_width / 4)) * m_cannon_container.size()) / 2;
 
 	for ( int i = 0; i < 2; i++ ) {
 		auto new_cannon = director->spawn_cannon(m_position);
 		m_cannon_container.push_back(new_cannon);
 		new_cannon->set_parent(m_shared_ptr_this);
 		new_cannon->set_parent_position_x_offset(x_offset);
-		new_cannon->set_parent_position_y_offset(new_cannon->texture().height);
+		new_cannon->set_parent_position_y_offset(new_cannon->texture().height / 3);
 		new_cannon->set_shared_ptr_this(new_cannon);
 		if ( i == 0 ) {
 			new_cannon->set_positioning(Cannon::CannonPositioning::Left);
@@ -370,21 +428,25 @@ void Player::set_shared_ptr_this(std::shared_ptr<Player> ptr)
 
 std::optional<std::vector<Vector2>> Player::bounds() const
 {
-	Rectangle shark_rec;
-	shark_rec = m_sprite->frame_rect({0, 0});
+	if ( is_active() )
+		if ( auto& vp = gApp()->viewport() ) {
 
-	std::vector<Vector2> v{
-			m_position, // Top-left
-			Vector2{m_position.x + shark_rec.width, m_position.y}, // Top-right
-			Vector2{m_position.x + shark_rec.width, m_position.y + shark_rec.height}, // Bottom-right
-			Vector2{m_position.x, m_position.y + shark_rec.height} // Bottom-left
-	};
+			Vector2 vp_pos = vp->position_viewport_to_global(m_position);
+			float scale	   = vp->viewport_scale();
 
-	return v;
+			std::vector<Vector2> hitbox_points = {{20 * scale, 0 * scale},	{8 * scale, 6 * scale},	   {-15 * scale, 6 * scale},
+												  {-20 * scale, 0 * scale}, {-15 * scale, -6 * scale}, {8 * scale, -6 * scale}};
+
+			return coordinatesystem::points_relative_to_globle_rightup(vp_pos, m_rotation, hitbox_points);
+		}
+
+	return std::nullopt;
 }
-void Player::set_input_velocity_multiplier(float val) {
+void Player::set_input_velocity_multiplier(float val)
+{
 	m_input_velocity_multiplier = val;
 };
-void Player::set_input_rotation_multiplier(float val) {
+void Player::set_input_rotation_multiplier(float val)
+{
 	m_input_rotation_multiplier = val;
 };

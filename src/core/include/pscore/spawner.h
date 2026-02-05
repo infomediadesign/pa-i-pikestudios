@@ -17,11 +17,12 @@ namespace PSCore {
 	class Spawner : public PSInterfaces::IEntity
 	{
 	public:
-		Spawner(std::chrono::duration<double> interval, int variation = 0, int limit = 100) : PSInterfaces::IEntity("spawner")
+		Spawner(std::chrono::duration<double> interval, int variation = 0, int limit = 100, bool render = true) : PSInterfaces::IEntity("spawner")
 		{
 			m_interval	= interval;
 			m_variation = variation;
 			m_limit		= limit;
+			m_render	= render;
 		};
 		~Spawner() {};
 
@@ -46,18 +47,21 @@ namespace PSCore {
 
 		void spawn()
 		{
-			if ( m_entities.size() >= m_limit )
+			const auto is_suspended = [](std::shared_ptr<T> entity) -> bool {
+				if ( std::shared_ptr<PSInterfaces::IEntity> casted = std::dynamic_pointer_cast<PSInterfaces::IEntity>(entity) ) {
+					return !casted->is_active();
+				}
+				
+				return false;
+			};
+
+			if ( std::count_if(m_entities.begin(), m_entities.end(), [is_suspended](std::shared_ptr<T> entity) { return !is_suspended(entity); }) >=
+				 m_limit )
 				return;
 
 			if ( auto layer = dynamic_cast<PSInterfaces::Layer*>(gApp()->get_layer<L>()) ) {
 				if ( m_custom_spawn && m_custom_spawn(layer) )
 					return;
-
-				const auto is_suspended = [](std::shared_ptr<T> entity) -> bool {
-					if ( std::shared_ptr<PSInterfaces::IEntity> casted = std::dynamic_pointer_cast<PSInterfaces::IEntity>(entity) ) {
-						return !casted->is_active();
-					}
-				};
 
 				std::shared_ptr<T> entity;
 
@@ -68,7 +72,7 @@ namespace PSCore {
 				} else {
 					entity = std::make_shared<T>();
 					m_entities.push_back(entity);
-					layer->register_entity(entity, true);
+					layer->register_entity(entity, m_render);
 				}
 				if ( m_spawn_cb )
 					m_spawn_cb(entity);
@@ -112,5 +116,6 @@ namespace PSCore {
 		int m_limit		= 10;
 
 		bool m_running = false;
+		bool m_render  = false;
 	};
 } // namespace PSCore

@@ -14,7 +14,7 @@ namespace PSCore {
 
 	namespace sprites {
 
-		enum PlayStyle { Forward, PingPong, KeyFrame };
+		enum PlayStyle { Forward, Backward, PingPong, KeyFrame };
 
 		struct SpriteSheetData
 		{
@@ -94,12 +94,25 @@ namespace PSCore {
 			 */
 			void set_animation_at_index(int sprite_sheet_animation_index, int sprite_sheet_frame_index, int z_index);
 
+			/**
+			 * @brief Sets a new Framerate for an Animation at the given Index
+			 * @param sprite_sheet_animation_index The Index of the Animation in the Sprite Sheet
+			 * @param framerate The new Framerate of the Animation
+			 */
+			void set_new_animation_framerate(int sprite_sheet_animation_index, float framerate);
+
 		private:
 			/**
 			 * @brief Set the Animation one Frame forward in a Forward loop
 			 * @param animation_rectangle The Reference to an Animation
 			 */
 			void play_animation_forward(SpriteSourceRectangle* animation_rectangle);
+
+			/**
+			 * @brief Set the Animation one Frame backward in a Backward loop
+			 * @param animation_rectangle The Reference to an Animation
+			 */
+			void play_animation_backward(SpriteSourceRectangle* animation_rectangle);
 
 			/**
 			 * @Set the Animation one Frame forward or backward in a PingPong loop

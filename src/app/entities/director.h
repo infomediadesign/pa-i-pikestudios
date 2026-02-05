@@ -46,6 +46,14 @@ public:
 	void upgrade_player_projectile_speed(float amount);
 	void upgrade_player_fire_range(float amount);
 	void upgrade_player_add_cannon(int amount);
+	void upgrade_player_invincibility(bool invincibility);
+
+	// Player Health
+	void set_player_health(const int health);
+	int player_health() const;
+
+	void set_player_max_health(const int max_health);
+	int player_max_health() const;
 
 	//Bounty
 	struct Bounty
@@ -61,6 +69,9 @@ public:
 
 	};
 
+	float player_iframe_duration() const;
+
+
 	struct BountyAmount
 	{
 		int shark_bounty	= 40;
@@ -73,5 +84,5 @@ public:
 private:
 	
 	std::unique_ptr<FortunaDirectorPriv> _p;
-	
+
 };
