@@ -26,6 +26,7 @@ public:
 	void render() override;
 	void draw_debug() override;
 	void on_hit() override;
+	void set_is_active(bool active) override;
 
 	void set_pos(const Vector2& pos);
 

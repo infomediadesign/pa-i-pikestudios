@@ -149,7 +149,7 @@ void Player::update(const float dt)
 
 void Player::on_hit()
 {
-	if ( m_can_be_hit && !m_is_invincibil ) {
+	if ( m_can_be_hit && !m_is_invincible) {
 		m_can_be_hit = false;
 		if ( auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director()) ) {
 			director->set_player_health(director->player_health() - 1);
@@ -170,9 +170,9 @@ void Player::on_hit()
 	}
 }
 
-void Player::set_is_invincibil(bool invincibil)
+void Player::set_is_invincible(bool invincible)
 {
-	m_is_invincibil = invincibil;
+	m_is_invincible = invincible;
 }
 
 void Player::render()
