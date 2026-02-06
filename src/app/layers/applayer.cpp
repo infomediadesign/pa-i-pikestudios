@@ -59,12 +59,11 @@ public:
 			vp->draw_in_viewport(m_water, {0, 0, (float) m_water.width * sc, (float) m_water.height * sc}, {0, 0}, 0, clr);
 		}
 		EndShaderMode();
-		// DrawTextureV(m_render_water.texture, {0,0}, WHITE);
 	}
 
 private:
 	Color clr		  = {255, 255, 255, 150};
-	Texture2D m_water = LoadTexture("ressources/enviroment/water.png");
+	Texture2D m_water = LoadTexture("ressources/enviroment/waterV2.png");
 
 	RenderTexture2D m_render_water = LoadRenderTexture(m_water.width, m_water.width);
 

@@ -136,6 +136,7 @@ private:
 
 	// Smear Variables
 	Smear m_smear;
+	Color m_smear_color = {9, 75, 101, 127};
 
 	// invincibleity Variables
 	bool m_can_be_hit		= true;

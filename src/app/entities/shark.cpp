@@ -38,11 +38,27 @@ void Fin::render()
 				tex->m_s_texture, m_shark->m_animation_controller.get_source_rectangle(1).value_or(Rectangle{0}), m_shark->m_pos,
 				m_shark->m_shark_rotation + 90, WHITE
 		);
+
+		m_smear.draw_smear(0, Exponential, 2 * vp->viewport_scale(), 1, m_smear_color);
+		m_smear.draw_smear(1, Exponential, 2 * vp->viewport_scale(), 1, m_smear_color);
 	}
 }
 
 void Fin::update(float dt)
 {
+	if ( auto& vp = gApp()->viewport() ) {
+		Vector2 position_absolute = vp->position_viewport_to_global(m_shark->m_pos);
+		float scale				  = vp->viewport_scale();
+		Vector2 smear_forward_position =
+				coordinatesystem::point_relative_to_global_rightup(position_absolute, m_shark->m_shark_rotation, Vector2Scale({5, -0.5}, scale));
+
+		m_smear.calculate_exponential_smear(
+				smear_forward_position, m_shark->m_speed, m_shark->m_shark_rotation, 0.2f * scale, 0, 0.03f * scale, 0.05f * scale, 0
+		);
+		m_smear.calculate_exponential_smear(
+				smear_forward_position, m_shark->m_speed, m_shark->m_shark_rotation, 0.2f * scale, 0, -0.03f * scale, -0.05f * scale, 1
+		);
+	}
 }
 
 void Fin::draw_debug()
@@ -145,6 +161,8 @@ void Shark::update(float dt)
 	m_fin->update(dt);
 
 	m_animation_controller.update_animation(dt);
+
+	m_rotation_velocity = calculate_rotation_velocity(0.01, dt);
 
 	std::shared_ptr<Player> player_entity;
 
@@ -296,4 +314,23 @@ void Shark::set_is_active(bool active)
 	is_active_ = active;
 	m_body->set_is_active(active);
 	m_fin->set_is_active(active);
+}
+
+float Shark::calculate_rotation_velocity(float frequency, float dt)
+{
+	static float timer			   = 0;
+	static float last_rotation	   = 0;
+	static float rotation_velocity = 0;
+
+	timer += dt;
+
+	if ( timer >= frequency ) {
+		timer = 0;
+
+		rotation_velocity = m_shark_rotation - last_rotation;
+
+		last_rotation = m_shark_rotation;
+	}
+
+	return rotation_velocity;
 }
