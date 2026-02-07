@@ -4,6 +4,7 @@
 #include <pscore/application.h>
 #include <raygui.h>
 #include <layers/deathscreenlayer.h>
+#include <layers/mainmenulayer.h>
 #include <pscore/viewport.h>
 #include <entities/director.h>
 
@@ -39,9 +40,31 @@ void DeathScreenLayer::on_render()
 	GuiSetStyle(DEFAULT, TEXT_SIZE, 28 * sk);
 
 	GuiLabel(rect, "Du bist gestorben :(");
+
+	GuiSetStyle(DEFAULT, TEXT_SIZE, 14 * sk);
+
 	GuiLabel(score, ("Score: " + bounty_text).c_str());
 
 	GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, oldColor);
 	GuiSetStyle(DEFAULT, TEXT_SIZE, oldSize);
 	GuiSetStyle(LABEL, TEXT_ALIGNMENT, oldAlign);
+
+	int margin = 20;
+	int btn_height = 24;
+	int btn_width = 80;
+
+	float y = (vp->viewport_base_size().y - btn_height) - margin;
+
+	if (GuiButton(Rectangle{ np.x + margin*sk, np.y + y*sk ,btn_width*sk, btn_height*sk }, "Mainmenu")) {
+		gApp()->call_later([]() { gApp()->pop_layer<DeathScreenLayer>(); });
+		gApp()->call_later([]() { gApp()->switch_layer<AppLayer, MainMenuLayer>(); });
+	}
+
+	x = (vp->viewport_base_size().x - btn_width) - margin;
+
+	if (GuiButton(Rectangle{ np.x + x*sk, np.y + y*sk, btn_width*sk, btn_height*sk }, "Retry")){
+		gApp()->call_later([]() { gApp()->pop_layer<AppLayer>(); });
+		gApp()->call_later([]() { gApp()->switch_layer<DeathScreenLayer, AppLayer>(); });
+		gApp()->call_later([]() { gApp()->game_director_ref().reset(new FortunaDirector()); });
+	}
 }
