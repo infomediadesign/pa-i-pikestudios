@@ -25,12 +25,14 @@ Tentacle::Tentacle() : PSInterfaces::IEntity("tentacle")
 	sp_data.push_back({8, 0.1, PSCore::sprites::Forward, 0});
 	sp_data.push_back({6, 0.1, PSCore::sprites::Backward, 1});
 	sp_data.push_back({1, 1, PSCore::sprites::Forward, 2});
+	sp_data.push_back({1,1, PSCore::sprites::Forward, 3});
 
 	m_animation_controller = PSCore::sprites::SpriteSheetAnimation(FETCH_SPRITE_TEXTURE(ident_), sp_data);
 
 	m_animation_controller.add_animation_at_index(0, 0);
 	m_animation_controller.add_animation_at_index(1, 1);
 	m_animation_controller.add_animation_at_index(2, 2);
+	m_animation_controller.add_animation_at_index(3, 3);
 }
 
 
@@ -65,9 +67,8 @@ void Tentacle::render()
 	if ( const auto& vp = gApp()->viewport() ) {
 		switch ( m_state ) {
 			case Idle: {
-				Color clr{0, 0, 255, 255};
-				Vector2 pos{m_pos.x * vp->viewport_scale(), m_pos.y * vp->viewport_scale()};
-				DrawCircleV(pos, 20 * vp->viewport_scale(), clr);
+				auto tex = m_Tentacle_sprite;
+				vp->draw_in_viewport(tex->m_s_texture, m_animation_controller.get_source_rectangle(3).value_or(Rectangle{0}), m_pos, 0, WHITE);
 				break;
 			}
 			case WaterBreak: {
@@ -92,6 +93,10 @@ void Tentacle::render()
 void Tentacle::update(float dt)
 {
 	m_animation_controller.update_animation(dt);
+
+	if ( auto app_layer = gApp()->get_layer<AppLayer>() ) {
+		m_collider->check_collision(app_layer->entities());
+	}
 
 	switch ( m_state ) {
 		case Idle: {
@@ -121,6 +126,7 @@ void Tentacle::IdleUpdate(float dt)
 	if ( time_until_water_break <= 0 ) {
 		m_state = State::WaterBreak;
 		m_animation_controller.set_animation_at_index(0, 0, 0);
+		propose_z_index(-10);
 	}
 }
 
@@ -136,10 +142,6 @@ void Tentacle::WaterBreakUpdate(float dt)
 void Tentacle::AttackingUpdate(float dt)
 {
 	time_until_retreat -= dt;
-
-	if ( auto app_layer = gApp()->get_layer<AppLayer>() ) {
-		m_collider->check_collision(app_layer->entities());
-	}
 
 	if ( time_until_retreat <= 0 ) {
 		m_animation_controller.set_animation_at_index(1, 5, 1);
@@ -158,6 +160,7 @@ void Tentacle::RetreatingUpdate(float dt)
 		until_reposition	   = max_until_reposition;
 
 		SetNewPos();
+		propose_z_index(-40);
 	}
 }
 void Tentacle::SetNewPos()
