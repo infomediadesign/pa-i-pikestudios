@@ -74,6 +74,7 @@ private:
 	float m_c_parent_position_x_offset;
 	float m_c_parent_position_y_offset;
 	CannonPositioning m_c_positioning;
+	PSCore::sprites::SpriteSheetAnimation m_c_animation_controller;
 
 	Texture2D m_c_texture;
 	Rectangle m_c_source;

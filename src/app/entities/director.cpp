@@ -9,21 +9,19 @@
 
 #include <entities/shark.h>
 #include <imgui.h>
+#include <pscore/spawner.h>
+#include <pscore/utils.h>
+#include <psinterfaces/entity.h>
 
 #include "Tentacle.h"
-#include "pscore/spawner.h"
-#include "pscore/utils.h"
-#include "psinterfaces/entity.h"
 
 class FortunaDirectorPriv
 {
 	friend class FortunaDirector;
 	std::vector<std::shared_ptr<Player>> players;
-	//std::vector<std::shared_ptr<Projectile>> projectiles;
 	std::vector<std::shared_ptr<Cannon>> cannons;
 	bool on_screen_warp_around = true;
 
-	// std::shared_ptr<Shark> test_shark = std::make_shared<Shark>();
 	float player_current_fire_rate		  = 0.5f;
 	float player_current_projectile_speed = 300.0f;
 	float player_current_fire_range		  = 100.0f;
@@ -38,9 +36,10 @@ class FortunaDirectorPriv
 	int player_max_health			 = 3;
 	int player_health				 = 3;
 	float player_iframe_duration	 = 0.5f;
+	bool player_invincibility		 = false;
 };
 
-
+	
 
 FortunaDirector::FortunaDirector() : PSInterfaces::IEntity("fortuna_director")
 {
@@ -53,6 +52,11 @@ FortunaDirector::FortunaDirector() : PSInterfaces::IEntity("fortuna_director")
 
 void FortunaDirector::initialize_entities()
 {
+	AppLayer* app_layer = nullptr;
+	app_layer			= gApp()->get_layer<AppLayer>();
+	if ( !app_layer )
+		return;
+
 	_p->shark_spawner->register_spawn_callback([](std::shared_ptr<Shark> shark) {
 		shark->init(shark, {(float) PSUtils::gen_rand(10, 300), (float) PSUtils::gen_rand(10, 300)});
 	});
@@ -95,6 +99,17 @@ void FortunaDirector::draw_debug()
 	}
 
 	ImGui::Separator();
+	ImGui::Text("Spawner");
+
+	static bool shark_sp_active = true;
+	if (ImGui::Checkbox("Shark Spawner", &shark_sp_active)) {
+		if (shark_sp_active)
+		_p->shark_spawner->resume();
+		else
+		_p->shark_spawner->suspend();
+	}
+
+	ImGui::Separator();
 	ImGui::Text("Player Speed");
 
 	if ( ImGui::SliderFloat("Max Velocity", &_p->player_max_velocity, 0, 500) ) {
@@ -117,6 +132,11 @@ void FortunaDirector::draw_debug()
 
 	ImGui::Separator();
 	ImGui::Text("Player Upgrades");
+
+	// Invincibility
+	if ( ImGui::Checkbox("invincible", &_p->player_invincibility) ) {
+		upgrade_player_invincibility(_p->player_invincibility);
+	}
 
 	// Fire Rate
 	static float fire_rate_amount = 0.05f;
@@ -173,8 +193,7 @@ void FortunaDirector::draw_debug()
 		if ( player_health() + health_amount > player_max_health() ) {
 			set_player_max_health(player_max_health() + health_amount);
 			set_player_health(player_health() + health_amount);
-		}
-		else {
+		} else {
 			set_player_health(player_health() + health_amount);
 		}
 	}
@@ -213,9 +232,7 @@ void FortunaDirector::destroy_player(std::shared_ptr<Player> player)
 
 	if ( auto app_layer = gApp()->get_layer<AppLayer>() )
 		app_layer->unregister_entity(player);
-	// app_layer->renderer()->remove_rendarble<Player>(player);
 
-	// gApp()->unregister_entity(player);
 	auto& players = _p->players;
 	players.erase(std::remove(players.begin(), players.end(), player), players.end());
 }
@@ -232,39 +249,6 @@ void FortunaDirector::sync_player_entities()
 		}
 	}
 }
-
-// std::shared_ptr<Projectile> FortunaDirector::spawn_projectile(const Vector2& position)
-// {
-
-// 	// for ( auto projectile: _p->projectiles ) {
-// 	// 	if ( !projectile->is_active() ) {
-// 	// 		projectile->set_position(position);
-// 	// 		projectile->set_is_active(true);
-// 	// 		return projectile;
-// 	// 	}
-// 	// }
-
-// 	auto new_projectile = std::make_shared<Projectile>();
-// 	new_projectile->init(position, new_projectile);
-
-// 	// new_projectile->set_position(position);
-// 	//_p->projectiles.push_back(new_projectile);
-// 	// gApp()->register_entity(new_projectile);
-// 	// if ( auto app_layer = gApp()->get_layer<AppLayer>() )
-// 	// 	app_layer->register_entity(new_projectile, true);
-// 	// app_layer->renderer()->submit_renderable<Projectile>(new_projectile);
-// 	return new_projectile;
-// }
-
-// void FortunaDirector::destroy_projectile(std::shared_ptr<Projectile> projectile)
-// {
-// 	if ( auto app_layer = gApp()->get_layer<AppLayer>() )
-// 		app_layer->unregister_entity(projectile);
-// 	// app_layer->renderer()->remove_rendarble<Projectile>(projectile);
-// 	// gApp()->unregister_entity(projectile);
-// 	auto& projectiles = _p->projectiles;
-// 	projectiles.erase(std::remove(projectiles.begin(), projectiles.end(), projectile), projectiles.end());
-// }
 
 std::shared_ptr<Cannon> FortunaDirector::spawn_cannon(const Vector2& position)
 {
@@ -285,10 +269,10 @@ std::shared_ptr<Cannon> FortunaDirector::spawn_cannon(const Vector2& position)
 	new_cannon->set_projectile_speed(_p->player_current_projectile_speed);
 	new_cannon->set_range(_p->player_current_fire_range);
 	_p->cannons.push_back(new_cannon);
-	// gApp()->register_entity(new_cannon);
+
 	if ( auto app_layer = gApp()->get_layer<AppLayer>() )
 		app_layer->register_entity(new_cannon, true);
-	// app_layer->renderer()->submit_renderable<Cannon>(new_cannon);
+
 	return new_cannon;
 }
 
@@ -296,8 +280,7 @@ void FortunaDirector::destroy_cannon(std::shared_ptr<Cannon> cannon)
 {
 	if ( auto app_layer = gApp()->get_layer<AppLayer>() )
 		app_layer->unregister_entity(cannon);
-	// app_layer->renderer()->remove_rendarble<Cannon>(cannon);
-	// gApp()->unregister_entity(cannon);
+
 	auto& cannons = _p->cannons;
 	cannons.erase(std::remove(cannons.begin(), cannons.end(), cannon), cannons.end());
 }
@@ -340,6 +323,13 @@ void FortunaDirector::upgrade_player_add_cannon(int amount)
 	for ( auto player: _p->players ) {
 		player->add_cannons(amount);
 	}
+}
+
+void FortunaDirector::upgrade_player_invincibility(bool invincibility)
+{
+	for ( auto player: _p->players ) {
+		player->set_is_invincible(invincibility);
+	};
 }
 
 template<>

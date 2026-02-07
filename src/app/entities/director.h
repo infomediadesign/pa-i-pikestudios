@@ -46,6 +46,7 @@ public:
 	void upgrade_player_projectile_speed(float amount);
 	void upgrade_player_fire_range(float amount);
 	void upgrade_player_add_cannon(int amount);
+	void upgrade_player_invincibility(bool invincibility);
 
 	// Player Health
 	void set_player_health(const int health);

@@ -1,3 +1,4 @@
+#include <entities/director.h>
 #include <entities/player.h>
 #include <entities/shark.h>
 #include <imgui.h>
@@ -14,7 +15,6 @@
 #include "coordinatesystem.h"
 #include "layers/applayer.h"
 #include "pscore/collision.h"
-#include <entities/director.h>
 
 //
 // Fin of Shark
@@ -36,7 +36,7 @@ void Fin::render()
 		auto tex = m_shark->m_shark_sprite;
 		vp->draw_in_viewport(
 				tex->m_s_texture, m_shark->m_animation_controller.get_source_rectangle(1).value_or(Rectangle{0}), m_shark->m_pos,
-				m_shark->m_shark_rotation + 90, RED
+				m_shark->m_shark_rotation + 90, WHITE
 		);
 	}
 }
@@ -102,8 +102,8 @@ Shark::Shark() : PSInterfaces::IEntity("shark")
 	m_body = std::make_shared<Body>(this);
 	m_fin  = std::make_shared<Fin>(this);
 
-	m_body->propose_z_index(-1);
-	m_fin->propose_z_index(1);
+	m_body->propose_z_index(-20);
+	m_fin->propose_z_index(5);
 
 	// Has an droppable upgrade
 	m_marked = PSUtils::gen_rand(1, 100) > 50;
@@ -124,14 +124,19 @@ void Shark::init(std::shared_ptr<Shark> self, const Vector2& pos)
 			}
 		}
 	});
+
+	if ( auto app_layer = gApp()->get_layer<AppLayer>() ) {
+		app_layer->renderer()->submit_renderable(m_body);
+		app_layer->renderer()->submit_renderable(m_fin);
+	}
 }
 
 Shark::~Shark()
 {
-	// if ( m_marked ) {
-	// 	PS_LOG(LOG_INFO, "Dropped an upgrade");
-	// 	// TODO: implement loot drop
-	// }
+	if ( m_marked ) {
+		PS_LOG(LOG_INFO, "Dropped an upgrade");
+		// TODO: implement loot drop
+	}
 }
 
 void Shark::update(float dt)
@@ -258,8 +263,6 @@ void Shark::draw_debug()
 
 void Shark::render()
 {
-	m_body->render();
-	m_fin->render();
 }
 
 void Shark::set_pos(const Vector2& pos)
@@ -275,9 +278,7 @@ std::optional<std::vector<Vector2>> Shark::bounds() const
 			Vector2 vp_pos = vp->position_viewport_to_global(m_pos);
 			float scale	   = vp->viewport_scale();
 
-			std::vector<Vector2> hitbox_points = {
-					{15 * scale, 0 * scale}, {0 * scale, 8 * scale}, {-15 * scale, 0 * scale}, {0 * scale, -8 * scale}
-			};
+			std::vector<Vector2> hitbox_points = {{15 * scale, 0 * scale}, {0 * scale, 8 * scale}, {-15 * scale, 0 * scale}, {0 * scale, -8 * scale}};
 
 			return coordinatesystem::points_relative_to_globle_rightup(vp_pos, m_shark_rotation, hitbox_points);
 		}
@@ -289,3 +290,10 @@ std::optional<Vector2> Shark::position() const
 {
 	return m_pos;
 };
+
+void Shark::set_is_active(bool active)
+{
+	is_active_ = active;
+	m_body->set_is_active(active);
+	m_fin->set_is_active(active);
+}

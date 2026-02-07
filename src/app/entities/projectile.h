@@ -65,7 +65,7 @@ public:
 	void parent_to_cannon();
 	void calculate_parenting();
 	void fire_from_cannon(const float dt);
-	void draw_debug();
+	void draw_debug() override;
 
 private:
 	Vector2 m_p_position;
