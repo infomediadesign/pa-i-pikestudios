@@ -39,8 +39,10 @@ void Fin::render()
 				m_shark->m_shark_rotation + 90, WHITE
 		);
 
-		m_smear.draw_smear(0, Exponential, 2 * vp->viewport_scale(), 1, m_smear_color);
-		m_smear.draw_smear(1, Exponential, 2 * vp->viewport_scale(), 1, m_smear_color);
+		if ( m_shark->m_state == Shark::Pursuing ) {
+			m_smear.draw_smear(0, Exponential, 2 * vp->viewport_scale(), 1, m_smear_color);
+			m_smear.draw_smear(1, Exponential, 2 * vp->viewport_scale(), 1, m_smear_color);
+		}
 	}
 }
 
