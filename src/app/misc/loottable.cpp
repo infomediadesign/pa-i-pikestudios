@@ -47,6 +47,20 @@ void LootTable::add_loot_table(int index, std::vector<int>& chances)
 	calculate_curve_boundary();
 }
 
+void LootTable::set_expected_value(float expected_value)
+{
+	m_expected_value = std::clamp(expected_value, -1.0f, 1.0f);
+}
+
+std::vector<LootTableValue> LootTable::LootTableValues(int count)
+{
+	random_values_from_loot_table(count);
+
+	calculate_rarity();
+
+	return m_values;
+}
+
 void LootTable::random_values_from_loot_table(int indices_count)
 {
 	int count							  = indices_count;
@@ -63,18 +77,17 @@ void LootTable::random_values_from_loot_table(int indices_count)
 	std::random_device rd;
 	std::mt19937 gen(rd());
 	std::uniform_int_distribution<> dist_index(0, static_cast<int>(m_indices.size()) - 1);
-	std::uniform_int_distribution<> dist_value(0, 99);
+	std::uniform_int_distribution<> dist_value(0, 100);
 
 	for ( int i = 0; i < count; i++ ) {
 		int random_index = dist_index(gen);
 
 		int current_index		   = 0;
 		int current_valid_index	   = 0;
-		int current_index_in_range = 0;
 		bool active				   = true;
 
 		while ( active ) {
-			current_index_in_range = current_index % count;
+			int current_index_in_range = current_index % count;
 
 			if ( indices.at(current_index_in_range).index != -1 ) {
 				if ( current_valid_index == random_index ) {
@@ -112,39 +125,23 @@ void LootTable::calculate_rarity()
 			if ( value.index == index.index ) {
 				value.rarity = 0;
 
+				int length;
 				if ( m_indices.size() - 1 == i ) {
-					for ( int j = 0; j < m_indices.size() - m_indices.at(i).location; j++ ) {
-						if ( value.value >=
-							 0.5 * std::erff(SQRT2HALF * (m_chances.at(j + m_indices.at(i).location).curve_boundary - m_expected_value) + 0.5) *
-									 100 ) {
-							value.rarity = j;
-						}
-					}
+					length = static_cast<int>(m_indices.size()) - m_indices.at(i).location;
 				} else {
-					for ( int k = 0; k < m_indices.at(i + 1).location - m_indices.at(i).location; k++ ) {
-						if ( value.value >=
-							 0.5 * std::erff(SQRT2HALF * (m_chances.at(k + m_indices.at(i).location).curve_boundary - m_expected_value) + 0.5) *
-									 100 ) {
-							value.rarity = k;
-						}
+					length = m_indices.at(i + 1).location - m_indices.at(i).location;
+				}
+
+				for ( int j = 0; j < length; j++ ) {
+					if ( value.value >=
+						 0.5 * std::erff(SQRT2HALF * (m_chances.at(j + m_indices.at(i).location).curve_boundary - m_expected_value) + 0.5) * 100 ) {
+						value.rarity = std::min(j + 1, length - 1);
+					} else {
+						break;
 					}
 				}
 			}
 			i++;
 		}
 	}
-}
-
-void LootTable::set_expected_value(float expected_value)
-{
-	m_expected_value = std::clamp(expected_value, -1.0f, 1.0f);
-}
-
-std::vector<LootTableValue> LootTable::LootTableValues(int count)
-{
-	random_values_from_loot_table(count);
-
-	calculate_rarity();
-
-	return m_values;
 }
