@@ -22,6 +22,8 @@ public:
 
 	void on_hit() override;
 
+	void on_death();
+
 
 	std::optional<Vector2> position() const override;
 
@@ -153,7 +155,7 @@ private:
 	bool m_fire_sequence_ongoing_right = false;
 	float m_time_since_last_shot_left = 0;
 	float m_time_since_last_shot_right = 0;
-	FiringCannonIndex m_firing_cannon_index{0, 1};
+	FiringCannonIndex m_firing_cannon_index{1, 0};
 
 
 	// Smear Variables

@@ -130,19 +130,24 @@ void Player::on_hit()
 		if ( auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director()) ) {
 			director->set_player_health(director->player_health() - 1);
 			if ( director->player_health() <= 0 ) {
-				set_is_active(false);
-				gApp()->push_layer<ScoreLayer>();
-				gApp()->pop_layer<UILayer>();
-				auto score_layer = gApp()->get_layer<ScoreLayer>();
-				if ( score_layer ) {
-					score_layer->save_new_highscore(dynamic_cast<FortunaDirector*>(gApp()->game_director())->m_b_bounty.bounty());
-					score_layer->load_highscore(score_layer->score_filename());
-					for ( auto cannon: m_cannon_container ) {
-						cannon->set_is_active(false);
-					}
-				}
+				on_death();
 			}
 		}
+	}
+}
+
+void Player::on_death()
+{
+	set_is_active(false);
+	for ( auto cannon: m_cannon_container ) {
+		cannon->set_is_active(false);
+	}
+	gApp()->push_layer<ScoreLayer>();
+	gApp()->pop_layer<UILayer>();
+	auto score_layer = gApp()->get_layer<ScoreLayer>();
+	if ( score_layer ) {
+		score_layer->save_new_highscore(dynamic_cast<FortunaDirector*>(gApp()->game_director())->m_b_bounty.bounty());
+		score_layer->load_highscore(score_layer->score_filename());
 	}
 }
 
@@ -166,6 +171,7 @@ void Player::fire_cannons(float dt)
 
 			if ( IsMouseButtonDown(MOUSE_BUTTON_RIGHT) && !m_fire_sequence_ongoing && !m_fire_sequence_ongoing_right ) {
 				m_fire_sequence_ongoing_right = true;
+				
 			}
 			if ( m_time_since_last_shot_right > m_cannon_container.at(0)->fire_rate() / m_cannon_container.size() &&
 				m_fire_sequence_ongoing_right ) {
