@@ -45,5 +45,6 @@ public:
 
 	private:
 	static inline const std::string m_score_filename = "fortunascore.txt";
+	float m_time_since_lase_pop_back				 = 0.0f;
 
 };
