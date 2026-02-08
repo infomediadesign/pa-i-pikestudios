@@ -72,6 +72,8 @@ void Player::update(const float dt)
 		}
 	}
 
+	fire_cannons(dt);
+
 	calculate_movement(dt);
 
 	m_rotation_velocity = calculate_rotation_velocity(0.01, dt);
@@ -147,6 +149,78 @@ void Player::on_hit()
 void Player::set_is_invincible(bool invincible)
 {
 	m_is_invincible = invincible;
+}
+
+void Player::fire_cannons(float dt)
+{
+	switch ( m_fire_mode ) {
+
+		case FireMode::InSequence: {
+			m_time_since_last_shot_left += dt;
+			m_time_since_last_shot_right += dt;
+			if ( IsKeyDown(KEY_SPACE) && !m_fire_sequence_ongoing) {
+				m_fire_sequence_ongoing = true;
+				m_fire_sequence_ongoing_right = true;
+				m_fire_sequence_ongoing_left  = true;
+			}
+
+			if ( IsMouseButtonDown(MOUSE_BUTTON_RIGHT) && !m_fire_sequence_ongoing && !m_fire_sequence_ongoing_right ) {
+				m_fire_sequence_ongoing_right = true;
+			}
+			if ( m_time_since_last_shot_right > m_cannon_container.at(0)->fire_rate() / m_cannon_container.size() &&
+				m_fire_sequence_ongoing_right ) {
+				m_cannon_container.at(m_firing_cannon_index.right)->fire();
+
+				m_firing_cannon_index.right += 2;
+				m_time_since_last_shot_right = 0;
+
+				if ( m_firing_cannon_index.right >= m_cannon_container.size()) {
+					m_firing_cannon_index.right = 1;
+					m_fire_sequence_ongoing_right = false;
+					m_fire_sequence_ongoing		  = false;
+				}
+			}
+			if ( IsMouseButtonDown(MOUSE_BUTTON_LEFT) && !m_fire_sequence_ongoing && !m_fire_sequence_ongoing_left ) {
+				m_fire_sequence_ongoing_left = true;
+			}
+
+			if ( m_time_since_last_shot_left > m_cannon_container.at(0)->fire_rate() / m_cannon_container.size() &&
+				m_fire_sequence_ongoing_left ) {
+				m_cannon_container.at(m_firing_cannon_index.left)->fire();
+				m_firing_cannon_index.left += 2;
+				m_time_since_last_shot_left = 0;
+				if ( m_firing_cannon_index.left >= m_cannon_container.size()) {
+					m_firing_cannon_index.left = 0;
+					m_fire_sequence_ongoing_left = false;
+					m_fire_sequence_ongoing		 = false;
+				}
+			}
+			break;
+		}
+
+		case FireMode::SameTime: {
+			if ( IsMouseButtonDown(MOUSE_BUTTON_LEFT) ) {
+				for ( auto cannon: m_cannon_container ) {
+					if ( cannon->positioning() == Cannon::CannonPositioning::Left ) {
+						cannon->fire();
+					}
+				}
+			}
+			if ( IsMouseButtonDown(MOUSE_BUTTON_RIGHT) ) {
+				for ( auto cannon: m_cannon_container ) {
+					if ( cannon->positioning() == Cannon::CannonPositioning::Right ) {
+						cannon->fire();
+					}
+				}
+			}
+			if ( IsKeyDown(KEY_SPACE) ) {
+				for ( auto cannon: m_cannon_container ) {
+					cannon->fire();
+				}
+			}
+			break;
+		}
+	}
 }
 
 void Player::render()
@@ -450,3 +524,13 @@ void Player::set_input_rotation_multiplier(float val)
 {
 	m_input_rotation_multiplier = val;
 };
+
+Player::FireMode Player::fire_mode() const
+{
+	return m_fire_mode;
+}
+
+void Player::set_fire_mode(FireMode mode)
+{
+	m_fire_mode = mode;
+}
