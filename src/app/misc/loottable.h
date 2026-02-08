@@ -3,16 +3,25 @@
 #include <vector>
 #include <optional>
 
+
+
 struct LootTableIndices
 {
 	int index;
 	int location;
 };
 
+struct LootTableChances
+{
+	int chance;
+	float curve_boundary;
+};
+
 struct LootTableValue
 {
 	int index;
 	int value;
+	int rarity;
 };
 
 class LootTable
@@ -20,15 +29,22 @@ class LootTable
 public:
 	void add_loot_table(int index, std::vector<int>& chances);
 
-	std::optional<std::vector<int>> loot_table_at_index(int index);
+	void set_expected_value(float expected_value);
+
+	std::vector<LootTableValue> LootTableValues(int count);
 
 private:
-	void random_indices_from_loot_table(int indices_count);
+	void random_values_from_loot_table(int indices_count);
 
-	void random_values_from_loot_table();
+	void calculate_curve_boundary();
+
+	void calculate_rarity();
+
 
 	std::vector<LootTableIndices> m_indices;
-	std::vector<int> m_chances;
+	std::vector<LootTableChances> m_chances;
 	std::vector<LootTableValue> m_values;
+
+	float m_expected_value = 0;
 };
 
