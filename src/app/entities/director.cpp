@@ -11,6 +11,8 @@
 #include <pscore/spawner.h>
 #include <pscore/utils.h>
 #include <psinterfaces/entity.h>
+#include <raylib.h>
+#include <raymath.h>
 
 class FortunaDirectorPriv
 {
@@ -24,10 +26,10 @@ class FortunaDirectorPriv
 	float player_current_fire_range		  = 100.0f;
 
 	std::unique_ptr<PSCore::Spawner<Shark, AppLayer>> shark_spawner;
-	float shark_spawn_time = 1.0f;
+	float shark_spawn_time		= 1.0f;
 	float shark_spawn_variation = 0.0f;
-	int shark_limit = 10;
-	
+	int shark_limit				= 10;
+
 	std::unique_ptr<PSCore::Spawner<Projectile, AppLayer>> projectile_spawner;
 	float player_max_velocity		 = 200.0f;
 	float player_input_rotation_mult = 0.9f;
@@ -42,7 +44,7 @@ FortunaDirector::FortunaDirector() : PSInterfaces::IEntity("fortuna_director")
 {
 	_p = std::make_unique<FortunaDirectorPriv>();
 
-	_p->shark_spawner	   = std::make_unique<PSCore::Spawner<Shark, AppLayer>>(_p->shark_spawn_time, _p->shark_spawn_variation, _p->shark_limit, false);
+	_p->shark_spawner = std::make_unique<PSCore::Spawner<Shark, AppLayer>>(_p->shark_spawn_time, _p->shark_spawn_variation, _p->shark_limit, false);
 	_p->projectile_spawner = std::make_unique<PSCore::Spawner<Projectile, AppLayer>>(0.0f);
 }
 
@@ -54,7 +56,31 @@ void FortunaDirector::initialize_entities()
 		return;
 
 	_p->shark_spawner->register_spawn_callback([](std::shared_ptr<Shark> shark) {
-		shark->init(shark, {(float) PSUtils::gen_rand(10, 300), (float) PSUtils::gen_rand(10, 300)});
+		//Set the position of the shark to be spawned outsside of the screen
+		float x = 0, y = 0;
+		int side = PSUtils::gen_rand(0, 3);
+		switch (side) {
+		case 0: // Top
+			y = -50;
+			break;
+		case 1: // Right
+			x = GetScreenWidth() + 50;
+			break;
+		case 2: // Bottom
+			y = GetScreenHeight() + 50;
+			break;
+		case 3: // Left
+			x = -50;
+			break;
+		}
+		//Distribute the position randomly along the chosen side
+		if (side == 0 || side == 2) { // Top or Bottom
+			x = PSUtils::gen_rand(0, GetScreenWidth());
+		} else { // Right or Left
+			y = PSUtils::gen_rand(0, GetScreenHeight());
+		}
+		
+		shark->init(shark, {x, y});
 	});
 
 	_p->shark_spawner->resume();
@@ -76,6 +102,9 @@ FortunaDirector::~FortunaDirector()
 
 void FortunaDirector::update(float dt)
 {
+	if ( !is_active_ )
+		return;
+	
 	misc::map::process_off_screen_entities();
 	sync_player_entities();
 
@@ -197,7 +226,6 @@ void FortunaDirector::draw_debug()
 			set_player_health(player_health() + health_amount);
 		}
 	}
-
 }
 
 std::shared_ptr<Player> FortunaDirector::spawn_player(const Vector2& position)
