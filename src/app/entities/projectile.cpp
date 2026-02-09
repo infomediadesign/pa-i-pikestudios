@@ -18,13 +18,20 @@
 
 Projectile::Projectile() : PSInterfaces::IEntity("projectile")
 {
-
-	IRenderable::propose_z_index(1);
+	m_p_z_index = 5;
+	IRenderable::propose_z_index(m_p_z_index);
 	m_p_position = {GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f};
 	m_p_rotation = 0.0f;
 	Vector2 frame_grid{1, 1};
 	m_p_sprite			= PRELOAD_TEXTURE(ident_, "ressources/entity/test_projectile.png", frame_grid);
 	m_p_texture			= m_p_sprite->m_s_texture;
+	Vector2 hit_anim_frame_grid{1, 1};
+
+	//Hit Anim
+	m_p_hit_anim_sprite = PRELOAD_TEXTURE("projectile_hit_anim", "ressources/vfx/default_hit.png", hit_anim_frame_grid);
+	m_p_hit_anim_texture = m_p_hit_anim_sprite->m_s_texture;
+	m_p_animation_controller = PSCore::sprites::SpriteSheetAnimation(m_p_hit_anim_texture, {{9, 0.1, PSCore::sprites::Forward, m_p_z_index}});
+	m_p_animation_controller.add_animation_at_index(0, m_p_z_index);
 }
 
 void Projectile::init(const Vector2& position, std::shared_ptr<Projectile> self)
@@ -35,47 +42,79 @@ void Projectile::init(const Vector2& position, std::shared_ptr<Projectile> self)
 	m_collider->register_collision_handler([this](std::weak_ptr<PSInterfaces::IEntity> other, const Vector2& pos) {
 		if ( auto locked = other.lock() )
 			if ( locked->is_active() ) {
-				set_is_active(false);
+				//set_is_active(false);
 				locked->on_hit();
+				on_hit();
 			}
-
-			
 	});
 }
 
 void Projectile::update(const float dt)
 {
+	if ( !m_p_hit_aninm_playing ) {
+		if ( m_p_travel_distance >= m_p_max_range ) {
+			is_active_ = false;
+		}
+		calculate_movment(dt);
 
-	if ( m_p_travel_distance >= m_p_max_range ) {
-		is_active_ = false;
+		if ( position()->x == 0 || position()->y == 0 )
+			return;
+
+		if ( auto app_layer = gApp()->get_layer<AppLayer>() ) {
+			m_collider->check_collision(app_layer->entities(), [this](std::weak_ptr<PSInterfaces::IEntity> other, const Vector2& point) {
+				if ( auto l = other.lock() ) {
+					bool is_player = l->ident() == "player";
+					bool is_same   = l->ident() == ident_;
+					bool is_cannon = l->ident() == "cannon";
+					return !(is_player || is_same || is_cannon);
+				}
+				return true;
+			});
+		}
 	}
-
-	calculate_movment(dt);
-
-	if ( position()->x == 0 || position()->y == 0 )
-		return;
-
-	if ( auto app_layer = gApp()->get_layer<AppLayer>() ) {
-		m_collider->check_collision(app_layer->entities(), [this](std::weak_ptr<PSInterfaces::IEntity> other, const Vector2& point) {
-			if ( auto l = other.lock() ) {
-				bool is_player = l->ident() == "player";
-				bool is_same   = l->ident() == ident_;
-				bool is_cannon = l->ident() == "cannon";
-				return !(is_player || is_same || is_cannon);
-			}
-			return true;
-		});
-	}
+	play_hit_anim(dt);
 }
 
 void Projectile::render()
 {
-	if ( is_active_ ) {
+	if ( is_active_ && !m_p_hit_aninm_playing) {
 		m_p_source = {0, 0, (float) m_p_texture.width, (float) m_p_texture.height};
 		if ( auto& vp = gApp()->viewport() ) {
 			vp->draw_in_viewport(m_p_texture, m_p_source, m_p_position, m_p_rotation, WHITE);
+			vp->draw_in_viewport(
+					m_p_hit_anim_texture, m_p_animation_controller.get_source_rectangle(m_p_z_index).value_or(Rectangle{0}), m_p_position,
+					m_p_rotation, WHITE
+				);
 		}
 	}
+	if ( m_p_hit_aninm_playing ) {
+		if ( auto& vp = gApp()->viewport() ) {
+			vp->draw_in_viewport(
+					m_p_hit_anim_texture, m_p_animation_controller.get_source_rectangle(m_p_z_index).value_or(Rectangle{0}), m_p_position,
+					m_p_rotation, WHITE
+			);
+		}
+	}
+}
+
+void Projectile::on_hit()
+{
+	m_p_animation_controller.set_animation_at_index(0, 0, m_p_z_index);
+	m_p_hit_aninm_playing = true;
+}
+
+void Projectile::play_hit_anim(float dt)
+{
+	if ( m_p_hit_aninm_playing ) {
+		m_p_animation_controller.update_animation(dt);
+		if ( m_p_animation_controller.get_sprite_sheet_frame_index(m_p_z_index) == 8 ) {
+			printf("anim played\n");
+			m_p_animation_controller.set_animation_at_index(0, 0, m_p_z_index);
+			m_p_hit_aninm_playing = false;
+			set_is_active(false);
+		}
+	}
+	
 }
 
 void Projectile::apply_drag(const float dt)
@@ -94,23 +133,18 @@ void Projectile::calculate_movment(const float dt)
 		return;
 	}
 
-	// D�mpfung anwenden
 	apply_drag(dt);
 
-	// Kombinierte Geschwindigkeit
 	Vector2 combined_velocity = {
 		m_p_velocity.x + m_p_owner_velocity.x,
 		m_p_velocity.y + m_p_owner_velocity.y
 	};
 
-	// Position aktualisieren
 	m_p_position.x += combined_velocity.x * dt;
 	m_p_position.y += combined_velocity.y * dt;
 
-	// Zur�ckgelegte Distanz tracken
 	m_p_travel_distance += Vector2Length(combined_velocity) * dt;
 
-	// Deaktivieren wenn maximale Reichweite erreicht
 	if ( m_p_travel_distance >= m_p_max_range ) {
 		is_active_ = false;
 	}
