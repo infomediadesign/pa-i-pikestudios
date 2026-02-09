@@ -10,6 +10,7 @@ var hierarchy =
     [ "PSCore::collision::EntityCollider", "classPSCore_1_1collision_1_1EntityCollider.html", null ],
     [ "PSInterfaces::Events::Event", "structPSInterfaces_1_1Events_1_1Event.html", null ],
     [ "Filemanager", "classFilemanager.html", null ],
+    [ "Player::FiringCannonIndex", "structPlayer_1_1FiringCannonIndex.html", null ],
     [ "FortunaDirectorPriv", "classFortunaDirectorPriv.html", null ],
     [ "PSUtils::Grid2D< T >", "classPSUtils_1_1Grid2D.html", null ],
     [ "GuiStyleProp", "structGuiStyleProp.html", null ],

@@ -50,7 +50,7 @@ var annotated_dup =
     [ "HighscoreEntries", "structHighscoreEntries.html", null ],
     [ "MainMenuLayer", "classMainMenuLayer.html", null ],
     [ "PauseLayer", "classPauseLayer.html", null ],
-    [ "Player", "classPlayer.html", null ],
+    [ "Player", "classPlayer.html", "classPlayer" ],
     [ "Projectile", "classProjectile.html", null ],
     [ "ScoreLayer", "classScoreLayer.html", null ],
     [ "Shark", "classShark.html", null ],

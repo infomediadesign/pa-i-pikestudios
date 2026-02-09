@@ -90,6 +90,8 @@ $(document).ready(function(){initNavTree('classPlayer.html',''); initResizable()
 
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
+<a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="classPlayer-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">Player Class Reference</div></div>
@@ -106,6 +108,18 @@ Inheritance diagram for Player:</div>
   </map>
 </div></div>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPlayer_1_1FiringCannonIndex.html">FiringCannonIndex</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
+Public Types</h2></td></tr>
+<tr class="memitem:a8a9abdd0199d42c6489aac20dfb3bf21" id="r_a8a9abdd0199d42c6489aac20dfb3bf21"><td class="memItemLeft" align="right" valign="top"><a id="a8a9abdd0199d42c6489aac20dfb3bf21" name="a8a9abdd0199d42c6489aac20dfb3bf21"></a>enum class &#160;</td><td class="memItemRight" valign="bottom"><b>FireMode</b> { <b>InSequence</b>
+, <b>SameTime</b>
+ }</td></tr>
+<tr class="separator:a8a9abdd0199d42c6489aac20dfb3bf21"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:abe2902b7decc38472183a08977eeb57f" id="r_abe2902b7decc38472183a08977eeb57f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlayer.html#abe2902b7decc38472183a08977eeb57f">update</a> (float dt) override</td></tr>
@@ -116,6 +130,9 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a560c254bec29384ed7fafd32674b4138"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a711dafd39155deb08b82a68cab81d9b6" id="r_a711dafd39155deb08b82a68cab81d9b6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlayer.html#a711dafd39155deb08b82a68cab81d9b6">on_hit</a> () override</td></tr>
 <tr class="separator:a711dafd39155deb08b82a68cab81d9b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7fd2bdc4aff3d4b1cc5d1f5160ad15bc" id="r_a7fd2bdc4aff3d4b1cc5d1f5160ad15bc"><td class="memItemLeft" align="right" valign="top"><a id="a7fd2bdc4aff3d4b1cc5d1f5160ad15bc" name="a7fd2bdc4aff3d4b1cc5d1f5160ad15bc"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>on_death</b> ()</td></tr>
+<tr class="separator:a7fd2bdc4aff3d4b1cc5d1f5160ad15bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a86b5b928e2fec171f0c4eeaf2769190d" id="r_a86b5b928e2fec171f0c4eeaf2769190d"><td class="memItemLeft" align="right" valign="top">std::optional&lt; Vector2 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlayer.html#a86b5b928e2fec171f0c4eeaf2769190d">position</a> () const override</td></tr>
 <tr class="separator:a86b5b928e2fec171f0c4eeaf2769190d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5141dc0987fe7ea3bf5158d6aa175bc5" id="r_a5141dc0987fe7ea3bf5158d6aa175bc5"><td class="memItemLeft" align="right" valign="top">std::optional&lt; std::vector&lt; Vector2 &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlayer.html#a5141dc0987fe7ea3bf5158d6aa175bc5">bounds</a> () const override</td></tr>
@@ -213,6 +230,15 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>set_shared_ptr_this</
 <tr class="memitem:a587ecf497607e802f65d3b1416d7a019" id="r_a587ecf497607e802f65d3b1416d7a019"><td class="memItemLeft" align="right" valign="top"><a id="a587ecf497607e802f65d3b1416d7a019" name="a587ecf497607e802f65d3b1416d7a019"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>initialize_cannon</b> ()</td></tr>
 <tr class="separator:a587ecf497607e802f65d3b1416d7a019"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a28ee0871167d5b2538e981cd14041765" id="r_a28ee0871167d5b2538e981cd14041765"><td class="memItemLeft" align="right" valign="top"><a id="a28ee0871167d5b2538e981cd14041765" name="a28ee0871167d5b2538e981cd14041765"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>fire_cannons</b> (float dt)</td></tr>
+<tr class="separator:a28ee0871167d5b2538e981cd14041765"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aca9d7a27eaf61c8d307792c8df663f19" id="r_aca9d7a27eaf61c8d307792c8df663f19"><td class="memItemLeft" align="right" valign="top"><a id="aca9d7a27eaf61c8d307792c8df663f19" name="aca9d7a27eaf61c8d307792c8df663f19"></a>
+FireMode&#160;</td><td class="memItemRight" valign="bottom"><b>fire_mode</b> () const</td></tr>
+<tr class="separator:aca9d7a27eaf61c8d307792c8df663f19"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aab0369e3db40c9383d7af3f5e14e2839" id="r_aab0369e3db40c9383d7af3f5e14e2839"><td class="memItemLeft" align="right" valign="top"><a id="aab0369e3db40c9383d7af3f5e14e2839" name="aab0369e3db40c9383d7af3f5e14e2839"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set_fire_mode</b> (FireMode mode)</td></tr>
+<tr class="separator:aab0369e3db40c9383d7af3f5e14e2839"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aba8d9c463ed6f377ed918c22064555f1" id="r_aba8d9c463ed6f377ed918c22064555f1"><td class="memItemLeft" align="right" valign="top"><a id="aba8d9c463ed6f377ed918c22064555f1" name="aba8d9c463ed6f377ed918c22064555f1"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>add_cannons</b> (int amount)</td></tr>
 <tr class="separator:aba8d9c463ed6f377ed918c22064555f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
