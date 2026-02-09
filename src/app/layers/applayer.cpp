@@ -41,22 +41,13 @@ public:
 	{
 		m_shader_time += dt;
 		SetShaderValue(m_wave_shader, m_shader_time_location, &m_shader_time, SHADER_UNIFORM_FLOAT);
-
-		BeginTextureMode(m_render_water);
-		BeginShaderMode(m_wave_shader);
-
-		DrawTextureV(m_water, {0, 0}, clr);
-
-		EndShaderMode();
-		EndTextureMode();
 	}
 
 	void render() override
 	{
 		BeginShaderMode(m_wave_shader);
 		if ( auto& vp = gApp()->viewport() ) {
-			auto sc = vp->viewport_scale();
-			vp->draw_in_viewport(m_water, {0, 0, (float) m_water.width * sc, (float) m_water.height * sc}, {0, 0}, 0, clr);
+			DrawTextureEx(m_water, vp->viewport_origin(), 0, vp->viewport_scale(), clr);
 		}
 		EndShaderMode();
 	}
@@ -64,8 +55,6 @@ public:
 private:
 	Color clr		  = {255, 255, 255, 150};
 	Texture2D m_water = LoadTexture("ressources/enviroment/waterV2.png");
-
-	RenderTexture2D m_render_water = LoadRenderTexture(m_water.width, m_water.width);
 
 	// Shader
 	Shader m_wave_shader	   = LoadShader(NULL, "ressources/shader/wave.fs");
