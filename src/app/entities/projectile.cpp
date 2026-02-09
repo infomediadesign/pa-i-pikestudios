@@ -19,7 +19,7 @@
 Projectile::Projectile() : PSInterfaces::IEntity("projectile")
 {
 
-	IRenderable::propose_z_index(1);
+	IRenderable::propose_z_index(10);
 	m_p_position = {GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f};
 	m_p_rotation = 0.0f;
 	Vector2 frame_grid{1, 1};

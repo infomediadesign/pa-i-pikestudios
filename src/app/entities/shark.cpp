@@ -121,8 +121,8 @@ Shark::Shark() : PSInterfaces::IEntity("shark")
 	m_body = std::make_shared<Body>(this);
 	m_fin  = std::make_shared<Fin>(this);
 
-	m_body->propose_z_index(-20);
-	m_fin->propose_z_index(5);
+	m_body->propose_z_index(-30);
+	m_fin->propose_z_index(-5);
 
 	// Has an droppable upgrade
 	m_marked = PSUtils::gen_rand(1, 100) > 50;

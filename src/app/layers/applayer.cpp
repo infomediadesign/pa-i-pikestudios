@@ -91,7 +91,7 @@ AppLayer::AppLayer()
 			director->initialize_entities();
 	});
 
-	_p->water->propose_z_index(-10);
+	_p->water->propose_z_index(-20);
 	renderer_->submit_renderable(_p->water);
 	register_entity(_p->water);
 }

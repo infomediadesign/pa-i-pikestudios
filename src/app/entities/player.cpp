@@ -43,7 +43,7 @@ Player::Player() : PSInterfaces::IEntity("player")
 	m_animation_controller.add_animation_at_index(0, 1);
 	m_animation_controller.add_animation_at_index(2, 3);
 
-	propose_z_index(10);
+	propose_z_index(0);
 
 	// WARNING: THIS IS ONLY FOR TESTING
 	if ( auto& vp = gApp()->viewport() ) {
