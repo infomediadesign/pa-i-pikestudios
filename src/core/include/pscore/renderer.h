@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <functional>
+#include <iostream>
 #include <memory>
 #include <psinterfaces/events.h>
 #include <psinterfaces/renderable.h>
