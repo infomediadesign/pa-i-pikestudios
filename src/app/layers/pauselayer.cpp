@@ -61,7 +61,7 @@ void PauseLayer::on_render()
 }
 }
 
-void PauseLayer::on_update(const float dt)
+void PauseLayer::on_update(float dt)
 {
 	float btn_width	 = 100;
 	float btn_height = 50;

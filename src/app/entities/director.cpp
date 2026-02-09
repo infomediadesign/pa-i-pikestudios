@@ -87,6 +87,17 @@ void FortunaDirector::draw_debug()
 	}
 
 	ImGui::Separator();
+	ImGui::Text("Spawner");
+	
+	static bool shark_sp_active = true;
+	if (ImGui::Checkbox("Shark Spawner", &shark_sp_active)) {
+		if (shark_sp_active)
+		_p->shark_spawner->resume();
+		else
+		_p->shark_spawner->suspend();	
+	}
+	
+	ImGui::Separator();
 	ImGui::Text("Player Speed");
 
 	if ( ImGui::SliderFloat("Max Velocity", &_p->player_max_velocity, 0, 500) ) {
