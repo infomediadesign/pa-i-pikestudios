@@ -26,7 +26,7 @@ class FortunaDirectorPriv
 	float player_current_fire_range		  = 100.0f;
 
 	std::unique_ptr<PSCore::Spawner<Shark, AppLayer>> shark_spawner;
-	float shark_spawn_time		= 1.0f;
+	float shark_spawn_time		= 3.0f;
 	float shark_spawn_variation = 0.0f;
 	int shark_limit				= 10;
 
@@ -405,9 +405,12 @@ void FortunaDirector::Bounty::subtract_bounty(const int amount)
 void FortunaDirector::increase_difficulty(int bounty)
 {
 	// Increase shark spawn rate and limit based on bounty
-	_p->shark_spawner->set_interval(std::max(0.1f, _p->shark_spawn_time - 0.05f * (bounty / 100)));
-	_p->shark_spawner->set_limit(std::min(100, _p->shark_limit + (bounty / 100)));
-	printf("Bounty: %d, Shark Spawn Interval: %.2f, Shark Limit: %d\n", bounty, _p->shark_spawner->interval(), _p->shark_spawner->limit());
+	if ( bounty >= m_b_bounty_amounts.shark_bounty * 4 ) {
+		_p->shark_spawner->set_interval(std::max(0.1f, _p->shark_spawn_time - 0.05f * (bounty / 100)));
+		_p->shark_spawner->set_limit(std::min(100, _p->shark_limit + (bounty / 200)));
+		printf("Bounty: %d, Shark Spawn Interval: %.2f, Shark Limit: %d\n", bounty, _p->shark_spawner->interval(), _p->shark_spawner->limit());
+	}
+
 }
 
 /*
