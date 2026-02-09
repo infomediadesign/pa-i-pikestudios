@@ -82,9 +82,9 @@ void LootTable::random_values_from_loot_table(int indices_count)
 	for ( int i = 0; i < count; i++ ) {
 		int random_index = dist_index(gen);
 
-		int current_index		   = 0;
-		int current_valid_index	   = 0;
-		bool active				   = true;
+		int current_index		= 0;
+		int current_valid_index = 0;
+		bool active				= true;
 
 		while ( active ) {
 			int current_index_in_range = current_index % count;
