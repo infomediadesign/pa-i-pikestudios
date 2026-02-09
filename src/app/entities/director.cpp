@@ -102,6 +102,9 @@ FortunaDirector::~FortunaDirector()
 
 void FortunaDirector::update(float dt)
 {
+	if ( !is_active_ )
+		return;
+	
 	misc::map::process_off_screen_entities();
 	sync_player_entities();
 
