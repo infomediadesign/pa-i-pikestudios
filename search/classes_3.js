@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['debuglayer_0',['DebugLayer',['../classDebugLayer.html',1,'']]],
-  ['deltatimemanager_1',['DeltaTimeManager',['../classPSCore_1_1DeltaTimeManager.html',1,'PSCore']]]
+  ['deathscreenlayer_0',['DeathScreenLayer',['../classDeathScreenLayer.html',1,'']]],
+  ['debuglayer_1',['DebugLayer',['../classDebugLayer.html',1,'']]],
+  ['deltatimemanager_2',['DeltaTimeManager',['../classPSCore_1_1DeltaTimeManager.html',1,'PSCore']]]
 ];

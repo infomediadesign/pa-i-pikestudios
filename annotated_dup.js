@@ -40,6 +40,7 @@ var annotated_dup =
     [ "AppLayerPriv", "classAppLayerPriv.html", null ],
     [ "Body", "classBody.html", null ],
     [ "Cannon", "classCannon.html", null ],
+    [ "DeathScreenLayer", "classDeathScreenLayer.html", null ],
     [ "DebugLayer", "classDebugLayer.html", null ],
     [ "Filemanager", "classFilemanager.html", null ],
     [ "Fin", "classFin.html", null ],

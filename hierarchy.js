@@ -31,6 +31,7 @@ var hierarchy =
     [ "PSInterfaces::Events::IEventManager", "classPSInterfaces_1_1Events_1_1IEventManager.html", null ],
     [ "PSInterfaces::Layer", "classPSInterfaces_1_1Layer.html", [
       [ "AppLayer", "classAppLayer.html", null ],
+      [ "DeathScreenLayer", "classDeathScreenLayer.html", null ],
       [ "DebugLayer", "classDebugLayer.html", null ],
       [ "MainMenuLayer", "classMainMenuLayer.html", null ],
       [ "PauseLayer", "classPauseLayer.html", null ],
