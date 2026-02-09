@@ -95,7 +95,7 @@ void Projectile::calculate_movment(const float dt)
 		return;
 	}
 
-	// Dämpfung anwenden
+	// Dï¿½mpfung anwenden
 	apply_drag(dt);
 
 	// Kombinierte Geschwindigkeit
@@ -108,7 +108,7 @@ void Projectile::calculate_movment(const float dt)
 	m_p_position.x += combined_velocity.x * dt;
 	m_p_position.y += combined_velocity.y * dt;
 
-	// Zurückgelegte Distanz tracken
+	// Zurï¿½ckgelegte Distanz tracken
 	m_p_travel_distance += Vector2Length(combined_velocity) * dt;
 
 	// Deaktivieren wenn maximale Reichweite erreicht
