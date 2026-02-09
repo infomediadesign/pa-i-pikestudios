@@ -77,7 +77,7 @@ void LootTable::random_values_from_loot_table(int indices_count)
 	std::random_device rd;
 	std::mt19937 gen(rd());
 	std::uniform_int_distribution<> dist_index(0, static_cast<int>(m_indices.size()) - 1);
-	std::uniform_int_distribution<> dist_value(0, 100);
+	std::uniform_int_distribution<> dist_value(0, 99);
 
 	for ( int i = 0; i < count; i++ ) {
 		int random_index = dist_index(gen);
@@ -133,7 +133,7 @@ void LootTable::calculate_rarity()
 				}
 
 				for ( int j = 0; j < length; j++ ) {
-					if ( value.value >=
+					if ( value.value >
 						 0.5 * std::erff(SQRT2HALF * (m_chances.at(j + m_indices.at(i).location).curve_boundary - m_expected_value) + 0.5) * 100 ) {
 						value.rarity = std::min(j + 1, length - 1);
 					} else {
