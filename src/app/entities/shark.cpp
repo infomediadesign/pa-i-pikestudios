@@ -15,6 +15,7 @@
 #include "coordinatesystem.h"
 #include "layers/applayer.h"
 #include "pscore/collision.h"
+#include <entities/director.h>
 
 //
 // Fin of Shark
