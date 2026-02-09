@@ -151,7 +151,6 @@ void Player::on_death()
 	for ( const auto& cannon: m_cannon_container ) {
 		cannon->set_is_active(false);
 	}
-
 	gApp()->push_layer<DeathScreenLayer>();
 	gApp()->pop_layer<UILayer>();
 }

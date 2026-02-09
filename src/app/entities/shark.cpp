@@ -72,6 +72,7 @@ void Fin::draw_debug()
 //
 // Body of Shark
 //
+
 Body::Body(Shark* shark) : PSInterfaces::IEntity("shark_body"), m_shark(shark)
 {
 	auto tex		= m_shark->m_shark_sprite;
