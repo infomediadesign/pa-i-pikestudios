@@ -107,9 +107,11 @@ Inheritance diagram for PSCore::Spawner&lt; T, L &gt;:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:af56c86961d05e13124cca7157673d9c4" id="r_af56c86961d05e13124cca7157673d9c4"><td class="memItemLeft" align="right" valign="top"><a id="af56c86961d05e13124cca7157673d9c4" name="af56c86961d05e13124cca7157673d9c4"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>Spawner</b> (std::chrono::duration&lt; double &gt; interval, int variation=0, int limit=100, bool render=true)</td></tr>
-<tr class="separator:af56c86961d05e13124cca7157673d9c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a40d5db0a5e8016c764e07f05eefa3851" id="r_a40d5db0a5e8016c764e07f05eefa3851"><td class="memItemLeft" align="right" valign="top"><a id="a40d5db0a5e8016c764e07f05eefa3851" name="a40d5db0a5e8016c764e07f05eefa3851"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>Spawner</b> (float interval, int variation=0, int limit=100, bool render=true)</td></tr>
+<tr class="separator:a40d5db0a5e8016c764e07f05eefa3851"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a673964648ed40c71af0c340e92a17d4e" id="r_a673964648ed40c71af0c340e92a17d4e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPSCore_1_1Spawner.html#a673964648ed40c71af0c340e92a17d4e">draw_debug</a> () override</td></tr>
+<tr class="separator:a673964648ed40c71af0c340e92a17d4e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5340b4b675ca2807fa9ddce55c74f6a3" id="r_a5340b4b675ca2807fa9ddce55c74f6a3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPSCore_1_1Spawner.html#a5340b4b675ca2807fa9ddce55c74f6a3">update</a> (float dt) override</td></tr>
 <tr class="separator:a5340b4b675ca2807fa9ddce55c74f6a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa5e0e2b38a222c7351bf2f2a6b4c7f1d" id="r_aa5e0e2b38a222c7351bf2f2a6b4c7f1d"><td class="memItemLeft" align="right" valign="top"><a id="aa5e0e2b38a222c7351bf2f2a6b4c7f1d" name="aa5e0e2b38a222c7351bf2f2a6b4c7f1d"></a>
@@ -130,13 +132,28 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>register_spawn_callba
 <tr class="memitem:a8a0ca22c1619be706645b75921a3233a" id="r_a8a0ca22c1619be706645b75921a3233a"><td class="memItemLeft" align="right" valign="top"><a id="a8a0ca22c1619be706645b75921a3233a" name="a8a0ca22c1619be706645b75921a3233a"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>register_custom_spawn</b> (std::function&lt; bool(<a class="el" href="classPSInterfaces_1_1Layer.html">PSInterfaces::Layer</a> *layer)&gt; spawn)</td></tr>
 <tr class="separator:a8a0ca22c1619be706645b75921a3233a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2ce2c5dfe193d86491aa65598700a5b8" id="r_a2ce2c5dfe193d86491aa65598700a5b8"><td class="memItemLeft" align="right" valign="top"><a id="a2ce2c5dfe193d86491aa65598700a5b8" name="a2ce2c5dfe193d86491aa65598700a5b8"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set_interval</b> (float interval)</td></tr>
+<tr class="separator:a2ce2c5dfe193d86491aa65598700a5b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7bccf390f2b06af10a74c0d48c0858b5" id="r_a7bccf390f2b06af10a74c0d48c0858b5"><td class="memItemLeft" align="right" valign="top"><a id="a7bccf390f2b06af10a74c0d48c0858b5" name="a7bccf390f2b06af10a74c0d48c0858b5"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><b>interval</b> ()</td></tr>
+<tr class="separator:a7bccf390f2b06af10a74c0d48c0858b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af626c97d79821ba7395dbabacfab5d4b" id="r_af626c97d79821ba7395dbabacfab5d4b"><td class="memItemLeft" align="right" valign="top"><a id="af626c97d79821ba7395dbabacfab5d4b" name="af626c97d79821ba7395dbabacfab5d4b"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set_variation</b> (int variation)</td></tr>
+<tr class="separator:af626c97d79821ba7395dbabacfab5d4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9e8f9b0833f2e887078fb54eb8507f9a" id="r_a9e8f9b0833f2e887078fb54eb8507f9a"><td class="memItemLeft" align="right" valign="top"><a id="a9e8f9b0833f2e887078fb54eb8507f9a" name="a9e8f9b0833f2e887078fb54eb8507f9a"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>variation</b> ()</td></tr>
+<tr class="separator:a9e8f9b0833f2e887078fb54eb8507f9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1a9da93357c66fa6016afea496ac086f" id="r_a1a9da93357c66fa6016afea496ac086f"><td class="memItemLeft" align="right" valign="top"><a id="a1a9da93357c66fa6016afea496ac086f" name="a1a9da93357c66fa6016afea496ac086f"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set_limit</b> (int limit)</td></tr>
+<tr class="separator:a1a9da93357c66fa6016afea496ac086f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afa7147c5f3aa0b6383ef0e26d2c529ff" id="r_afa7147c5f3aa0b6383ef0e26d2c529ff"><td class="memItemLeft" align="right" valign="top"><a id="afa7147c5f3aa0b6383ef0e26d2c529ff" name="afa7147c5f3aa0b6383ef0e26d2c529ff"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>limit</b> ()</td></tr>
+<tr class="separator:afa7147c5f3aa0b6383ef0e26d2c529ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classPSInterfaces_1_1IEntity"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classPSInterfaces_1_1IEntity')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classPSInterfaces_1_1IEntity.html">PSInterfaces::IEntity</a></td></tr>
 <tr class="memitem:a817942d790f3a6178098cb99206bc125 inherit pub_methods_classPSInterfaces_1_1IEntity" id="r_a817942d790f3a6178098cb99206bc125"><td class="memItemLeft" align="right" valign="top">
 &#160;</td><td class="memItemRight" valign="bottom"><b>IEntity</b> (const std::string &amp;ident)</td></tr>
 <tr class="separator:a817942d790f3a6178098cb99206bc125 inherit pub_methods_classPSInterfaces_1_1IEntity"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa99369d20cc462f18ae483c3bbb725aa inherit pub_methods_classPSInterfaces_1_1IEntity" id="r_aa99369d20cc462f18ae483c3bbb725aa"><td class="memItemLeft" align="right" valign="top">
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>draw_debug</b> ()</td></tr>
-<tr class="separator:aa99369d20cc462f18ae483c3bbb725aa inherit pub_methods_classPSInterfaces_1_1IEntity"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afd1f980e5bd9df303a2b2d61e0b25943 inherit pub_methods_classPSInterfaces_1_1IEntity" id="r_afd1f980e5bd9df303a2b2d61e0b25943"><td class="memItemLeft" align="right" valign="top">
 virtual std::optional&lt; std::vector&lt; Vector2 &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>bounds</b> () const</td></tr>
 <tr class="separator:afd1f980e5bd9df303a2b2d61e0b25943 inherit pub_methods_classPSInterfaces_1_1IEntity"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -185,6 +202,35 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>is_active_</b> = true
 <tr class="separator:aa625c34f31f54a7aeb6cff570e25acf5 inherit pro_attribs_classPSInterfaces_1_1IEntity"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a673964648ed40c71af0c340e92a17d4e" name="a673964648ed40c71af0c340e92a17d4e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a673964648ed40c71af0c340e92a17d4e">&#9670;&#160;</a></span>draw_debug()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T , ILayerDerived L&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classPSCore_1_1Spawner.html">PSCore::Spawner</a>&lt; T, L &gt;::draw_debug </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Reimplemented from <a class="el" href="classPSInterfaces_1_1IEntity.html">PSInterfaces::IEntity</a>.</p>
+
+</div>
+</div>
 <a id="a5340b4b675ca2807fa9ddce55c74f6a3" name="a5340b4b675ca2807fa9ddce55c74f6a3"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a5340b4b675ca2807fa9ddce55c74f6a3">&#9670;&#160;</a></span>update()</h2>
 
