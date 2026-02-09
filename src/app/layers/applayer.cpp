@@ -112,14 +112,19 @@ void AppLayer::on_update(const float dt)
 		}
 
 		if ( IsKeyPressed(KEY_ESCAPE) ) {
+			auto& director = gApp()->game_director_ref();
 			if ( app->get_layer<PauseLayer>() ) {
 				app->pop_layer<PauseLayer>();
-				if ( auto app_layer = app->get_layer<AppLayer>() )
+				if ( auto app_layer = app->get_layer<AppLayer>() ) {
 					app_layer->resume();
+					director->set_is_active(true);
+				}
 			} else {
 				app->push_layer<PauseLayer>();
-				if ( auto app_layer = app->get_layer<AppLayer>() )
+				if ( auto app_layer = app->get_layer<AppLayer>() ) {
 					app_layer->suspend();
+					director->set_is_active(false);
+				}
 			}
 		}
 	}
