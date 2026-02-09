@@ -58,11 +58,12 @@ namespace PSCore {
 				for ( const Vector2& point: self->bounds().value() ) {
 					auto bounds = locked_entity->bounds().value();
 					if ( CheckCollisionPointPoly(point, bounds.data(), bounds.size()) ) {
-						PS_LOG(LOG_INFO,
-							   TextFormat(
-									   "%s (%f, %f) collided with %s (%f, %f)", self->ident().data(), self->position()->x, self->position()->y,
-									   locked_entity->ident().data(), locked_entity->position()->x, locked_entity->position()->y
-							   ));
+						
+						PS_LOG(LOG_INFO, TextFormat(
+												 "%s (%f, %f) collided with %s (%f, %f)", self->ident().data(), pos2.x, pos2.y,
+												 locked_entity->ident().data(), pos1.x, pos1.y
+										 ));
+
 						return std::make_pair(locked_entity, point);
 					}
 				}

@@ -3,6 +3,7 @@
 #include <deque>
 #include <functional>
 #include <memory>
+#include <optional>
 #include <psinterfaces/layer.h>
 #include <raylib.h>
 #include <type_traits>
@@ -42,12 +43,16 @@ namespace PSCore {
 		{
 			m_layer_stack.push_back(std::make_unique<TL>());
 		}
-		
+
 		template<ILayerDerived TL, ILayerDerived TO>
 		void switch_layer()
 		{
-			push_layer<TO>();
-			pop_layer<TL>();
+			for ( auto itr = m_layer_stack.begin(); itr != m_layer_stack.end(); itr++) {
+				if ( auto casted = dynamic_cast<TL*>(itr->get()) ) {
+					itr->reset(new TO());
+					return;
+				}
+			}
 		}
 
 		/*!
@@ -109,14 +114,15 @@ namespace PSCore {
 			return nullptr;
 		};
 
-		std::unique_ptr<PSInterfaces::IEntity>& game_director_ref() {
+		std::unique_ptr<PSInterfaces::IEntity>& game_director_ref()
+		{
 			return m_game_director;
 		};
 
 		std::unique_ptr<PSCore::Viewport>& viewport();
 
 		std::unique_ptr<PSCore::sprites::SpriteLoader>& sprite_loader();
-		
+
 		void call_later(std::function<void()> fn)
 		{
 			m_call_stack.push_back(fn);

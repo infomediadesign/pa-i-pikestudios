@@ -8,11 +8,11 @@
 #include <raymath.h>
 
 #include <layers/applayer.h>
-#include <misc/smear.h>
-#include <psinterfaces/entity.h>
+#include <layers/deathscreenlayer.h>
 #include <layers/scorelayer.h>
 #include <layers/uilayer.h>
-#include <layers/deathscreenlayer.h>
+#include <misc/smear.h>
+#include <psinterfaces/entity.h>
 
 #include <coordinatesystem.h>
 
@@ -65,10 +65,12 @@ void Player::update(const float dt)
 		if ( IsKeyDown(KEY_S) ) {
 			m_target_velocity -= m_target_velocity > 0 ? m_input_velocity_multiplier * dt : 0;
 		}
-		if ( IsKeyDown(KEY_D) && Vector2Length(m_velocity) - (m_velocity_rotation_downscale * fabsf(m_rotation_velocity)) > CALCULATION_VELOCITY_MIN ) {
+		if ( IsKeyDown(KEY_D) &&
+			 Vector2Length(m_velocity) - (m_velocity_rotation_downscale * fabsf(m_rotation_velocity)) > CALCULATION_VELOCITY_MIN ) {
 			m_target_rotation += m_input_rotation_multiplier * dt;
 		}
-		if ( IsKeyDown(KEY_A) && Vector2Length(m_velocity) - (m_velocity_rotation_downscale * fabsf(m_rotation_velocity)) > CALCULATION_VELOCITY_MIN ) {
+		if ( IsKeyDown(KEY_A) &&
+			 Vector2Length(m_velocity) - (m_velocity_rotation_downscale * fabsf(m_rotation_velocity)) > CALCULATION_VELOCITY_MIN ) {
 			m_target_rotation -= m_input_rotation_multiplier * dt;
 		}
 	}
@@ -159,25 +161,23 @@ void Player::fire_cannons(float dt)
 		case FireMode::InSequence: {
 			m_time_since_last_shot_left += dt;
 			m_time_since_last_shot_right += dt;
-			if ( IsKeyDown(KEY_SPACE) && !m_fire_sequence_ongoing) {
-				m_fire_sequence_ongoing = true;
+			if ( IsKeyDown(KEY_SPACE) && !m_fire_sequence_ongoing ) {
+				m_fire_sequence_ongoing		  = true;
 				m_fire_sequence_ongoing_right = true;
 				m_fire_sequence_ongoing_left  = true;
 			}
 
 			if ( IsMouseButtonDown(MOUSE_BUTTON_RIGHT) && !m_fire_sequence_ongoing && !m_fire_sequence_ongoing_right ) {
 				m_fire_sequence_ongoing_right = true;
-				
 			}
-			if ( m_time_since_last_shot_right > m_cannon_container.at(0)->fire_rate() / m_cannon_container.size() &&
-				m_fire_sequence_ongoing_right ) {
+			if ( m_time_since_last_shot_right > m_cannon_container.at(0)->fire_rate() / m_cannon_container.size() && m_fire_sequence_ongoing_right ) {
 				m_cannon_container.at(m_firing_cannon_index.right)->fire();
 
 				m_firing_cannon_index.right += 2;
 				m_time_since_last_shot_right = 0;
 
-				if ( m_firing_cannon_index.right >= m_cannon_container.size()) {
-					m_firing_cannon_index.right = 1;
+				if ( m_firing_cannon_index.right >= m_cannon_container.size() ) {
+					m_firing_cannon_index.right	  = 1;
 					m_fire_sequence_ongoing_right = false;
 					m_fire_sequence_ongoing		  = false;
 				}
@@ -186,13 +186,12 @@ void Player::fire_cannons(float dt)
 				m_fire_sequence_ongoing_left = true;
 			}
 
-			if ( m_time_since_last_shot_left > m_cannon_container.at(0)->fire_rate() / m_cannon_container.size() &&
-				m_fire_sequence_ongoing_left ) {
+			if ( m_time_since_last_shot_left > m_cannon_container.at(0)->fire_rate() / m_cannon_container.size() && m_fire_sequence_ongoing_left ) {
 				m_cannon_container.at(m_firing_cannon_index.left)->fire();
 				m_firing_cannon_index.left += 2;
 				m_time_since_last_shot_left = 0;
-				if ( m_firing_cannon_index.left >= m_cannon_container.size()) {
-					m_firing_cannon_index.left = 0;
+				if ( m_firing_cannon_index.left >= m_cannon_container.size() ) {
+					m_firing_cannon_index.left	 = 0;
 					m_fire_sequence_ongoing_left = false;
 					m_fire_sequence_ongoing		 = false;
 				}
@@ -252,7 +251,7 @@ void Player::reset_iframe(float dt)
 	if ( !m_can_be_hit ) {
 		if ( auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director()) ) {
 			m_iframe_timer += dt;
-			if ( m_iframe_timer >= director->player_iframe_duration()) {
+			if ( m_iframe_timer >= director->player_iframe_duration() ) {
 				m_can_be_hit   = true;
 				m_iframe_timer = 0;
 			}
