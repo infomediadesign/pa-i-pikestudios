@@ -142,9 +142,9 @@ void Player::on_death()
 	set_is_active(false);
 	for ( const auto& cannon: m_cannon_container ) {
 		cannon->set_is_active(false);
-		gApp()->push_layer<DeathScreenLayer>();
-		gApp()->pop_layer<UILayer>();
 	}
+	gApp()->push_layer<DeathScreenLayer>();
+	gApp()->pop_layer<UILayer>();
 }
 
 void Player::set_is_invincible(bool invincible)
