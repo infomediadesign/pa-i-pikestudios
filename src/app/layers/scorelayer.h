@@ -39,7 +39,8 @@ public:
 	void set_highscore(std::string name, int score);
 	void draw_score_board();
 	std::string score_filename() const;
-	
+	enum score_layout{ DEATH, MAIN_MENU, ESC_MENU };
+	score_layout layout = DEATH;
 
 	Filemanager m_filemanager;
 

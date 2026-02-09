@@ -47,8 +47,10 @@ void MainMenuLayer::on_render()
 		gApp()->call_later([]() { gApp()->switch_layer<MainMenuLayer, ScoreLayer>(); });
 		gApp()->call_later([]() { 
 			auto score_layer = gApp()->get_layer<ScoreLayer>();
-			if ( score_layer )
+			if ( score_layer ) {
 				score_layer->load_highscore(score_layer->score_filename());
+				score_layer->layout = ScoreLayer::MAIN_MENU;
+			}
 		});
 	}
 	if ( GuiButton(next_btn_rect(), "Quit") ) {

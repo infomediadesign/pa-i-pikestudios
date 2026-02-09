@@ -1,18 +1,19 @@
 #include "scorelayer.h"
 #include <algorithm>
+#include <entities/director.h>
 #include <filesystem>
 #include <fstream>
-#include <system_error>
-#include <entities/director.h>
-#include <raygui.h>
-#include <pscore/viewport.h>
 #include <layers/mainmenulayer.h>
+#include <pscore/viewport.h>
+#include <raygui.h>
+#include <system_error>
+
+#include "pauselayer.h"
 
 ScoreLayer::ScoreLayer() : m_filemanager(m_score_filename)
 {
-	HighscoreEntries default_entry	= {0, "No score yet"};
+	HighscoreEntries default_entry = {0, "No score yet"};
 	highscore.push_back(default_entry);
-
 }
 
 ScoreLayer::~ScoreLayer()
@@ -21,7 +22,7 @@ ScoreLayer::~ScoreLayer()
 
 void ScoreLayer::on_update(float dt)
 {
-	m_time_since_lase_input += dt;	
+	m_time_since_lase_input += dt;
 	if ( list_state == AWAITING_INPUT ) {
 		update_typing();
 	}
@@ -45,18 +46,34 @@ void ScoreLayer::on_render()
 
 	GuiSetStyle(DEFAULT, TEXT_SIZE, 6 * scale);
 
-	if ( GuiButton(button_rect, "Main Menu") ) {
-		gApp()->call_later([]() { gApp()->pop_layer<ScoreLayer>(); });
-		gApp()->call_later([]() { gApp()->switch_layer<AppLayer, MainMenuLayer>(); });
+	switch ( layout ) {
+		case MAIN_MENU:
+			if ( GuiButton(button_rect, "Main Menu") ) {
+				gApp()->call_later([]() { gApp()->switch_layer<ScoreLayer, MainMenuLayer>(); });
+			}
+			break;
+		case ESC_MENU:
+			if ( GuiButton(button_rect, "Back") ) {
+				gApp()->call_later([]() { gApp()->pop_layer<ScoreLayer>(); });
+				if ( auto pause = gApp()->get_layer<PauseLayer>() ) {
+					pause->m_active = true;
+				}
+			}
+			break;
+		case DEATH:
+			if ( GuiButton(button_rect, "Main Menu") ) {
+				gApp()->call_later([]() { gApp()->switch_layer<AppLayer, MainMenuLayer>(); });
+			}
+			break;
 	}
+
 	draw_score_board();
 }
 void ScoreLayer::load_highscore(const std::string& filename)
 {
 	// does the file exist? create it if not. / delete highscore / open txt file and check
 	m_filemanager.ensurefileexists(filename);
-	if ( highscore.size() > 0 ) 
-	{
+	if ( highscore.size() > 0 ) {
 		highscore.clear();
 	}
 	std::ifstream infile(filename);
@@ -92,15 +109,15 @@ void ScoreLayer::save_highscore(const std::string& filename)
 // if the achieved high score fits into the top 10 list: true, otherwise false
 bool ScoreLayer::check_for_new_highscore(int currentscore)
 {
-    if (highscore.empty()) {
-        return true;
-    }
-    
-    if (highscore.size() < 10) {
-        return true;
-    }
-    
-    return currentscore > highscore.back().score;
+	if ( highscore.empty() ) {
+		return true;
+	}
+
+	if ( highscore.size() < 10 ) {
+		return true;
+	}
+
+	return currentscore > highscore.back().score;
 }
 
 // Checks if the score qualifies as a new highscore and saves it with the player name if applicable
@@ -110,18 +127,13 @@ void ScoreLayer::save_new_highscore(int score)
 		if ( list_state == VIEWING ) {
 			list_state = AWAITING_INPUT;
 			return;
-		} else if ( list_state == INPUT_MADE ) 
-		{
-			if ( highscore.size() >= 10 ) 
-			{
-				highscore.back().score				 = score;
-				highscore.back().name   = player_name_input;
-			} 
-			else 
-			{
-			set_highscore(player_name_input, score);
+		} else if ( list_state == INPUT_MADE ) {
+			if ( highscore.size() >= 10 ) {
+				highscore.back().score = score;
+				highscore.back().name  = player_name_input;
+			} else {
+				set_highscore(player_name_input, score);
 			}
-
 		}
 		std::sort(highscore.begin(), highscore.end(), [](const HighscoreEntries& a, const HighscoreEntries& b) -> bool { return a.score > b.score; });
 	}
@@ -137,25 +149,22 @@ void ScoreLayer::update_typing()
 		key = GetCharPressed();
 	}
 	if ( IsKeyDown(KEY_BACKSPACE) && !player_name_input.empty() && m_time_since_lase_input > 0.08 ) {
-			player_name_input.pop_back();
-			m_time_since_lase_input = 0.0f;
+		player_name_input.pop_back();
+		m_time_since_lase_input = 0.0f;
 	}
 	if ( IsKeyPressed(KEY_ENTER) ) {
-		if ( player_name_input.size() > 0 ) 
-		{
-		list_state = INPUT_MADE;
-		save_new_highscore(dynamic_cast<FortunaDirector*>(gApp()->game_director())->m_b_bounty.bounty());
-		save_highscore(m_score_filename);
-		
+		if ( player_name_input.size() > 0 ) {
+			list_state = INPUT_MADE;
+			save_new_highscore(dynamic_cast<FortunaDirector*>(gApp()->game_director())->m_b_bounty.bounty());
+			save_highscore(m_score_filename);
 		}
-		
 	}
 }
 
 void ScoreLayer::set_highscore(std::string name, int score)
 {
 	HighscoreEntries new_entry;
-	new_entry.name = name;
+	new_entry.name	= name;
 	new_entry.score = score;
 
 	highscore.push_back(new_entry);
@@ -169,11 +178,9 @@ void ScoreLayer::draw_score_board()
 
 	float y_offset	  = 100.0f;
 	float line_height = 30.0f;
-	
-	
 
-	for ( const auto& entry: highscore ) 
-	{
+
+	for ( const auto& entry: highscore ) {
 		Rectangle label_rect = {(float) vp->viewport_base_size().x / 2 - 100, y_offset, 400, line_height};
 
 
@@ -183,7 +190,9 @@ void ScoreLayer::draw_score_board()
 		y_offset += line_height;
 	}
 	if ( list_state == AWAITING_INPUT ) {
-		Rectangle prompt_label_rect = {(float) vp->viewport_base_size().x / 2 - 100, y_offset - line_height, 400, 200 + line_height * highscore.size()};
+		Rectangle prompt_label_rect = {
+				(float) vp->viewport_base_size().x / 2 - 100, y_offset - line_height, 400, 200 + line_height * highscore.size()
+		};
 		std::string prompt_text		= "Enter Name: " + player_name_input;
 		std::string your_score_text = "Your Score: " + std::to_string(dynamic_cast<FortunaDirector*>(gApp()->game_director())->m_b_bounty.bounty());
 		GuiLabel(prompt_label_rect, your_score_text.c_str());
