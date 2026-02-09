@@ -50,6 +50,9 @@ public:
 	float travel_distance();
 	void set_travel_distance(const float travel_distance);
 
+	float max_range();
+	void set_max_range(const float max_range);
+
 	std::shared_ptr<Projectile> shared_ptr();
 	void set_shared_ptr(std::shared_ptr<Projectile>& ptr);
 
@@ -67,8 +70,11 @@ public:
 	void calculate_parenting();
 	void fire_from_cannon(const float dt);
 	void draw_debug() override;
+	void launch();
 
 private:
+	void apply_drag(const float dt);
+
 	Vector2 m_p_position;
 	Vector2 m_p_velocity;
 	Vector2 m_p_target_position;
@@ -93,4 +99,6 @@ private:
 	std::unique_ptr<PSCore::collision::EntityCollider> m_collider;
 
 	Vector2 m_p_local_direction;
+	float m_p_max_range = 500.0f;
+	float m_p_drag_per_second = 0.92f;
 };

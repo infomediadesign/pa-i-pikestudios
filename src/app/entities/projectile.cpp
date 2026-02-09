@@ -1,4 +1,5 @@
-﻿#include "projectile.h"
+#include "projectile.h"
+#include <cmath>
 #include <coordinatesystem.h>
 #include <entities/director.h>
 #include <iostream>
@@ -44,6 +45,11 @@ void Projectile::init(const Vector2& position, std::shared_ptr<Projectile> self)
 
 void Projectile::update(const float dt)
 {
+
+	if ( m_p_travel_distance >= m_p_max_range ) {
+		is_active_ = false;
+	}
+
 	calculate_movment(dt);
 
 	if ( position()->x == 0 || position()->y == 0 )
@@ -72,12 +78,74 @@ void Projectile::render()
 	}
 }
 
-void Projectile::calculate_movment(const float dt)
+void Projectile::apply_drag(const float dt)
 {
-	fire_from_cannon(dt);
-	parent_to_cannon();
+	float frame_drag = std::pow(m_p_drag_per_second, dt);
+
+	m_p_velocity.x *= frame_drag;
+	m_p_velocity.y *= frame_drag;
+	m_p_owner_velocity.x *= frame_drag;
+	m_p_owner_velocity.y *= frame_drag;
 }
 
+void Projectile::calculate_movment(const float dt)
+{
+	if ( !m_p_fiering_cannon ) {
+		return;
+	}
+
+	// D�mpfung anwenden
+	apply_drag(dt);
+
+	// Kombinierte Geschwindigkeit
+	Vector2 combined_velocity = {
+		m_p_velocity.x + m_p_owner_velocity.x,
+		m_p_velocity.y + m_p_owner_velocity.y
+	};
+
+	// Position aktualisieren
+	m_p_position.x += combined_velocity.x * dt;
+	m_p_position.y += combined_velocity.y * dt;
+
+	// Zur�ckgelegte Distanz tracken
+	m_p_travel_distance += Vector2Length(combined_velocity) * dt;
+
+	// Deaktivieren wenn maximale Reichweite erreicht
+	if ( m_p_travel_distance >= m_p_max_range ) {
+		is_active_ = false;
+	}
+}
+
+void Projectile::launch()
+{
+	if ( !m_p_fiering_cannon ) {
+		return;
+	}
+
+	m_p_position = m_p_fiering_cannon->position().value_or(Vector2{0, 0});
+
+	float cannon_rot = m_p_fiering_cannon->rotation();
+	float rad = cannon_rot * (PI / 180.0f);
+
+	m_p_velocity = {
+		cosf(rad) * m_p_speed,
+		sinf(rad) * m_p_speed
+	};
+
+	if ( m_p_owner ) {
+		m_p_owner_velocity = m_p_owner->velocity();
+	}
+
+	Vector2 combined = {
+		m_p_velocity.x + m_p_owner_velocity.x,
+		m_p_velocity.y + m_p_owner_velocity.y
+	};
+	m_p_rotation = atan2f(combined.y, combined.x) * (180.0f / PI);
+
+	m_p_travel_distance = 0.0f;
+}
+
+/*
 void Projectile::calculate_parenting()
 {
 	if ( !m_p_fiering_cannon ) {
@@ -135,6 +203,7 @@ void Projectile::parent_to_cannon()
 	);
 	m_p_rotation = cannon_rot;
 }
+*/
 
 Texture2D Projectile::texture()
 {
@@ -176,6 +245,16 @@ void Projectile::set_velocity(const Vector2& velocity)
 	m_p_velocity = velocity;
 }
 
+float Projectile::max_range()
+{
+	return m_p_max_range;
+}
+
+void Projectile::set_max_range(const float max_range)
+{
+	m_p_max_range = max_range;
+}
+
 Vector2 Projectile::target_position()
 {
 	return m_p_target_position;
@@ -215,8 +294,6 @@ void Projectile::set_speed(const float speed)
 {
 	m_p_speed = speed;
 }
-
-float fire_rate();
 
 float Projectile::travel_distance()
 {
