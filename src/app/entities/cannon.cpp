@@ -31,6 +31,7 @@ void Cannon::update(const float dt)
 	set_rotation_to_parent();
 	
 	m_c_time_since_last_shot += dt;
+	/*
 	if ( IsMouseButtonDown(MOUSE_BUTTON_LEFT) ) {
 		if ( m_c_positioning == CannonPositioning::Left ) {
 			fire();
@@ -42,6 +43,7 @@ void Cannon::update(const float dt)
 			fire();
 		}
 	}
+	*/
 
 		m_c_animation_controller.update_animation(dt);
 
@@ -74,21 +76,15 @@ void Cannon::fire()
 
 		if ( auto& spawner = director->spawner<Projectile, AppLayer>() ) {
 			spawner->register_spawn_callback([this](std::shared_ptr<Projectile> projectile) {
-				auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
-				if ( !director ) {
-					return;
-				}
-
 				projectile->init(m_c_position, projectile);
 				projectile->set_speed(m_c_projectile_speed);
-				projectile->set_target_position(calculate_projectile_target_position());
-
-				if ( m_c_parent ) {
-					projectile->set_owner_velocity(m_c_parent->velocity());
-				}
-
 				projectile->set_fiering_cannon(m_c_shared_ptr_this);
-				projectile->calculate_parenting();
+				projectile->set_max_range(m_c_range);
+				
+				if ( m_c_parent ) {
+					projectile->set_owner(m_c_parent);
+				}
+				projectile->launch();
 			});
 			
 			spawner->spawn();

@@ -118,6 +118,15 @@ void FortunaDirector::draw_debug()
 		}
 	}
 
+	// Fire Mode
+	static bool use_sequence_mode = true;
+	if ( ImGui::Checkbox("Fire In Sequence", &use_sequence_mode) ) {
+		Player::FireMode mode = use_sequence_mode ? Player::FireMode::InSequence : Player::FireMode::SameTime;
+		for ( auto& player: _p->players ) {
+			player->set_fire_mode(mode);
+		}
+	}
+
 	ImGui::Separator();
 	ImGui::Text("Player Upgrades");
 
@@ -185,6 +194,7 @@ void FortunaDirector::draw_debug()
 			set_player_health(player_health() + health_amount);
 		}
 	}
+
 }
 
 std::shared_ptr<Player> FortunaDirector::spawn_player(const Vector2& position)
