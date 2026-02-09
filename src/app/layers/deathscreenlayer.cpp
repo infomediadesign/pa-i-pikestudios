@@ -10,11 +10,11 @@
 
 void DeathScreenLayer::on_update(float dt)
 {
-	
-	
+
+
 }
 
-void DeathScreenLayer::on_render() 
+void DeathScreenLayer::on_render()
 {
 	auto& vp = gApp()->viewport();
 	Vector2 np = vp->viewport_origin();
