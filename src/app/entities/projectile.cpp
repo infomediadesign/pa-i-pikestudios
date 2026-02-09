@@ -10,7 +10,6 @@
 #include <pscore/sprite.h>
 #include <pscore/viewport.h>
 #include <raylib.h>
-
 #include <layers/applayer.h>
 #include <psinterfaces/entity.h>
 #include <raymath.h>

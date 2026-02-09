@@ -5,6 +5,7 @@
 #include <pscore/collision.h>
 #include <psinterfaces/renderable.h>
 #include <raylib.h>
+#include "pscore/sprite.h"
 
 class Player;
 class FortunaDirector;
