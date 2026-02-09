@@ -3,6 +3,7 @@
 #include <deque>
 #include <functional>
 #include <memory>
+#include <optional>
 #include <psinterfaces/layer.h>
 #include <raylib.h>
 #include <type_traits>
@@ -42,12 +43,16 @@ namespace PSCore {
 		{
 			m_layer_stack.push_back(std::make_unique<TL>());
 		}
-		
+
 		template<ILayerDerived TL, ILayerDerived TO>
 		void switch_layer()
 		{
-			push_layer<TO>();
-			pop_layer<TL>();
+			// push_layer<TO>();
+			// pop_layer<TL>();
+
+			if ( get_layer_ref<TL>().hasValue() ) {
+				get_layer_ref<TL>().value() = std::move(std::make_unique<TO>());
+			}
 		}
 
 		/*!
@@ -61,6 +66,19 @@ namespace PSCore {
 					return casted;
 			}
 			return nullptr;
+		}
+
+		/*!
+		 * @brief returns an instance to a layer of type T or a nullptr
+		 */
+		template<ILayerDerived TL>
+		std::optional<std::reference_wrapper<std::unique_ptr<TL>>> get_layer_ref()
+		{
+			for ( const auto& layer: m_layer_stack ) {
+				if ( auto casted = dynamic_cast<TL*>(layer.get()) )
+					return layer;
+			}
+			return std::nullopt;
 		}
 
 		/*!
@@ -109,14 +127,15 @@ namespace PSCore {
 			return nullptr;
 		};
 
-		std::unique_ptr<PSInterfaces::IEntity>& game_director_ref() {
+		std::unique_ptr<PSInterfaces::IEntity>& game_director_ref()
+		{
 			return m_game_director;
 		};
 
 		std::unique_ptr<PSCore::Viewport>& viewport();
 
 		std::unique_ptr<PSCore::sprites::SpriteLoader>& sprite_loader();
-		
+
 		void call_later(std::function<void()> fn)
 		{
 			m_call_stack.push_back(fn);
