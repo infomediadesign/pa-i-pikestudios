@@ -12,6 +12,7 @@
 #include <psinterfaces/entity.h>
 #include <layers/scorelayer.h>
 #include <layers/uilayer.h>
+#include <layers/deathscreenlayer.h>
 
 #include <coordinatesystem.h>
 
@@ -129,16 +130,19 @@ void Player::on_hit()
 			director->set_player_health(director->player_health() - 1);
 			if ( director->player_health() <= 0 ) {
 				set_is_active(false);
-				gApp()->push_layer<ScoreLayer>();
+				gApp()->push_layer<DeathScreenLayer>();
 				gApp()->pop_layer<UILayer>();
-				auto score_layer = gApp()->get_layer<ScoreLayer>();
+				for ( const auto& cannon: m_cannon_container ) {
+					cannon->set_is_active(false);
+				}
+				/*auto score_layer = gApp()->get_layer<ScoreLayer>();
 				if ( score_layer ) {
 					score_layer->save_new_highscore(dynamic_cast<FortunaDirector*>(gApp()->game_director())->m_b_bounty.bounty());
 					score_layer->load_highscore(score_layer->score_filename());
 					for ( auto cannon: m_cannon_container ) {
 						cannon->set_is_active(false);
 					}
-				}
+				}*/
 			}
 		}
 	}
