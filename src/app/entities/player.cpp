@@ -168,6 +168,7 @@ void Player::on_hit()
 void Player::on_death()
 {
 	set_is_active(false);
+	m_sails->set_is_active(false);
 	for ( const auto& cannon: m_cannon_container ) {
 		cannon->set_is_active(false);
 	}
