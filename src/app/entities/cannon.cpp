@@ -80,7 +80,7 @@ void Cannon::fire()
 				projectile->set_speed(m_c_projectile_speed);
 				projectile->set_fiering_cannon(m_c_shared_ptr_this);
 				projectile->set_max_range(m_c_range);
-				
+
 				if ( m_c_parent ) {
 					projectile->set_owner(m_c_parent);
 				}
