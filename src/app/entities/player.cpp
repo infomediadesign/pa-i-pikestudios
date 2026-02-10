@@ -8,12 +8,13 @@
 #include <raymath.h>
 
 #include <layers/applayer.h>
-#include <misc/smear.h>
-#include <psinterfaces/entity.h>
 #include <layers/scorelayer.h>
 #include <layers/uilayer.h>
+#include <misc/smear.h>
+#include <psinterfaces/entity.h>
 
 #include <coordinatesystem.h>
+#include <memory>
 
 #ifndef CALCULATION_VELOCITY_MIN
 #define CALCULATION_VELOCITY_MIN 2
@@ -52,6 +53,14 @@ Player::Player() : PSInterfaces::IEntity("player")
 	set_texture_values(FETCH_SPRITE_TEXTURE(ident_), 90);
 	//
 	//
+
+	m_sails = std::make_shared<Sails>(this);
+
+	m_sails->propose_z_index(30);
+
+	if ( auto app_layer = gApp()->get_layer<AppLayer>() ) {
+		app_layer->renderer()->submit_renderable(m_sails);
+	}
 }
 
 void Player::update(const float dt)
@@ -64,10 +73,12 @@ void Player::update(const float dt)
 		if ( IsKeyDown(KEY_S) ) {
 			m_target_velocity -= m_target_velocity > 0 ? m_input_velocity_multiplier * dt : 0;
 		}
-		if ( IsKeyDown(KEY_D) && Vector2Length(m_velocity) - (m_velocity_rotation_downscale * fabsf(m_rotation_velocity)) > CALCULATION_VELOCITY_MIN ) {
+		if ( IsKeyDown(KEY_D) &&
+			 Vector2Length(m_velocity) - (m_velocity_rotation_downscale * fabsf(m_rotation_velocity)) > CALCULATION_VELOCITY_MIN ) {
 			m_target_rotation += m_input_rotation_multiplier * dt;
 		}
-		if ( IsKeyDown(KEY_A) && Vector2Length(m_velocity) - (m_velocity_rotation_downscale * fabsf(m_rotation_velocity)) > CALCULATION_VELOCITY_MIN ) {
+		if ( IsKeyDown(KEY_A) &&
+			 Vector2Length(m_velocity) - (m_velocity_rotation_downscale * fabsf(m_rotation_velocity)) > CALCULATION_VELOCITY_MIN ) {
 			m_target_rotation -= m_input_rotation_multiplier * dt;
 		}
 	}
@@ -79,12 +90,6 @@ void Player::update(const float dt)
 	reset_iframe(dt);
 
 	// Animation Calculation
-
-	/*if ( m_rotation_velocity > CALCULATION_DELTA_ROTATION_MIN || m_rotation_velocity < -CALCULATION_DELTA_ROTATION_MIN ) {
-		sprite_sheet_animation_index = m_rotation_velocity < 0 ? 1 : 3;
-	} else {
-		sprite_sheet_animation_index = 2;
-	}*/
 
 	if ( m_animation_controller.get_sprite_sheet_animation_index(3).value_or(2) == 2 &&
 		 fabsf(m_rotation_velocity) > SCHMITT_TRIGGER_DELTA_ROTATION_MAX ) {
@@ -123,7 +128,7 @@ void Player::update(const float dt)
 
 void Player::on_hit()
 {
-	if ( m_can_be_hit && !m_is_invincible) {
+	if ( m_can_be_hit && !m_is_invincible ) {
 		m_can_be_hit = false;
 		if ( auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director()) ) {
 			director->set_player_health(director->player_health() - 1);
@@ -165,9 +170,9 @@ void Player::render()
 		vp->draw_in_viewport(
 				m_texture, m_animation_controller.get_source_rectangle(1).value_or(Rectangle{0}), m_position, m_rotation + m_rotation_offset, WHITE
 		);
-		vp->draw_in_viewport(
+		/*vp->draw_in_viewport(
 				m_texture, m_animation_controller.get_source_rectangle(3).value_or(Rectangle{0}), m_position, m_rotation + m_rotation_offset, WHITE
-		);
+		);*/
 	}
 }
 
@@ -176,7 +181,7 @@ void Player::reset_iframe(float dt)
 	if ( !m_can_be_hit ) {
 		if ( auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director()) ) {
 			m_iframe_timer += dt;
-			if ( m_iframe_timer >= director->player_iframe_duration()) {
+			if ( m_iframe_timer >= director->player_iframe_duration() ) {
 				m_can_be_hit   = true;
 				m_iframe_timer = 0;
 			}
@@ -450,3 +455,33 @@ void Player::set_input_rotation_multiplier(float val)
 {
 	m_input_rotation_multiplier = val;
 };
+
+//
+// Player Sails
+//
+Sails::Sails(Player* player) : PSInterfaces::IEntity("player_sails"), m_player(player)
+{
+}
+
+Sails::~Sails()
+{
+}
+
+void Sails::update(float dt)
+{
+}
+
+void Sails::render()
+{
+	if ( auto& vp = gApp()->viewport() ) {
+		auto texture = m_player->m_sprite;
+		vp->draw_in_viewport(
+				texture->m_s_texture, m_player->m_animation_controller.get_source_rectangle(3).value_or(Rectangle{0}), m_player->m_position,
+				m_player->m_rotation + m_player->m_rotation_offset, WHITE
+		);
+	}
+}
+
+void Sails::draw_debug()
+{
+}

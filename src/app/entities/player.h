@@ -9,8 +9,11 @@
 #include <misc/smear.h>
 #include "pscore/sprite.h"
 
+class Sails;
 class Player : public PSInterfaces::IRenderable
 {
+	friend class Sails;
+
 public:
 	Player();
 
@@ -142,4 +145,21 @@ private:
 	bool m_is_invincible	= false;
 	float m_iframe_timer	  = 0;
 	float m_iframe_duration = 5;
+
+	//Sails
+	std::shared_ptr<Sails> m_sails;
+};
+
+class Sails : public PSInterfaces::IRenderable{
+public:
+	Sails(Player* player);
+	~Sails();
+
+	void update(float dt) override;
+	void render() override;
+	void draw_debug() override;
+
+private:
+	const Player* m_player;
+
 };
