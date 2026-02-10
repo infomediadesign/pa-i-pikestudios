@@ -69,6 +69,8 @@ public:
 		int m_b_bounty_amount = 0;
 	};
 
+	void increase_difficulty(int bounty);
+
 	float player_iframe_duration() const;
 
 	struct BountyAmount
