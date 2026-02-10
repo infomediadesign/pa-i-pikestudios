@@ -17,5 +17,5 @@ public:
 	std::string load();
 
 private:
-	std::string filename;
+	std::string m_filename;
 };
