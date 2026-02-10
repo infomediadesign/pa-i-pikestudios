@@ -26,7 +26,8 @@ var hierarchy =
         [ "Player", "classPlayer.html", null ],
         [ "Projectile", "classProjectile.html", null ],
         [ "Shark", "classShark.html", null ],
-        [ "Water", "classWater.html", null ]
+        [ "Water", "classWater.html", null ],
+        [ "tentacle", "classtentacle.html", null ]
       ] ]
     ] ],
     [ "PSInterfaces::Events::IEventManager", "classPSInterfaces_1_1Events_1_1IEventManager.html", null ],
