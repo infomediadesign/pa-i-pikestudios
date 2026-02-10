@@ -46,8 +46,7 @@ void ScoreLayer::on_render()
 	GuiSetStyle(DEFAULT, TEXT_SIZE, 6 * scale);
 
 	if ( GuiButton(button_rect, "Main Menu") ) {
-		gApp()->call_later([]() { gApp()->pop_layer<ScoreLayer>(); });
-		gApp()->call_later([]() { gApp()->switch_layer<AppLayer, MainMenuLayer>(); });
+		gApp()->call_later([]() { gApp()->switch_layer<ScoreLayer, MainMenuLayer>(); });
 	}
 	draw_score_board();
 }
