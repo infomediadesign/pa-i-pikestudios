@@ -33,7 +33,7 @@ class FortunaDirectorPriv
 
 	std::unique_ptr<PSCore::Spawner<Projectile, AppLayer>> projectile_spawner;
 	float player_max_velocity		 = CFG_VALUE<float>("player_max_velocity", 200.0f);
-	float player_input_rotation_mult = CFG_VALUE<float>("player_input_rotation_mult", 0.9f);
+	float player_input_rotation_mult = CFG_VALUE<float>("player_input_rotation_mult", 200.0f);
 	float player_input_velocity_mult = CFG_VALUE<float>("player_input_velocity_mult", 1500.0f);
 	int player_max_health			 = CFG_VALUE<int>("player_max_health", 3);
 	int player_health				 = CFG_VALUE<int>("player_health", 3);
