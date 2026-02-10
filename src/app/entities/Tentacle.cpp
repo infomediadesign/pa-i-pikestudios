@@ -35,7 +35,6 @@ Tentacle::Tentacle() : PSInterfaces::IEntity("tentacle")
 	m_animation_controller.add_animation_at_index(3, 3);
 }
 
-
 void Tentacle::init(std::shared_ptr<Tentacle> self, const Vector2& pos)
 {
 	m_self = self;
@@ -106,7 +105,6 @@ void Tentacle::update(float dt)
 		case WaterBreak: {
 			WaterBreakUpdate(dt);
 			break;
-			;
 		}
 		case Attacking: {
 			AttackingUpdate(dt);
@@ -154,7 +152,7 @@ void Tentacle::RetreatingUpdate(float dt)
 	if ( until_reposition <= 0 ) {
 		m_state = State::Idle;
 
-		time_until_water_break = max_time_until_water_break;
+		time_until_water_break = PSUtils::gen_rand(4, 8);
 		time_until_attack	   = max_time_until_attack;
 		time_until_retreat	   = max_time_until_retreat;
 		until_reposition	   = max_until_reposition;

@@ -46,12 +46,11 @@ private:
 
 	PSCore::sprites::SpriteSheetAnimation m_animation_controller;
 
-	float time_until_water_break;;
+	float time_until_water_break;
 	float time_until_attack;
 	float time_until_retreat;
 	float until_reposition;
 
-	float max_time_until_water_break=2.5;;
 	float max_time_until_attack=0.8;
 	float max_time_until_retreat=0.5;
 	float max_until_reposition=0.6;
