@@ -9,6 +9,7 @@
 #include <psinterfaces/renderable.h>
 #include <raylib.h>
 #include <string>
+#include <misc/smear.h>
 
 class FortunaDirector;
 
