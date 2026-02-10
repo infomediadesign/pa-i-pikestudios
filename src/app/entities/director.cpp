@@ -8,6 +8,7 @@
 
 #include <entities/shark.h>
 #include <imgui.h>
+#include <pscore/settings.h>
 #include <pscore/spawner.h>
 #include <pscore/utils.h>
 #include <psinterfaces/entity.h>
@@ -19,25 +20,25 @@ class FortunaDirectorPriv
 	friend class FortunaDirector;
 	std::vector<std::shared_ptr<Player>> players;
 	std::vector<std::shared_ptr<Cannon>> cannons;
-	bool on_screen_warp_around = true;
+	bool on_screen_warp_around = CFG_VALUE<bool>("on_screen_warp_around", true);
 
-	float player_current_fire_rate		  = 0.5f;
-	float player_current_projectile_speed = 300.0f;
-	float player_current_fire_range		  = 100.0f;
+	float player_current_fire_rate		  = CFG_VALUE<float>("player_current_fire_rate", 0.5f);
+	float player_current_projectile_speed = CFG_VALUE<float>("player_current_projectile_speed", 300.0f);
+	float player_current_fire_range		  = CFG_VALUE<float>("player_current_fire_range", 100.0f);
 
 	std::unique_ptr<PSCore::Spawner<Shark, AppLayer>> shark_spawner;
-	float shark_spawn_time		= 1.0f;
-	float shark_spawn_variation = 0.0f;
-	int shark_limit				= 10;
+	float shark_spawn_time		= CFG_VALUE<float>("shark_spawn_time", 1.0f);
+	float shark_spawn_variation = CFG_VALUE<float>("shark_spawn_variation", 0.0f);
+	int shark_limit				= CFG_VALUE<int>("shark_limit", 10);
 
 	std::unique_ptr<PSCore::Spawner<Projectile, AppLayer>> projectile_spawner;
-	float player_max_velocity		 = 200.0f;
-	float player_input_rotation_mult = 0.9f;
-	float player_input_velocity_mult = 1500;
-	int player_max_health			 = 3;
-	int player_health				 = 3;
-	float player_iframe_duration	 = 0.5f;
-	bool player_invincibility		 = false;
+	float player_max_velocity		 = CFG_VALUE<float>("player_max_velocity", 200.0f);
+	float player_input_rotation_mult = CFG_VALUE<float>("player_input_rotation_mult", 0.9f);
+	float player_input_velocity_mult = CFG_VALUE<float>("player_input_velocity_mult", 1500.0f);
+	int player_max_health			 = CFG_VALUE<int>("player_max_health", 3);
+	int player_health				 = CFG_VALUE<int>("player_health", 3);
+	float player_iframe_duration	 = CFG_VALUE<float>("player_iframe_duration", 0.5f);
+	bool player_invincibility		 = CFG_VALUE<bool>("player_invincibility", false);
 };
 
 FortunaDirector::FortunaDirector() : PSInterfaces::IEntity("fortuna_director")
@@ -56,30 +57,30 @@ void FortunaDirector::initialize_entities()
 		return;
 
 	_p->shark_spawner->register_spawn_callback([](std::shared_ptr<Shark> shark) {
-		//Set the position of the shark to be spawned outsside of the screen
+		// Set the position of the shark to be spawned outsside of the screen
 		float x = 0, y = 0;
 		int side = PSUtils::gen_rand(0, 3);
-		switch (side) {
-		case 0: // Top
-			y = -50;
-			break;
-		case 1: // Right
-			x = GetScreenWidth() + 50;
-			break;
-		case 2: // Bottom
-			y = GetScreenHeight() + 50;
-			break;
-		case 3: // Left
-			x = -50;
-			break;
+		switch ( side ) {
+			case 0: // Top
+				y = -50;
+				break;
+			case 1: // Right
+				x = GetScreenWidth() + 50;
+				break;
+			case 2: // Bottom
+				y = GetScreenHeight() + 50;
+				break;
+			case 3: // Left
+				x = -50;
+				break;
 		}
-		//Distribute the position randomly along the chosen side
-		if (side == 0 || side == 2) { // Top or Bottom
+		// Distribute the position randomly along the chosen side
+		if ( side == 0 || side == 2 ) { // Top or Bottom
 			x = PSUtils::gen_rand(0, GetScreenWidth());
 		} else { // Right or Left
 			y = PSUtils::gen_rand(0, GetScreenHeight());
 		}
-		
+
 		shark->init(shark, {x, y});
 	});
 
@@ -104,7 +105,7 @@ void FortunaDirector::update(float dt)
 {
 	if ( !is_active_ )
 		return;
-	
+
 	misc::map::process_off_screen_entities();
 	sync_player_entities();
 
