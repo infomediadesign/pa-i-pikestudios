@@ -51,7 +51,10 @@ Player::Player() : PSInterfaces::IEntity("player")
 	}
 	m_max_velocity = 200;
 	m_rotation	   = 0;
-	set_interpolation_values(6, 2, 4, 1500, 200, 30);
+
+	auto director	   = dynamic_cast<FortunaDirector*>(gApp()->game_director());
+	auto& direcor_vals = director->value_container_ref();
+	set_interpolation_values(6, 2, 4, direcor_vals->player_input_velocity_mult, direcor_vals->player_input_rotation_mult, 30);
 	set_texture_values(FETCH_SPRITE_TEXTURE(ident_), 90);
 	//
 	//

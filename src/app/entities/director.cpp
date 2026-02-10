@@ -15,32 +15,6 @@
 #include <raylib.h>
 #include <raymath.h>
 
-class FortunaDirectorPriv
-{
-	friend class FortunaDirector;
-	std::vector<std::shared_ptr<Player>> players;
-	std::vector<std::shared_ptr<Cannon>> cannons;
-	bool on_screen_warp_around = CFG_VALUE<bool>("on_screen_warp_around", true);
-
-	float player_current_fire_rate		  = CFG_VALUE<float>("player_current_fire_rate", 0.5f);
-	float player_current_projectile_speed = CFG_VALUE<float>("player_current_projectile_speed", 300.0f);
-	float player_current_fire_range		  = CFG_VALUE<float>("player_current_fire_range", 100.0f);
-
-	std::unique_ptr<PSCore::Spawner<Shark, AppLayer>> shark_spawner;
-	float shark_spawn_time		= CFG_VALUE<float>("shark_spawn_time", 1.0f);
-	float shark_spawn_variation = CFG_VALUE<float>("shark_spawn_variation", 0.0f);
-	int shark_limit				= CFG_VALUE<int>("shark_limit", 10);
-
-	std::unique_ptr<PSCore::Spawner<Projectile, AppLayer>> projectile_spawner;
-	float player_max_velocity		 = CFG_VALUE<float>("player_max_velocity", 200.0f);
-	float player_input_rotation_mult = CFG_VALUE<float>("player_input_rotation_mult", 200.0f);
-	float player_input_velocity_mult = CFG_VALUE<float>("player_input_velocity_mult", 1500.0f);
-	int player_max_health			 = CFG_VALUE<int>("player_max_health", 3);
-	int player_health				 = CFG_VALUE<int>("player_health", 3);
-	float player_iframe_duration	 = CFG_VALUE<float>("player_iframe_duration", 0.5f);
-	bool player_invincibility		 = CFG_VALUE<bool>("player_invincibility", false);
-};
-
 FortunaDirector::FortunaDirector() : PSInterfaces::IEntity("fortuna_director")
 {
 	_p = std::make_unique<FortunaDirectorPriv>();
