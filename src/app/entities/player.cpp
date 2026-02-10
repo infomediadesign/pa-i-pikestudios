@@ -60,6 +60,7 @@ Player::Player() : PSInterfaces::IEntity("player")
 	m_sails = std::make_shared<Sails>(this);
 
 	m_sails->propose_z_index(30);
+	m_sails->set_is_active(true);
 
 	if ( auto app_layer = gApp()->get_layer<AppLayer>() ) {
 		app_layer->renderer()->submit_renderable(m_sails);
