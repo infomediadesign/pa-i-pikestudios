@@ -64,6 +64,17 @@ Player::Player() : PSInterfaces::IEntity("player")
 	if ( auto app_layer = gApp()->get_layer<AppLayer>() ) {
 		app_layer->renderer()->submit_renderable(m_sails);
 	}
+
+	//Upgrades
+	std::vector<int> chances = {50,25,25};
+	m_loot_table.add_loot_table(0,chances);
+	chances = {30,10,40,20};
+	m_loot_table.add_loot_table(1,chances);
+	chances = {99,1};
+	m_loot_table.add_loot_table(2,chances);
+
+	m_loot_table.loot_table_values(1);
+
 }
 
 void Player::update(const float dt)

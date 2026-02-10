@@ -31,7 +31,7 @@ public:
 
 	void set_expected_value(float expected_value);
 
-	std::vector<LootTableValue> LootTableValues(int count);
+	std::vector<LootTableValue> loot_table_values(int count);
 
 private:
 	void random_values_from_loot_table(int indices_count);

@@ -7,7 +7,9 @@
 #include <raylib.h>
 
 #include <misc/smear.h>
-#include "pscore/sprite.h"
+
+#include <misc/loottable.h>
+#include <pscore/sprite.h>
 
 class Sails;
 class Player : public PSInterfaces::IRenderable
@@ -171,8 +173,11 @@ private:
 	float m_iframe_timer	= 0;
 	float m_iframe_duration = 5;
 
-	//Sails
+	// Sails
 	std::shared_ptr<Sails> m_sails;
+
+	// Loot Table
+	LootTable m_loot_table;
 };
 
 class Sails : public PSInterfaces::IRenderable{

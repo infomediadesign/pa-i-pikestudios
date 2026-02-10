@@ -33,13 +33,14 @@ void LootTable::add_loot_table(int index, std::vector<int>& chances)
 		}
 	}
 
-	m_indices.push_back({index, static_cast<int>(m_chances.size())});
+	int location = static_cast<int>(m_chances.size());
+	m_indices.push_back({index, location});
 
 	for ( int i = 0; auto chance: chances ) {
 		if ( i == 0 ) {
 			m_chances.push_back({chance, 0});
 		} else {
-			m_chances.push_back({chance + m_chances.at(i - 1).chance, 0});
+			m_chances.push_back({chance + m_chances.at(location + i - 1).chance, 0});
 		}
 		i++;
 	}
@@ -52,7 +53,7 @@ void LootTable::set_expected_value(float expected_value)
 	m_expected_value = std::clamp(expected_value, -1.0f, 1.0f);
 }
 
-std::vector<LootTableValue> LootTable::LootTableValues(int count)
+std::vector<LootTableValue> LootTable::loot_table_values(int count)
 {
 	random_values_from_loot_table(count);
 
@@ -64,6 +65,7 @@ std::vector<LootTableValue> LootTable::LootTableValues(int count)
 void LootTable::random_values_from_loot_table(int indices_count)
 {
 	int count							  = indices_count;
+	int max_indices_index				  = static_cast<int>(m_indices.size()) - 1;
 	std::vector<LootTableIndices> indices = m_indices;
 
 	if ( indices_count > m_indices.size() ) {
@@ -76,7 +78,7 @@ void LootTable::random_values_from_loot_table(int indices_count)
 
 	std::random_device rd;
 	std::mt19937 gen(rd());
-	std::uniform_int_distribution<> dist_index(0, static_cast<int>(m_indices.size()) - 1);
+	std::uniform_int_distribution<> dist_index(0, max_indices_index);
 	std::uniform_int_distribution<> dist_value(0, 99);
 
 	for ( int i = 0; i < count; i++ ) {
@@ -87,7 +89,7 @@ void LootTable::random_values_from_loot_table(int indices_count)
 		bool active				= true;
 
 		while ( active ) {
-			int current_index_in_range = current_index % count;
+			int current_index_in_range = current_index % max_indices_index;
 
 			if ( indices.at(current_index_in_range).index != -1 ) {
 				if ( current_valid_index == random_index ) {
@@ -133,8 +135,9 @@ void LootTable::calculate_rarity()
 				}
 
 				for ( int j = 0; j < length; j++ ) {
-					if ( value.value >
-						 0.5 * std::erff(SQRT2HALF * (m_chances.at(j + m_indices.at(i).location).curve_boundary - m_expected_value) + 0.5) * 100 ) {
+					float curve_x = (m_chances.at(j + m_indices.at(i).location).curve_boundary - m_expected_value);
+					float curve_y = (0.5f * std::erff(SQRT2HALF * curve_x) + 0.5f) * 100;
+					if ( static_cast<float>(value.value) > curve_y ) {
 						value.rarity = std::min(j + 1, length - 1);
 					} else {
 						break;
