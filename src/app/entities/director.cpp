@@ -406,7 +406,6 @@ void FortunaDirector::increase_difficulty(int bounty)
 		_p->tentacle_spawner->resume();
 	}
 }
-
 // Player Health functions
 void FortunaDirector::set_player_health(const int health)
 {
