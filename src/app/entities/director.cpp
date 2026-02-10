@@ -52,7 +52,7 @@ FortunaDirector::FortunaDirector() : PSInterfaces::IEntity("fortuna_director")
 
 	_p->shark_spawner = std::make_unique<PSCore::Spawner<Shark, AppLayer>>(_p->shark_spawn_time, _p->shark_spawn_variation, _p->shark_limit, false);
 	_p->projectile_spawner = std::make_unique<PSCore::Spawner<Projectile, AppLayer>>(0.0f);
-	_p->tentacle_spawner	   = std::make_unique<PSCore::Spawner<tentacle, AppLayer>>(std::chrono::duration<double>{5.0f}, 3, 2);
+	_p->tentacle_spawner	   = std::make_unique<PSCore::Spawner<tentacle, AppLayer>>(5.0f, 3, 2);
 }
 
 void FortunaDirector::initialize_entities()
