@@ -4,20 +4,24 @@
 
 #include <filesystem>
 #include <fstream>
+#include <iostream>
+#include <pscore/application.h>
 #include <pscore/filemanager.h>
+#include <raylib.h>
 
-Filemanager::Filemanager(std::string filename)
+Filemanager::Filemanager(std::string filename) : m_filename(filename)
 {
-	filename = filename + ".txt";
 }
 
 void Filemanager::write(const std::string& mes)
 {
 	// check whether the file exists and open the file
-	ensurefileexists(filename);
-	std::ofstream outfile(filename);
-	if ( !outfile.is_open() )
+	ensurefileexists(m_filename);
+	std::ofstream outfile(m_filename);
+	if ( !outfile.is_open() ) {
+		PS_LOG(LOG_ERROR, "Failed to open File");
 		return;
+	}
 
 	outfile << mes + "\n";
 
@@ -27,8 +31,8 @@ void Filemanager::write(const std::string& mes)
 std::string Filemanager::load()
 {
 	// does the file exist? create it if not. / delete highscore / open txt file and check
-	ensurefileexists(filename);
-	std::ifstream infile(filename);
+	ensurefileexists(m_filename);
+	std::ifstream infile(m_filename);
 	if ( !infile.is_open() )
 		return "";
 

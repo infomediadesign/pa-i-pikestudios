@@ -13,6 +13,7 @@
 #include <psinterfaces/entity.h>
 #include <raylib.h>
 #include <raymath.h>
+#include <pscore/settings.h>
 
 class FortunaDirectorPriv
 {
@@ -26,9 +27,9 @@ class FortunaDirectorPriv
 	float player_current_fire_range		  = 100.0f;
 
 	std::unique_ptr<PSCore::Spawner<Shark, AppLayer>> shark_spawner;
-	float shark_spawn_time		= 1.0f;
-	float shark_spawn_variation = 0.0f;
-	int shark_limit				= 10;
+	float shark_spawn_time		= CFG_VALUE<float>("shark_spawn_time", 1.0f);
+	float shark_spawn_variation = CFG_VALUE<float>("shark_spawn_variation", 0.0f);
+	int shark_limit				= CFG_VALUE<int>("shark_limit", 10);
 
 	std::unique_ptr<PSCore::Spawner<Projectile, AppLayer>> projectile_spawner;
 	float player_max_velocity		 = 200.0f;
