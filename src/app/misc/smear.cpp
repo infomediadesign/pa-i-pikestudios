@@ -59,6 +59,10 @@ void Smear::calculate_exponential_smear(
 
 void Smear::draw_smear(int smear_index, SmearType smear_type, float smear_line_thickness, float smear_line_thickness_falloff, Color smear_color)
 {
+	if ( m_smear_points.size() - 1 < smear_index ) {
+		return;
+	}
+
 	Vector2 p1;
 	Vector2 c2;
 	Vector2 c3;

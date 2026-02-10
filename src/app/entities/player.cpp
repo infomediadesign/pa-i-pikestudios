@@ -8,6 +8,7 @@
 #include <raymath.h>
 
 #include <layers/applayer.h>
+#include <layers/deathscreenlayer.h>
 #include <layers/scorelayer.h>
 #include <layers/uilayer.h>
 #include <misc/smear.h>
@@ -42,6 +43,8 @@ Player::Player() : PSInterfaces::IEntity("player")
 
 	m_animation_controller.add_animation_at_index(0, 1);
 	m_animation_controller.add_animation_at_index(2, 3);
+
+	propose_z_index(0);
 
 	// WARNING: THIS IS ONLY FOR TESTING
 	if ( auto& vp = gApp()->viewport() ) {
@@ -83,6 +86,8 @@ void Player::update(const float dt)
 		}
 	}
 
+	fire_cannons(dt);
+
 	calculate_movement(dt);
 
 	m_rotation_velocity = calculate_rotation_velocity(0.01, dt);
@@ -110,15 +115,25 @@ void Player::update(const float dt)
 
 	m_smear.update_smear(m_rotation - m_target_rotation, 0.5, 10, dt);
 
-	if ( auto& vp = gApp()->viewport() ) {
-		Vector2 m_position_absolute = vp->position_viewport_to_global(m_position);
-		Vector2 m_smear_right_position =
-				coordinatesystem::point_relative_to_global_leftup(m_position_absolute, m_rotation, Vector2Scale({18, 5}, vp->viewport_scale()));
-		Vector2 m_smear_left_position =
-				coordinatesystem::point_relative_to_global_leftdown(m_position_absolute, m_rotation, Vector2Scale({18, 5}, vp->viewport_scale()));
+	// m_smear.update_smear(m_rotation_velocity, -10, 10, dt);
 
-		m_smear.calculate_linear_smear(m_smear_right_position, Vector2Length(m_velocity), m_rotation, 0.15 * vp->viewport_scale(), 0, 0);
-		m_smear.calculate_linear_smear(m_smear_left_position, Vector2Length(m_velocity), m_rotation, 0.15 * vp->viewport_scale(), 0, 1);
+	if ( auto& vp = gApp()->viewport() ) {
+		Vector2 position_absolute	 = vp->position_viewport_to_global(m_position);
+		float scale					 = vp->viewport_scale();
+		Vector2 smear_right_position = coordinatesystem::point_relative_to_global_leftup(position_absolute, m_rotation, Vector2Scale({18, 5}, scale));
+		Vector2 smear_left_position =
+				coordinatesystem::point_relative_to_global_leftdown(position_absolute, m_rotation, Vector2Scale({18, 5}, scale));
+		Vector2 smear_forward_position =
+				coordinatesystem::point_relative_to_global_rightup(position_absolute, m_rotation, Vector2Scale({20, 0}, scale));
+
+		m_smear.calculate_linear_smear(smear_right_position, Vector2Length(m_velocity), m_rotation, 0.15f * scale, 0, 0);
+		m_smear.calculate_linear_smear(smear_left_position, Vector2Length(m_velocity), m_rotation, 0.15f * scale, 0, 1);
+		m_smear.calculate_exponential_smear(
+				smear_forward_position, Vector2Length(m_velocity), m_rotation, 0.15f * scale, 0, 0.03f * scale, 0.05f * scale, 2
+		);
+		m_smear.calculate_exponential_smear(
+				smear_forward_position, Vector2Length(m_velocity), m_rotation, 0.15f * scale, 0, -0.03f * scale, -0.05f * scale, 3
+		);
 
 		m_smear.add_smear_wave(0.1, 0.25, Vector2Length(m_velocity), m_max_velocity, dt, 0);
 
@@ -133,20 +148,20 @@ void Player::on_hit()
 		if ( auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director()) ) {
 			director->set_player_health(director->player_health() - 1);
 			if ( director->player_health() <= 0 ) {
-				set_is_active(false);
-				gApp()->push_layer<ScoreLayer>();
-				gApp()->pop_layer<UILayer>();
-				auto score_layer = gApp()->get_layer<ScoreLayer>();
-				if ( score_layer ) {
-					score_layer->save_new_highscore(dynamic_cast<FortunaDirector*>(gApp()->game_director())->m_b_bounty.bounty());
-					score_layer->load_highscore(score_layer->score_filename());
-					for ( auto cannon: m_cannon_container ) {
-						cannon->set_is_active(false);
-					}
-				}
+				on_death();
 			}
 		}
 	}
+}
+
+void Player::on_death()
+{
+	set_is_active(false);
+	for ( const auto& cannon: m_cannon_container ) {
+		cannon->set_is_active(false);
+	}
+	gApp()->push_layer<DeathScreenLayer>();
+	gApp()->pop_layer<UILayer>();
 }
 
 void Player::set_is_invincible(bool invincible)
@@ -154,14 +169,86 @@ void Player::set_is_invincible(bool invincible)
 	m_is_invincible = invincible;
 }
 
+void Player::fire_cannons(float dt)
+{
+	switch ( m_fire_mode ) {
+
+		case FireMode::InSequence: {
+			m_time_since_last_shot_left += dt;
+			m_time_since_last_shot_right += dt;
+			if ( IsKeyDown(KEY_SPACE) && !m_fire_sequence_ongoing ) {
+				m_fire_sequence_ongoing		  = true;
+				m_fire_sequence_ongoing_right = true;
+				m_fire_sequence_ongoing_left  = true;
+			}
+
+			if ( IsMouseButtonDown(MOUSE_BUTTON_RIGHT) && !m_fire_sequence_ongoing && !m_fire_sequence_ongoing_right ) {
+				m_fire_sequence_ongoing_right = true;
+			}
+			if ( m_time_since_last_shot_right > m_cannon_container.at(0)->fire_rate() / m_cannon_container.size() && m_fire_sequence_ongoing_right ) {
+				m_cannon_container.at(m_firing_cannon_index.right)->fire();
+
+				m_firing_cannon_index.right += 2;
+				m_time_since_last_shot_right = 0;
+
+				if ( m_firing_cannon_index.right >= m_cannon_container.size() ) {
+					m_firing_cannon_index.right	  = 1;
+					m_fire_sequence_ongoing_right = false;
+					m_fire_sequence_ongoing		  = false;
+				}
+			}
+			if ( IsMouseButtonDown(MOUSE_BUTTON_LEFT) && !m_fire_sequence_ongoing && !m_fire_sequence_ongoing_left ) {
+				m_fire_sequence_ongoing_left = true;
+			}
+
+			if ( m_time_since_last_shot_left > m_cannon_container.at(0)->fire_rate() / m_cannon_container.size() && m_fire_sequence_ongoing_left ) {
+				m_cannon_container.at(m_firing_cannon_index.left)->fire();
+				m_firing_cannon_index.left += 2;
+				m_time_since_last_shot_left = 0;
+				if ( m_firing_cannon_index.left >= m_cannon_container.size() ) {
+					m_firing_cannon_index.left	 = 0;
+					m_fire_sequence_ongoing_left = false;
+					m_fire_sequence_ongoing		 = false;
+				}
+			}
+			break;
+		}
+
+		case FireMode::SameTime: {
+			if ( IsMouseButtonDown(MOUSE_BUTTON_LEFT) ) {
+				for ( auto cannon: m_cannon_container ) {
+					if ( cannon->positioning() == Cannon::CannonPositioning::Left ) {
+						cannon->fire();
+					}
+				}
+			}
+			if ( IsMouseButtonDown(MOUSE_BUTTON_RIGHT) ) {
+				for ( auto cannon: m_cannon_container ) {
+					if ( cannon->positioning() == Cannon::CannonPositioning::Right ) {
+						cannon->fire();
+					}
+				}
+			}
+			if ( IsKeyDown(KEY_SPACE) ) {
+				for ( auto cannon: m_cannon_container ) {
+					cannon->fire();
+				}
+			}
+			break;
+		}
+	}
+}
+
 void Player::render()
 {
 	// Draw Smear
 
 	if ( auto& vp = gApp()->viewport() ) {
-		m_smear.draw_smear(0, Linear, 2 * vp->viewport_scale(), 1, BLUE);
-		m_smear.draw_smear(1, Linear, 2 * vp->viewport_scale(), 1, BLUE);
-		m_smear.draw_smear_wave(Vector2Length(m_velocity), m_max_velocity, 2 * vp->viewport_scale(), 1, SKYBLUE);
+		m_smear.draw_smear(0, Linear, 2 * vp->viewport_scale(), 1, m_smear_color);
+		m_smear.draw_smear(1, Linear, 2 * vp->viewport_scale(), 1, m_smear_color);
+		m_smear.draw_smear(2, Exponential, 2 * vp->viewport_scale(), 1, m_smear_color);
+		m_smear.draw_smear(3, Exponential, 2 * vp->viewport_scale(), 1, m_smear_color);
+		m_smear.draw_smear_wave(Vector2Length(m_velocity), m_max_velocity, 2 * vp->viewport_scale(), 1, m_smear_color);
 	}
 
 	// Draw Ship
@@ -455,6 +542,16 @@ void Player::set_input_rotation_multiplier(float val)
 {
 	m_input_rotation_multiplier = val;
 };
+
+Player::FireMode Player::fire_mode() const
+{
+	return m_fire_mode;
+}
+
+void Player::set_fire_mode(FireMode mode)
+{
+	m_fire_mode = mode;
+}
 
 //
 // Player Sails
