@@ -39,6 +39,8 @@ public:
 
 	enum State { Idle = 0, Pursuing, Attacking, Retreat };
 
+	float calculate_rotation_velocity(float frequency, float dt);
+
 private:
 	bool m_marked;
 
@@ -59,7 +61,8 @@ private:
 	std::shared_ptr<PSCore::sprites::Sprite> m_shark_sprite;
 	std::unique_ptr<PSCore::collision::EntityCollider> m_collider;
 
-	float m_shark_rotation = 0;
+	float m_shark_rotation	  = 0;
+	float m_rotation_velocity = 0;
 
 	PSCore::sprites::SpriteSheetAnimation m_animation_controller;
 };
@@ -79,6 +82,9 @@ public:
 private:
 	const Shark* m_shark;
 	Vector2 m_size{20.0f, 60.0f};
+
+	Smear m_smear;
+	Color m_smear_color = {9, 75, 101, 127};
 };
 
 class Body : public PSInterfaces::IRenderable

@@ -43,6 +43,8 @@ Player::Player() : PSInterfaces::IEntity("player")
 	m_animation_controller.add_animation_at_index(0, 1);
 	m_animation_controller.add_animation_at_index(2, 3);
 
+	propose_z_index(0);
+
 	// WARNING: THIS IS ONLY FOR TESTING
 	if ( auto& vp = gApp()->viewport() ) {
 		m_position = vp->viewport_base_size() / 2;
@@ -85,12 +87,6 @@ void Player::update(const float dt)
 
 	// Animation Calculation
 
-	/*if ( m_rotation_velocity > CALCULATION_DELTA_ROTATION_MIN || m_rotation_velocity < -CALCULATION_DELTA_ROTATION_MIN ) {
-		sprite_sheet_animation_index = m_rotation_velocity < 0 ? 1 : 3;
-	} else {
-		sprite_sheet_animation_index = 2;
-	}*/
-
 	if ( m_animation_controller.get_sprite_sheet_animation_index(3).value_or(2) == 2 &&
 		 fabsf(m_rotation_velocity) > SCHMITT_TRIGGER_DELTA_ROTATION_MAX ) {
 		m_sprite_sheet_animation_index = m_rotation_velocity < 0 ? 1 : 3;
@@ -110,15 +106,25 @@ void Player::update(const float dt)
 
 	m_smear.update_smear(m_rotation - m_target_rotation, 0.5, 10, dt);
 
-	if ( auto& vp = gApp()->viewport() ) {
-		Vector2 m_position_absolute = vp->position_viewport_to_global(m_position);
-		Vector2 m_smear_right_position =
-				coordinatesystem::point_relative_to_global_leftup(m_position_absolute, m_rotation, Vector2Scale({18, 5}, vp->viewport_scale()));
-		Vector2 m_smear_left_position =
-				coordinatesystem::point_relative_to_global_leftdown(m_position_absolute, m_rotation, Vector2Scale({18, 5}, vp->viewport_scale()));
+	// m_smear.update_smear(m_rotation_velocity, -10, 10, dt);
 
-		m_smear.calculate_linear_smear(m_smear_right_position, Vector2Length(m_velocity), m_rotation, 0.15 * vp->viewport_scale(), 0, 0);
-		m_smear.calculate_linear_smear(m_smear_left_position, Vector2Length(m_velocity), m_rotation, 0.15 * vp->viewport_scale(), 0, 1);
+	if ( auto& vp = gApp()->viewport() ) {
+		Vector2 position_absolute	 = vp->position_viewport_to_global(m_position);
+		float scale					 = vp->viewport_scale();
+		Vector2 smear_right_position = coordinatesystem::point_relative_to_global_leftup(position_absolute, m_rotation, Vector2Scale({18, 5}, scale));
+		Vector2 smear_left_position =
+				coordinatesystem::point_relative_to_global_leftdown(position_absolute, m_rotation, Vector2Scale({18, 5}, scale));
+		Vector2 smear_forward_position =
+				coordinatesystem::point_relative_to_global_rightup(position_absolute, m_rotation, Vector2Scale({20, 0}, scale));
+
+		m_smear.calculate_linear_smear(smear_right_position, Vector2Length(m_velocity), m_rotation, 0.15f * scale, 0, 0);
+		m_smear.calculate_linear_smear(smear_left_position, Vector2Length(m_velocity), m_rotation, 0.15f * scale, 0, 1);
+		m_smear.calculate_exponential_smear(
+				smear_forward_position, Vector2Length(m_velocity), m_rotation, 0.15f * scale, 0, 0.03f * scale, 0.05f * scale, 2
+		);
+		m_smear.calculate_exponential_smear(
+				smear_forward_position, Vector2Length(m_velocity), m_rotation, 0.15f * scale, 0, -0.03f * scale, -0.05f * scale, 3
+		);
 
 		m_smear.add_smear_wave(0.1, 0.25, Vector2Length(m_velocity), m_max_velocity, dt, 0);
 
@@ -145,7 +151,6 @@ void Player::on_death()
 	for ( const auto& cannon: m_cannon_container ) {
 		cannon->set_is_active(false);
 	}
-
 	gApp()->push_layer<DeathScreenLayer>();
 	gApp()->pop_layer<UILayer>();
 }
@@ -230,9 +235,11 @@ void Player::render()
 	// Draw Smear
 
 	if ( auto& vp = gApp()->viewport() ) {
-		m_smear.draw_smear(0, Linear, 2 * vp->viewport_scale(), 1, BLUE);
-		m_smear.draw_smear(1, Linear, 2 * vp->viewport_scale(), 1, BLUE);
-		m_smear.draw_smear_wave(Vector2Length(m_velocity), m_max_velocity, 2 * vp->viewport_scale(), 1, SKYBLUE);
+		m_smear.draw_smear(0, Linear, 2 * vp->viewport_scale(), 1, m_smear_color);
+		m_smear.draw_smear(1, Linear, 2 * vp->viewport_scale(), 1, m_smear_color);
+		m_smear.draw_smear(2, Exponential, 2 * vp->viewport_scale(), 1, m_smear_color);
+		m_smear.draw_smear(3, Exponential, 2 * vp->viewport_scale(), 1, m_smear_color);
+		m_smear.draw_smear_wave(Vector2Length(m_velocity), m_max_velocity, 2 * vp->viewport_scale(), 1, m_smear_color);
 	}
 
 	// Draw Ship
