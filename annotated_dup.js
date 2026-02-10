@@ -21,6 +21,8 @@ var annotated_dup =
       [ "ApplicationPriv", "classPSCore_1_1ApplicationPriv.html", null ],
       [ "DeltaTimeManager", "classPSCore_1_1DeltaTimeManager.html", "classPSCore_1_1DeltaTimeManager" ],
       [ "Renderer", "classPSCore_1_1Renderer.html", "classPSCore_1_1Renderer" ],
+      [ "Settings", "classPSCore_1_1Settings.html", null ],
+      [ "SettingsManager", "classPSCore_1_1SettingsManager.html", null ],
       [ "Spawner", "classPSCore_1_1Spawner.html", null ],
       [ "Viewport", "classPSCore_1_1Viewport.html", "classPSCore_1_1Viewport" ]
     ] ],

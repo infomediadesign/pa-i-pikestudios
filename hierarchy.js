@@ -40,6 +40,8 @@ var hierarchy =
       [ "UILayer", "classUILayer.html", null ]
     ] ],
     [ "PSCore::Renderer", "classPSCore_1_1Renderer.html", null ],
+    [ "PSCore::Settings", "classPSCore_1_1Settings.html", null ],
+    [ "PSCore::SettingsManager", "classPSCore_1_1SettingsManager.html", null ],
     [ "Smear", "classSmear.html", null ],
     [ "SmearPoints", "structSmearPoints.html", null ],
     [ "misc::map::SpawnRequest", "structmisc_1_1map_1_1SpawnRequest.html", null ],
