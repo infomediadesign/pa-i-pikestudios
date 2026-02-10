@@ -19,7 +19,7 @@ void Filemanager::write(const std::string& mes)
 	ensurefileexists(m_filename);
 	std::ofstream outfile(m_filename);
 	if ( !outfile.is_open() ) {
-		PS_LOG(LOG_ERROR, "Failed to open File");
+		PS_LOG(LOG_ERROR, "Failed to open File!");
 		return;
 	}
 
@@ -33,14 +33,16 @@ std::string Filemanager::load()
 	// does the file exist? create it if not. / delete highscore / open txt file and check
 	ensurefileexists(m_filename);
 	std::ifstream infile(m_filename);
-	if ( !infile.is_open() )
+	if ( !infile.is_open() ) {
+		PS_LOG(LOG_ERROR, "Failed to open File!")
 		return "";
+	}
 
 	std::string file;
 
 	std::string line;
-	while ( infile >> line ) {
-		file.append(line);
+	while ( std::getline(infile, line) ) {
+		file.append(line + "\n");
 	}
 	infile.close();
 	return file;

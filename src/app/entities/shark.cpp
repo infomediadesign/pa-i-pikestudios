@@ -15,7 +15,6 @@
 #include "coordinatesystem.h"
 #include "layers/applayer.h"
 #include "pscore/collision.h"
-#include <entities/director.h>
 
 //
 // Fin of Shark
@@ -107,7 +106,8 @@ Shark::Shark() : PSInterfaces::IEntity("shark")
 	m_fin->propose_z_index(5);
 
 	// Has an droppable upgrade
-	m_marked = PSUtils::gen_rand(1, 100) > 50;
+	float drop_roll = static_cast<float>(PSUtils::gen_rand(0, 1000)) / 1000.0f;
+	m_marked		= drop_roll < m_drop_upgrade_chance;
 }
 
 void Shark::init(std::shared_ptr<Shark> self, const Vector2& pos)
@@ -175,7 +175,7 @@ void Shark::update(float dt)
 		}
 		case Pursuing: {
 			m_state_string = "pursuing";
-			if ( distance > 20.0f ) // stop when close enough
+			if ( distance > m_pursue_stop_distance ) // stop when close enough
 			{
 				direction = Vector2Normalize(direction);
 				m_pos	  = Vector2Add(m_pos, Vector2Scale(direction, m_speed * dt));
@@ -197,13 +197,12 @@ void Shark::update(float dt)
 		}
 		case Retreat: {
 			m_state_string = "retreat";
-			if ( distance > 40.0f )
+			if ( distance > m_retreat_reengage_distance )
 				m_state = State::Pursuing;
 
-			const int retreat_speed = 20;
-			direction				= Vector2Normalize(direction);
-			direction				= Vector2Negate(direction);
-			m_pos					= Vector2Add(m_pos, Vector2Scale(direction, retreat_speed * dt));
+			direction = Vector2Normalize(direction);
+			direction = Vector2Negate(direction);
+			m_pos	  = Vector2Add(m_pos, Vector2Scale(direction, m_retreat_speed * dt));
 
 			break;
 		}

@@ -1,8 +1,9 @@
 #pragma once
 #include <memory>
 #include <optional>
-#include <pscore/sprite.h>
 #include <pscore/collision.h>
+#include <pscore/settings.h>
+#include <pscore/sprite.h>
 #include <psinterfaces/renderable.h>
 #include <raylib.h>
 
@@ -14,12 +15,14 @@ class Projectile : public PSInterfaces::IRenderable
 {
 public:
 	Projectile();
-	~Projectile() {}
+	~Projectile()
+	{
+	}
 	void update(const float dt) override;
 	void render() override;
 
 	std::optional<std::vector<Vector2>> bounds() const override;
-	
+
 	void init(const Vector2& position, std::shared_ptr<Projectile> self);
 
 	Texture2D texture();
@@ -94,10 +97,10 @@ private:
 	std::shared_ptr<Projectile> m_p_shared_ptr;
 	std::shared_ptr<Player> m_p_owner;
 	std::shared_ptr<Cannon> m_p_fiering_cannon;
-	
+
 	std::unique_ptr<PSCore::collision::EntityCollider> m_collider;
 
 	Vector2 m_p_local_direction;
-	float m_p_max_range = 500.0f;
+	float m_p_max_range		  = 500.0f;
 	float m_p_drag_per_second = 0.92f;
 };
