@@ -2,6 +2,8 @@
 
 #include <random>
 
+#include <pscore/utils.h>
+
 #ifndef STEP_WIDTH
 #define STEP_WIDTH 0.1f
 #endif
@@ -76,13 +78,8 @@ void LootTable::random_values_from_loot_table(int indices_count)
 		m_values.push_back({-1, -1, -1});
 	}
 
-	std::random_device rd;
-	std::mt19937 gen(rd());
-	std::uniform_int_distribution<> dist_index(0, max_indices_index);
-	std::uniform_int_distribution<> dist_value(0, 99);
-
 	for ( int i = 0; i < count; i++ ) {
-		int random_index = dist_index(gen);
+		int random_index = PSUtils::gen_rand(0, max_indices_index);
 
 		int current_index		= 0;
 		int current_valid_index = 0;
@@ -94,7 +91,7 @@ void LootTable::random_values_from_loot_table(int indices_count)
 			if ( indices.at(current_index_in_range).index != -1 ) {
 				if ( current_valid_index == random_index ) {
 					m_values.at(i).index					 = m_indices.at(current_index_in_range).index;
-					m_values.at(i).value					 = dist_value(gen);
+					m_values.at(i).value					 = PSUtils::gen_rand(0, 99);
 					indices.at(current_index_in_range).index = -1;
 					active									 = false;
 				}
