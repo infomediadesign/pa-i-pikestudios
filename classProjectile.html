@@ -112,6 +112,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a1f0e7d38ee1c530f12c0cba7a5aa934e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acb13375bffc02090bd3a209c696f483a" id="r_acb13375bffc02090bd3a209c696f483a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classProjectile.html#acb13375bffc02090bd3a209c696f483a">render</a> () override</td></tr>
 <tr class="separator:acb13375bffc02090bd3a209c696f483a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a111d65a62d3e96dc8199a25ce5b885af" id="r_a111d65a62d3e96dc8199a25ce5b885af"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classProjectile.html#a111d65a62d3e96dc8199a25ce5b885af">on_hit</a> () override</td></tr>
+<tr class="separator:a111d65a62d3e96dc8199a25ce5b885af"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a28bf87c68c7ed29f53427c37ff77a490" id="r_a28bf87c68c7ed29f53427c37ff77a490"><td class="memItemLeft" align="right" valign="top">std::optional&lt; std::vector&lt; Vector2 &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classProjectile.html#a28bf87c68c7ed29f53427c37ff77a490">bounds</a> () const override</td></tr>
 <tr class="separator:a28bf87c68c7ed29f53427c37ff77a490"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4e4ff822ec85f7dd99f06e174876d354" id="r_a4e4ff822ec85f7dd99f06e174876d354"><td class="memItemLeft" align="right" valign="top"><a id="a4e4ff822ec85f7dd99f06e174876d354" name="a4e4ff822ec85f7dd99f06e174876d354"></a>
@@ -217,6 +219,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>fire_from_cannon</b> 
 <tr class="memitem:af1771cfccf26d86692ca137f6686ff16" id="r_af1771cfccf26d86692ca137f6686ff16"><td class="memItemLeft" align="right" valign="top"><a id="af1771cfccf26d86692ca137f6686ff16" name="af1771cfccf26d86692ca137f6686ff16"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>launch</b> ()</td></tr>
 <tr class="separator:af1771cfccf26d86692ca137f6686ff16"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0fea559886828af8197b433421d8f022" id="r_a0fea559886828af8197b433421d8f022"><td class="memItemLeft" align="right" valign="top"><a id="a0fea559886828af8197b433421d8f022" name="a0fea559886828af8197b433421d8f022"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>play_hit_anim</b> (float dt)</td></tr>
+<tr class="separator:a0fea559886828af8197b433421d8f022"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classPSInterfaces_1_1IRenderable"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classPSInterfaces_1_1IRenderable')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classPSInterfaces_1_1IRenderable.html">PSInterfaces::IRenderable</a></td></tr>
 <tr class="memitem:ab27dbdf6a0e7fda9f3d7da3cae80433d inherit pub_methods_classPSInterfaces_1_1IRenderable" id="r_ab27dbdf6a0e7fda9f3d7da3cae80433d"><td class="memItemLeft" align="right" valign="top">
 int&#160;</td><td class="memItemRight" valign="bottom"><b>z_index</b> ()</td></tr>
@@ -234,9 +239,6 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>is_active</b>
 <tr class="memitem:a18fea2dfcee0593fa39d83a55db16382 inherit pub_methods_classPSInterfaces_1_1IEntity" id="r_a18fea2dfcee0593fa39d83a55db16382"><td class="memItemLeft" align="right" valign="top">
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>set_is_active</b> (bool active)</td></tr>
 <tr class="separator:a18fea2dfcee0593fa39d83a55db16382 inherit pub_methods_classPSInterfaces_1_1IEntity"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2d17d78babb79159a36b7e0e07b4ca2d inherit pub_methods_classPSInterfaces_1_1IEntity" id="r_a2d17d78babb79159a36b7e0e07b4ca2d"><td class="memItemLeft" align="right" valign="top">
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>on_hit</b> ()</td></tr>
-<tr class="separator:a2d17d78babb79159a36b7e0e07b4ca2d inherit pub_methods_classPSInterfaces_1_1IEntity"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af981a0b96f5bd9936b229afe84b66165 inherit pub_methods_classPSInterfaces_1_1IEntity" id="r_af981a0b96f5bd9936b229afe84b66165"><td class="memItemLeft" align="right" valign="top">
 void&#160;</td><td class="memItemRight" valign="bottom"><b>add_event_manager</b> (const <a class="el" href="classPSInterfaces_1_1Events_1_1IEventManager.html">Events::IEventManager</a> *manager)</td></tr>
 <tr class="separator:af981a0b96f5bd9936b229afe84b66165 inherit pub_methods_classPSInterfaces_1_1IEntity"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -312,6 +314,33 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>is_active_</b> = true
       <table class="memname">
         <tr>
           <td class="memname">void Projectile::draw_debug </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Reimplemented from <a class="el" href="classPSInterfaces_1_1IEntity.html">PSInterfaces::IEntity</a>.</p>
+
+</div>
+</div>
+<a id="a111d65a62d3e96dc8199a25ce5b885af" name="a111d65a62d3e96dc8199a25ce5b885af"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a111d65a62d3e96dc8199a25ce5b885af">&#9670;&#160;</a></span>on_hit()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Projectile::on_hit </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
