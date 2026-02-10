@@ -47,7 +47,7 @@ var annotated_dup =
     [ "Filemanager", "classFilemanager.html", null ],
     [ "Fin", "classFin.html", null ],
     [ "FortunaDirector", "classFortunaDirector.html", "classFortunaDirector" ],
-    [ "FortunaDirectorPriv", "classFortunaDirectorPriv.html", null ],
+    [ "FortunaDirectorPriv", "structFortunaDirectorPriv.html", null ],
     [ "GuiStyleProp", "structGuiStyleProp.html", null ],
     [ "HighscoreEntries", "structHighscoreEntries.html", null ],
     [ "MainMenuLayer", "classMainMenuLayer.html", null ],

@@ -11,7 +11,7 @@ var hierarchy =
     [ "PSInterfaces::Events::Event", "structPSInterfaces_1_1Events_1_1Event.html", null ],
     [ "Filemanager", "classFilemanager.html", null ],
     [ "Player::FiringCannonIndex", "structPlayer_1_1FiringCannonIndex.html", null ],
-    [ "FortunaDirectorPriv", "classFortunaDirectorPriv.html", null ],
+    [ "FortunaDirectorPriv", "structFortunaDirectorPriv.html", null ],
     [ "PSUtils::Grid2D< T >", "classPSUtils_1_1Grid2D.html", null ],
     [ "GuiStyleProp", "structGuiStyleProp.html", null ],
     [ "HighscoreEntries", "structHighscoreEntries.html", null ],
