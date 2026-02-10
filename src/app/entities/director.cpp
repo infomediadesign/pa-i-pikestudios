@@ -13,7 +13,7 @@
 #include <pscore/utils.h>
 #include <psinterfaces/entity.h>
 
-#include "Tentacle.h"
+#include "tentacle.h"
 
 class FortunaDirectorPriv
 {
@@ -27,7 +27,7 @@ class FortunaDirectorPriv
 	float player_current_fire_range		  = 100.0f;
 
 	std::unique_ptr<PSCore::Spawner<Shark, AppLayer>> shark_spawner;
-	std::unique_ptr<PSCore::Spawner<Tentacle, AppLayer>> Tentacle_spawner;
+	std::unique_ptr<PSCore::Spawner<tentacle, AppLayer>> tentacle_spawner;
 	std::unique_ptr<PSCore::Spawner<Projectile, AppLayer>> projectile_spawner;
 
 	float player_max_velocity		 = 200.0f;
@@ -46,7 +46,7 @@ FortunaDirector::FortunaDirector() : PSInterfaces::IEntity("fortuna_director")
 	_p = std::make_unique<FortunaDirectorPriv>();
 
 	_p->shark_spawner	   = std::make_unique<PSCore::Spawner<Shark, AppLayer>>(std::chrono::duration<double>{10.0f});
-	_p->Tentacle_spawner	   = std::make_unique<PSCore::Spawner<Tentacle, AppLayer>>(std::chrono::duration<double>{5.0f}, 3, 2);
+	_p->tentacle_spawner	   = std::make_unique<PSCore::Spawner<tentacle, AppLayer>>(std::chrono::duration<double>{5.0f}, 3, 2);
 	_p->projectile_spawner = std::make_unique<PSCore::Spawner<Projectile, AppLayer>>(std::chrono::duration<double>{0.0f});
 }
 
@@ -61,12 +61,12 @@ void FortunaDirector::initialize_entities()
 		shark->init(shark, {(float) PSUtils::gen_rand(10, 300), (float) PSUtils::gen_rand(10, 300)});
 	});
 
-	_p->Tentacle_spawner->register_spawn_callback([](std::shared_ptr<Tentacle> tentacle) {
+	_p->tentacle_spawner->register_spawn_callback([](std::shared_ptr<tentacle> tentacle) {
 		tentacle->init(tentacle, {(float) PSUtils::gen_rand(10, 300), (float) PSUtils::gen_rand(10, 300)});
 	});
 
 	_p->shark_spawner->resume();
-	_p->Tentacle_spawner->resume();
+	_p->tentacle_spawner->resume();
 
 	auto initial_player = std::make_shared<Player>();
 	_p->players.push_back(initial_player);
@@ -89,7 +89,7 @@ void FortunaDirector::update(float dt)
 	sync_player_entities();
 
 	_p->shark_spawner->update(dt);
-	_p->Tentacle_spawner->update(dt);
+	_p->tentacle_spawner->update(dt);
 }
 
 void FortunaDirector::draw_debug()

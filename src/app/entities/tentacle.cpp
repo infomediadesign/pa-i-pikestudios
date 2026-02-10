@@ -2,7 +2,7 @@
 // Created by tylor on 30/01/2026.
 //
 
-#include "Tentacle.h"
+#include "tentacle.h"
 
 #include <iostream>
 #include <pscore/application.h>
@@ -15,7 +15,7 @@
 #include "layers/applayer.h"
 #include "player.h"
 
-Tentacle::Tentacle() : PSInterfaces::IEntity("tentacle")
+tentacle::tentacle() : PSInterfaces::IEntity("tentacle")
 {
 	Vector2 frame_grid{9, 2};
 	PRELOAD_TEXTURE(ident_, "ressources/entity/tentacle.png", frame_grid);
@@ -35,7 +35,7 @@ Tentacle::Tentacle() : PSInterfaces::IEntity("tentacle")
 	m_animation_controller.add_animation_at_index(3, 3);
 }
 
-void Tentacle::init(std::shared_ptr<Tentacle> self, const Vector2& pos)
+void tentacle::init(std::shared_ptr<tentacle> self, const Vector2& pos)
 {
 	m_self = self;
 	m_pos  = pos;
@@ -51,17 +51,17 @@ void Tentacle::init(std::shared_ptr<Tentacle> self, const Vector2& pos)
 	});
 }
 
-std::optional<Vector2> Tentacle::position() const
+std::optional<Vector2> tentacle::position() const
 {
 	return m_pos;
 }
 
-Tentacle::~Tentacle()
+tentacle::~tentacle()
 {
 }
 
 
-void Tentacle::render()
+void tentacle::render()
 {
 	if ( const auto& vp = gApp()->viewport() ) {
 		switch ( m_state ) {
@@ -89,7 +89,7 @@ void Tentacle::render()
 	}
 }
 
-void Tentacle::update(float dt)
+void tentacle::update(float dt)
 {
 	m_animation_controller.update_animation(dt);
 
@@ -118,7 +118,7 @@ void Tentacle::update(float dt)
 }
 
 
-void Tentacle::IdleUpdate(float dt)
+void tentacle::IdleUpdate(float dt)
 {
 	time_until_water_break -= dt;
 	if ( time_until_water_break <= 0 ) {
@@ -128,7 +128,7 @@ void Tentacle::IdleUpdate(float dt)
 	}
 }
 
-void Tentacle::WaterBreakUpdate(float dt)
+void tentacle::WaterBreakUpdate(float dt)
 {
 	time_until_attack -= dt;
 	if ( time_until_attack <= 0 ) {
@@ -137,7 +137,7 @@ void Tentacle::WaterBreakUpdate(float dt)
 	}
 }
 
-void Tentacle::AttackingUpdate(float dt)
+void tentacle::AttackingUpdate(float dt)
 {
 	time_until_retreat -= dt;
 
@@ -146,7 +146,7 @@ void Tentacle::AttackingUpdate(float dt)
 		m_state = State::Retreat;
 	}
 }
-void Tentacle::RetreatingUpdate(float dt)
+void tentacle::RetreatingUpdate(float dt)
 {
 	until_reposition -= dt;
 	if ( until_reposition <= 0 ) {
@@ -161,7 +161,7 @@ void Tentacle::RetreatingUpdate(float dt)
 		propose_z_index(-40);
 	}
 }
-void Tentacle::SetNewPos()
+void tentacle::SetNewPos()
 {
 	if ( auto& vp = gApp()->viewport() ) {
 		Vector2 coords;
@@ -171,7 +171,7 @@ void Tentacle::SetNewPos()
 	}
 }
 
-void Tentacle::on_hit()
+void tentacle::on_hit()
 {
 	set_is_active(false);
 	if ( const auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director()) ) {
@@ -179,12 +179,12 @@ void Tentacle::on_hit()
 	}
 }
 
-void Tentacle::set_pos(const Vector2& pos)
+void tentacle::set_pos(const Vector2& pos)
 {
 	m_pos = pos;
 }
 
-std::optional<std::vector<Vector2>> Tentacle::bounds() const
+std::optional<std::vector<Vector2>> tentacle::bounds() const
 {
 	if ( m_state == State::Idle ) {
 		return std::nullopt;
@@ -203,7 +203,7 @@ std::optional<std::vector<Vector2>> Tentacle::bounds() const
 	return std::nullopt;
 };
 
-void Tentacle::draw_debug()
+void tentacle::draw_debug()
 {
 	if ( bounds().has_value() ) {
 		for ( int i = 0; i < bounds().value().size(); i++ ) {
