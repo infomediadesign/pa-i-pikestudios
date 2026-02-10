@@ -35,6 +35,8 @@ class FortunaDirectorPriv
 	int shark_limit				= CFG_VALUE<int>("shark_limit", 10);
 
 	std::unique_ptr<PSCore::Spawner<tentacle, AppLayer>> tentacle_spawner;
+	int tentacle_limit = CFG_VALUE<int>("tentacle_limit", 10);
+
 	std::unique_ptr<PSCore::Spawner<Projectile, AppLayer>> projectile_spawner;
 	float player_max_velocity		 = CFG_VALUE<float>("player_max_velocity", 200.0f);
 	float player_input_rotation_mult = CFG_VALUE<float>("player_input_rotation_mult", 0.9f);
@@ -52,7 +54,7 @@ FortunaDirector::FortunaDirector() : PSInterfaces::IEntity("fortuna_director")
 
 	_p->shark_spawner = std::make_unique<PSCore::Spawner<Shark, AppLayer>>(_p->shark_spawn_time, _p->shark_spawn_variation, _p->shark_limit, false);
 	_p->projectile_spawner = std::make_unique<PSCore::Spawner<Projectile, AppLayer>>(0.0f);
-	_p->tentacle_spawner	   = std::make_unique<PSCore::Spawner<tentacle, AppLayer>>(5.0f, 3, 2);
+	_p->tentacle_spawner	   = std::make_unique<PSCore::Spawner<tentacle, AppLayer>>(5.0f, 3, _p->tentacle_limit);
 }
 
 void FortunaDirector::initialize_entities()
