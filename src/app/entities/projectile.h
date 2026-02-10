@@ -1,10 +1,12 @@
 #pragma once
 #include <memory>
 #include <optional>
-#include <pscore/sprite.h>
 #include <pscore/collision.h>
+#include <pscore/settings.h>
+#include <pscore/sprite.h>
 #include <psinterfaces/renderable.h>
 #include <raylib.h>
+#include "pscore/sprite.h"
 
 class Player;
 class FortunaDirector;
@@ -14,12 +16,15 @@ class Projectile : public PSInterfaces::IRenderable
 {
 public:
 	Projectile();
-	~Projectile() {}
+	~Projectile()
+	{
+	}
 	void update(const float dt) override;
 	void render() override;
+	void on_hit() override;
 
 	std::optional<std::vector<Vector2>> bounds() const override;
-	
+
 	void init(const Vector2& position, std::shared_ptr<Projectile> self);
 
 	Texture2D texture();
@@ -49,6 +54,9 @@ public:
 	float travel_distance();
 	void set_travel_distance(const float travel_distance);
 
+	float max_range();
+	void set_max_range(const float max_range);
+
 	std::shared_ptr<Projectile> shared_ptr();
 	void set_shared_ptr(std::shared_ptr<Projectile>& ptr);
 
@@ -66,8 +74,14 @@ public:
 	void calculate_parenting();
 	void fire_from_cannon(const float dt);
 	void draw_debug() override;
+	void launch();
+
+	void play_hit_anim(float dt);
 
 private:
+	void apply_drag(const float dt);
+
+	int m_p_z_index;
 	Vector2 m_p_position;
 	Vector2 m_p_velocity;
 	Vector2 m_p_target_position;
@@ -89,7 +103,14 @@ private:
 	std::shared_ptr<Player> m_p_owner;
 	std::shared_ptr<Cannon> m_p_fiering_cannon;
 	
+	PSCore::sprites::SpriteSheetAnimation m_p_animation_controller;
+	Texture2D m_p_hit_anim_texture;
+	std::shared_ptr<PSCore::sprites::Sprite> m_p_hit_anim_sprite;
+	bool m_p_hit_aninm_playing = false;
+	
 	std::unique_ptr<PSCore::collision::EntityCollider> m_collider;
 
 	Vector2 m_p_local_direction;
+	float m_p_max_range		  = 500.0f;
+	float m_p_drag_per_second = 0.92f;
 };

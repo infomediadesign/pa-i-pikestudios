@@ -38,11 +38,29 @@ void Fin::render()
 				tex->m_s_texture, m_shark->m_animation_controller.get_source_rectangle(1).value_or(Rectangle{0}), m_shark->m_pos,
 				m_shark->m_shark_rotation + 90, WHITE
 		);
+
+		if ( m_shark->m_state == Shark::Pursuing ) {
+			m_smear.draw_smear(0, Exponential, 2 * vp->viewport_scale(), 1, m_smear_color);
+			m_smear.draw_smear(1, Exponential, 2 * vp->viewport_scale(), 1, m_smear_color);
+		}
 	}
 }
 
 void Fin::update(float dt)
 {
+	if ( auto& vp = gApp()->viewport() ) {
+		Vector2 position_absolute = vp->position_viewport_to_global(m_shark->m_pos);
+		float scale				  = vp->viewport_scale();
+		Vector2 smear_forward_position =
+				coordinatesystem::point_relative_to_global_rightup(position_absolute, m_shark->m_shark_rotation, Vector2Scale({5, -0.5}, scale));
+
+		m_smear.calculate_exponential_smear(
+				smear_forward_position, m_shark->m_speed, m_shark->m_shark_rotation, 0.2f * scale, 0, 0.03f * scale, 0.05f * scale, 0
+		);
+		m_smear.calculate_exponential_smear(
+				smear_forward_position, m_shark->m_speed, m_shark->m_shark_rotation, 0.2f * scale, 0, -0.03f * scale, -0.05f * scale, 1
+		);
+	}
 }
 
 void Fin::draw_debug()
@@ -53,6 +71,7 @@ void Fin::draw_debug()
 //
 // Body of Shark
 //
+
 Body::Body(Shark* shark) : PSInterfaces::IEntity("shark_body"), m_shark(shark)
 {
 	auto tex		= m_shark->m_shark_sprite;
@@ -102,11 +121,12 @@ Shark::Shark() : PSInterfaces::IEntity("shark")
 	m_body = std::make_shared<Body>(this);
 	m_fin  = std::make_shared<Fin>(this);
 
-	m_body->propose_z_index(-20);
-	m_fin->propose_z_index(5);
+	m_body->propose_z_index(-30);
+	m_fin->propose_z_index(-5);
 
 	// Has an droppable upgrade
-	m_marked = PSUtils::gen_rand(1, 100) > 50;
+	float drop_roll = static_cast<float>(PSUtils::gen_rand(0, 1000)) / 1000.0f;
+	m_marked		= drop_roll < m_drop_upgrade_chance;
 }
 
 void Shark::init(std::shared_ptr<Shark> self, const Vector2& pos)
@@ -146,6 +166,8 @@ void Shark::update(float dt)
 
 	m_animation_controller.update_animation(dt);
 
+	m_rotation_velocity = calculate_rotation_velocity(0.01, dt);
+
 	std::shared_ptr<Player> player_entity;
 
 	if ( auto app_layer = gApp()->get_layer<AppLayer>() ) {
@@ -174,7 +196,7 @@ void Shark::update(float dt)
 		}
 		case Pursuing: {
 			m_state_string = "pursuing";
-			if ( distance > 20.0f ) // stop when close enough
+			if ( distance > m_pursue_stop_distance ) // stop when close enough
 			{
 				direction = Vector2Normalize(direction);
 				m_pos	  = Vector2Add(m_pos, Vector2Scale(direction, m_speed * dt));
@@ -196,13 +218,12 @@ void Shark::update(float dt)
 		}
 		case Retreat: {
 			m_state_string = "retreat";
-			if ( distance > 40.0f )
+			if ( distance > m_retreat_reengage_distance )
 				m_state = State::Pursuing;
 
-			const int retreat_speed = 20;
-			direction				= Vector2Normalize(direction);
-			direction				= Vector2Negate(direction);
-			m_pos					= Vector2Add(m_pos, Vector2Scale(direction, retreat_speed * dt));
+			direction = Vector2Normalize(direction);
+			direction = Vector2Negate(direction);
+			m_pos	  = Vector2Add(m_pos, Vector2Scale(direction, m_retreat_speed * dt));
 
 			break;
 		}
@@ -296,4 +317,23 @@ void Shark::set_is_active(bool active)
 	is_active_ = active;
 	m_body->set_is_active(active);
 	m_fin->set_is_active(active);
+}
+
+float Shark::calculate_rotation_velocity(float frequency, float dt)
+{
+	static float timer			   = 0;
+	static float last_rotation	   = 0;
+	static float rotation_velocity = 0;
+
+	timer += dt;
+
+	if ( timer >= frequency ) {
+		timer = 0;
+
+		rotation_velocity = m_shark_rotation - last_rotation;
+
+		last_rotation = m_shark_rotation;
+	}
+
+	return rotation_velocity;
 }

@@ -21,7 +21,7 @@ ScoreLayer::~ScoreLayer()
 
 void ScoreLayer::on_update(float dt)
 {
-	
+	m_time_since_lase_input += dt;	
 	if ( list_state == AWAITING_INPUT ) {
 		update_typing();
 	}
@@ -136,8 +136,9 @@ void ScoreLayer::update_typing()
 		}
 		key = GetCharPressed();
 	}
-	if ( IsKeyPressed(KEY_BACKSPACE) && !player_name_input.empty() ) {
-		player_name_input.pop_back();
+	if ( IsKeyDown(KEY_BACKSPACE) && !player_name_input.empty() && m_time_since_lase_input > 0.08 ) {
+			player_name_input.pop_back();
+			m_time_since_lase_input = 0.0f;
 	}
 	if ( IsKeyPressed(KEY_ENTER) ) {
 		if ( player_name_input.size() > 0 ) 

@@ -9,9 +9,12 @@
 
 #include <entities/shark.h>
 #include <imgui.h>
+#include <pscore/settings.h>
 #include <pscore/spawner.h>
 #include <pscore/utils.h>
 #include <psinterfaces/entity.h>
+#include <raylib.h>
+#include <raymath.h>
 
 #include "tentacle.h"
 
@@ -20,34 +23,36 @@ class FortunaDirectorPriv
 	friend class FortunaDirector;
 	std::vector<std::shared_ptr<Player>> players;
 	std::vector<std::shared_ptr<Cannon>> cannons;
-	bool on_screen_warp_around = true;
+	bool on_screen_warp_around = CFG_VALUE<bool>("on_screen_warp_around", true);
 
-	float player_current_fire_rate		  = 0.5f;
-	float player_current_projectile_speed = 300.0f;
-	float player_current_fire_range		  = 100.0f;
+	float player_current_fire_rate		  = CFG_VALUE<float>("player_current_fire_rate", 0.5f);
+	float player_current_projectile_speed = CFG_VALUE<float>("player_current_projectile_speed", 300.0f);
+	float player_current_fire_range		  = CFG_VALUE<float>("player_current_fire_range", 100.0f);
 
 	std::unique_ptr<PSCore::Spawner<Shark, AppLayer>> shark_spawner;
+	float shark_spawn_time		= CFG_VALUE<float>("shark_spawn_time", 1.0f);
+	float shark_spawn_variation = CFG_VALUE<float>("shark_spawn_variation", 0.0f);
+	int shark_limit				= CFG_VALUE<int>("shark_limit", 10);
+
 	std::unique_ptr<PSCore::Spawner<tentacle, AppLayer>> tentacle_spawner;
 	std::unique_ptr<PSCore::Spawner<Projectile, AppLayer>> projectile_spawner;
-
-	float player_max_velocity		 = 200.0f;
-	float player_input_rotation_mult = 0.9f;
-	float player_input_velocity_mult = 1500;
-	int player_max_health			 = 3;
-	int player_health				 = 3;
-	float player_iframe_duration	 = 0.5f;
-	bool player_invincibility		 = false;
+	float player_max_velocity		 = CFG_VALUE<float>("player_max_velocity", 200.0f);
+	float player_input_rotation_mult = CFG_VALUE<float>("player_input_rotation_mult", 0.9f);
+	float player_input_velocity_mult = CFG_VALUE<float>("player_input_velocity_mult", 1500.0f);
+	int player_max_health			 = CFG_VALUE<int>("player_max_health", 3);
+	int player_health				 = CFG_VALUE<int>("player_health", 3);
+	float player_iframe_duration	 = CFG_VALUE<float>("player_iframe_duration", 0.5f);
+	bool player_invincibility		 = CFG_VALUE<bool>("player_invincibility", false);
 };
 
-	
 
 FortunaDirector::FortunaDirector() : PSInterfaces::IEntity("fortuna_director")
 {
 	_p = std::make_unique<FortunaDirectorPriv>();
 
-	_p->shark_spawner	   = std::make_unique<PSCore::Spawner<Shark, AppLayer>>(std::chrono::duration<double>{10.0f});
+	_p->shark_spawner = std::make_unique<PSCore::Spawner<Shark, AppLayer>>(_p->shark_spawn_time, _p->shark_spawn_variation, _p->shark_limit, false);
+	_p->projectile_spawner = std::make_unique<PSCore::Spawner<Projectile, AppLayer>>(0.0f);
 	_p->tentacle_spawner	   = std::make_unique<PSCore::Spawner<tentacle, AppLayer>>(std::chrono::duration<double>{5.0f}, 3, 2);
-	_p->projectile_spawner = std::make_unique<PSCore::Spawner<Projectile, AppLayer>>(std::chrono::duration<double>{0.0f});
 }
 
 void FortunaDirector::initialize_entities()
@@ -58,7 +63,31 @@ void FortunaDirector::initialize_entities()
 		return;
 
 	_p->shark_spawner->register_spawn_callback([](std::shared_ptr<Shark> shark) {
-		shark->init(shark, {(float) PSUtils::gen_rand(10, 300), (float) PSUtils::gen_rand(10, 300)});
+		// Set the position of the shark to be spawned outsside of the screen
+		float x = 0, y = 0;
+		int side = PSUtils::gen_rand(0, 3);
+		switch ( side ) {
+			case 0: // Top
+				y = -50;
+				break;
+			case 1: // Right
+				x = GetScreenWidth() + 50;
+				break;
+			case 2: // Bottom
+				y = GetScreenHeight() + 50;
+				break;
+			case 3: // Left
+				x = -50;
+				break;
+		}
+		// Distribute the position randomly along the chosen side
+		if ( side == 0 || side == 2 ) { // Top or Bottom
+			x = PSUtils::gen_rand(0, GetScreenWidth());
+		} else { // Right or Left
+			y = PSUtils::gen_rand(0, GetScreenHeight());
+		}
+
+		shark->init(shark, {x, y});
 	});
 
 	_p->tentacle_spawner->register_spawn_callback([](std::shared_ptr<tentacle> tentacle) {
@@ -85,6 +114,9 @@ FortunaDirector::~FortunaDirector()
 
 void FortunaDirector::update(float dt)
 {
+	if ( !is_active_ )
+		return;
+
 	misc::map::process_off_screen_entities();
 	sync_player_entities();
 
@@ -98,16 +130,17 @@ void FortunaDirector::draw_debug()
 		misc::map::set_wrap_around_mode(_p->on_screen_warp_around);
 	}
 
-	ImGui::Separator();
-	ImGui::Text("Spawner");
+	// ImGui::Separator();
+	// ImGui::Text("Spawner");
 
-	static bool shark_sp_active = true;
-	if (ImGui::Checkbox("Shark Spawner", &shark_sp_active)) {
-		if (shark_sp_active)
-		_p->shark_spawner->resume();
-		else
-		_p->shark_spawner->suspend();
-	}
+	_p->shark_spawner->draw_debug();
+	// static bool shark_sp_active = true;
+	// if ( ImGui::Checkbox("Shark Spawner", &shark_sp_active) ) {
+	// 	if ( shark_sp_active )
+	// 		_p->shark_spawner->resume();
+	// 	else
+	// 		_p->shark_spawner->suspend();
+	// }
 
 	ImGui::Separator();
 	ImGui::Text("Player Speed");
@@ -127,6 +160,15 @@ void FortunaDirector::draw_debug()
 	if ( ImGui::SliderFloat("Input Rotation Mult.", &_p->player_input_rotation_mult, 0, 2) ) {
 		for ( auto& player: _p->players ) {
 			player->set_input_rotation_multiplier(_p->player_input_rotation_mult);
+		}
+	}
+
+	// Fire Mode
+	static bool use_sequence_mode = true;
+	if ( ImGui::Checkbox("Fire In Sequence", &use_sequence_mode) ) {
+		Player::FireMode mode = use_sequence_mode ? Player::FireMode::InSequence : Player::FireMode::SameTime;
+		for ( auto& player: _p->players ) {
+			player->set_fire_mode(mode);
 		}
 	}
 
@@ -260,6 +302,7 @@ std::shared_ptr<Cannon> FortunaDirector::spawn_cannon(const Vector2& position)
 			cannon->set_fire_rate(_p->player_current_fire_rate);
 			cannon->set_projectile_speed(_p->player_current_projectile_speed);
 			cannon->set_range(_p->player_current_fire_range);
+			cannon->set_shared_ptr_this(cannon);
 			return cannon;
 		}
 	}
