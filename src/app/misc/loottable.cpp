@@ -11,7 +11,7 @@
 #endif
 
 #ifndef SQRT2HALF
-#define SQRT2HALF sqrtf(2) / 2
+#define SQRT2HALF 0.7071067811865f
 #endif
 
 void LootTable::add_loot_table(int index, std::vector<int>& chances)
