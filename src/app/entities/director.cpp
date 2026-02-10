@@ -412,15 +412,6 @@ void FortunaDirector::increase_difficulty(int bounty)
 	}
 
 }
-
-/*
-void FortunaDirector::increase_difficulty(int bounty)
-{
-	// Increase shark spawn rate and limit based on bounty
-	_p->shark_spawn_time = std::max(0.5f, _p->shark_spawn_time - 0.05f * (bounty / 100));
-	_p->shark_limit = std::min(50, _p->shark_limit + (bounty / 100));
-}
-*/
 // Player Health functions
 void FortunaDirector::set_player_health(const int health)
 {
