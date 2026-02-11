@@ -197,6 +197,8 @@ void Player::on_death()
 		score_layer->set_layer_is_visible(false);
 		score_layer->reset_state();
 		score_layer->load_highscore(score_layer->score_filename());
+		score_layer->save_new_highscore(
+			dynamic_cast<FortunaDirector*>(gApp()->game_director())->m_b_bounty.bounty());
 	}
 	
 	m_sails->set_is_active(false);
