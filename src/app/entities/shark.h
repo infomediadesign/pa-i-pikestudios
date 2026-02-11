@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <misc/smear.h>
 #include <optional>
 #include <pscore/collision.h>
 #include <pscore/settings.h>
@@ -9,7 +10,6 @@
 #include <psinterfaces/renderable.h>
 #include <raylib.h>
 #include <string>
-#include <misc/smear.h>
 
 class FortunaDirector;
 
@@ -56,8 +56,16 @@ private:
 	float m_retreat_reengage_distance = CFG_VALUE<float>("shark_retreat_reengage_distance", 40.0f);
 	float m_retreat_speed			  = CFG_VALUE<float>("shark_retreat_speed", 20.0f);
 	float m_drop_upgrade_chance		  = CFG_VALUE<float>("shark_drop_upgrade_chance", 0.5f);
-	State m_state					  = State::Idle;
+
+	State m_state = State::Idle;
 	std::string m_state_string;
+
+	// Horde behavior
+	float m_horde_separation_distance = CFG_VALUE<float>("shark_separation_distance", 30.0f);
+	float m_horde_separation_strength = CFG_VALUE<float>("shark_separation_strength", 120.0f);
+	float m_horde_cohesion_radius	  = CFG_VALUE<float>("shark_cohesion_radius", 200.0f);
+	float m_horde_cohesion_strength	  = CFG_VALUE<float>("shark_cohesion_strength", 50.0f);
+	bool m_horde_sync_rotation		  = CFG_VALUE<bool>("shark_sync_rotation", false);
 
 	std::shared_ptr<PSCore::sprites::Sprite> m_shark_sprite;
 	std::unique_ptr<PSCore::collision::EntityCollider> m_collider;

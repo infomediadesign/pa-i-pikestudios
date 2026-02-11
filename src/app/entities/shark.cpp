@@ -188,6 +188,41 @@ void Shark::update(float dt)
 
 	m_shark_rotation = utilities::rotation_look_at(m_pos, player_pos);
 
+	auto& spawner = m_director->spawner<Shark, AppLayer>();
+
+	Vector2 separation =
+			PSCore::collision::entity_repel_force<Shark, AppLayer>(m_self, *spawner, m_horde_separation_distance, m_horde_separation_strength);
+
+	// Cohesion: steer toward the average position of nearby sharks
+	Vector2 cohesion{0, 0};
+	{
+		Vector2 center_sum{0, 0};
+		int neighbor_count = 0;
+
+		for ( const auto& other: spawner->entities() ) {
+			if ( !other || !other->is_active() || other.get() == this )
+				continue;
+
+			Vector2 other_pos = other->position().value_or(Vector2{0, 0});
+			float dist		  = Vector2Distance(m_pos, other_pos);
+
+			if ( dist < m_horde_cohesion_radius && dist > 0.001f ) {
+				center_sum = Vector2Add(center_sum, other_pos);
+				neighbor_count++;
+			}
+		}
+
+		if ( neighbor_count > 0 ) {
+			Vector2 center_of_mass = Vector2Scale(center_sum, 1.0f / (float) neighbor_count);
+			Vector2 to_center	   = Vector2Subtract(center_of_mass, m_pos);
+			if ( Vector2Length(to_center) > 0.001f ) {
+				cohesion = Vector2Scale(Vector2Normalize(to_center), m_horde_cohesion_strength);
+			}
+		}
+	}
+
+	Vector2 horde_force = Vector2Add(separation, cohesion);
+
 	switch ( m_state ) {
 		case Idle: {
 			m_state_string = "idle";
@@ -198,8 +233,14 @@ void Shark::update(float dt)
 			m_state_string = "pursuing";
 			if ( distance > m_pursue_stop_distance ) // stop when close enough
 			{
-				direction = Vector2Normalize(direction);
-				m_pos	  = Vector2Add(m_pos, Vector2Scale(direction, m_speed * dt));
+				Vector2 pursue_dir = Vector2Scale(Vector2Normalize(direction), m_speed);
+				Vector2 combined   = Vector2Add(pursue_dir, horde_force);
+				combined		   = Vector2Normalize(combined);
+
+				m_pos = Vector2Add(m_pos, Vector2Scale(combined, m_speed * dt));
+
+				if ( m_horde_sync_rotation )
+					m_shark_rotation = utilities::rotation_look_at(m_pos, Vector2Add(m_pos, combined));
 			} else {
 				m_state = State::Attacking;
 			}
@@ -221,9 +262,14 @@ void Shark::update(float dt)
 			if ( distance > m_retreat_reengage_distance )
 				m_state = State::Pursuing;
 
-			direction = Vector2Normalize(direction);
-			direction = Vector2Negate(direction);
-			m_pos	  = Vector2Add(m_pos, Vector2Scale(direction, m_retreat_speed * dt));
+			Vector2 retreat_dir = Vector2Scale(Vector2Normalize(Vector2Negate(direction)), m_retreat_speed);
+			Vector2 combined	= Vector2Add(retreat_dir, horde_force);
+			combined			= Vector2Normalize(combined);
+
+			m_pos = Vector2Add(m_pos, Vector2Scale(combined, m_retreat_speed * dt));
+
+			if ( m_horde_sync_rotation )
+				m_shark_rotation = utilities::rotation_look_at(m_pos, Vector2Add(m_pos, combined));
 
 			break;
 		}
