@@ -117,11 +117,13 @@ public:
 	void reset_iframe(float dt);
 	void set_is_invincible(bool invincible);
 
-
+	void apply_repel_force(Vector2 repel_force);
+	
 private:
 	// Base Movement Variables
 	Vector2 m_position	 = {0};
 	Vector2 m_velocity	 = {0};
+	Vector2 m_repel_velocity = {0};
 	float m_max_velocity = 0;
 	float m_rotation	 = 0;
 

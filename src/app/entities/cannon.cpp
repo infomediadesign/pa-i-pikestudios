@@ -70,10 +70,7 @@ void Cannon::fire()
 		if ( !director ) {
 			return;
 		}
-
 		
-		
-
 		if ( auto& spawner = director->spawner<Projectile, AppLayer>() ) {
 			spawner->register_spawn_callback([this](std::shared_ptr<Projectile> projectile) {
 				projectile->init(m_c_position, projectile);

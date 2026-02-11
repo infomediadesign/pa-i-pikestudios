@@ -4,15 +4,17 @@
 
 #include "tentacle.h"
 
-#include <iostream>
 #include <pscore/application.h>
 #include <pscore/viewport.h>
 
 #include <pscore/utils.h>
+#include <raylib.h>
 
+#include <layers/applayer.h>
+#include <pscore/collision.h>
+#include <pscore/settings.h>
 #include "coordinatesystem.h"
 #include "director.h"
-#include "layers/applayer.h"
 #include "player.h"
 
 tentacle::tentacle() : PSInterfaces::IEntity("tentacle")
@@ -25,7 +27,7 @@ tentacle::tentacle() : PSInterfaces::IEntity("tentacle")
 	sp_data.push_back({8, 0.1, PSCore::sprites::Forward, 0});
 	sp_data.push_back({6, 0.1, PSCore::sprites::Backward, 1});
 	sp_data.push_back({1, 1, PSCore::sprites::Forward, 2});
-	sp_data.push_back({1,1, PSCore::sprites::Forward, 3});
+	sp_data.push_back({1, 1, PSCore::sprites::Forward, 3});
 
 	m_animation_controller = PSCore::sprites::SpriteSheetAnimation(FETCH_SPRITE_TEXTURE(ident_), sp_data);
 
@@ -45,6 +47,17 @@ void tentacle::init(std::shared_ptr<tentacle> self, const Vector2& pos)
 		if ( auto locked = other.lock() ) {
 			if ( auto player = std::dynamic_pointer_cast<Player>(locked) ) {
 				player->on_hit();
+
+				FortunaDirector* director;
+				if ( !(director = dynamic_cast<FortunaDirector*>(gApp()->game_director())) )
+					return;
+
+				if ( auto& spawner = director->spawner<tentacle, AppLayer>() ) {
+					Vector2 repel_force = PSCore::collision::entity_repel_force<Player, tentacle, AppLayer>(
+							player, *spawner, 50, CFG_VALUE<int>("tentacle_repel_bounce_strenght", 10)
+					);
+					player->apply_repel_force(repel_force);
+				}
 			}
 		}
 	});

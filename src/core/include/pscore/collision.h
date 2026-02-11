@@ -17,9 +17,9 @@ namespace PSInterfaces {
 namespace PSCore {
 	namespace collision {
 
-		template<class E, class L>
+		template<class O,class E, class L>
 			requires std::is_base_of_v<PSInterfaces::IEntity, E> && std::is_base_of_v<PSInterfaces::Layer, L>
-		Vector2 entity_repel_force(std::shared_ptr<E> self, const Spawner<E, L>& spawner, float min_distance, float repel_strenght)
+		Vector2 entity_repel_force(std::shared_ptr<O> self, const Spawner<E, L>& spawner, float min_distance, float repel_strenght)
 		{
 			std::shared_ptr<PSInterfaces::IEntity> origin_entity;
 			if ( !(origin_entity = std::dynamic_pointer_cast<PSInterfaces::IEntity>(self)) )
