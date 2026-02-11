@@ -4,8 +4,7 @@
 #include <memory>
 #include <optional>
 #include <vector>
-
-struct Vector2;
+#include <raylib.h>
 
 namespace PSInterfaces {
 	class IEntity;
@@ -15,6 +14,13 @@ namespace PSInterfaces {
 namespace PSCore {
 	namespace collision {
 
+		template<typename E>
+			requires std::is_base_of_v<PSInterfaces::IEntity, E>
+			Vector2 repel_force()
+			{
+				
+			}
+		
 		class EntityCollider
 		{
 		public:
