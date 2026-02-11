@@ -5,8 +5,9 @@
 #include <optional>
 #include <pscore/spawner.h>
 #include <raylib.h>
+#include <raymath.h>
 #include <vector>
-#include "psinterfaces/entity.h"
+#include <psinterfaces/entity.h>
 
 namespace PSInterfaces {
 	class IEntity;
