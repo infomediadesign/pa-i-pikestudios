@@ -108,7 +108,7 @@ void Body::draw_debug()
 Shark::Shark() : PSInterfaces::IEntity("shark")
 {
 	Vector2 frame_grid{9, 2};
-	PRELOAD_TEXTURE(ident_, "ressources/entity/shark.png", frame_grid);
+	PRELOAD_TEXTURE(ident_, "resources/entity/shark.png", frame_grid);
 	m_shark_sprite = FETCH_SPRITE(ident_);
 
 	m_animation_controller = PSCore::sprites::SpriteSheetAnimation(

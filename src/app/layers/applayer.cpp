@@ -54,10 +54,10 @@ public:
 
 private:
 	Color clr		  = {255, 255, 255, 150};
-	Texture2D m_water = LoadTexture("ressources/enviroment/waterV2.png");
+	Texture2D m_water = LoadTexture("resources/environment/water.png");
 
 	// Shader
-	Shader m_wave_shader	   = LoadShader(NULL, "ressources/shader/wave.fs");
+	Shader m_wave_shader	   = LoadShader(NULL, "resources/shader/wave.fs");
 	Vector2 m_size			   = {4000, 3000};
 	Vector2 m_main_frequency   = {0.01, 0.005};
 	Vector2 m_main_amplitude   = {10, 20};
