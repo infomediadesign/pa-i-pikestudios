@@ -25,6 +25,7 @@ var hierarchy =
         [ "PSCore::Viewport", "classPSCore_1_1Viewport.html", null ],
         [ "Player", "classPlayer.html", null ],
         [ "Projectile", "classProjectile.html", null ],
+        [ "Sails", "classSails.html", null ],
         [ "Shark", "classShark.html", null ],
         [ "Water", "classWater.html", null ],
         [ "tentacle", "classtentacle.html", null ]
@@ -40,6 +41,10 @@ var hierarchy =
       [ "ScoreLayer", "classScoreLayer.html", null ],
       [ "UILayer", "classUILayer.html", null ]
     ] ],
+    [ "LootTable", "classLootTable.html", null ],
+    [ "LootTableChances", "structLootTableChances.html", null ],
+    [ "LootTableIndices", "structLootTableIndices.html", null ],
+    [ "LootTableValue", "structLootTableValue.html", null ],
     [ "PSCore::Renderer", "classPSCore_1_1Renderer.html", null ],
     [ "PSCore::Settings", "classPSCore_1_1Settings.html", null ],
     [ "PSCore::SettingsManager", "classPSCore_1_1SettingsManager.html", null ],
