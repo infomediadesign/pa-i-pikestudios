@@ -15,6 +15,7 @@
 #include <psinterfaces/entity.h>
 
 #include <coordinatesystem.h>
+#include <memory>
 
 #ifndef CALCULATION_VELOCITY_MIN
 #define CALCULATION_VELOCITY_MIN 2
@@ -59,6 +60,26 @@ Player::Player() : PSInterfaces::IEntity("player")
 	//
 	//
 	set_max_velocity(direcor_vals->player_max_velocity);
+
+	m_sails = std::make_shared<Sails>(this);
+
+	m_sails->propose_z_index(30);
+	m_sails->set_is_active(true);
+
+	if ( auto app_layer = gApp()->get_layer<AppLayer>() ) {
+		app_layer->renderer()->submit_renderable(m_sails);
+	}
+
+	//Upgrades
+	std::vector<int> chances = {50,25,25};
+	m_loot_table.add_loot_table(0,chances);
+	chances = {30,10,40,20};
+	m_loot_table.add_loot_table(1,chances);
+	chances = {99,1};
+	m_loot_table.add_loot_table(2,chances);
+
+	m_loot_table.loot_table_values(1);
+
 }
 
 void Player::update(const float dt)
@@ -152,6 +173,7 @@ void Player::on_hit()
 void Player::on_death()
 {
 	set_is_active(false);
+	m_sails->set_is_active(false);
 	for ( const auto& cannon: m_cannon_container ) {
 		cannon->set_is_active(false);
 	}
@@ -252,9 +274,9 @@ void Player::render()
 		vp->draw_in_viewport(
 				m_texture, m_animation_controller.get_source_rectangle(1).value_or(Rectangle{0}), m_position, m_rotation + m_rotation_offset, WHITE
 		);
-		vp->draw_in_viewport(
+		/*vp->draw_in_viewport(
 				m_texture, m_animation_controller.get_source_rectangle(3).value_or(Rectangle{0}), m_position, m_rotation + m_rotation_offset, WHITE
-		);
+		);*/
 	}
 }
 
@@ -546,4 +568,34 @@ Player::FireMode Player::fire_mode() const
 void Player::set_fire_mode(FireMode mode)
 {
 	m_fire_mode = mode;
+}
+
+//
+// Player Sails
+//
+Sails::Sails(Player* player) : PSInterfaces::IEntity("player_sails"), m_player(player)
+{
+}
+
+Sails::~Sails()
+{
+}
+
+void Sails::update(float dt)
+{
+}
+
+void Sails::render()
+{
+	if ( auto& vp = gApp()->viewport() ) {
+		auto texture = m_player->m_sprite;
+		vp->draw_in_viewport(
+				texture->m_s_texture, m_player->m_animation_controller.get_source_rectangle(3).value_or(Rectangle{0}), m_player->m_position,
+				m_player->m_rotation + m_player->m_rotation_offset, WHITE
+		);
+	}
+}
+
+void Sails::draw_debug()
+{
 }
