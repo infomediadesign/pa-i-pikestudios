@@ -167,7 +167,7 @@ void ScoreLayer::draw_score_board()
 
 	Rectangle name_field_rect{anchor.x + 184 * scale, anchor.y + 64 * scale, 120 * scale, 16 * scale};
 	Rectangle score_field_rect{name_field_rect.x + 152 * scale, name_field_rect.y, name_field_rect.width, name_field_rect.height};
-	Rectangle left_color_rect{name_field_rect.x - 32 * scale, name_field_rect.y, 16 * scale, name_field_rect.height};
+	Rectangle left_rank_rect{name_field_rect.x - 32 * scale, name_field_rect.y, 16 * scale, name_field_rect.height};
 	Rectangle right_color_rect{score_field_rect.x + score_field_rect.width + 16 * scale, name_field_rect.y, 16 * scale, name_field_rect.height};
 
 	int rank = 1;
@@ -181,15 +181,15 @@ void ScoreLayer::draw_score_board()
 		GuiPanel(score_field_rect, NULL);
 		GuiLabel(score_field_rect, (" " + std::to_string(entry.score)).c_str());
 
-		GuiPanel(left_color_rect, NULL);
-		GuiLabel(left_color_rect, (" " + std::to_string(rank) + ".").c_str());
+		GuiPanel(left_rank_rect, NULL);
+		GuiLabel(left_rank_rect, (" " + std::to_string(rank) + ".").c_str());
 
 		GuiPanel(right_color_rect, NULL);
 		GuiLabel(right_color_rect, "");
 
 		name_field_rect.y += spacing;
 		score_field_rect.y += spacing;
-		left_color_rect.y += spacing;
+		left_rank_rect.y += spacing;
 		right_color_rect.y += spacing;
 		rank++;
 	}
