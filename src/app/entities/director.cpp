@@ -1,3 +1,4 @@
+#include <chrono>
 #include <entities/cannon.h>
 #include <entities/director.h>
 #include <entities/projectile.h>
@@ -8,37 +9,13 @@
 
 #include <entities/shark.h>
 #include <imgui.h>
+#include <pscore/settings.h>
 #include <pscore/spawner.h>
 #include <pscore/utils.h>
 #include <psinterfaces/entity.h>
 #include <raylib.h>
 #include <raymath.h>
 
-class FortunaDirectorPriv
-{
-	friend class FortunaDirector;
-	std::vector<std::shared_ptr<Player>> players;
-	std::vector<std::shared_ptr<Cannon>> cannons;
-	bool on_screen_warp_around = true;
-
-	float player_current_fire_rate		  = 0.5f;
-	float player_current_projectile_speed = 300.0f;
-	float player_current_fire_range		  = 100.0f;
-
-	std::unique_ptr<PSCore::Spawner<Shark, AppLayer>> shark_spawner;
-	float shark_spawn_time		= 1.0f;
-	float shark_spawn_variation = 0.0f;
-	int shark_limit				= 10;
-
-	std::unique_ptr<PSCore::Spawner<Projectile, AppLayer>> projectile_spawner;
-	float player_max_velocity		 = 200.0f;
-	float player_input_rotation_mult = 0.9f;
-	float player_input_velocity_mult = 1500;
-	int player_max_health			 = 3;
-	int player_health				 = 3;
-	float player_iframe_duration	 = 0.5f;
-	bool player_invincibility		 = false;
-};
 
 FortunaDirector::FortunaDirector() : PSInterfaces::IEntity("fortuna_director")
 {
@@ -46,6 +23,8 @@ FortunaDirector::FortunaDirector() : PSInterfaces::IEntity("fortuna_director")
 
 	_p->shark_spawner = std::make_unique<PSCore::Spawner<Shark, AppLayer>>(_p->shark_spawn_time, _p->shark_spawn_variation, _p->shark_limit, false);
 	_p->projectile_spawner = std::make_unique<PSCore::Spawner<Projectile, AppLayer>>(0.0f);
+	_p->tentacle_spawner =
+			std::make_unique<PSCore::Spawner<tentacle, AppLayer>>(_p->tentacle_spawn_time, _p->tentacle_spawn_variation, _p->tentacle_limit);
 }
 
 void FortunaDirector::initialize_entities()
@@ -56,31 +35,35 @@ void FortunaDirector::initialize_entities()
 		return;
 
 	_p->shark_spawner->register_spawn_callback([](std::shared_ptr<Shark> shark) {
-		//Set the position of the shark to be spawned outsside of the screen
+		// Set the position of the shark to be spawned outsside of the screen
 		float x = 0, y = 0;
 		int side = PSUtils::gen_rand(0, 3);
-		switch (side) {
-		case 0: // Top
-			y = -50;
-			break;
-		case 1: // Right
-			x = GetScreenWidth() + 50;
-			break;
-		case 2: // Bottom
-			y = GetScreenHeight() + 50;
-			break;
-		case 3: // Left
-			x = -50;
-			break;
+		switch ( side ) {
+			case 0: // Top
+				y = -50;
+				break;
+			case 1: // Right
+				x = GetScreenWidth() + 50;
+				break;
+			case 2: // Bottom
+				y = GetScreenHeight() + 50;
+				break;
+			case 3: // Left
+				x = -50;
+				break;
 		}
-		//Distribute the position randomly along the chosen side
-		if (side == 0 || side == 2) { // Top or Bottom
+		// Distribute the position randomly along the chosen side
+		if ( side == 0 || side == 2 ) { // Top or Bottom
 			x = PSUtils::gen_rand(0, GetScreenWidth());
 		} else { // Right or Left
 			y = PSUtils::gen_rand(0, GetScreenHeight());
 		}
-		
+
 		shark->init(shark, {x, y});
+	});
+
+	_p->tentacle_spawner->register_spawn_callback([](std::shared_ptr<tentacle> tentacle) {
+		tentacle->init(tentacle, {(float) PSUtils::gen_rand(10, 300), (float) PSUtils::gen_rand(10, 300)});
 	});
 
 	_p->shark_spawner->resume();
@@ -104,11 +87,12 @@ void FortunaDirector::update(float dt)
 {
 	if ( !is_active_ )
 		return;
-	
+
 	misc::map::process_off_screen_entities();
 	sync_player_entities();
 
 	_p->shark_spawner->update(dt);
+	_p->tentacle_spawner->update(dt);
 }
 
 void FortunaDirector::draw_debug()
@@ -389,13 +373,39 @@ int FortunaDirector::Bounty::bounty() const
 void FortunaDirector::Bounty::add_bounty(const int amount)
 {
 	m_b_bounty_amount += amount;
+	if ( auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director()) ) {
+		director->increase_difficulty(m_b_bounty_amount);
+	}
 }
 
 void FortunaDirector::Bounty::subtract_bounty(const int amount)
 {
 	m_b_bounty_amount -= amount;
+	if ( auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director()) ) {
+		director->increase_difficulty(m_b_bounty_amount);
+	}
 }
 
+void FortunaDirector::increase_difficulty(int bounty)
+{
+	// Increase shark spawn rate and limit based on bounty
+	if ( bounty >= _p->shark_start_increase_difficulty_bounty_amount ) {
+		_p->shark_spawner->set_interval(std::max(_p->shark_min_spawn_time, _p->shark_spawn_time - _p->shark_spawn_increase_base_value * (static_cast<float>(bounty) / _p->shark_spawn_increase_bounty_divider)));
+		_p->shark_spawner->set_limit(std::min(_p->shark_max_limit, _p->shark_limit + (bounty / _p->shark_limit_increase_bounty_divider)));
+		printf("Bounty: %d, Shark Spawn Time: %.2f, Shark Limit: %d\n", bounty, _p->shark_spawner->interval(), _p->shark_spawner->limit());
+	}
+	// Increase tentacle spawn rate and limit based on bounty
+	if ( bounty >= _p->tentacle_start_spawn_bounty_amount ) 
+	{
+		_p->tentacle_spawner->set_interval(std::max(_p->tentacle_min_spawn_time, _p->tentacle_spawn_time - _p->tentacle_spawn_increase_base_value * (static_cast<float>(bounty) / _p->tentacle_spawn_increase_bounty_divider)));
+		_p->tentacle_spawner->set_limit(std::min(_p->tentacle_max_limit, _p->tentacle_limit + (bounty / _p->tentacle_limit_increase_bounty_divider)));
+	}
+	// Activate tentacle spawner if bounty threshold is reached
+	if ( !_p->m_tentacle_spawn_active && bounty >= _p->tentacle_start_spawn_bounty_amount ) {
+		_p->m_tentacle_spawn_active = true;
+		_p->tentacle_spawner->resume();
+	}
+}
 // Player Health functions
 void FortunaDirector::set_player_health(const int health)
 {
@@ -421,14 +431,3 @@ float FortunaDirector::player_iframe_duration() const
 {
 	return _p->player_iframe_duration;
 }
-
-/*
-ImGui::Text("Projectile Speed: %.0f", _p->player_current_projectile_speed);
-ImGui::SameLine();
-ImGui::SetNextItemWidth(60);
-ImGui::InputFloat("##speed_amount", &speed_amount, 0.0f, 0.0f, "%.0f");
-ImGui::SameLine();
-if ( ImGui::Button("Upgrade##Speed") ) {
-	upgrade_player_projectile_speed(speed_amount);
-}
-*/

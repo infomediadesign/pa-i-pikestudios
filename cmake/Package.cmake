@@ -8,7 +8,7 @@ if(WIN32)
 	set(CPACK_PACKAGE_EXECUTABLES ${PROJECT_NAME};${PROJECT_NAME})
 
 	set(CPACK_INNOSETUP_USE_MODERN_WIZARD ON)
-	set(CPACK_INNOSETUP_ICON_FILE "${PROJECT_SOURCE_DIR}/ressources/raylib.ico") # Change to a proper icon
+	set(CPACK_INNOSETUP_ICON_FILE "${PROJECT_SOURCE_DIR}/resources/raylib.ico") # Change to a proper icon
 	set(CPACK_INNOSETUP_RUN_EXECUTABLES ${PROJECT_NAME})
 
 	include(CPack)

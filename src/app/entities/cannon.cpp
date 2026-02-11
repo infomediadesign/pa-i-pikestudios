@@ -15,7 +15,7 @@ Cannon::Cannon() : PSInterfaces::IEntity("cannon")
 {
 	IRenderable::propose_z_index(2);
 	Vector2 frame_grid{1, 1};
-	m_c_sprite				 = PRELOAD_TEXTURE(ident_, "ressources/entity/Cannon.png", frame_grid);
+	m_c_sprite				 = PRELOAD_TEXTURE(ident_, "resources/entity/Cannon.png", frame_grid);
 	m_c_texture				 = m_c_sprite->m_s_texture;
 	m_c_time_since_last_shot = 0.0f;
 	m_c_animation_controller = PSCore::sprites::SpriteSheetAnimation(
@@ -80,7 +80,7 @@ void Cannon::fire()
 				projectile->set_speed(m_c_projectile_speed);
 				projectile->set_fiering_cannon(m_c_shared_ptr_this);
 				projectile->set_max_range(m_c_range);
-				
+
 				if ( m_c_parent ) {
 					projectile->set_owner(m_c_parent);
 				}

@@ -5,12 +5,13 @@
 #include <entities/cannon.h>
 #include <entities/player.h>
 #include <entities/projectile.h>
-#include <psinterfaces/entity.h>
 #include <pscore/application.h>
+#include <psinterfaces/entity.h>
 
 #include <entities/shark.h>
 #include <layers/applayer.h>
 #include <pscore/spawner.h>
+#include <entities/tentacle.h>
 
 class FortunaDirectorPriv;
 class FortunaDirector : public PSInterfaces::IEntity
@@ -55,22 +56,22 @@ public:
 	void set_player_max_health(const int max_health);
 	int player_max_health() const;
 
-	//Bounty
+	// Bounty
 	struct Bounty
 	{
-		public:
+	public:
 		void set_bounty(const int amount);
 		int bounty() const;
 		void add_bounty(const int amount);
 		void subtract_bounty(const int amount);
 
-		private:
-			int m_b_bounty_amount = 0;
-
+	private:
+		int m_b_bounty_amount = 0;
 	};
 
-	float player_iframe_duration() const;
+	void increase_difficulty(int bounty);
 
+	float player_iframe_duration() const;
 
 	struct BountyAmount
 	{
@@ -81,8 +82,55 @@ public:
 	Bounty m_b_bounty;
 	BountyAmount m_b_bounty_amounts;
 
-private:
-	
-	std::unique_ptr<FortunaDirectorPriv> _p;
+	std::unique_ptr<FortunaDirectorPriv>& value_container_ref()
+	{
+		return _p;
+	}
 
+private:
+	std::unique_ptr<FortunaDirectorPriv> _p;
+};
+
+struct FortunaDirectorPriv
+{
+	std::vector<std::shared_ptr<Player>> players;
+	std::vector<std::shared_ptr<Cannon>> cannons;
+	bool on_screen_warp_around = CFG_VALUE<bool>("on_screen_warp_around", true);
+
+	float player_current_fire_rate		  = CFG_VALUE<float>("player_current_fire_rate", 0.5f);
+	float player_current_projectile_speed = CFG_VALUE<float>("player_current_projectile_speed", 300.0f);
+	float player_current_fire_range		  = CFG_VALUE<float>("player_current_fire_range", 100.0f);
+
+	std::unique_ptr<PSCore::Spawner<Shark, AppLayer>> shark_spawner;
+	float shark_spawn_time		= CFG_VALUE<float>("shark_spawn_time", 1.0f);
+	float shark_spawn_variation = CFG_VALUE<float>("shark_spawn_variation", 0.0f);
+	int shark_limit				= CFG_VALUE<int>("shark_limit", 10);
+	float shark_spawn_increase_base_value		= CFG_VALUE<float>("shark_spawn_increase_base_value", 0.05f);
+	float shark_spawn_increase_bounty_divider	= CFG_VALUE<float>("shark_spawn_increase_bounty_divider", 100.0f);
+	int shark_limit_increase_bounty_divider		= CFG_VALUE<int>("shark_limit_increase_bounty_divider", 200);
+	int shark_max_limit							= CFG_VALUE<int>("shark_max_limit", 100);
+	float shark_min_spawn_time					= CFG_VALUE<float>("shark_min_spawn_time", 0.1f);
+	int shark_start_increase_difficulty_bounty_amount = CFG_VALUE<int>("shark_start_increase_at_bounty", 160);
+
+	std::unique_ptr<PSCore::Spawner<tentacle, AppLayer>> tentacle_spawner;
+	int tentacle_limit = CFG_VALUE<int>("tentacle_limit", 10);
+	float tentacle_spawn_time = CFG_VALUE<float>("tentacle_spawn_time", 5.0f);
+	float tentacle_spawn_variation = CFG_VALUE<float>("tentacle_spawn_variation", 3.0f);
+	float tentacle_spawn_increase_base_value		= CFG_VALUE<float>("tentacle_spawn_increase_base_value", 0.05f);
+	float tentacle_spawn_increase_bounty_divider	= CFG_VALUE<float>("tentacle_spawn_increase_bounty_divider", 100.0f);
+	int tentacle_limit_increase_bounty_divider		= CFG_VALUE<int>("tentacle_limit_increase_bounty_divider", 200);
+	int tentacle_max_limit						 = CFG_VALUE<int>("tentacle_max_limit", 100);
+	float tentacle_min_spawn_time					 = CFG_VALUE<float>("tentacle_min_spawn_time", 0.5f);
+	int tentacle_start_spawn_bounty_amount		 = CFG_VALUE<int>("tentacle_start_spawn_at_bounty", 200);
+	bool m_tentacle_spawn_active				 = false;
+
+	
+	std::unique_ptr<PSCore::Spawner<Projectile, AppLayer>> projectile_spawner;
+	float player_max_velocity		 = CFG_VALUE<float>("player_max_velocity", 200.0f);
+	float player_input_rotation_mult = CFG_VALUE<float>("player_input_rotation_mult", 200.0f);
+	float player_input_velocity_mult = CFG_VALUE<float>("player_input_velocity_mult", 1500.0f);
+	int player_max_health			 = CFG_VALUE<int>("player_max_health", 3);
+	int player_health				 = CFG_VALUE<int>("player_health", 3);
+	float player_iframe_duration	 = CFG_VALUE<float>("player_iframe_duration", 0.5f);
+	bool player_invincibility		 = CFG_VALUE<bool>("player_invincibility", false);
 };

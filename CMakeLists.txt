@@ -25,7 +25,7 @@ raylib_imgui_setup_dependencies()
 
 add_subdirectory(src)
 
-file(COPY "${CMAKE_CURRENT_LIST_DIR}/ressources" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
+file(COPY "${CMAKE_CURRENT_LIST_DIR}/resources" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
 
 include(GNUInstallDirs)
 install(TARGETS ${PROJECT_NAME}
