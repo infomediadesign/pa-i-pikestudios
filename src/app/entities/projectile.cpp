@@ -29,9 +29,17 @@ Projectile::Projectile() : PSInterfaces::IEntity("projectile")
 
 	//Hit Anim
 	m_p_hit_anim_sprite = PRELOAD_TEXTURE("projectile_hit_anim", "resources/vfx/default_hit.png", hit_anim_frame_grid);
+
 	m_p_hit_anim_texture = m_p_hit_anim_sprite->m_s_texture;
 	m_p_animation_controller = PSCore::sprites::SpriteSheetAnimation(m_p_hit_anim_texture, {{9, 0.1, PSCore::sprites::Forward, m_p_z_index}});
 	m_p_animation_controller.add_animation_at_index(0, m_p_z_index);
+
+	// No Hit Anim
+	m_p_no_hit_anim_sprite = PRELOAD_TEXTURE("projectile_no_hit_anim", "resources/vfx/water_splash.png", hit_anim_frame_grid);
+
+	m_p_no_hit_anim_texture = m_p_no_hit_anim_sprite->m_s_texture;
+	m_p_no_hit_anim_controller = PSCore::sprites::SpriteSheetAnimation(m_p_no_hit_anim_texture, {{10, 0.1, PSCore::sprites::Forward, m_p_z_index}});
+	m_p_no_hit_anim_controller.add_animation_at_index(0, m_p_z_index);
 }
 
 void Projectile::init(const Vector2& position, std::shared_ptr<Projectile> self)
@@ -42,7 +50,6 @@ void Projectile::init(const Vector2& position, std::shared_ptr<Projectile> self)
 	m_collider->register_collision_handler([this](std::weak_ptr<PSInterfaces::IEntity> other, const Vector2& pos) {
 		if ( auto locked = other.lock() )
 			if ( locked->is_active() ) {
-				//set_is_active(false);
 				locked->on_hit();
 				on_hit();
 			}
@@ -51,10 +58,7 @@ void Projectile::init(const Vector2& position, std::shared_ptr<Projectile> self)
 
 void Projectile::update(const float dt)
 {
-	if ( !m_p_hit_aninm_playing ) {
-		if ( m_p_travel_distance >= m_p_max_range ) {
-			is_active_ = false;
-		}
+	if ( !m_p_hit_aninm_playing && !m_p_no_hit_anim_playing) {
 		calculate_movment(dt);
 
 		if ( position()->x == 0 || position()->y == 0 )
@@ -73,24 +77,35 @@ void Projectile::update(const float dt)
 		}
 	}
 	play_hit_anim(dt);
+	play_no_hit_anim(dt);
 }
 
 void Projectile::render()
 {
-	if ( is_active_ && !m_p_hit_aninm_playing) {
+	if ( is_active_ && !m_p_hit_aninm_playing && !m_p_no_hit_anim_playing) {
 		m_p_source = {0, 0, (float) m_p_texture.width, (float) m_p_texture.height};
 		if ( auto& vp = gApp()->viewport() ) {
 			vp->draw_in_viewport(m_p_texture, m_p_source, m_p_position, m_p_rotation, WHITE);
+			
 			vp->draw_in_viewport(
 					m_p_hit_anim_texture, m_p_animation_controller.get_source_rectangle(m_p_z_index).value_or(Rectangle{0}), m_p_position,
 					m_p_rotation, WHITE
 				);
+				
 		}
 	}
 	if ( m_p_hit_aninm_playing ) {
 		if ( auto& vp = gApp()->viewport() ) {
 			vp->draw_in_viewport(
 					m_p_hit_anim_texture, m_p_animation_controller.get_source_rectangle(m_p_z_index).value_or(Rectangle{0}), m_p_position,
+					m_p_rotation, WHITE
+			);
+		}
+	}
+	if ( m_p_no_hit_anim_playing ) {
+		if ( auto& vp = gApp()->viewport() ) {
+			vp->draw_in_viewport(
+					m_p_no_hit_anim_texture, m_p_no_hit_anim_controller.get_source_rectangle(m_p_z_index).value_or(Rectangle{0}), m_p_position,
 					m_p_rotation, WHITE
 			);
 		}
@@ -114,6 +129,18 @@ void Projectile::play_hit_anim(float dt)
 		}
 	}
 	
+}
+
+void Projectile::play_no_hit_anim(float dt)
+{
+	if ( m_p_no_hit_anim_playing ) {
+		m_p_no_hit_anim_controller.update_animation(dt);
+		if ( m_p_no_hit_anim_controller.get_sprite_sheet_frame_index(m_p_z_index) == 9 ) {
+			m_p_no_hit_anim_controller.set_animation_at_index(0, 0, m_p_z_index);
+			m_p_no_hit_anim_playing = false;
+			set_is_active(false);
+		}
+	}
 }
 
 void Projectile::apply_drag(const float dt)
@@ -145,7 +172,8 @@ void Projectile::calculate_movment(const float dt)
 	m_p_travel_distance += Vector2Length(combined_velocity) * dt;
 
 	if ( m_p_travel_distance >= m_p_max_range ) {
-		is_active_ = false;
+		m_p_no_hit_anim_playing = true;
+		m_p_no_hit_anim_controller.set_animation_at_index(0, 0, m_p_z_index);
 	}
 }
 
