@@ -12,6 +12,7 @@ ScoreLayer::ScoreLayer() : m_filemanager(m_score_filename)
 {
 	HighscoreEntries default_entry = {0, "No score yet"};
 	highscore.push_back(default_entry);
+	m_scoreboard_background = LoadTexture("resources/ui/Scoreboard_and_Background_Layer.png");
 }
 
 ScoreLayer::~ScoreLayer()
@@ -32,6 +33,9 @@ void ScoreLayer::on_render()
 		Vector2 origin = vp->viewport_origin();
 		float scale	   = vp->viewport_scale();
 		float spacing  = 10 * scale;
+		vp->draw_in_viewport(
+				m_scoreboard_background,{0, 0, static_cast<float>(m_scoreboard_background.width), static_cast<float>(m_scoreboard_background.height)},
+				{vp->viewport_base_size().x / 2, vp->viewport_base_size().y / 2}, 0, WHITE);
 
 		Vector2 button_size{50 * scale, 25 * scale};
 
@@ -42,102 +46,18 @@ void ScoreLayer::on_render()
 			return rec;
 		};
 
-	draw_score_board();
+		draw_score_board();
 
-	anchor02 = vp->viewport_origin();
-	GuiSetStyle(DEFAULT, TEXT_SIZE, 7 * scale);
-	if ( GuiTextBox(
-				 Rectangle{anchor02.x + 184 * scale, anchor02.y + 64 * scale, 120 * scale, 16 * scale}, TextBox000Text, 128, TextBox000EditMode
-		 ) ) {
+		Button034Pressed = GuiButton(Rectangle{anchor02.x + 50 * scale, anchor02.y + (360 - 44) * scale, 80 * scale, 24 * scale}, "Mainmenu");
+		if ( Button034Pressed ) {
+			gApp()->call_later([]() { gApp()->switch_layer<ScoreLayer, MainMenuLayer>(); });
+		}
 	}
-	if ( GuiTextBox(
-				 Rectangle{anchor02.x + 184 * scale, anchor02.y + 88 * scale, 120 * scale, 16 * scale}, TextBox001Text, 128, TextBox001EditMode
-		 ) ) {
-	};
-	if ( GuiTextBox(Rectangle{anchor02.x + 184 * scale, anchor02.y + 112 * scale, 120 * scale, 16 * scale}, TextBox002Text, 128, TextBox002EditMode) )
-	{};
-	if ( GuiTextBox(Rectangle{anchor02.x + 184 * scale, anchor02.y + 136 * scale, 120 * scale, 16 * scale}, TextBox003Text, 128, TextBox003EditMode) )
-	{};
-	if ( GuiTextBox(Rectangle{anchor02.x + 184 * scale, anchor02.y + 160 * scale, 120 * scale, 16 * scale}, TextBox004Text, 128, TextBox004EditMode) )
-	{};
-	if ( GuiTextBox(Rectangle{anchor02.x + 184 * scale, anchor02.y + 184 * scale, 120 * scale, 16 * scale}, TextBox005Text, 128, TextBox005EditMode) )
-	{};
-	if ( GuiTextBox(Rectangle{anchor02.x + 184 * scale, anchor02.y + 208 * scale, 120 * scale, 16 * scale}, TextBox006Text, 128, TextBox006EditMode) )
-	{};
-	if ( GuiTextBox(Rectangle{anchor02.x + 184 * scale, anchor02.y + 232 * scale, 120 * scale, 16 * scale}, TextBox007Text, 128, TextBox007EditMode) )
-	{};
-	if ( GuiTextBox(Rectangle{anchor02.x + 184 * scale, anchor02.y + 256 * scale, 120 * scale, 16 * scale}, TextBox008Text, 128, TextBox008EditMode) )
-	{};
-	if ( GuiTextBox(Rectangle{anchor02.x + 184 * scale, anchor02.y + 280 * scale, 120 * scale, 16 * scale}, TextBox009Text, 128, TextBox009EditMode) )
-	{};
-	if ( GuiTextBox(Rectangle{anchor02.x + 336 * scale, anchor02.y + 64 * scale, 120 * scale, 16 * scale}, TextBox012Text, 128, TextBox012EditMode) )
-	{};
-	if ( GuiTextBox(Rectangle{anchor02.x + 336 * scale, anchor02.y + 88 * scale, 120 * scale, 16 * scale}, TextBox013Text, 128, TextBox013EditMode) )
-	{};
-	if ( GuiTextBox(Rectangle{anchor02.x + 336 * scale, anchor02.y + 112 * scale, 120 * scale, 16 * scale}, TextBox014Text, 128, TextBox014EditMode) )
-	{};
-	if ( GuiTextBox(Rectangle{anchor02.x + 336 * scale, anchor02.y + 136 * scale, 120 * scale, 16 * scale}, TextBox015Text, 128, TextBox015EditMode) )
-	{};
-	if ( GuiTextBox(Rectangle{anchor02.x + 336 * scale, anchor02.y + 160 * scale, 120 * scale, 16 * scale}, TextBox016Text, 128, TextBox016EditMode) )
-	{};
-	if ( GuiTextBox(Rectangle{anchor02.x + 336 * scale, anchor02.y + 184 * scale, 120 * scale, 16 * scale}, TextBox017Text, 128, TextBox017EditMode) )
-	{};
-	if ( GuiTextBox(Rectangle{anchor02.x + 336 * scale, anchor02.y + 208 * scale, 120 * scale, 16 * scale}, TextBox018Text, 128, TextBox018EditMode) )
-	{};
-	if ( GuiTextBox(Rectangle{anchor02.x + 336 * scale, anchor02.y + 232 * scale, 120 * scale, 16 * scale}, TextBox019Text, 128, TextBox019EditMode) )
-	{};
-	if ( GuiTextBox(Rectangle{anchor02.x + 336 * scale, anchor02.y + 256 * scale, 120 * scale, 16 * scale}, TextBox020Text, 128, TextBox020EditMode) )
-	{};
-	if ( GuiTextBox(Rectangle{anchor02.x + 336 * scale, anchor02.y + 280 * scale, 120 * scale, 16 * scale}, TextBox021Text, 128, TextBox021EditMode) )
-	{};
-	if ( GuiTextBox(Rectangle{anchor02.x + 152 * scale, anchor02.y + 64 * scale, 16 * scale, 16 * scale}, TextBox045Text, 128, TextBox045EditMode) )
-	{};
-	if ( GuiTextBox(Rectangle{anchor02.x + 152 * scale, anchor02.y + 88 * scale, 16 * scale, 16 * scale}, TextBox024Text, 128, TextBox024EditMode) )
-	{};
-	if ( GuiTextBox(Rectangle{anchor02.x + 152 * scale, anchor02.y + 112 * scale, 16 * scale, 16 * scale}, TextBox025Text, 128, TextBox025EditMode) )
-	{};
-	if ( GuiTextBox(Rectangle{anchor02.x + 152 * scale, anchor02.y + 136 * scale, 16 * scale, 16 * scale}, TextBox026Text, 128, TextBox026EditMode) )
-	{};
-	if ( GuiTextBox(Rectangle{anchor02.x + 152 * scale, anchor02.y + 160 * scale, 16 * scale, 16 * scale}, TextBox027Text, 128, TextBox027EditMode) )
-	{};
-	if ( GuiTextBox(Rectangle{anchor02.x + 152 * scale, anchor02.y + 208 * scale, 16 * scale, 16 * scale}, TextBox028Text, 128, TextBox028EditMode) )
-	{};
-	if ( GuiTextBox(Rectangle{anchor02.x + 152 * scale, anchor02.y + 184 * scale, 16 * scale, 16 * scale}, TextBox029Text, 128, TextBox029EditMode) )
-	{};
-	if ( GuiTextBox(Rectangle{anchor02.x + 152 * scale, anchor02.y + 232 * scale, 16 * scale, 16 * scale}, TextBox030Text, 128, TextBox030EditMode) )
-	{};
-	if ( GuiTextBox(Rectangle{anchor02.x + 152 * scale, anchor02.y + 256 * scale, 16 * scale, 16 * scale}, TextBox031Text, 128, TextBox031EditMode) )
-	{};
-	if ( GuiTextBox(Rectangle{anchor02.x + 152 * scale, anchor02.y + 280 * scale, 16 * scale, 16 * scale}, TextBox032Text, 128, TextBox032EditMode) )
-	{};
-	Button034Pressed = GuiButton(Rectangle{anchor02.x + 20 * scale, anchor02.y + (360 - 44) * scale, 80 * scale, 24 * scale}, "Mainmenu");
-	if ( Button034Pressed ) {
-		gApp()->call_later([]() { gApp()->switch_layer<ScoreLayer, MainMenuLayer>();});
-	}
-	if ( GuiTextBox(Rectangle{anchor02.x + 472 * scale, anchor02.y + 64 * scale, 16 * scale, 16 * scale}, TextBox035Text, 128, TextBox035EditMode) )
-	{};
-	if ( GuiTextBox(Rectangle{anchor02.x + 472 * scale, anchor02.y + 88 * scale, 16 * scale, 16 * scale}, TextBox036Text, 128, TextBox036EditMode) )
-	{};
-	if ( GuiTextBox(Rectangle{anchor02.x + 472 * scale, anchor02.y + 112 * scale, 16 * scale, 16 * scale}, TextBox037Text, 128, TextBox037EditMode) )
-	{};
-	if ( GuiTextBox(Rectangle{anchor02.x + 472 * scale, anchor02.y + 136 * scale, 16 * scale, 16 * scale}, TextBox038Text, 128, TextBox038EditMode) )
-	{};
-	if ( GuiTextBox(Rectangle{anchor02.x + 472 * scale, anchor02.y + 160 * scale, 16 * scale, 16 * scale}, TextBox039Text, 128, TextBox039EditMode) )
-	{};
-	if ( GuiTextBox(Rectangle{anchor02.x + 472 * scale, anchor02.y + 232 * scale, 16 * scale, 16 * scale}, TextBox040Text, 128, TextBox040EditMode) )
-	{};
-	if ( GuiTextBox(Rectangle{anchor02.x + 472 * scale, anchor02.y + 256 * scale, 16 * scale, 16 * scale}, TextBox041Text, 128, TextBox041EditMode) )
-	{};
-	if ( GuiTextBox(Rectangle{anchor02.x + 472 * scale, anchor02.y + 280 * scale, 16 * scale, 16 * scale}, TextBox042Text, 128, TextBox042EditMode) )
-	{};
-	if ( GuiTextBox(Rectangle{anchor02.x + 472 * scale, anchor02.y + 184 * scale, 16 * scale, 16 * scale}, TextBox043Text, 128, TextBox043EditMode) )
-	{};
-	if ( GuiTextBox(Rectangle{anchor02.x + 472 * scale, anchor02.y + 208 * scale, 16 * scale, 16 * scale}, TextBox044Text, 128, TextBox044EditMode) )
-	{};
 }
+
+// does the file exist? create it if not. / delete highscore / open txt file and check
 void ScoreLayer::load_highscore(const std::string& filename)
 {
-	// does the file exist? create it if not. / delete highscore / open txt file and check
 	m_filemanager.ensurefileexists(filename);
 	if ( highscore.size() > 0 ) {
 		highscore.clear();
@@ -239,36 +159,38 @@ void ScoreLayer::set_highscore(std::string name, int score)
 
 void ScoreLayer::draw_score_board()
 {
-	auto& vp = gApp()->viewport();
-	GuiSetStyle(DEFAULT, TEXT_SIZE, 24);
-	GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt(RED));
+	auto& vp	   = gApp()->viewport();
+	float scale	   = vp->viewport_scale();
+	Vector2 anchor = vp->viewport_origin();
+	
+	GuiSetStyle(DEFAULT, TEXT_SIZE, 7 * scale);
+	GuiSetStyle(DEFAULT, BACKGROUND_COLOR, ColorToInt({0, 0, 0, 20}));
+	GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt({0,0,0,255}));
 
-	float y_offset	  = 100.0f;
-	float line_height = 30.0f;
-
+	Rectangle name_field_rect{anchor.x + 184 * scale, anchor.y + 64 * scale, 120 * scale, 16 * scale};
+	Rectangle score_field_rect{name_field_rect.x + 152 * scale, name_field_rect.y, name_field_rect.width, name_field_rect.height};
+	Rectangle left_color_rect{name_field_rect.x - 32 * scale, name_field_rect.y, 16 * scale, name_field_rect.height};
+	Rectangle right_color_rect{score_field_rect.x + score_field_rect.width + 16 * scale, name_field_rect.y, 16 * scale, name_field_rect.height};
 
 	for ( const auto& entry: highscore ) {
-		Rectangle label_rect = {(float) vp->viewport_base_size().x / 2 - 100, y_offset, 400, line_height};
 
+		GuiPanel(name_field_rect, NULL);
+		GuiLabel(name_field_rect, (" " + entry.name).c_str());
 
-		std::string text = entry.name + " " + std::to_string(entry.score);
-		GuiLabel(label_rect, text.c_str());
+		GuiPanel(score_field_rect, NULL);
+		GuiLabel(score_field_rect, (" " + std::to_string(entry.score)).c_str());
 
-		y_offset += line_height;
+		GuiPanel(left_color_rect, NULL);
+		GuiLabel(left_color_rect, "");
+
+		GuiPanel(right_color_rect, NULL);
+		GuiLabel(right_color_rect, "");
+
+		name_field_rect.y += 24 * scale;
+		score_field_rect.y += 24 * scale;
+		left_color_rect.y += 24 * scale;
+		right_color_rect.y += 24 * scale;
 	}
-	if ( list_state == AWAITING_INPUT ) {
-		Rectangle prompt_label_rect = {
-				(float) vp->viewport_base_size().x / 2 - 100, y_offset - line_height, 400, 200 + line_height * highscore.size()
-		};
-		std::string prompt_text		= "Enter Name: " + player_name_input;
-		std::string your_score_text = "Your Score: " + std::to_string(dynamic_cast<FortunaDirector*>(gApp()->game_director())->m_b_bounty.bounty());
-		GuiLabel(prompt_label_rect, your_score_text.c_str());
-		prompt_label_rect = {(float) vp->viewport_base_size().x / 2 - 100, y_offset - line_height, 400, 200 + line_height * (highscore.size() + 2)};
-		GuiLabel(prompt_label_rect, prompt_text.c_str());
-	}
-
-	GuiSetStyle(DEFAULT, TEXT_SIZE, 10);
-	GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt(DARKGRAY));
 }
 
 std::string ScoreLayer::score_filename() const
