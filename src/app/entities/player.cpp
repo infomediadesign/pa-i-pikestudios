@@ -181,8 +181,6 @@ void Player::on_hit()
 
 void Player::on_death()
 {
-	set_is_active(false);
-	
 	if (gApp()->get_layer<ScoreLayer>()) {
 		gApp()->pop_layer<ScoreLayer>();
 	}
@@ -206,6 +204,7 @@ void Player::on_death()
 		cannon->set_is_active(false);
 	}
 	m_animation_controller.set_animation_at_index(4, 0, 1);
+
 	gApp()->push_layer<DeathScreenLayer>();
 	auto death_layer = gApp()->get_layer<DeathScreenLayer>();
 	if (death_layer && score_layer) {
