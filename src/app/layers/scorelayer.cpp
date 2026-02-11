@@ -6,7 +6,6 @@
 #include <layers/mainmenulayer.h>
 #include <pscore/viewport.h>
 #include <raygui.h>
-#include <system_error>
 
 ScoreLayer::ScoreLayer() : m_filemanager(m_score_filename)
 {
@@ -47,11 +46,10 @@ void ScoreLayer::on_render()
 		};
 
 		draw_score_board();
+		draw_score_board_buttons();
 
-		Button034Pressed = GuiButton(Rectangle{anchor02.x + 50 * scale, anchor02.y + (360 - 44) * scale, 80 * scale, 24 * scale}, "Mainmenu");
-		if ( Button034Pressed ) {
-			gApp()->call_later([]() { gApp()->switch_layer<ScoreLayer, MainMenuLayer>(); });
-		}
+
+
 	}
 }
 
@@ -172,6 +170,8 @@ void ScoreLayer::draw_score_board()
 	Rectangle left_color_rect{name_field_rect.x - 32 * scale, name_field_rect.y, 16 * scale, name_field_rect.height};
 	Rectangle right_color_rect{score_field_rect.x + score_field_rect.width + 16 * scale, name_field_rect.y, 16 * scale, name_field_rect.height};
 
+	int rank = 1;
+
 	for ( const auto& entry: highscore ) {
 
 		GuiPanel(name_field_rect, NULL);
@@ -181,7 +181,7 @@ void ScoreLayer::draw_score_board()
 		GuiLabel(score_field_rect, (" " + std::to_string(entry.score)).c_str());
 
 		GuiPanel(left_color_rect, NULL);
-		GuiLabel(left_color_rect, "");
+		GuiLabel(left_color_rect, (" " + std::to_string(rank) + ".").c_str());
 
 		GuiPanel(right_color_rect, NULL);
 		GuiLabel(right_color_rect, "");
@@ -190,6 +190,26 @@ void ScoreLayer::draw_score_board()
 		score_field_rect.y += 24 * scale;
 		left_color_rect.y += 24 * scale;
 		right_color_rect.y += 24 * scale;
+		rank++;
+	}
+}
+
+void ScoreLayer::draw_score_board_buttons()
+{
+	auto& vp	   = gApp()->viewport();
+	Vector2 anchor = vp->viewport_origin();
+	float scale	   = vp->viewport_scale();
+	Vector2 button_size{80 * scale, 24 * scale};
+
+	if ( GuiButton(Rectangle{anchor.x + 40 * scale, anchor.y + 312 * scale, button_size.x, button_size.y}, "Mainmenu") ) {
+		gApp()->call_later([]() { gApp()->switch_layer<ScoreLayer, MainMenuLayer>(); });
+	}
+	if ( m_retry_button_visible ) {
+		if ( GuiButton(Rectangle{anchor.x + 520 * scale, anchor.y + 312 * scale, button_size.x, button_size.y}, "Retry") ) {
+			gApp()->call_later([]() { gApp()->pop_layer<AppLayer>(); });
+			gApp()->call_later([]() { gApp()->switch_layer<ScoreLayer, AppLayer>(); });
+			gApp()->call_later([]() { gApp()->game_director_ref().reset(new FortunaDirector()); });
+		}
 	}
 }
 
@@ -201,4 +221,20 @@ std::string ScoreLayer::score_filename() const
 void ScoreLayer::set_layer_is_visible(bool visible)
 {
 	m_layer_is_visible = visible;
+}
+
+void ScoreLayer::set_retry_button_visible(bool visible)
+{
+	m_retry_button_visible = visible;
+}
+
+void ScoreLayer::reset_state()
+{
+	highscore.clear();
+	HighscoreEntries default_entry = {0, "No score yet"};
+	highscore.push_back(default_entry);
+	highscores_loaded = false;
+	player_name_input.clear();
+	list_state = VIEWING;
+	m_time_since_lase_input = 0.0f;
 }

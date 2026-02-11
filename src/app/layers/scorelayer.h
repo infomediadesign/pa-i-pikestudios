@@ -1,12 +1,6 @@
-//
-// Created by mariu on 09.01.2026.
-//
-
 #pragma once
 
 #include <vector>
-
-
 #include <pscore/filemanager.h>
 #include <psinterfaces/layer.h>
 
@@ -38,12 +32,13 @@ public:
 	liststate list_state = VIEWING;
 	void set_highscore(std::string name, int score);
 	void draw_score_board();
-	void update_textbox_arrays();
 	std::string score_filename() const;
     Vector2 anchor02 = { 0, 0 };
 	void set_layer_is_visible(bool visible);
+	void set_retry_button_visible(bool visible);
+	void draw_score_board_buttons();
+	void reset_state();
 
-    bool Button034Pressed = false;
 
 	Filemanager m_filemanager;
 
@@ -51,6 +46,7 @@ public:
 	static inline const std::string m_score_filename = "fortunascore.txt";
 	float m_time_since_lase_input				 = 0.0f;
 	bool m_layer_is_visible						= true;
+	bool m_retry_button_visible					= false;
 	Texture2D m_scoreboard_background;
 
 };

@@ -151,23 +151,40 @@ void Player::on_hit()
 void Player::on_death()
 {
 	set_is_active(false);
-	for ( const auto& cannon: m_cannon_container ) {
-		cannon->set_is_active(false);
+	
+	if (gApp()->get_layer<ScoreLayer>()) {
+		gApp()->pop_layer<ScoreLayer>();
+	}
+	if (gApp()->get_layer<DeathScreenLayer>()) {
+		gApp()->pop_layer<DeathScreenLayer>();
+	}
+	if (gApp()->get_layer<UILayer>()){
+		gApp()->pop_layer<UILayer>();
+	}
+
+	gApp()->push_layer<ScoreLayer>();
+	auto score_layer = gApp()->get_layer<ScoreLayer>();
+	if (score_layer) {
+		score_layer->set_layer_is_visible(false);
+		score_layer->reset_state();
+		score_layer->load_highscore(score_layer->score_filename());
 	}
 	
 	gApp()->push_layer<DeathScreenLayer>();
-	gApp()->push_layer<ScoreLayer>();
-	gApp()->pop_layer<UILayer>();
-	auto score_layer		= gApp()->get_layer<ScoreLayer>();
-	auto death_screen_layer = gApp()->get_layer<DeathScreenLayer>();
-	death_screen_layer->set_score_layer_instance(score_layer);
-	score_layer->set_layer_is_visible(false);
-	score_layer->load_highscore(score_layer->score_filename());
-	score_layer->save_new_highscore(dynamic_cast<FortunaDirector*>(gApp()->game_director())->m_b_bounty.bounty());
-	death_screen_layer->set_score_should_be_saved(
-			score_layer->check_for_new_highscore(dynamic_cast<FortunaDirector*>(gApp()->game_director())->m_b_bounty.bounty())
-	);
-	score_layer->player_name_input = gApp()->current_player_name().c_str();
+	auto death_layer = gApp()->get_layer<DeathScreenLayer>();
+	if (death_layer && score_layer) {
+		death_layer->reset_state();
+		death_layer->set_score_layer_instance(score_layer);
+		death_layer->set_score_should_be_saved(
+			score_layer->check_for_new_highscore(
+				dynamic_cast<FortunaDirector*>(gApp()->game_director())->m_b_bounty.bounty()
+			)
+		);
+	}
+	
+	for (auto cannon : m_cannon_container) {
+		cannon->set_is_active(false);
+	}
 }
 
 void Player::set_is_invincible(bool invincible)

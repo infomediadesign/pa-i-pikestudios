@@ -29,20 +29,6 @@ void PauseLayer::on_render()
 
 
 	GuiSetStyle(DEFAULT, TEXT_SIZE, 6 * scale);
-	/*
-		if ( GuiButton(button_rect, "Leader Board") ) {
-			gApp()->call_later([]() {
-				gApp()->switch_layer<PauseLayer, ScoreLayer>();
-
-				auto score_layer = gApp()->get_layer<ScoreLayer>();
-				if ( score_layer ) {
-					score_layer->load_highscore(score_layer->score_filename());
-					score_layer->save_new_highscore(dynamic_cast<FortunaDirector*>(gApp()->game_director())->m_b_bounty.bounty());
-				}
-			});
-		}
-	*/
-
 		if ( GuiButton(
 					 Rectangle{screen_width / 2 - (40 * scale), screen_height / 2 - (12 * scale) - 20 * scale, 80 * scale, 24 * scale}, "Resume"
 			 ) ) {
