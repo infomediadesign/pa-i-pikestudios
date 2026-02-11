@@ -12,8 +12,8 @@ static const Color STANDARD_TEXT_COLOR	= DARKGRAY;
 
 UILayer::UILayer()
 {
-	bounty_coin						= LoadTexture("ressources/icon/bounty_icon.png");
-	m_health_icon				  = LoadTexture("ressources/icon/test_health.png");
+	bounty_coin						= LoadTexture("resources/icon/bounty_icon.png");
+	m_health_icon				  = LoadTexture("resources/icon/test_health.png");
 }
 
 void UILayer::on_update(const float dt)

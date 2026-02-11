@@ -23,12 +23,12 @@ Projectile::Projectile() : PSInterfaces::IEntity("projectile")
 	m_p_position = {GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f};
 	m_p_rotation = 0.0f;
 	Vector2 frame_grid{1, 1};
-	m_p_sprite			= PRELOAD_TEXTURE(ident_, "ressources/entity/test_projectile.png", frame_grid);
+	m_p_sprite			= PRELOAD_TEXTURE(ident_, "resources/entity/test_projectile.png", frame_grid);
 	m_p_texture			= m_p_sprite->m_s_texture;
 	Vector2 hit_anim_frame_grid{1, 1};
 
 	//Hit Anim
-	m_p_hit_anim_sprite = PRELOAD_TEXTURE("projectile_hit_anim", "ressources/vfx/default_hit.png", hit_anim_frame_grid);
+	m_p_hit_anim_sprite = PRELOAD_TEXTURE("projectile_hit_anim", "resources/vfx/default_hit.png", hit_anim_frame_grid);
 	m_p_hit_anim_texture = m_p_hit_anim_sprite->m_s_texture;
 	m_p_animation_controller = PSCore::sprites::SpriteSheetAnimation(m_p_hit_anim_texture, {{9, 0.1, PSCore::sprites::Forward, m_p_z_index}});
 	m_p_animation_controller.add_animation_at_index(0, m_p_z_index);

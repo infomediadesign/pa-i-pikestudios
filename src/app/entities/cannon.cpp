@@ -15,7 +15,7 @@ Cannon::Cannon() : PSInterfaces::IEntity("cannon")
 {
 	IRenderable::propose_z_index(2);
 	Vector2 frame_grid{1, 1};
-	m_c_sprite				 = PRELOAD_TEXTURE(ident_, "ressources/entity/Cannon.png", frame_grid);
+	m_c_sprite				 = PRELOAD_TEXTURE(ident_, "resources/entity/Cannon.png", frame_grid);
 	m_c_texture				 = m_c_sprite->m_s_texture;
 	m_c_time_since_last_shot = 0.0f;
 	m_c_animation_controller = PSCore::sprites::SpriteSheetAnimation(

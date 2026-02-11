@@ -1,5 +1,5 @@
 if (WIN32)
-    set(app_icon "${PROJECT_SOURCE_DIR}/ressources/appIcon.rc")
+    set(app_icon "${PROJECT_SOURCE_DIR}/resources/appIcon.rc")
 endif()
 
 file(GLOB_RECURSE HEADER_FILES

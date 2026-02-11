@@ -18,7 +18,7 @@
 tentacle::tentacle() : PSInterfaces::IEntity("tentacle")
 {
 	Vector2 frame_grid{9, 2};
-	PRELOAD_TEXTURE(ident_, "ressources/entity/tentacle.png", frame_grid);
+	PRELOAD_TEXTURE(ident_, "resources/entity/tentacle.png", frame_grid);
 	m_Tentacle_sprite = FETCH_SPRITE(ident_);
 
 	std::vector<PSCore::sprites::SpriteSheetData> sp_data;
