@@ -35,6 +35,8 @@ namespace PSCore {
 			ImGui::Separator();
 			ImGui::Text("%s Spawner", typeid(T).name());
 
+			ImGui::Checkbox("active", &m_running);
+			
 			ImGui::SliderFloat("Spawn Interval", &m_interval, 0.1, 1000);
 			ImGui::SliderInt("Spawn Variation", &m_variation, 0, m_interval - 1);
 			if ( ImGui::SliderInt("Spawn Cap", &m_limit, 1, 200) ) {

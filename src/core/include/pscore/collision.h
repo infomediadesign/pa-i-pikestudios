@@ -5,8 +5,9 @@
 #include <optional>
 #include <pscore/spawner.h>
 #include <raylib.h>
+#include <raymath.h>
 #include <vector>
-#include "psinterfaces/entity.h"
+#include <psinterfaces/entity.h>
 
 namespace PSInterfaces {
 	class IEntity;
@@ -62,7 +63,7 @@ namespace PSCore {
 			);
 
 			static std::optional<std::pair<const std::weak_ptr<PSInterfaces::IEntity>, Vector2>>
-			check_entity_collision(const PSInterfaces::IEntity* self, const std::vector<std::weak_ptr<PSInterfaces::IEntity>>& entities);
+			check_entity_collision(std::shared_ptr<PSInterfaces::IEntity> self, const std::vector<std::weak_ptr<PSInterfaces::IEntity>>& entities);
 
 		private:
 			std::weak_ptr<PSInterfaces::IEntity> m_parent;
