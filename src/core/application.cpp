@@ -172,3 +172,7 @@ std::unique_ptr<PSCore::sprites::SpriteLoader>& PSCore::Application::sprite_load
 {
 	return _p->m_sprite_loader;
 }
+
+float PSCore::Application::delta_time() {
+	return _p->m_time_manager->delta_t().count();
+};

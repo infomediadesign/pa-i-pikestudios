@@ -128,6 +128,8 @@ namespace PSCore {
 			m_call_stack.push_back(fn);
 		}
 
+		float delta_time();
+
 	private:
 		std::unique_ptr<ApplicationPriv> _p;
 		std::vector<std::unique_ptr<PSInterfaces::Layer>> m_layer_stack;

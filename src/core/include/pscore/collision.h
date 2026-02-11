@@ -54,7 +54,7 @@ namespace PSCore {
 		public:
 			explicit EntityCollider(std::weak_ptr<PSInterfaces::IEntity> parent);
 
-			void register_collision_handler(std::function<void(std::weak_ptr<PSInterfaces::IEntity> other, const Vector2& point)> cb);
+			void register_collision_handler(std::function<void(std::weak_ptr<PSInterfaces::IEntity> other, const Vector2& point)> cb, float timeout = 0);
 
 			bool check_collision(
 					const std::vector<std::weak_ptr<PSInterfaces::IEntity>>& entity_pool,
@@ -68,6 +68,8 @@ namespace PSCore {
 		private:
 			std::weak_ptr<PSInterfaces::IEntity> m_parent;
 			std::function<void(std::weak_ptr<PSInterfaces::IEntity> other, const Vector2& point)> m_collion_cb;
+			
+			float m_collision_cb_timeout = 0;
 		};
 	} // namespace collision
 } // namespace PSCore
