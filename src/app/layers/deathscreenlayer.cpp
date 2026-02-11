@@ -1,14 +1,16 @@
 //
 // Created by rikab on 29/01/2026.
 //
-#include <pscore/application.h>
-#include <raygui.h>
+#include <entities/director.h>
 #include <layers/deathscreenlayer.h>
 #include <layers/mainmenulayer.h>
+#include <pscore/application.h>
 #include <pscore/viewport.h>
-#include <entities/director.h>
+#include <raygui.h>
 #include "applayer.h"
 #include "uilayer.h"
+
+#include "scorelayer.h"
 
 void DeathScreenLayer::on_update(float dt)
 {
@@ -20,24 +22,23 @@ void DeathScreenLayer::on_update(float dt)
 
 void DeathScreenLayer::on_render()
 {
-	auto& vp = gApp()->viewport();
+	auto& vp   = gApp()->viewport();
 	Vector2 np = vp->viewport_origin();
-	float  sk = vp->viewport_scale();
+	float sk   = vp->viewport_scale();
 
-	Color bg_clr{0,0,0, 150};
-	DrawRectangle(np.x, np.y, GetScreenWidth()*sk, GetScreenHeight()*sk, bg_clr);
+	Color bg_clr{0, 0, 0, 150};
+	DrawRectangle(np.x, np.y, GetScreenWidth() * sk, GetScreenHeight() * sk, bg_clr);
 
 	float w = 300;
-	float x = ((vp->viewport_base_size().x) / 2.0f) - (w/2);
-	Rectangle rect{np.x+x*sk, np.y+48*sk, w*sk, 40*sk};
+	float x = ((vp->viewport_base_size().x) / 2.0f) - (w / 2);
+	Rectangle rect{np.x + x * sk, np.y + 48 * sk, w * sk, 40 * sk};
 
-	std::string bounty_text = std::to_string(
-			dynamic_cast<FortunaDirector*>(gApp()->game_director())->m_b_bounty.bounty());
-	Rectangle score{np.x+x*sk, np.y+100*sk, w*sk, 40*sk};
+	std::string bounty_text = std::to_string(dynamic_cast<FortunaDirector*>(gApp()->game_director())->m_b_bounty.bounty());
+	Rectangle score{np.x + x * sk, np.y + 100 * sk, w * sk, 40 * sk};
 	Rectangle score_info_bounds{np.x + x * sk, np.y + 125 * sk, w * sk, 40 * sk};
 
 	int oldColor = GuiGetStyle(DEFAULT, TEXT_COLOR_NORMAL);
-	int oldSize = GuiGetStyle(DEFAULT, TEXT_SIZE);
+	int oldSize	 = GuiGetStyle(DEFAULT, TEXT_SIZE);
 	int oldAlign = GuiGetStyle(LABEL, TEXT_ALIGNMENT);
 
 	GuiSetStyle(LABEL, TEXT_ALIGNMENT, TEXT_ALIGN_CENTER);
@@ -77,18 +78,30 @@ void DeathScreenLayer::on_render()
 	GuiSetStyle(DEFAULT, TEXT_SIZE, oldSize);
 	GuiSetStyle(LABEL, TEXT_ALIGNMENT, oldAlign);
 
-	int margin = 20;
+	int margin	   = 20;
 	int btn_height = 24;
-	int btn_width = 80;
+	int btn_width  = 80;
 
 	float y = (vp->viewport_base_size().y - btn_height) - margin;
 
-	if (GuiButton(Rectangle{ np.x + margin*sk, np.y + y*sk ,btn_width*sk, btn_height*sk }, "Mainmenu")) {
+	if ( GuiButton(Rectangle{np.x + margin * sk, np.y + y * sk, btn_width * sk, btn_height * sk}, "Mainmenu") ) {
 		gApp()->call_later([]() { gApp()->pop_layer<DeathScreenLayer>(); });
 		gApp()->call_later([]() { gApp()->pop_layer<ScoreLayer>(); });
 		gApp()->call_later([]() { gApp()->switch_layer<AppLayer, MainMenuLayer>(); });
 	}
-
+	if ( GuiButton(
+				 Rectangle{static_cast<float>(GetScreenWidth()) / 2 - (btn_width / 2) * sk, np.y + y * sk, btn_width * sk, btn_height * sk},
+				 "Scoreboard"
+		 ) ) {
+		gApp()->call_later([]() { gApp()->pop_layer<DeathScreenLayer>(); });
+		gApp()->call_later([]() { gApp()->switch_layer<AppLayer, ScoreLayer>(); });
+		gApp()->call_later([]() {
+			auto score_layer = gApp()->get_layer<ScoreLayer>();
+			if ( score_layer )
+				score_layer->load_highscore(score_layer->score_filename());
+			score_layer->save_new_highscore(dynamic_cast<FortunaDirector*>(gApp()->game_director())->m_b_bounty.bounty());
+		});
+	}
 	x = (vp->viewport_base_size().x - btn_width) - margin;
 
 	if ( !m_score_should_be_saved || m_name_entered ) {
