@@ -1,7 +1,7 @@
 #include <iostream>
 #include <optional>
-#include <pscore/settings.h>
 #include <pscore/application.h>
+#include <pscore/settings.h>
 #include <raylib.h>
 #include <string>
 

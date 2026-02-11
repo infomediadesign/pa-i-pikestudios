@@ -7,10 +7,15 @@
 #include <raylib.h>
 
 #include <misc/smear.h>
-#include "pscore/sprite.h"
 
+#include <misc/loottable.h>
+#include <pscore/sprite.h>
+
+class Sails;
 class Player : public PSInterfaces::IRenderable
 {
+	friend class Sails;
+
 public:
 	Player();
 
@@ -157,7 +162,6 @@ private:
 	float m_time_since_last_shot_right = 0;
 	FiringCannonIndex m_firing_cannon_index{1, 0};
 
-
 	// Smear Variables
 	Smear m_smear;
 	Color m_smear_color = {9, 75, 101, 127};
@@ -167,4 +171,24 @@ private:
 	bool m_is_invincible	= false;
 	float m_iframe_timer	= 0;
 	float m_iframe_duration = 5;
+
+	// Sails
+	std::shared_ptr<Sails> m_sails;
+
+	// Loot Table
+	LootTable m_loot_table;
+};
+
+class Sails : public PSInterfaces::IRenderable{
+public:
+	Sails(Player* player);
+	~Sails();
+
+	void update(float dt) override;
+	void render() override;
+	void draw_debug() override;
+
+private:
+	const Player* m_player;
+
 };

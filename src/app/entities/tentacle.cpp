@@ -44,7 +44,6 @@ void tentacle::init(std::shared_ptr<tentacle> self, const Vector2& pos)
 	m_collider->register_collision_handler([](std::weak_ptr<PSInterfaces::IEntity> other, const Vector2& pos) {
 		if ( auto locked = other.lock() ) {
 			if ( auto player = std::dynamic_pointer_cast<Player>(locked) ) {
-				std::cout << "HOIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIt" << std::endl;
 				player->on_hit();
 			}
 		}

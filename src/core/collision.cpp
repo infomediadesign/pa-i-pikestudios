@@ -27,7 +27,7 @@ namespace PSCore {
 		)
 		{
 			if ( auto locked = m_parent.lock() ) {
-				if ( auto val = check_entity_collision(locked.get(), entity_pool) ) {
+				if ( auto val = check_entity_collision(locked, entity_pool) ) {
 					auto other = val.value().first;
 					auto point = val.value().second;
 					if ( m_collion_cb && exclusion_criterion(other, point) ) {
@@ -40,8 +40,9 @@ namespace PSCore {
 			return false;
 		}
 
-		std::optional<std::pair<const std::weak_ptr<PSInterfaces::IEntity>, Vector2>>
-		EntityCollider::check_entity_collision(const PSInterfaces::IEntity* self, const std::vector<std::weak_ptr<PSInterfaces::IEntity>>& entities)
+		std::optional<std::pair<const std::weak_ptr<PSInterfaces::IEntity>, Vector2>> EntityCollider::check_entity_collision(
+				std::shared_ptr<PSInterfaces::IEntity> self, const std::vector<std::weak_ptr<PSInterfaces::IEntity>>& entities
+		)
 		{
 			for ( const auto& entity: entities ) {
 				auto locked_entity = entity.lock();
@@ -55,18 +56,21 @@ namespace PSCore {
 				if ( distance > 50 )
 					continue;
 
-				for ( const Vector2& point: self->bounds().value() ) {
-					auto bounds = locked_entity->bounds().value();
-					if ( CheckCollisionPointPoly(point, bounds.data(), bounds.size()) ) {
-						
-						PS_LOG(LOG_INFO, TextFormat(
-												 "%s (%f, %f) collided with %s (%f, %f)", self->ident().data(), pos2.x, pos2.y,
-												 locked_entity->ident().data(), pos1.x, pos1.y
-										 ));
-
-						return std::make_pair(locked_entity, point);
+				const auto check_col = [](std::shared_ptr<PSInterfaces::IEntity> en1, std::shared_ptr<PSInterfaces::IEntity> en2,
+										  bool inverted = false) -> std::optional<std::pair<std::weak_ptr<PSInterfaces::IEntity>, Vector2>> {
+					for ( const Vector2& point: en1->bounds().value_or({}) ) {
+						auto bounds = en2->bounds().value_or({});
+						if ( CheckCollisionPointPoly(point, bounds.data(), bounds.size()) )
+							return std::make_pair(inverted ? en2 : en1, point);
 					}
-				}
+
+					return std::nullopt;
+				};
+
+				if ( auto pair = check_col(locked_entity, self) )
+					return pair;
+				if ( auto pair = check_col(self, locked_entity, true) )
+					return pair;
 			}
 
 			return std::nullopt;
