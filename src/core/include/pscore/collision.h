@@ -3,8 +3,10 @@
 #include <functional>
 #include <memory>
 #include <optional>
-#include <vector>
+#include <pscore/spawner.h>
 #include <raylib.h>
+#include <vector>
+#include "psinterfaces/entity.h"
 
 namespace PSInterfaces {
 	class IEntity;
@@ -14,13 +16,38 @@ namespace PSInterfaces {
 namespace PSCore {
 	namespace collision {
 
-		template<typename E>
-			requires std::is_base_of_v<PSInterfaces::IEntity, E>
-			Vector2 repel_force()
-			{
-				
+		template<class E, class L>
+			requires std::is_base_of_v<PSInterfaces::IEntity, E> && std::is_base_of_v<PSInterfaces::Layer, L>
+		Vector2 entity_repel_force(std::shared_ptr<E> self, const Spawner<E, L>& spawner, float min_distance, float repel_strenght)
+		{
+			std::shared_ptr<PSInterfaces::IEntity> origin_entity;
+			if ( !(origin_entity = std::dynamic_pointer_cast<PSInterfaces::IEntity>(self)) )
+				return {0, 0};
+
+			Vector2 repel_force{0, 0};
+			for ( const auto& entity: spawner.entities() ) {
+				if ( std::shared_ptr<PSInterfaces::IEntity> other_entity = std::dynamic_pointer_cast<PSInterfaces::IEntity>(entity) ) {
+					if ( !other_entity->is_active() || other_entity->uid() == origin_entity->uid() )
+						continue;
+
+					Vector2 other_pos = other_entity->position().value_or(Vector2{0, 0});
+					Vector2 self_pos  = origin_entity->position().value_or(Vector2{0, 0});
+
+					Vector2 diff   = Vector2Subtract(self_pos, other_pos);
+					float distance = Vector2Distance(self_pos, other_pos);
+
+					if ( distance < min_distance && distance > 0 ) {
+						Vector2 direction	 = Vector2Normalize(diff);
+						float overlap		 = min_distance - distance;
+						float forceMagnitude = overlap * repel_strenght;
+
+						repel_force = Vector2Add(repel_force, Vector2Scale(direction, forceMagnitude));
+					}
+				}
 			}
-		
+			return repel_force;
+		}
+
 		class EntityCollider
 		{
 		public:
