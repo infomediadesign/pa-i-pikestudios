@@ -58,6 +58,7 @@ Player::Player() : PSInterfaces::IEntity("player")
 	set_texture_values(FETCH_SPRITE_TEXTURE(ident_), 90);
 	//
 	//
+	set_max_velocity(direcor_vals->player_max_velocity);
 }
 
 void Player::update(const float dt)
