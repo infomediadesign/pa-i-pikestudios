@@ -28,28 +28,31 @@ void ScoreLayer::on_update(float dt)
 }
 void ScoreLayer::on_render()
 {
-	auto& vp	   = gApp()->viewport();
-	Vector2 origin = vp->viewport_origin();
-	float scale	   = vp->viewport_scale();
-	float spacing  = 10 * scale;
+	if ( m_layer_is_visible ) {
+		auto& vp	   = gApp()->viewport();
+		Vector2 origin = vp->viewport_origin();
+		float scale	   = vp->viewport_scale();
+		float spacing  = 10 * scale;
 
-	Vector2 button_size{50 * scale, 25 * scale};
+		Vector2 button_size{50 * scale, 25 * scale};
 
-	Rectangle button_rect{origin.x, origin.y, button_size.x, button_size.y};
-	auto next_btn_rect = [&button_rect, spacing]() {
-		Rectangle rec{button_rect.x, button_rect.y + button_rect.height + spacing, button_rect.width, button_rect.height};
-		button_rect = rec;
-		return rec;
-	};
+		Rectangle button_rect{origin.x, origin.y, button_size.x, button_size.y};
+		auto next_btn_rect = [&button_rect, spacing]() {
+			Rectangle rec{button_rect.x, button_rect.y + button_rect.height + spacing, button_rect.width, button_rect.height};
+			button_rect = rec;
+			return rec;
+		};
 
 
-	GuiSetStyle(DEFAULT, TEXT_SIZE, 6 * scale);
+		GuiSetStyle(DEFAULT, TEXT_SIZE, 6 * scale);
 
-	if ( GuiButton(button_rect, "Main Menu") ) {
-		gApp()->call_later([]() { gApp()->pop_layer<ScoreLayer>(); });
-		gApp()->call_later([]() { gApp()->switch_layer<AppLayer, MainMenuLayer>(); });
+		if ( GuiButton(button_rect, "Main Menu") ) {
+			gApp()->call_later([]() { gApp()->pop_layer<ScoreLayer>(); });
+			gApp()->call_later([]() { gApp()->switch_layer<AppLayer, MainMenuLayer>(); });
+		}
+		draw_score_board();
 	}
-	draw_score_board();
+
 }
 void ScoreLayer::load_highscore(const std::string& filename)
 {
@@ -196,4 +199,9 @@ void ScoreLayer::draw_score_board()
 std::string ScoreLayer::score_filename() const
 {
 	return m_score_filename;
+}
+
+void ScoreLayer::set_layer_is_visible(bool visible)
+{
+	m_layer_is_visible = visible;
 }

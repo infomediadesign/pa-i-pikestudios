@@ -39,6 +39,7 @@ public:
 	void set_highscore(std::string name, int score);
 	void draw_score_board();
 	std::string score_filename() const;
+	void set_layer_is_visible(bool visible);
 	
 
 	Filemanager m_filemanager;
@@ -46,5 +47,6 @@ public:
 	private:
 	static inline const std::string m_score_filename = "fortunascore.txt";
 	float m_time_since_lase_input				 = 0.0f;
+	bool m_layer_is_visible						= true;
 
 };

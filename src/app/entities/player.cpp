@@ -154,8 +154,20 @@ void Player::on_death()
 	for ( const auto& cannon: m_cannon_container ) {
 		cannon->set_is_active(false);
 	}
+	
 	gApp()->push_layer<DeathScreenLayer>();
+	gApp()->push_layer<ScoreLayer>();
 	gApp()->pop_layer<UILayer>();
+	auto score_layer		= gApp()->get_layer<ScoreLayer>();
+	auto death_screen_layer = gApp()->get_layer<DeathScreenLayer>();
+	death_screen_layer->set_score_layer_instance(score_layer);
+	score_layer->set_layer_is_visible(false);
+	score_layer->load_highscore(score_layer->score_filename());
+	score_layer->save_new_highscore(dynamic_cast<FortunaDirector*>(gApp()->game_director())->m_b_bounty.bounty());
+	death_screen_layer->set_score_should_be_saved(
+			score_layer->check_for_new_highscore(dynamic_cast<FortunaDirector*>(gApp()->game_director())->m_b_bounty.bounty())
+	);
+	score_layer->player_name_input = death_screen_layer->last_input_name();
 }
 
 void Player::set_is_invincible(bool invincible)

@@ -10,8 +10,15 @@
 
 void DeathScreenLayer::on_update(float dt)
 {
-
-
+	if ( IsKeyPressed(KEY_ENTER)) {
+		std::string name_input = "Wer";
+			//= m_score_layer_instance->player_name_input;
+		m_last_input_name = name_input;
+		printf("Enter pressed\n");
+		printf("%s\n", m_last_input_name.c_str());
+			//m_score_layer_instance->player_name_input;
+	}
+	//printf("%s\n", m_last_input_name);
 }
 
 void DeathScreenLayer::on_render()
@@ -30,6 +37,8 @@ void DeathScreenLayer::on_render()
 	std::string bounty_text = std::to_string(
 			dynamic_cast<FortunaDirector*>(gApp()->game_director())->m_b_bounty.bounty());
 	Rectangle score{np.x+x*sk, np.y+100*sk, w*sk, 40*sk};
+	Rectangle score_info_bounds{np.x + x * sk, np.y + 125 * sk, w * sk, 40 * sk};
+	Rectangle name_input_bounds{np.x + x * sk, np.y + 150 * sk, w * sk, 40 * sk};
 
 	int oldColor = GuiGetStyle(DEFAULT, TEXT_COLOR_NORMAL);
 	int oldSize = GuiGetStyle(DEFAULT, TEXT_SIZE);
@@ -44,6 +53,14 @@ void DeathScreenLayer::on_render()
 	GuiSetStyle(DEFAULT, TEXT_SIZE, 14 * sk);
 
 	GuiLabel(score, ("Score: " + bounty_text).c_str());
+	if ( m_score_should_be_saved ) {
+		GuiLabel(score_info_bounds, "Du hast es in die Top 10 geschafft!");
+		GuiLabel(name_input_bounds, ("Name: " + m_score_layer_instance->player_name_input).c_str());
+	} 
+	else {
+		GuiLabel(score_info_bounds, "Du hast es nicht unter die Top 10 geschafft");
+	}
+	
 
 	GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, oldColor);
 	GuiSetStyle(DEFAULT, TEXT_SIZE, oldSize);
@@ -64,7 +81,34 @@ void DeathScreenLayer::on_render()
 
 	if (GuiButton(Rectangle{ np.x + x*sk, np.y + y*sk, btn_width*sk, btn_height*sk }, "Retry")){
 		gApp()->call_later([]() { gApp()->pop_layer<AppLayer>(); });
+		gApp()->call_later([]() { gApp()->pop_layer<ScoreLayer>(); });
+		m_score_layer_instance->set_layer_is_visible(true);
 		gApp()->call_later([]() { gApp()->switch_layer<DeathScreenLayer, AppLayer>(); });
 		gApp()->call_later([]() { gApp()->game_director_ref().reset(new FortunaDirector()); });
 	}
+}
+
+void DeathScreenLayer::set_score_should_be_saved(bool should_be_saved)
+{
+	m_score_should_be_saved = should_be_saved;
+}
+
+void DeathScreenLayer::set_score_layer_instance(ScoreLayer* score_layer)
+{
+	m_score_layer_instance = score_layer;
+}
+
+bool DeathScreenLayer::score_should_be_saved() const
+{
+	return m_score_should_be_saved;
+}
+
+void DeathScreenLayer::set_last_input_name(const std::string& name)
+{
+	m_last_input_name = name;
+}
+
+std::string DeathScreenLayer::last_input_name() const
+{
+	return m_last_input_name;
 }
