@@ -138,9 +138,15 @@ namespace PSCore {
 			m_limit = limit;
 			despawn_if_limit_exceeded_();
 		}
+
 		int limit()
 		{
 			return m_limit;
+		}
+
+		auto entities() const
+		{
+			return m_entities;
 		}
 
 	private:

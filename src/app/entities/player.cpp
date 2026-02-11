@@ -32,7 +32,7 @@
 Player::Player() : PSInterfaces::IEntity("player")
 {
 	Vector2 frame_grid{3, 4};
-	m_sprite = PRELOAD_TEXTURE(ident_, "ressources/entity/Player.png", frame_grid);
+	m_sprite = PRELOAD_TEXTURE(ident_, "resources/entity/Player.png", frame_grid);
 
 	m_animation_controller = PSCore::sprites::SpriteSheetAnimation(
 			FETCH_SPRITE_TEXTURE(ident_), {{3, 1, PSCore::sprites::KeyFrame, 1},
@@ -52,7 +52,10 @@ Player::Player() : PSInterfaces::IEntity("player")
 	}
 	m_max_velocity = 200;
 	m_rotation	   = 0;
-	set_interpolation_values(6, 2, 4, 1500, 200, 30);
+
+	auto director	   = dynamic_cast<FortunaDirector*>(gApp()->game_director());
+	auto& direcor_vals = director->value_container_ref();
+	set_interpolation_values(6, 2, 4, direcor_vals->player_input_velocity_mult, direcor_vals->player_input_rotation_mult, 30);
 	set_texture_values(FETCH_SPRITE_TEXTURE(ident_), 90);
 	//
 	//
@@ -76,6 +79,7 @@ Player::Player() : PSInterfaces::IEntity("player")
 
 	m_loot_table.loot_table_values(1);
 
+	set_max_velocity(direcor_vals->player_max_velocity);
 }
 
 void Player::update(const float dt)
