@@ -171,6 +171,7 @@ void ScoreLayer::draw_score_board()
 	Rectangle right_color_rect{score_field_rect.x + score_field_rect.width + 16 * scale, name_field_rect.y, 16 * scale, name_field_rect.height};
 
 	int rank = 1;
+	int spacing = 24 * scale;
 
 	for ( const auto& entry: highscore ) {
 
@@ -186,10 +187,10 @@ void ScoreLayer::draw_score_board()
 		GuiPanel(right_color_rect, NULL);
 		GuiLabel(right_color_rect, "");
 
-		name_field_rect.y += 24 * scale;
-		score_field_rect.y += 24 * scale;
-		left_color_rect.y += 24 * scale;
-		right_color_rect.y += 24 * scale;
+		name_field_rect.y += spacing;
+		score_field_rect.y += spacing;
+		left_color_rect.y += spacing;
+		right_color_rect.y += spacing;
 		rank++;
 	}
 }
