@@ -23,7 +23,8 @@ FortunaDirector::FortunaDirector() : PSInterfaces::IEntity("fortuna_director")
 
 	_p->shark_spawner = std::make_unique<PSCore::Spawner<Shark, AppLayer>>(_p->shark_spawn_time, _p->shark_spawn_variation, _p->shark_limit, false);
 	_p->projectile_spawner = std::make_unique<PSCore::Spawner<Projectile, AppLayer>>(0.0f);
-	_p->tentacle_spawner	   = std::make_unique<PSCore::Spawner<tentacle, AppLayer>>(5.0f, 3, _p->tentacle_limit);
+	_p->tentacle_spawner =
+			std::make_unique<PSCore::Spawner<tentacle, AppLayer>>(_p->tentacle_spawn_time, _p->tentacle_spawn_variation, _p->tentacle_limit);
 }
 
 void FortunaDirector::initialize_entities()
@@ -66,7 +67,6 @@ void FortunaDirector::initialize_entities()
 	});
 
 	_p->shark_spawner->resume();
-	_p->tentacle_spawner->resume();
 
 	auto initial_player = std::make_shared<Player>();
 	_p->players.push_back(initial_player);
@@ -389,9 +389,22 @@ void FortunaDirector::Bounty::subtract_bounty(const int amount)
 void FortunaDirector::increase_difficulty(int bounty)
 {
 	// Increase shark spawn rate and limit based on bounty
-	_p->shark_spawner->set_interval(std::max(0.1f, _p->shark_spawn_time - 0.05f * (bounty / 100)));
-	_p->shark_spawner->set_limit(std::min(100, _p->shark_limit + (bounty / 100)));
-	printf("Bounty: %d, Shark Spawn Interval: %.2f, Shark Limit: %d\n", bounty, _p->shark_spawner->interval(), _p->shark_spawner->limit());
+	if ( bounty >= _p->shark_start_increase_difficulty_bounty_amount ) {
+		_p->shark_spawner->set_interval(std::max(_p->shark_min_spawn_time, _p->shark_spawn_time - _p->shark_spawn_increase_base_value * (static_cast<float>(bounty) / _p->shark_spawn_increase_bounty_divider)));
+		_p->shark_spawner->set_limit(std::min(_p->shark_max_limit, _p->shark_limit + (bounty / _p->shark_limit_increase_bounty_divider)));
+		printf("Bounty: %d, Shark Spawn Time: %.2f, Shark Limit: %d\n", bounty, _p->shark_spawner->interval(), _p->shark_spawner->limit());
+	}
+	// Increase tentacle spawn rate and limit based on bounty
+	if ( bounty >= _p->tentacle_start_spawn_bounty_amount ) 
+	{
+		_p->tentacle_spawner->set_interval(std::max(_p->tentacle_min_spawn_time, _p->tentacle_spawn_time - _p->tentacle_spawn_increase_base_value * (static_cast<float>(bounty) / _p->tentacle_spawn_increase_bounty_divider)));
+		_p->tentacle_spawner->set_limit(std::min(_p->tentacle_max_limit, _p->tentacle_limit + (bounty / _p->tentacle_limit_increase_bounty_divider)));
+	}
+	// Activate tentacle spawner if bounty threshold is reached
+	if ( !_p->m_tentacle_spawn_active && bounty >= _p->tentacle_start_spawn_bounty_amount ) {
+		_p->m_tentacle_spawn_active = true;
+		_p->tentacle_spawner->resume();
+	}
 }
 // Player Health functions
 void FortunaDirector::set_player_health(const int health)

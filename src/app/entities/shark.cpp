@@ -262,9 +262,14 @@ void Shark::update(float dt)
 			if ( distance > m_retreat_reengage_distance )
 				m_state = State::Pursuing;
 
-			direction = Vector2Normalize(direction);
-			direction = Vector2Negate(direction);
-			m_pos	  = Vector2Add(m_pos, Vector2Scale(direction, m_retreat_speed * dt));
+			Vector2 retreat_dir = Vector2Scale(Vector2Normalize(Vector2Negate(direction)), m_retreat_speed);
+			Vector2 combined	= Vector2Add(retreat_dir, horde_force);
+			combined			= Vector2Normalize(combined);
+
+			m_pos = Vector2Add(m_pos, Vector2Scale(combined, m_retreat_speed * dt));
+
+			if ( m_horde_sync_rotation )
+				m_shark_rotation = utilities::rotation_look_at(m_pos, Vector2Add(m_pos, combined));
 
 			break;
 		}
