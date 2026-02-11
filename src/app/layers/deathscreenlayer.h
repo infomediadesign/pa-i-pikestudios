@@ -20,7 +20,6 @@ class DeathScreenLayer : public PSInterfaces::Layer
 	private:
 		bool m_score_should_be_saved = false;
 		ScoreLayer* m_score_layer_instance = nullptr;
-		std::string m_last_input_name	   = "";
 };
 
 

@@ -7,18 +7,13 @@
 #include <layers/mainmenulayer.h>
 #include <pscore/viewport.h>
 #include <entities/director.h>
+#include "applayer.h"
 
 void DeathScreenLayer::on_update(float dt)
 {
-	if ( IsKeyPressed(KEY_ENTER)) {
-		std::string name_input = "Wer";
-			//= m_score_layer_instance->player_name_input;
-		m_last_input_name = name_input;
-		printf("Enter pressed\n");
-		printf("%s\n", m_last_input_name.c_str());
-			//m_score_layer_instance->player_name_input;
+	if ( IsKeyPressed(KEY_ENTER) && m_score_layer_instance->player_name_input.size() > 0 ) {
+		gApp()->set_current_player_name(m_score_layer_instance->player_name_input);
 	}
-	//printf("%s\n", m_last_input_name);
 }
 
 void DeathScreenLayer::on_render()
@@ -79,12 +74,14 @@ void DeathScreenLayer::on_render()
 
 	x = (vp->viewport_base_size().x - btn_width) - margin;
 
-	if (GuiButton(Rectangle{ np.x + x*sk, np.y + y*sk, btn_width*sk, btn_height*sk }, "Retry")){
-		gApp()->call_later([]() { gApp()->pop_layer<AppLayer>(); });
-		gApp()->call_later([]() { gApp()->pop_layer<ScoreLayer>(); });
-		m_score_layer_instance->set_layer_is_visible(true);
-		gApp()->call_later([]() { gApp()->switch_layer<DeathScreenLayer, AppLayer>(); });
-		gApp()->call_later([]() { gApp()->game_director_ref().reset(new FortunaDirector()); });
+	if ( !m_score_should_be_saved || m_score_layer_instance->player_name_input.size() > 0 ) {
+		if ( GuiButton(Rectangle{np.x + x * sk, np.y + y * sk, btn_width * sk, btn_height * sk}, "Retry") ) {
+			gApp()->call_later([]() { gApp()->pop_layer<AppLayer>(); });
+			gApp()->call_later([]() { gApp()->pop_layer<ScoreLayer>(); });
+			m_score_layer_instance->set_layer_is_visible(true);
+			gApp()->call_later([]() { gApp()->switch_layer<DeathScreenLayer, AppLayer>(); });
+			gApp()->call_later([]() { gApp()->game_director_ref().reset(new FortunaDirector()); });
+		}
 	}
 }
 
@@ -101,14 +98,4 @@ void DeathScreenLayer::set_score_layer_instance(ScoreLayer* score_layer)
 bool DeathScreenLayer::score_should_be_saved() const
 {
 	return m_score_should_be_saved;
-}
-
-void DeathScreenLayer::set_last_input_name(const std::string& name)
-{
-	m_last_input_name = name;
-}
-
-std::string DeathScreenLayer::last_input_name() const
-{
-	return m_last_input_name;
 }

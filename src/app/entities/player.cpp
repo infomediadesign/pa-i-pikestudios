@@ -167,7 +167,7 @@ void Player::on_death()
 	death_screen_layer->set_score_should_be_saved(
 			score_layer->check_for_new_highscore(dynamic_cast<FortunaDirector*>(gApp()->game_director())->m_b_bounty.bounty())
 	);
-	score_layer->player_name_input = death_screen_layer->last_input_name();
+	score_layer->player_name_input = gApp()->current_player_name().c_str();
 }
 
 void Player::set_is_invincible(bool invincible)
