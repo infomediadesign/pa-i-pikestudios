@@ -31,7 +31,7 @@
 Player::Player() : PSInterfaces::IEntity("player")
 {
 	Vector2 frame_grid{3, 4};
-	m_sprite = PRELOAD_TEXTURE(ident_, "ressources/entity/Player.png", frame_grid);
+	m_sprite = PRELOAD_TEXTURE(ident_, "resources/entity/Player.png", frame_grid);
 
 	m_animation_controller = PSCore::sprites::SpriteSheetAnimation(
 			FETCH_SPRITE_TEXTURE(ident_), {{3, 1, PSCore::sprites::KeyFrame, 1},
