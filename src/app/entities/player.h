@@ -162,7 +162,6 @@ private:
 	float m_time_since_last_shot_right = 0;
 	FiringCannonIndex m_firing_cannon_index{1, 0};
 
-
 	// Smear Variables
 	Smear m_smear;
 	Color m_smear_color = {9, 75, 101, 127};

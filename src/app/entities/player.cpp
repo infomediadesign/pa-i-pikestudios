@@ -35,10 +35,11 @@ Player::Player() : PSInterfaces::IEntity("player")
 	m_sprite = PRELOAD_TEXTURE(ident_, "resources/entity/Player.png", frame_grid);
 
 	m_animation_controller = PSCore::sprites::SpriteSheetAnimation(
-			FETCH_SPRITE_TEXTURE(ident_), {{3, 1, PSCore::sprites::KeyFrame, 1},
+			FETCH_SPRITE_TEXTURE(ident_), {{1, 1, PSCore::sprites::KeyFrame, 1},
 										   {3, 1, PSCore::sprites::KeyFrame, 3},
 										   {3, 1, PSCore::sprites::KeyFrame, 3},
-										   {3, 1, PSCore::sprites::KeyFrame, 3}}
+										   {3, 1, PSCore::sprites::KeyFrame, 3},
+										   {10, 0.1, PSCore::sprites::Forward, 1}}
 	);
 
 	m_animation_controller.add_animation_at_index(0, 1);
@@ -70,16 +71,15 @@ Player::Player() : PSInterfaces::IEntity("player")
 		app_layer->renderer()->submit_renderable(m_sails);
 	}
 
-	//Upgrades
-	std::vector<int> chances = {50,25,25};
-	m_loot_table.add_loot_table(0,chances);
-	chances = {30,10,40,20};
-	m_loot_table.add_loot_table(1,chances);
-	chances = {99,1};
-	m_loot_table.add_loot_table(2,chances);
+	// Upgrades
+	std::vector<int> chances = {50, 25, 25};
+	m_loot_table.add_loot_table(0, chances);
+	chances = {30, 10, 40, 20};
+	m_loot_table.add_loot_table(1, chances);
+	chances = {99, 1};
+	m_loot_table.add_loot_table(2, chances);
 
 	m_loot_table.loot_table_values(1);
-
 }
 
 void Player::update(const float dt)
@@ -102,28 +102,37 @@ void Player::update(const float dt)
 		}
 	}
 
-	fire_cannons(dt);
+	if ( auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director()) ) {
+		if ( director->player_health() > 0 ) {
+			fire_cannons(dt);
 
-	calculate_movement(dt);
+			calculate_movement(dt);
 
-	m_rotation_velocity = calculate_rotation_velocity(0.01, dt);
+			m_rotation_velocity = calculate_rotation_velocity(0.01, dt);
 
-	reset_iframe(dt);
+			reset_iframe(dt);
 
-	// Animation Calculation
+			// Animation Calculation
 
-	if ( m_animation_controller.get_sprite_sheet_animation_index(3).value_or(2) == 2 &&
-		 fabsf(m_rotation_velocity) > SCHMITT_TRIGGER_DELTA_ROTATION_MAX ) {
-		m_sprite_sheet_animation_index = m_rotation_velocity < 0 ? 1 : 3;
+			if ( m_animation_controller.get_sprite_sheet_animation_index(3).value_or(2) == 2 &&
+				 fabsf(m_rotation_velocity) > SCHMITT_TRIGGER_DELTA_ROTATION_MAX ) {
+				m_sprite_sheet_animation_index = m_rotation_velocity < 0 ? 1 : 3;
+				 }
+			if ( m_animation_controller.get_sprite_sheet_animation_index(3).value_or(2) != 2 &&
+				 fabsf(m_rotation_velocity) < SCHMITT_TRIGGER_DELTA_ROTATION_MIN ) {
+				m_sprite_sheet_animation_index = 2;
+				 }
+
+			m_sprite_sheet_frame_index = static_cast<int>(round((Vector2Length(m_velocity) / m_max_velocity) * 2));
+
+			m_animation_controller.set_animation_at_index(m_sprite_sheet_animation_index, m_sprite_sheet_frame_index, 3);
+		}
+		else {
+			if ( m_animation_controller.get_sprite_sheet_frame_index(1) == 9 ) {
+				set_is_active(false);
+			}
+		}
 	}
-	if ( m_animation_controller.get_sprite_sheet_animation_index(3).value_or(2) != 2 &&
-		 fabsf(m_rotation_velocity) < SCHMITT_TRIGGER_DELTA_ROTATION_MIN ) {
-		m_sprite_sheet_animation_index = 2;
-	}
-
-	m_sprite_sheet_frame_index = static_cast<int>(round((Vector2Length(m_velocity) / m_max_velocity) * 2));
-
-	m_animation_controller.set_animation_at_index(m_sprite_sheet_animation_index, m_sprite_sheet_frame_index, 3);
 
 	m_animation_controller.update_animation(dt);
 
@@ -172,11 +181,11 @@ void Player::on_hit()
 
 void Player::on_death()
 {
-	set_is_active(false);
 	m_sails->set_is_active(false);
 	for ( const auto& cannon: m_cannon_container ) {
 		cannon->set_is_active(false);
 	}
+	m_animation_controller.set_animation_at_index(4, 0, 1);
 	gApp()->push_layer<DeathScreenLayer>();
 	gApp()->pop_layer<UILayer>();
 }
@@ -274,9 +283,6 @@ void Player::render()
 		vp->draw_in_viewport(
 				m_texture, m_animation_controller.get_source_rectangle(1).value_or(Rectangle{0}), m_position, m_rotation + m_rotation_offset, WHITE
 		);
-		/*vp->draw_in_viewport(
-				m_texture, m_animation_controller.get_source_rectangle(3).value_or(Rectangle{0}), m_position, m_rotation + m_rotation_offset, WHITE
-		);*/
 	}
 }
 
