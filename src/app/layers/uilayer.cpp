@@ -12,7 +12,7 @@ static const Color STANDARD_TEXT_COLOR	= DARKGRAY;
 
 UILayer::UILayer()
 {
-	m_ui_bounty_container.texture = LoadTexture("resources/icon/test_coin.png");
+	bounty_coin						= LoadTexture("resources/icon/bounty_icon.png");
 	m_health_icon				  = LoadTexture("resources/icon/test_health.png");
 }
 
@@ -31,15 +31,6 @@ void UILayer::on_render()
 
 void UILayer::draw_text(std::string text, Rectangle bounds, int text_size, Color color )
 {
-	/*
-	auto& vp	= gApp()->viewport();
-	float scale = vp->viewport_scale();
-
-	 bounds.x *= scale;
-	bounds.y *= scale;
-	text_size *= scale;
-	*/
-
 	GuiSetStyle(DEFAULT, TEXT_SIZE, text_size);
 	GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt(color));
 	GuiLabel(bounds, text.c_str());
@@ -58,22 +49,38 @@ void UILayer::draw_panel(Rectangle bounds, Color color, Color border_color)
 
 void UILayer::draw_bounty_ui()
 {
-	//40 + (float) bounty_text.length() * 15, (float) bounty_coin.height* 2
 	auto& vp	= gApp()->viewport();
 	float scale				= vp->viewport_scale();
-	Vector2 panel_pos = vp->position_viewport_to_global({0, 0});
-	Vector2 panel_size = {100, 25};
+	
 	std::string bounty_text = std::to_string(
 			dynamic_cast<FortunaDirector*>(gApp()->game_director())->m_b_bounty.bounty());
 
-	draw_panel({panel_pos.x, panel_pos.y, panel_size.x * scale, panel_size.y * scale }, {50, 50, 50, 200}, {0, 0, 0, 0});
-	vp->draw_in_viewport(
-			bounty_coin, {0, 0, static_cast<float>(bounty_coin.width), static_cast<float>(bounty_coin.height)},
-			{static_cast<float>(bounty_coin.width) / 2, static_cast<float>(bounty_coin.height / 2)}, 0.0f, WHITE);
+	float texture_width = static_cast<float>(bounty_coin.width);
+	float texture_height = static_cast<float>(bounty_coin.height);
+	float text_width = bounty_text.length() * 11.0f;
+	float padding = 30.0f;
 
-	float text_size	 = 12;
-	Vector2 text_pos = vp->position_viewport_to_global({20, (panel_size.y - text_size) / 2}); 
-	draw_text(bounty_text, {text_pos.x, text_pos.y, 36 * scale, text_size * scale}, static_cast<int>(text_size * scale), RED);
+	float panel_padding_horizontal = 3.0f;
+	float panel_padding_vertical = 3.0f;
+	float texture_padding = 0.0f;
+	
+	Vector2 panel_size = {texture_width + text_width + padding, texture_height + 2 * panel_padding_vertical};
+	Vector2 panel_pos = vp->position_viewport_to_global({0, 0});
+
+	draw_panel({panel_pos.x, panel_pos.y, panel_size.x * scale, panel_size.y * scale }, {0, 0, 0, 50}, {0, 0, 0, 0});
+	
+	float texture_viewport_x = panel_padding_horizontal + texture_padding + texture_width / 2;
+	float texture_viewport_y = panel_padding_vertical + texture_height / 2;
+	vp->draw_in_viewport(
+			bounty_coin, {0, 0, texture_width, texture_height},
+			{texture_viewport_x, texture_viewport_y}, 0.0f, WHITE);
+
+	float text_size	 = 23;
+	Vector2 text_pos = vp->position_viewport_to_global({panel_padding_horizontal + texture_padding + texture_width + 10.0f, panel_padding_vertical + (panel_size.y - text_size) / 2}); 
+	draw_text(
+			bounty_text, {text_pos.x, text_pos.y, (text_width + 36) * scale, text_size * scale}, static_cast<int>(text_size * scale),
+			{220, 173, 4, 255}
+	);
 }
 
 void UILayer::draw_health_ui()

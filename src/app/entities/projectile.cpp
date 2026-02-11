@@ -108,7 +108,6 @@ void Projectile::play_hit_anim(float dt)
 	if ( m_p_hit_aninm_playing ) {
 		m_p_animation_controller.update_animation(dt);
 		if ( m_p_animation_controller.get_sprite_sheet_frame_index(m_p_z_index) == 8 ) {
-			printf("anim played\n");
 			m_p_animation_controller.set_animation_at_index(0, 0, m_p_z_index);
 			m_p_hit_aninm_playing = false;
 			set_is_active(false);

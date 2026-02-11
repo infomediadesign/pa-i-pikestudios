@@ -373,13 +373,26 @@ int FortunaDirector::Bounty::bounty() const
 void FortunaDirector::Bounty::add_bounty(const int amount)
 {
 	m_b_bounty_amount += amount;
+	if ( auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director()) ) {
+		director->increase_difficulty(m_b_bounty_amount);
+	}
 }
 
 void FortunaDirector::Bounty::subtract_bounty(const int amount)
 {
 	m_b_bounty_amount -= amount;
+	if ( auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director()) ) {
+		director->increase_difficulty(m_b_bounty_amount);
+	}
 }
 
+void FortunaDirector::increase_difficulty(int bounty)
+{
+	// Increase shark spawn rate and limit based on bounty
+	_p->shark_spawner->set_interval(std::max(0.1f, _p->shark_spawn_time - 0.05f * (bounty / 100)));
+	_p->shark_spawner->set_limit(std::min(100, _p->shark_limit + (bounty / 100)));
+	printf("Bounty: %d, Shark Spawn Interval: %.2f, Shark Limit: %d\n", bounty, _p->shark_spawner->interval(), _p->shark_spawner->limit());
+}
 // Player Health functions
 void FortunaDirector::set_player_health(const int health)
 {
@@ -405,14 +418,3 @@ float FortunaDirector::player_iframe_duration() const
 {
 	return _p->player_iframe_duration;
 }
-
-/*
-ImGui::Text("Projectile Speed: %.0f", _p->player_current_projectile_speed);
-ImGui::SameLine();
-ImGui::SetNextItemWidth(60);
-ImGui::InputFloat("##speed_amount", &speed_amount, 0.0f, 0.0f, "%.0f");
-ImGui::SameLine();
-if ( ImGui::Button("Upgrade##Speed") ) {
-	upgrade_player_projectile_speed(speed_amount);
-}
-*/

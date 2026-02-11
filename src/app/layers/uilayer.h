@@ -35,7 +35,7 @@ public:
 
 private:
 	Texture2D m_ui_bounty_icon;
-	Texture2D bounty_coin = LoadTexture("resources/icon/test_coin.png");
-	Texture2D m_health_icon = LoadTexture("resources/icon/health_icon.png");
+	Texture2D bounty_coin;
+	Texture2D m_health_icon;
 	UIBountyContainer m_ui_bounty_container;
 };
