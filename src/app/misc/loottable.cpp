@@ -4,12 +4,12 @@
 
 #include <pscore/utils.h>
 
-#ifndef STEP_WIDTH
-#define STEP_WIDTH 0.1f
-#endif
-
 #ifndef SIGMA
 #define SIGMA 4
+#endif
+
+#ifndef ACCURACY
+#define ACCURACY 10
 #endif
 
 #ifndef SQRT2HALF
@@ -104,15 +104,23 @@ void LootTable::random_values_from_loot_table(int indices_count)
 
 void LootTable::calculate_curve_boundary()
 {
+	float delta_sigma = 2 * SIGMA;
+
 	for ( auto& chance: m_chances ) {
 		if ( chance.curve_boundary == 0 ) {
-			for ( float i = -SIGMA; i <= SIGMA; i += STEP_WIDTH ) {
-				float curve_value = static_cast<float>(0.5 * std::erff(SQRT2HALF * i) + 0.5) * 100;
+			int divisor	   = 2;
+			float boundary = -SIGMA;
+			for ( int i = 0; i < ACCURACY; i++ ) {
+				float curve_value =
+						static_cast<float>(0.5 * std::erff(SQRT2HALF * ((delta_sigma / static_cast<float>(divisor)) + boundary)) + 0.5) * 100;
 
-				if ( curve_value <= static_cast<float>(chance.chance) ) {
-					chance.curve_boundary = i;
+				if ( curve_value > static_cast<float>(chance.chance) ) {
+					boundary += delta_sigma / static_cast<float>(divisor);
 				}
+
+				divisor *= 2;
 			}
+			chance.curve_boundary = boundary;
 		}
 	}
 }
