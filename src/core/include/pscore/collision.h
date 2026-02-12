@@ -17,9 +17,9 @@ namespace PSInterfaces {
 namespace PSCore {
 	namespace collision {
 
-		template<class E, class L>
+		template<class O,class E, class L>
 			requires std::is_base_of_v<PSInterfaces::IEntity, E> && std::is_base_of_v<PSInterfaces::Layer, L>
-		Vector2 entity_repel_force(std::shared_ptr<E> self, const Spawner<E, L>& spawner, float min_distance, float repel_strenght)
+		Vector2 entity_repel_force(std::shared_ptr<O> self, const Spawner<E, L>& spawner, float min_distance, float repel_strenght)
 		{
 			std::shared_ptr<PSInterfaces::IEntity> origin_entity;
 			if ( !(origin_entity = std::dynamic_pointer_cast<PSInterfaces::IEntity>(self)) )
@@ -54,7 +54,7 @@ namespace PSCore {
 		public:
 			explicit EntityCollider(std::weak_ptr<PSInterfaces::IEntity> parent);
 
-			void register_collision_handler(std::function<void(std::weak_ptr<PSInterfaces::IEntity> other, const Vector2& point)> cb);
+			void register_collision_handler(std::function<void(std::weak_ptr<PSInterfaces::IEntity> other, const Vector2& point)> cb, float timeout = 0);
 
 			bool check_collision(
 					const std::vector<std::weak_ptr<PSInterfaces::IEntity>>& entity_pool,
@@ -68,6 +68,9 @@ namespace PSCore {
 		private:
 			std::weak_ptr<PSInterfaces::IEntity> m_parent;
 			std::function<void(std::weak_ptr<PSInterfaces::IEntity> other, const Vector2& point)> m_collion_cb;
+			std::chrono::steady_clock::time_point cb_last_called = std::chrono::steady_clock::now();
+			
+			float m_collision_cb_timeout = 0;
 		};
 	} // namespace collision
 } // namespace PSCore

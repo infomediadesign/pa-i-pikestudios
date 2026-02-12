@@ -191,7 +191,7 @@ void Shark::update(float dt)
 	auto& spawner = m_director->spawner<Shark, AppLayer>();
 
 	Vector2 separation =
-			PSCore::collision::entity_repel_force<Shark, AppLayer>(m_self, *spawner, m_horde_separation_distance, m_horde_separation_strength);
+			PSCore::collision::entity_repel_force<Shark, Shark, AppLayer>(m_self, *spawner, m_horde_separation_distance, m_horde_separation_strength);
 
 	// Cohesion: steer toward the average position of nearby sharks
 	Vector2 cohesion{0, 0};

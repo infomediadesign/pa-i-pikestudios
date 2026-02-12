@@ -131,6 +131,8 @@ namespace PSCore {
 		void set_current_player_name(std::string& name);
 		std::string current_player_name();
 
+		float delta_time();
+
 	private:
 		std::unique_ptr<ApplicationPriv> _p;
 		std::vector<std::unique_ptr<PSInterfaces::Layer>> m_layer_stack;
