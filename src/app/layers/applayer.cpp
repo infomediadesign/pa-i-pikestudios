@@ -104,6 +104,7 @@ void AppLayer::on_update(const float dt)
 {
 	{ // TODO: Refactor this scope out of the App layer
 		auto app = PSCore::Application::get();
+#ifndef NDEBUG
 		if ( IsKeyPressed(KEY_F3) ) {
 			if ( app->get_layer<DebugLayer>() )
 				app->pop_layer<DebugLayer>();
