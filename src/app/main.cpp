@@ -4,6 +4,11 @@
 #include <pscore/application.h>
 #include <psinterfaces/layer.h>
 
+// Disable the console in Windows releases
+# if defined(WIN32) && !defined(_DEBUG)
+#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
+#endif
+
 int main(int argc, char* argv[])
 {
 	bool start_with_menu = true;
