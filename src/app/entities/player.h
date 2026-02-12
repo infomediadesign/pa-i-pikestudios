@@ -183,7 +183,7 @@ private:
 	// Shader
 	Shader m_flash_shader = LoadShader(NULL, "resources/shader/sprite_flash.fs");
 	Vector4 m_flash_color = {255, 0, 0, 255};
-	float m_flash_lerp_scale = 5;
+	float m_flash_lerp_scale = 6;
 	float m_flash_alpha	  = 0;
 	int m_flash_alpha_location;
 };
