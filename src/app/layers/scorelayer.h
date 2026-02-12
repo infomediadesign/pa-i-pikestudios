@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <pscore/filemanager.h>
+#include <pscore/settings.h>
 #include <psinterfaces/layer.h>
 
 struct HighscoreEntries
@@ -30,7 +31,7 @@ public:
 	void update_typing();
 	enum liststate { VIEWING, AWAITING_INPUT, TYPING_NAME, INPUT_MADE };
 	liststate list_state = VIEWING;
-	void set_highscore(std::string name, int score);
+	void set_highscore(std::string& name, int score);
 	void draw_score_board();
 	std::string score_filename() const;
     Vector2 anchor02 = { 0, 0 };

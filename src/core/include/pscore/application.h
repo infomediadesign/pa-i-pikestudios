@@ -128,7 +128,7 @@ namespace PSCore {
 			m_call_stack.push_back(fn);
 		}
 
-		void set_current_player_name(std::string name);
+		void set_current_player_name(std::string& name);
 		std::string current_player_name();
 
 	private:

@@ -1,6 +1,3 @@
-//
-// Created by rikab on 29/01/2026.
-//
 #include <entities/director.h>
 #include <layers/deathscreenlayer.h>
 #include <layers/mainmenulayer.h>
@@ -13,10 +10,13 @@
 
 void DeathScreenLayer::on_update(float dt)
 {
-	if ( IsKeyPressed(KEY_ENTER) && m_score_layer_instance->player_name_input.size() > 0 ) {
-		gApp()->set_current_player_name(m_score_layer_instance->player_name_input);
-		m_name_entered = true;
+	if ( m_score_layer_instance ) {
+		if ( IsKeyPressed(KEY_ENTER) && m_score_layer_instance->player_name_input.size() > 0 ) {
+			gApp()->set_current_player_name(m_score_layer_instance->player_name_input);
+			m_name_entered = true;
+		}
 	}
+	
 }
 
 void DeathScreenLayer::on_render()
@@ -66,7 +66,10 @@ void DeathScreenLayer::on_render()
 			GuiSetStyle(DEFAULT, BACKGROUND_COLOR, ColorToInt(WHITE));
 			GuiSetStyle(DEFAULT, BORDER_COLOR_NORMAL, ColorToInt(WHITE));
 		}
-		GuiLabel(input_field_rect, (m_score_layer_instance->player_name_input).c_str());
+		if (m_score_layer_instance){
+			GuiLabel(input_field_rect, (m_score_layer_instance->player_name_input).c_str());
+		}
+
 	} 
 	else {
 		GuiLabel(score_info_bounds, "Du hast es nicht unter die Top 10 geschafft");
@@ -74,7 +77,7 @@ void DeathScreenLayer::on_render()
 	
 
 	GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, oldColor);
-	GuiSetStyle(DEFAULT, TEXT_SIZE, oldSize);
+	GuiSetStyle(DEFAULT, TEXT_SIZE, 6 * sk);
 	GuiSetStyle(LABEL, TEXT_ALIGNMENT, oldAlign);
 
 	int margin	   = 20;

@@ -146,7 +146,7 @@ void ScoreLayer::update_typing()
 	}
 }
 
-void ScoreLayer::set_highscore(std::string name, int score)
+void ScoreLayer::set_highscore(std::string& name, int score)
 {
 	HighscoreEntries new_entry;
 	new_entry.name	= name;

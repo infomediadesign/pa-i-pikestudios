@@ -18,11 +18,11 @@ void MainMenuLayer::on_render()
 	auto& vp	   = gApp()->viewport();
 	Vector2 origin = vp->viewport_origin();
 	float scale	   = vp->viewport_scale();
-	float spacing = 10 * scale;
+	float spacing = 8 * scale;
 
-	Vector2 button_size{100 * scale, 50 * scale};
+	Vector2 button_size{128 * scale, 40 * scale};
 	
-	Rectangle button_rect{origin.x, origin.y, button_size.x, button_size.y};
+	Rectangle button_rect{origin.x + 40 * scale, origin.y + 136 * scale, button_size.x, button_size.y};
 	auto next_btn_rect = [&button_rect, spacing]() {
 		Rectangle rec{button_rect.x, button_rect.y + button_rect.height + spacing, button_rect.width, button_rect.height};
 		button_rect = rec;
@@ -31,7 +31,7 @@ void MainMenuLayer::on_render()
 
 	GuiSetStyle(DEFAULT, TEXT_SIZE, 6 * scale);
 	
-	if ( GuiButton({360, 352, 128, 40}, "Start Game") ) {
+	if ( GuiButton(button_rect, "Start Game") ) {
 		gApp()->call_later([]() {
 			if ( auto& director = gApp()->game_director_ref() ) {
 				director.reset(new FortunaDirector());
@@ -56,12 +56,15 @@ void MainMenuLayer::on_render()
 		gApp()->stop();
 	}
 
+	
 	GuiSetStyle(DEFAULT, TEXT_SIZE, STANDART_TEXT_SIZE);
 
-	GuiButton({(origin.x + 360) * scale, (origin.y + 352) * scale, 128 * scale, 40 * scale}, "Start Game");
-	GuiButton({360, 400, 128, 40}, "Leaderboard");
-	GuiButton({360, 448, 128, 40}, "Settings");
-	GuiButton({360, 496, 128, 40}, "Quit");
+	/*
+	GuiButton({origin.x + 40 * scale, origin.y + 136 * scale, 128 * scale, 40 * scale}, "Start Game");
+	GuiButton({origin.x + 40 * scale, origin.y + 184 * scale, 128 * scale, 40 * scale}, "Leaderboard");
+	GuiButton({origin.x + 40 * scale, origin.y + 232 * scale, 128 * scale, 40 * scale}, "Settings");
+	GuiButton({origin.x + 40 * scale, origin.y + 280 * scale, 128 * scale, 40 * scale}, "Quit"); 
 
 	printf("Orgin.x: %f  Origin.y: %f\n", origin.x, origin.y);
+	*/
 }
