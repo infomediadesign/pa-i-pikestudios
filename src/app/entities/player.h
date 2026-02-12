@@ -19,6 +19,8 @@ class Player : public PSInterfaces::IRenderable
 public:
 	Player();
 
+	~Player();
+
 	void update(float dt) override;
 
 	void render() override;
@@ -33,8 +35,6 @@ public:
 	std::optional<Vector2> position() const override;
 
 	std::optional<std::vector<Vector2>> bounds() const override;
-
-	void damage();
 
 	Vector2 velocity();
 
@@ -154,11 +154,11 @@ private:
 	// Variabels and Methods for Cannons & Projectiles
 	std::vector<std::shared_ptr<Cannon>> m_cannon_container;
 	std::shared_ptr<Player> m_shared_ptr_this;
-	FireMode m_fire_mode = FireMode::InSequence;
-	bool m_fire_sequence_ongoing = false;
-	bool m_fire_sequence_ongoing_left = false;
+	FireMode m_fire_mode			   = FireMode::InSequence;
+	bool m_fire_sequence_ongoing	   = false;
+	bool m_fire_sequence_ongoing_left  = false;
 	bool m_fire_sequence_ongoing_right = false;
-	float m_time_since_last_shot_left = 0;
+	float m_time_since_last_shot_left  = 0;
 	float m_time_since_last_shot_right = 0;
 	FiringCannonIndex m_firing_cannon_index{1, 0};
 
@@ -177,9 +177,17 @@ private:
 
 	// Loot Table
 	LootTable m_loot_table;
+
+	// Shader
+	Shader m_flash_shader = LoadShader(NULL, "resources/shader/sprite_flash.fs");
+	Vector4 m_flash_color = {255, 0, 0, 255};
+	float m_flash_lerp_scale = 40;
+	float m_flash_alpha	  = 0;
+	int m_flash_alpha_location;
 };
 
-class Sails : public PSInterfaces::IRenderable{
+class Sails : public PSInterfaces::IRenderable
+{
 public:
 	Sails(Player* player);
 	~Sails();
@@ -190,5 +198,4 @@ public:
 
 private:
 	const Player* m_player;
-
 };
