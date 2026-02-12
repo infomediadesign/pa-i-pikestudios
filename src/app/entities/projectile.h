@@ -70,13 +70,16 @@ public:
 	void set_fiering_cannon(const std::shared_ptr<Cannon>& cannon);
 
 	void calculate_movment(const float dt);
+	/*
 	void parent_to_cannon();
 	void calculate_parenting();
 	void fire_from_cannon(const float dt);
+	*/
 	void draw_debug() override;
 	void launch();
 
 	void play_hit_anim(float dt);
+	void play_no_hit_anim(float dt);
 
 private:
 	void apply_drag(const float dt);
@@ -106,7 +109,13 @@ private:
 	PSCore::sprites::SpriteSheetAnimation m_p_animation_controller;
 	Texture2D m_p_hit_anim_texture;
 	std::shared_ptr<PSCore::sprites::Sprite> m_p_hit_anim_sprite;
+
+	PSCore::sprites::SpriteSheetAnimation m_p_no_hit_anim_controller;
+	Texture2D m_p_no_hit_anim_texture;
+	std::shared_ptr<PSCore::sprites::Sprite> m_p_no_hit_anim_sprite;
+
 	bool m_p_hit_aninm_playing = false;
+	bool m_p_no_hit_anim_playing = false;
 	
 	std::unique_ptr<PSCore::collision::EntityCollider> m_collider;
 
