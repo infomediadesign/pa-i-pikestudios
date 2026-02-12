@@ -71,7 +71,7 @@ namespace PSCore {
 
 		bool m_draw_viewport_frame = false;
 
-		bool m_sub_pixel_scale = false;
+		bool m_sub_pixel_scale = true;
 	};
 
 } // namespace PSCore
