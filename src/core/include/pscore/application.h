@@ -30,8 +30,10 @@ namespace PSCore {
 			WindowSize size;
 		};
 
-		Application(const AppSpec& spec);
+		Application();
 		~Application();
+
+		void init(const AppSpec& spec);
 
 		static Application* get();
 
