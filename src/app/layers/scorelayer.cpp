@@ -46,9 +46,7 @@ void ScoreLayer::on_render()
 		};
 
 		draw_score_board();
-		draw_score_board_buttons();
-
-
+		draw_score_board_buttons(); 
 
 	}
 }
@@ -164,9 +162,9 @@ void ScoreLayer::draw_score_board()
 	GuiSetStyle(DEFAULT, TEXT_SIZE, 7 * scale);
 	GuiSetStyle(DEFAULT, BACKGROUND_COLOR, ColorToInt({0, 0, 0, 20}));
 	GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt({0,0,0,255}));
-
-	Rectangle name_field_rect{anchor.x + 184 * scale, anchor.y + 64 * scale, 120 * scale, 16 * scale};
-	Rectangle score_field_rect{name_field_rect.x + 152 * scale, name_field_rect.y, name_field_rect.width, name_field_rect.height};
+	float halfe_screen_x = vp->viewport_base_size().x / 2;
+	Rectangle name_field_rect{anchor.x + 232 * scale, anchor.y + 64 * scale, 80 * scale, 16 * scale};
+	Rectangle score_field_rect{name_field_rect.x + name_field_rect.width + 16 * scale, name_field_rect.y, name_field_rect.width, name_field_rect.height};
 	Rectangle left_rank_rect{name_field_rect.x - 32 * scale, name_field_rect.y, 16 * scale, name_field_rect.height};
 	Rectangle right_color_rect{score_field_rect.x + score_field_rect.width + 16 * scale, name_field_rect.y, 16 * scale, name_field_rect.height};
 
@@ -184,9 +182,10 @@ void ScoreLayer::draw_score_board()
 		GuiPanel(left_rank_rect, NULL);
 		GuiLabel(left_rank_rect, (" " + std::to_string(rank) + ".").c_str());
 
+		
 		GuiPanel(right_color_rect, NULL);
 		GuiLabel(right_color_rect, "");
-
+		
 		name_field_rect.y += spacing;
 		score_field_rect.y += spacing;
 		left_rank_rect.y += spacing;
@@ -200,13 +199,38 @@ void ScoreLayer::draw_score_board_buttons()
 	auto& vp	   = gApp()->viewport();
 	Vector2 anchor = vp->viewport_origin();
 	float scale	   = vp->viewport_scale();
-	Vector2 button_size{80 * scale, 24 * scale};
+	Vector2 screen_size = vp->viewport_base_size();
+	
+	Vector2 button_size_viewport{80, 24};
+	float button_boarder_padding = 20;
+	
+	Vector2 button_size_screen{button_size_viewport.x * scale, button_size_viewport.y * scale};
+	
+	float button_pos_y = screen_size.y - button_size_viewport.y - button_boarder_padding;
+	float retry_button_pos_x = screen_size.x - button_size_viewport.x - button_boarder_padding;
 
-	if ( GuiButton(Rectangle{anchor.x + 40 * scale, anchor.y + 312 * scale, button_size.x, button_size.y}, "Mainmenu") ) {
+	if ( GuiButton(
+				 Rectangle{
+					 anchor.x + button_boarder_padding * scale, 
+					 anchor.y + button_pos_y * scale, 
+					 button_size_screen.x, 
+					 button_size_screen.y
+				 }, 
+				 "Mainmenu"
+		 ) ) {
 		gApp()->call_later([]() { gApp()->switch_layer<ScoreLayer, MainMenuLayer>(); });
 	}
+
 	if ( m_retry_button_visible ) {
-		if ( GuiButton(Rectangle{anchor.x + 520 * scale, anchor.y + 312 * scale, button_size.x, button_size.y}, "Retry") ) {
+		if ( GuiButton(
+					 Rectangle{
+						 anchor.x + retry_button_pos_x * scale, 
+						 anchor.y + button_pos_y * scale, 
+						 button_size_screen.x, 
+						 button_size_screen.y
+					 }, 
+					 "Retry"
+			 ) ) {
 			gApp()->call_later([]() { gApp()->pop_layer<AppLayer>(); });
 			gApp()->call_later([]() { gApp()->switch_layer<ScoreLayer, AppLayer>(); });
 			gApp()->call_later([]() { gApp()->game_director_ref().reset(new FortunaDirector()); });
