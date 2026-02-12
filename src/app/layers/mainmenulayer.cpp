@@ -30,8 +30,8 @@ void MainMenuLayer::on_render()
 	};
 
 	GuiSetStyle(DEFAULT, TEXT_SIZE, 6 * scale);
-
-	if ( GuiButton(button_rect, "Start Game") ) {
+	
+	if ( GuiButton({360, 352, 128, 40}, "Start Game") ) {
 		gApp()->call_later([]() {
 			if ( auto& director = gApp()->game_director_ref() ) {
 				director.reset(new FortunaDirector());
@@ -39,6 +39,7 @@ void MainMenuLayer::on_render()
 		});
 		gApp()->call_later([]() { gApp()->switch_layer<MainMenuLayer, AppLayer>(); });
 	}
+	
 	if ( GuiButton(next_btn_rect(), "Options") ) {
 		gApp()->call_later([]() { PS_LOG(LOG_INFO, "Clicked Settings"); });
 	}
@@ -56,4 +57,11 @@ void MainMenuLayer::on_render()
 	}
 
 	GuiSetStyle(DEFAULT, TEXT_SIZE, STANDART_TEXT_SIZE);
+
+	GuiButton({(origin.x + 360) * scale, (origin.y + 352) * scale, 128 * scale, 40 * scale}, "Start Game");
+	GuiButton({360, 400, 128, 40}, "Leaderboard");
+	GuiButton({360, 448, 128, 40}, "Settings");
+	GuiButton({360, 496, 128, 40}, "Quit");
+
+	printf("Orgin.x: %f  Origin.y: %f\n", origin.x, origin.y);
 }
