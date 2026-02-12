@@ -11,6 +11,7 @@
 #include <pscore/time.h>
 #include <psinterfaces/entity.h>
 #include <raylib.h>
+#include "pscore/settings.h"
 
 using PSCore::Application;
 static Application* g_app = nullptr;
@@ -20,21 +21,26 @@ class PSCore::ApplicationPriv
 	friend class Application;
 	bool m_running = false;
 
+	void toggle_fullscreen()
+	{
+#ifdef _WIN32 // on modern windows a "borderless" fullscreen is better
+		ToggleBorderlessWindowed();
+#elif defined unix // on linux the default fullscreen behavior works just fine
+		int display = GetCurrentMonitor();
+		if ( IsWindowFullscreen() )
+			SetWindowSize(GetScreenWidth(), GetScreenHeight());
+		else
+			SetWindowSize(GetMonitorWidth(display), GetMonitorHeight(display));
+
+		ToggleFullscreen();
+#endif
+	}
+
 	void handle_global_inputs()
 	{
 		// Toggle fullscreen on f11
 		if ( IsKeyPressed(KEY_F11) ) {
-#ifdef _WIN32 // on modern windows a "borderless" fullscreen is better
-			ToggleBorderlessWindowed();
-#elif defined unix // on linux the default fullscreen behavior works just fine
-			int display = GetCurrentMonitor();
-			if ( IsWindowFullscreen() )
-				SetWindowSize(GetScreenWidth(), GetScreenHeight());
-			else
-				SetWindowSize(GetMonitorWidth(display), GetMonitorHeight(display));
-
-			ToggleFullscreen();
-#endif
+			toggle_fullscreen();
 		}
 	}
 
@@ -77,21 +83,30 @@ class PSCore::ApplicationPriv
 	std::unique_ptr<PSCore::sprites::SpriteLoader> m_sprite_loader = std::make_unique<PSCore::sprites::SpriteLoader>();
 };
 
-Application::Application(const AppSpec& spec)
+Application::Application()
 {
 	_p = std::make_unique<ApplicationPriv>();
 
-	// Init
+	g_app = this;
+}
+
+void PSCore::Application::init(const AppSpec& spec) {
 	SetConfigFlags(FLAG_WINDOW_RESIZABLE);
 	SetTraceLogCallback(_p->log_callback);
 
-	g_app = this;
+	if ( CFG_VALUE<bool>("enable_vsync", false) )
+		SetConfigFlags(FLAG_VSYNC_HINT);
 
+	if ( CFG_VALUE<bool>("enable_msaa", false) )
+		SetConfigFlags(FLAG_MSAA_4X_HINT);
+
+	if ( CFG_VALUE<bool>("default_fullscreeen", true) )
+		_p->toggle_fullscreen();
+	
 	InitWindow(spec.size.x, spec.size.y, spec.title);
 
 	SetExitKey(KEY_NULL);
-	//
-}
+};
 
 Application::~Application()
 {
@@ -182,3 +197,8 @@ std::string Application::current_player_name()
 {
 	return m_current_player_name;
 }
+
+float PSCore::Application::delta_time()
+{
+	return _p->m_time_manager->delta_t().count();
+};

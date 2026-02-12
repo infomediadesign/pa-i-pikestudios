@@ -217,10 +217,10 @@ void Player::on_death()
 	}
 	m_animation_controller.set_animation_at_index(4, 0, 1);
 
+	gApp()->get_layer<AppLayer>()->set_can_open_pause_menu(false);
 	gApp()->push_layer<DeathScreenLayer>();
 	auto death_layer = gApp()->get_layer<DeathScreenLayer>();
 	if (death_layer && score_layer) {
-		death_layer->reset_state();
 		death_layer->set_score_layer_instance(score_layer);
 		death_layer->set_score_should_be_saved(
 			score_layer->check_for_new_highscore(
@@ -442,6 +442,11 @@ void Player::set_interpolation_values(
 	m_velocity_rotation_downscale = velocity_rotation_downscale;
 }
 
+void Player::apply_repel_force(Vector2 repel_force)
+{
+	m_repel_velocity = Vector2Add(m_repel_velocity, repel_force);
+}
+
 void Player::calculate_movement(const float dt)
 {
 	// Linear Interpolation form Rotation to Target Rotation with a regression of Rotation and a static Alpha
@@ -464,8 +469,10 @@ void Player::calculate_movement(const float dt)
 	m_velocity.y = velocity_value * sin(m_rotation * DEG2RAD);
 
 	// Update Position based on Velocity
-	m_position.x += m_velocity.x * dt;
-	m_position.y += m_velocity.y * dt;
+	m_position.x += (m_velocity.x + m_repel_velocity.x) * dt;
+	m_position.y += (m_velocity.y + m_repel_velocity.y) * dt;
+
+	m_repel_velocity = Vector2Subtract(m_repel_velocity, Vector2Scale(m_repel_velocity, 2.0f * dt));
 }
 
 float Player::calculate_rotation_velocity(float frequency, float dt)

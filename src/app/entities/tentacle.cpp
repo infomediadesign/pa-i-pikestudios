@@ -4,15 +4,18 @@
 
 #include "tentacle.h"
 
-#include <iostream>
+#include <algorithm>
 #include <pscore/application.h>
 #include <pscore/viewport.h>
 
 #include <pscore/utils.h>
+#include <raylib.h>
 
+#include <layers/applayer.h>
+#include <pscore/collision.h>
+#include <pscore/settings.h>
 #include "coordinatesystem.h"
 #include "director.h"
-#include "layers/applayer.h"
 #include "player.h"
 
 tentacle::tentacle() : PSInterfaces::IEntity("tentacle")
@@ -25,7 +28,7 @@ tentacle::tentacle() : PSInterfaces::IEntity("tentacle")
 	sp_data.push_back({8, 0.1, PSCore::sprites::Forward, 0});
 	sp_data.push_back({6, 0.1, PSCore::sprites::Backward, 1});
 	sp_data.push_back({1, 1, PSCore::sprites::Forward, 2});
-	sp_data.push_back({1,1, PSCore::sprites::Forward, 3});
+	sp_data.push_back({1, 1, PSCore::sprites::Forward, 3});
 
 	m_animation_controller = PSCore::sprites::SpriteSheetAnimation(FETCH_SPRITE_TEXTURE(ident_), sp_data);
 
@@ -41,13 +44,31 @@ void tentacle::init(std::shared_ptr<tentacle> self, const Vector2& pos)
 	m_pos  = pos;
 
 	m_collider = std::make_unique<PSCore::collision::EntityCollider>(m_self);
-	m_collider->register_collision_handler([](std::weak_ptr<PSInterfaces::IEntity> other, const Vector2& pos) {
-		if ( auto locked = other.lock() ) {
-			if ( auto player = std::dynamic_pointer_cast<Player>(locked) ) {
-				player->on_hit();
-			}
-		}
-	});
+	m_collider->register_collision_handler(
+			[](std::weak_ptr<PSInterfaces::IEntity> other, const Vector2& pos) {
+				if ( auto locked = other.lock() ) {
+					if ( auto player = std::dynamic_pointer_cast<Player>(locked) ) {
+						player->on_hit();
+
+						FortunaDirector* director;
+						if ( !(director = dynamic_cast<FortunaDirector*>(gApp()->game_director())) )
+							return;
+
+						const float repel_strenght = CFG_VALUE<int>("tentacle_repel_bounce_strenght", 50);
+						if ( auto& spawner = director->spawner<tentacle, AppLayer>() ) {
+							Vector2 repel_force =
+									PSCore::collision::entity_repel_force<Player, tentacle, AppLayer>(player, *spawner, 50, repel_strenght);
+
+							repel_force.x = std::clamp(repel_force.x, (repel_strenght * 2) * -1, repel_strenght * 2);
+							repel_force.y = std::clamp(repel_force.y, (repel_strenght * 2) * -1, repel_strenght * 2);
+
+							player->apply_repel_force(repel_force);
+						}
+					}
+				}
+			},
+			0.1f
+	);
 }
 
 std::optional<Vector2> tentacle::position() const
@@ -164,8 +185,8 @@ void tentacle::SetNewPos()
 {
 	if ( auto& vp = gApp()->viewport() ) {
 		Vector2 coords;
-		coords.x = PSUtils::gen_rand(0, vp->viewport_base_size().x);
-		coords.y = PSUtils::gen_rand(0, vp->viewport_base_size().y);
+		coords.x = PSUtils::gen_rand(m_spawn_area_margin, vp->viewport_base_size().x - m_spawn_area_margin);
+		coords.y = PSUtils::gen_rand(m_spawn_area_margin, vp->viewport_base_size().y - m_spawn_area_margin);
 		set_pos(coords);
 	}
 }
@@ -212,5 +233,19 @@ void tentacle::draw_debug()
 				DrawLineV(bounds().value().at(i), bounds().value().at(0), GREEN);
 			}
 		}
+	}
+}
+
+void tentacle::set_is_active(bool active)
+{
+	is_active_ = active;
+
+	if ( active ) {
+		// Reset all states
+		m_state				   = State::Idle;
+		time_until_water_break = PSUtils::gen_rand(4, 8);
+		time_until_attack	   = max_time_until_attack;
+		time_until_retreat	   = max_time_until_retreat;
+		until_reposition	   = max_until_reposition;
 	}
 }
