@@ -339,7 +339,8 @@ void Player::reset_iframe(float dt)
 				m_can_be_hit   = true;
 				m_iframe_timer = 0;
 			}
-			m_flash_alpha = 0.5f * cosf(m_iframe_timer * sqrtf(m_iframe_timer) * m_flash_lerp_scale) + 0.5;
+			float n_flash_lerp_scale = m_flash_lerp_scale / director->player_iframe_duration();
+			m_flash_alpha			 = 0.5f * cosf(m_iframe_timer * sqrtf(m_iframe_timer) * n_flash_lerp_scale * sqrtf(n_flash_lerp_scale)) + 0.5;
 		}
 	}
 	else {
