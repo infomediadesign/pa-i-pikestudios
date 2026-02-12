@@ -11,7 +11,7 @@ ScoreLayer::ScoreLayer() : m_filemanager(m_score_filename)
 {
 	HighscoreEntries default_entry = {0, "No score yet"};
 	highscore.push_back(default_entry);
-	m_scoreboard_background = LoadTexture("resources/ui/Scoreboard_and_Background_Layer.png");
+	m_scoreboard_background = LoadTexture("resources/ui/scoreboard_layer.png");
 }
 
 ScoreLayer::~ScoreLayer()

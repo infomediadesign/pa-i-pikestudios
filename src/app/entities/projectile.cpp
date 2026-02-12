@@ -23,7 +23,7 @@ Projectile::Projectile() : PSInterfaces::IEntity("projectile")
 	m_p_position = {GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f};
 	m_p_rotation = 0.0f;
 	Vector2 frame_grid{1, 1};
-	m_p_sprite			= PRELOAD_TEXTURE(ident_, "resources/entity/test_projectile.png", frame_grid);
+	m_p_sprite			= PRELOAD_TEXTURE(ident_, "resources/entity/projectile.png", frame_grid);
 	m_p_texture			= m_p_sprite->m_s_texture;
 	Vector2 hit_anim_frame_grid{1, 1};
 

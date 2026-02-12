@@ -32,7 +32,7 @@
 Player::Player() : PSInterfaces::IEntity("player")
 {
 	Vector2 frame_grid{3, 4};
-	m_sprite = PRELOAD_TEXTURE(ident_, "resources/entity/Player.png", frame_grid);
+	m_sprite = PRELOAD_TEXTURE(ident_, "resources/entity/player.png", frame_grid);
 
 	m_animation_controller = PSCore::sprites::SpriteSheetAnimation(
 			FETCH_SPRITE_TEXTURE(ident_), {{1, 1, PSCore::sprites::KeyFrame, 1},
@@ -71,6 +71,10 @@ Player::Player() : PSInterfaces::IEntity("player")
 		app_layer->renderer()->submit_renderable(m_sails);
 	}
 
+	// Hit Flash Shader
+	SetShaderValue(m_flash_shader, GetShaderLocation(m_flash_shader, "flash_color"), &m_flash_color, SHADER_UNIFORM_VEC4);
+	m_flash_alpha_location = GetShaderLocation(m_flash_shader, "flash_alpha");
+
 	// Upgrades
 	std::vector<int> chances = {50, 25, 25};
 	m_loot_table.add_loot_table(0, chances);
@@ -80,6 +84,11 @@ Player::Player() : PSInterfaces::IEntity("player")
 	m_loot_table.add_loot_table(2, chances);
 
 	m_loot_table.loot_table_values(1);
+}
+
+Player::~Player()
+{
+	UnloadShader(m_flash_shader);
 }
 
 void Player::update(const float dt)
@@ -310,11 +319,15 @@ void Player::render()
 
 	// Draw Ship
 
+	BeginShaderMode(m_flash_shader);
+
 	if ( auto& vp = gApp()->viewport() ) {
 		vp->draw_in_viewport(
 				m_texture, m_animation_controller.get_source_rectangle(1).value_or(Rectangle{0}), m_position, m_rotation + m_rotation_offset, WHITE
 		);
 	}
+
+	EndShaderMode();
 }
 
 void Player::reset_iframe(float dt)
@@ -326,8 +339,14 @@ void Player::reset_iframe(float dt)
 				m_can_be_hit   = true;
 				m_iframe_timer = 0;
 			}
+			m_flash_alpha = 0.5f * cosf(m_iframe_timer * sqrtf(m_iframe_timer) * m_flash_lerp_scale) + 0.5;
 		}
 	}
+	else {
+		m_flash_alpha = 0;
+	}
+
+	SetShaderValue(m_flash_shader, m_flash_alpha_location, &m_flash_alpha, SHADER_UNIFORM_FLOAT);
 }
 
 void Player::draw_debug()
