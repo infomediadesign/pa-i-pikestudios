@@ -30,8 +30,10 @@ namespace PSCore {
 			WindowSize size;
 		};
 
-		Application(const AppSpec& spec);
+		Application();
 		~Application();
+
+		void init(const AppSpec& spec);
 
 		static Application* get();
 
@@ -130,6 +132,8 @@ namespace PSCore {
 
 		void set_current_player_name(std::string& name);
 		std::string current_player_name();
+
+		float delta_time();
 
 	private:
 		std::unique_ptr<ApplicationPriv> _p;

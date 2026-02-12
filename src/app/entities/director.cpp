@@ -15,6 +15,7 @@
 #include <psinterfaces/entity.h>
 #include <raylib.h>
 #include <raymath.h>
+#include "entities/tentacle.h"
 
 
 FortunaDirector::FortunaDirector() : PSInterfaces::IEntity("fortuna_director")
@@ -356,6 +357,12 @@ template<>
 std::unique_ptr<PSCore::Spawner<Projectile, AppLayer>>& FortunaDirector::spawner()
 {
 	return _p->projectile_spawner;
+};
+
+template<>
+std::unique_ptr<PSCore::Spawner<tentacle, AppLayer>>& FortunaDirector::spawner()
+{
+	return _p->tentacle_spawner;
 };
 
 // Bounty functions

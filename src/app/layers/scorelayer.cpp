@@ -195,30 +195,36 @@ void ScoreLayer::draw_score_board_buttons()
 	float scale	   = vp->viewport_scale();
 	Vector2 screen_size = vp->viewport_base_size();
 	
-	float btn_width = static_cast<float>(m_button.width);
-	float btn_height = static_cast<float>(m_button.height);
+	Vector2 button_size_viewport{80, 24};
 	float button_boarder_padding = 20;
 	
-	float button_pos_y = screen_size.y - btn_height / 2.0f - button_boarder_padding;
-
-	GuiSetStyle(DEFAULT, TEXT_SIZE, 14 * scale);
-
-	Vector2 mainmenu_pos = {
-		anchor.x / scale + button_boarder_padding + btn_width / 2.0f,
-		anchor.y / scale + button_pos_y
-	};
+	Vector2 button_size_screen{button_size_viewport.x * scale, button_size_viewport.y * scale};
 	
-	if ( GuiButtonTexture(m_button, mainmenu_pos, 0, scale, WHITE, GRAY, "Mainmenu") ) {
+	float button_pos_y = screen_size.y - button_size_viewport.y - button_boarder_padding;
+	float retry_button_pos_x = screen_size.x - button_size_viewport.x - button_boarder_padding;
+
+	if ( GuiButton(
+				 Rectangle{
+					 anchor.x + button_boarder_padding * scale, 
+					 anchor.y + button_pos_y * scale, 
+					 button_size_screen.x, 
+					 button_size_screen.y
+				 }, 
+				 "Mainmenu"
+		 ) ) {
 		gApp()->call_later([]() { gApp()->switch_layer<ScoreLayer, MainMenuLayer>(); });
 	}
 
 	if ( m_retry_button_visible ) {
-		Vector2 retry_pos = {
-			anchor.x / scale + screen_size.x - button_boarder_padding - btn_width / 2.0f,
-			anchor.y / scale + button_pos_y
-		};
-		
-		if ( GuiButtonTexture(m_button, retry_pos, 0, scale, WHITE, GRAY, "Retry") ) {
+		if ( GuiButton(
+					 Rectangle{
+						 anchor.x + retry_button_pos_x * scale, 
+						 anchor.y + button_pos_y * scale, 
+						 button_size_screen.x, 
+						 button_size_screen.y
+					 }, 
+					 "Retry"
+			 ) ) {
 			gApp()->call_later([]() { gApp()->pop_layer<AppLayer>(); });
 			gApp()->call_later([]() { gApp()->switch_layer<ScoreLayer, AppLayer>(); });
 			gApp()->call_later([]() { gApp()->game_director_ref().reset(new FortunaDirector()); });

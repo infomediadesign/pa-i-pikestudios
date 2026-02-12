@@ -1,3 +1,4 @@
+#include <cerrno>
 #include <memory>
 #include <pscore/application.h>
 #include <pscore/collision.h>
@@ -16,9 +17,12 @@ namespace PSCore {
 			m_parent = parent;
 		}
 
-		void EntityCollider::register_collision_handler(std::function<void(std::weak_ptr<PSInterfaces::IEntity> other, const Vector2& point)> cb)
+		void EntityCollider::register_collision_handler(
+				std::function<void(std::weak_ptr<PSInterfaces::IEntity> other, const Vector2& point)> cb, float timeout
+		)
 		{
-			m_collion_cb = cb;
+			m_collision_cb_timeout = timeout;
+			m_collion_cb		   = cb;
 		}
 
 		bool EntityCollider::check_collision(
@@ -26,12 +30,20 @@ namespace PSCore {
 				std::function<bool(std::weak_ptr<PSInterfaces::IEntity> other, const Vector2& point)> exclusion_criterion
 		)
 		{
+			std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
+
 			if ( auto locked = m_parent.lock() ) {
 				if ( auto val = check_entity_collision(locked, entity_pool) ) {
 					auto other = val.value().first;
 					auto point = val.value().second;
 					if ( m_collion_cb && exclusion_criterion(other, point) ) {
-						m_collion_cb(other, point);
+
+						std::chrono::duration<float> elapsed = now - cb_last_called;
+						if ( elapsed.count() >= m_collision_cb_timeout ) {
+							m_collion_cb(other, point);
+							cb_last_called = now;
+						}
+
 						return true;
 					}
 				}

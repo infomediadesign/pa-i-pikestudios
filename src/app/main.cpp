@@ -22,7 +22,8 @@ int main(int argc, char* argv[])
 
 	PSCore::Application::AppSpec spec{"Fortunas Echo", {1440, 780}};
 
-	PSCore::Application app(spec);
+	PSCore::Application app;
+	app.init(spec);
 	if ( start_with_menu )
 		app.push_layer<MainMenuLayer>();
 	else
