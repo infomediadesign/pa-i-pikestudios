@@ -25,7 +25,11 @@ raylib_imgui_setup_dependencies()
 
 add_subdirectory(src)
 
-file(COPY "${CMAKE_CURRENT_LIST_DIR}/resources" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
+add_custom_target(export-resources ALL
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        "${CMAKE_SOURCE_DIR}/resources/" "$<TARGET_FILE_DIR:${PROJECT_NAME}>/resources/"
+    COMMENT "Copying resources to output directory"
+)
 
 include(GNUInstallDirs)
 install(TARGETS ${PROJECT_NAME}
@@ -33,5 +37,7 @@ install(TARGETS ${PROJECT_NAME}
 				LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
 				RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
+install(DIRECTORY resources DESTINATION ${CMAKE_INSTALL_BINDIR})
+install(FILES balancing_settings.cfg DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 include(cmake/Package.cmake)
