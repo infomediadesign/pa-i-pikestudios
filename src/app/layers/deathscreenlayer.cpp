@@ -89,24 +89,25 @@ void DeathScreenLayer::on_render()
 		gApp()->call_later([]() { gApp()->pop_layer<ScoreLayer>(); });
 		gApp()->call_later([]() { gApp()->switch_layer<AppLayer, MainMenuLayer>(); });
 	}
-	if ( GuiButton(Rectangle{(np.x + btn_width + (margin / 2)) * sk, np.y + y * sk, btn_width * sk, btn_height * sk},
-				 "Scoreboard"
-		 ) ) {
-		reset_state();
+	if ( !m_score_should_be_saved || m_name_entered ){
+		if ( GuiButton(Rectangle{np.x + (btn_width + margin * 2) * sk, np.y + y * sk, btn_width * sk, btn_height * sk},
+					 "Scoreboard"
+			) ) {
+			reset_state();
+	
+			gApp()->call_later([]() { gApp()->pop_layer<DeathScreenLayer>(); });
+			gApp()->call_later([]() { gApp()->switch_layer<AppLayer, ScoreLayer>(); });
+			gApp()->call_later([]() {
+				auto score_layer = gApp()->get_layer<ScoreLayer>();
+				if ( score_layer )
+					score_layer->load_highscore(score_layer->score_filename());
+				score_layer->set_retry_button_visible(true);
 
-		gApp()->call_later([]() { gApp()->pop_layer<DeathScreenLayer>(); });
-		gApp()->call_later([]() { gApp()->switch_layer<AppLayer, ScoreLayer>(); });
-		gApp()->call_later([]() {
-			auto score_layer = gApp()->get_layer<ScoreLayer>();
-			if ( score_layer )
-				score_layer->load_highscore(score_layer->score_filename());
-			score_layer->set_retry_button_visible(true);
+			});
+		}
+			x = (vp->viewport_base_size().x - btn_width) - margin;
 
-		});
-	}
-	x = (vp->viewport_base_size().x - btn_width) - margin;
 
-	if ( !m_score_should_be_saved || m_name_entered ) {
 		if ( GuiButton(Rectangle{np.x + x * sk, np.y + y * sk, btn_width * sk, btn_height * sk}, "Retry") ) {
 			reset_state();
 			
