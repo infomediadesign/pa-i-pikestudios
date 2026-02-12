@@ -2,8 +2,8 @@
 
 #include <vector>
 #include <pscore/filemanager.h>
-#include <pscore/settings.h>
 #include <psinterfaces/layer.h>
+#include <raylib.h>
 
 struct HighscoreEntries
 {
@@ -49,5 +49,6 @@ public:
 	bool m_layer_is_visible						= true;
 	bool m_retry_button_visible					= false;
 	Texture2D m_scoreboard_background;
+	Texture2D m_button;
 
 };

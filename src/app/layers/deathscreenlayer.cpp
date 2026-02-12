@@ -8,6 +8,12 @@
 
 #include "scorelayer.h"
 
+DeathScreenLayer::DeathScreenLayer()
+{
+	Vector2 frame_grid{1, 1};
+	m_button = PRELOAD_TEXTURE("smallbutton", "resources/ui/button_small.png", frame_grid)->m_s_texture;
+}
+
 void DeathScreenLayer::on_update(float dt)
 {
 	if ( m_score_layer_instance ) {
@@ -16,7 +22,6 @@ void DeathScreenLayer::on_update(float dt)
 			m_name_entered = true;
 		}
 	}
-	
 }
 
 void DeathScreenLayer::on_render()
@@ -75,30 +80,36 @@ void DeathScreenLayer::on_render()
 	else {
 		GuiLabel(score_info_bounds, "Du hast es nicht unter die Top 10 geschafft");
 	}
-	
 
-	GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, oldColor);
-	GuiSetStyle(DEFAULT, TEXT_SIZE, 6 * sk);
+	GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, 0x00000ff);
+	GuiSetStyle(DEFAULT, TEXT_SIZE, 14 * sk);
 	GuiSetStyle(LABEL, TEXT_ALIGNMENT, oldAlign);
 
-	int margin	   = 20;
-	int btn_height = 24;
-	int btn_width  = 80;
+	int margin = 20;
+	float btn_width = static_cast<float>(m_button.width);
+	float btn_height = static_cast<float>(m_button.height);
+	float y = vp->viewport_base_size().y - btn_height / 2.0f - margin;
 
-	float y = (vp->viewport_base_size().y - btn_height) - margin;
-
-	if ( GuiButton(Rectangle{np.x + margin * sk, np.y + y * sk, btn_width * sk, btn_height * sk}, "Mainmenu") ) {
+	Vector2 mainmenu_pos = {
+		np.x / sk + margin + btn_width / 2.0f,
+		np.y / sk + y
+	};
+	
+	if ( GuiButtonTexture(m_button, mainmenu_pos, 0, sk, WHITE, GRAY, "Mainmenu") ) {
 		reset_state();
 		gApp()->call_later([]() { gApp()->pop_layer<DeathScreenLayer>(); });
 		gApp()->call_later([]() { gApp()->pop_layer<ScoreLayer>(); });
 		gApp()->call_later([]() { gApp()->switch_layer<AppLayer, MainMenuLayer>(); });
 	}
-	if ( !m_score_should_be_saved || m_name_entered ){
-		if ( GuiButton(Rectangle{np.x + (btn_width + margin * 2) * sk, np.y + y * sk, btn_width * sk, btn_height * sk},
-					 "Scoreboard"
-			) ) {
+
+	if ( !m_score_should_be_saved || m_name_entered ) {
+		Vector2 scoreboard_pos = {
+			np.x / sk + margin * 2 + btn_width + btn_width / 2.0f,
+			np.y / sk + y
+		};
+		
+		if ( GuiButtonTexture(m_button, scoreboard_pos, 0, sk, WHITE, GRAY, "Scoreboard") ) {
 			reset_state();
-	
 			gApp()->call_later([]() { gApp()->pop_layer<DeathScreenLayer>(); });
 			gApp()->call_later([]() { gApp()->switch_layer<AppLayer, ScoreLayer>(); });
 			gApp()->call_later([]() {
@@ -106,13 +117,15 @@ void DeathScreenLayer::on_render()
 				if ( score_layer )
 					score_layer->load_highscore(score_layer->score_filename());
 				score_layer->set_retry_button_visible(true);
-
 			});
 		}
-			x = (vp->viewport_base_size().x - btn_width) - margin;
 
-
-		if ( GuiButton(Rectangle{np.x + x * sk, np.y + y * sk, btn_width * sk, btn_height * sk}, "Retry") ) {
+		Vector2 retry_pos = {
+			np.x / sk + vp->viewport_base_size().x - margin - btn_width / 2.0f,
+			np.y / sk + y
+		};
+		
+		if ( GuiButtonTexture(m_button, retry_pos, 0, sk, WHITE, GRAY, "Retry") ) {
 			reset_state();
 			
 			if ( m_score_layer_instance && m_name_entered ) {

@@ -21,4 +21,5 @@ private:
 		Texture2D m_button_4;
 		Texture2D m_main_menu_background;
 		Texture2D m_main_menu_title;
+		Texture2D m_button;
 };

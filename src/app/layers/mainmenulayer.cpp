@@ -18,6 +18,7 @@ MainMenuLayer::MainMenuLayer()
 	m_button_4 = PRELOAD_TEXTURE("button4", "resources/ui/button_big_4.png", frame_grid)->m_s_texture;
 	m_main_menu_background = PRELOAD_TEXTURE("main_menu_bg", "resources/ui/main_menu_background.png", frame_grid)->m_s_texture;
 	m_main_menu_title	   = PRELOAD_TEXTURE("main_menu_title", "resources/ui/fortunas_echo_title.png", frame_grid)->m_s_texture;
+	m_button			   = PRELOAD_TEXTURE("smallbutton", "resources/ui/button_small.png", frame_grid)->m_s_texture;
 }
 
 void MainMenuLayer::on_update(float dt)
@@ -48,7 +49,7 @@ void MainMenuLayer::on_render()
 	};
 
 	GuiSetStyle(DEFAULT, TEXT_SIZE, 14 * scale);
-		GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt({220, 173, 4, 255}));
+		GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt({251, 145, 49, 255}));
 
 		if ( GuiButtonTexture(m_button_1, button_pos, 0, scale, WHITE, GRAY, "Start Game") ) {
 		gApp()->call_later([]() {
@@ -90,9 +91,8 @@ void MainMenuLayer::on_render()
 void MainMenuLayer::draw_background()
 {
 	auto& vp = gApp()->viewport();
-	DrawTextureEx(m_main_menu_background, {vp->viewport_origin().x, vp->viewport_origin().y}, 0, vp->viewport_scale(), WHITE);
-	DrawTextureEx(
-			m_main_menu_title, {vp->viewport_origin().x + 40 * vp->viewport_scale(), vp->viewport_origin().y}, 15,
-			vp->viewport_scale(), WHITE
+	float scale = vp->viewport_scale();
+	DrawTextureEx(m_main_menu_background, {vp->viewport_origin().x, vp->viewport_origin().y}, 0, scale, WHITE);
+	DrawTextureEx(m_main_menu_title, {vp->viewport_origin().x + 30 * scale, vp->viewport_origin().y + 30}, 0, scale, WHITE
 	);
 }
