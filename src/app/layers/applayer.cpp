@@ -110,20 +110,22 @@ void AppLayer::on_update(const float dt)
 			else
 				app->push_layer<DebugLayer>();
 		}
-
-		if ( IsKeyPressed(KEY_ESCAPE) ) {
-			auto& director = gApp()->game_director_ref();
-			if ( app->get_layer<PauseLayer>() ) {
-				app->pop_layer<PauseLayer>();
-				if ( auto app_layer = app->get_layer<AppLayer>() ) {
-					app_layer->resume();
-					director->set_is_active(true);
-				}
-			} else {
-				app->push_layer<PauseLayer>();
-				if ( auto app_layer = app->get_layer<AppLayer>() ) {
-					app_layer->suspend();
-					director->set_is_active(false);
+		if ( m_can_open_pause_menu ) 
+		{
+			if ( IsKeyPressed(KEY_ESCAPE) ) {
+				auto& director = gApp()->game_director_ref();
+				if ( app->get_layer<PauseLayer>() ) {
+					app->pop_layer<PauseLayer>();
+					if ( auto app_layer = app->get_layer<AppLayer>() ) {
+						app_layer->resume();
+						director->set_is_active(true);
+					}
+				} else {
+					app->push_layer<PauseLayer>();
+					if ( auto app_layer = app->get_layer<AppLayer>() ) {
+						app_layer->suspend();
+						director->set_is_active(false);
+					}
 				}
 			}
 		}
@@ -150,4 +152,14 @@ void AppLayer::on_render()
 {
 	if ( renderer_ )
 		renderer_->render();
+}
+
+void AppLayer::set_can_open_pause_menu(bool can_open)
+{
+	m_can_open_pause_menu = can_open;
+}
+
+bool AppLayer::can_open_pause_menu() const
+{
+	return m_can_open_pause_menu;
 }

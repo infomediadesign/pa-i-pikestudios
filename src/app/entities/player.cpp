@@ -208,10 +208,10 @@ void Player::on_death()
 	}
 	m_animation_controller.set_animation_at_index(4, 0, 1);
 
+	gApp()->get_layer<AppLayer>()->set_can_open_pause_menu(false);
 	gApp()->push_layer<DeathScreenLayer>();
 	auto death_layer = gApp()->get_layer<DeathScreenLayer>();
 	if (death_layer && score_layer) {
-		death_layer->reset_state();
 		death_layer->set_score_layer_instance(score_layer);
 		death_layer->set_score_should_be_saved(
 			score_layer->check_for_new_highscore(

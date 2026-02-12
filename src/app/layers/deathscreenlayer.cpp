@@ -149,4 +149,5 @@ void DeathScreenLayer::reset_state()
 	m_score_should_be_saved = false;
 	m_name_entered = false;
 	m_score_layer_instance = nullptr;
+	gApp()->get_layer<AppLayer>()->set_can_open_pause_menu(true);
 }
