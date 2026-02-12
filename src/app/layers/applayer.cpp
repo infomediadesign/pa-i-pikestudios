@@ -111,6 +111,7 @@ void AppLayer::on_update(const float dt)
 			else
 				app->push_layer<DebugLayer>();
 		}
+#endif
 		if ( m_can_open_pause_menu ) 
 		{
 			if ( IsKeyPressed(KEY_ESCAPE) ) {

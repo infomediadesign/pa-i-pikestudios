@@ -86,12 +86,6 @@ void Projectile::render()
 		m_p_source = {0, 0, (float) m_p_texture.width, (float) m_p_texture.height};
 		if ( auto& vp = gApp()->viewport() ) {
 			vp->draw_in_viewport(m_p_texture, m_p_source, m_p_position, m_p_rotation, WHITE);
-			
-			vp->draw_in_viewport(
-					m_p_hit_anim_texture, m_p_animation_controller.get_source_rectangle(m_p_z_index).value_or(Rectangle{0}), m_p_position,
-					m_p_rotation, WHITE
-				);
-				
 		}
 	}
 	if ( m_p_hit_aninm_playing ) {
