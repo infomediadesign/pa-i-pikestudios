@@ -235,3 +235,17 @@ void tentacle::draw_debug()
 		}
 	}
 }
+
+void tentacle::set_is_active(bool active)
+{
+	is_active_ = active;
+
+	if ( active ) {
+		// Reset all states
+		m_state				   = State::Idle;
+		time_until_water_break = PSUtils::gen_rand(4, 8);
+		time_until_attack	   = max_time_until_attack;
+		time_until_retreat	   = max_time_until_retreat;
+		until_reposition	   = max_until_reposition;
+	}
+}

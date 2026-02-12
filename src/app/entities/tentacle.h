@@ -31,6 +31,8 @@ public:
 	std::optional<std::vector<Vector2>> bounds() const override;
 
 	void on_hit() override;
+	
+	void set_is_active(bool acive) override;
 
 	enum State { Idle = 0, WaterBreak, Attacking, Retreat };
 
