@@ -115,9 +115,13 @@ $(document).ready(function(){initNavTree('applayer_8h_source.html',''); initResi
 <div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>    <span class="keywordtype">void</span> on_update(<span class="keyword">const</span> <span class="keywordtype">float</span> dt) <span class="keyword">override</span>;</div>
 <div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>    <span class="keywordtype">void</span> on_render() <span class="keyword">override</span>;</div>
 <div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span> </div>
-<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="keyword">private</span>:</div>
-<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>    std::unique_ptr&lt;AppLayerPriv&gt; _p;</div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>};</div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>    <span class="keywordtype">void</span> set_can_open_pause_menu(<span class="keywordtype">bool</span> can_open);</div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>    <span class="keywordtype">bool</span> can_open_pause_menu() <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span> </div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span><span class="keyword">private</span>:</div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>    std::unique_ptr&lt;AppLayerPriv&gt; _p;</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>    <span class="keywordtype">bool</span> m_can_open_pause_menu = <span class="keyword">true</span>;</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>};</div>
 </div>
 <div class="ttc" id="aclassAppLayerPriv_html"><div class="ttname"><a href="classAppLayerPriv.html">AppLayerPriv</a></div><div class="ttdef"><b>Definition</b> applayer.cpp:73</div></div>
 <div class="ttc" id="aclassAppLayer_html"><div class="ttname"><a href="classAppLayer.html">AppLayer</a></div><div class="ttdef"><b>Definition</b> applayer.h:10</div></div>
