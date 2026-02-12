@@ -31,6 +31,7 @@ void PauseLayer::on_render()
 	GuiSetStyle(DEFAULT, TEXT_SIZE, 14 * scale);
 	GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt({0, 0, 0, 255}));
 
+	DrawRectangle(origin.x, origin.y, GetScreenWidth() * scale, GetScreenHeight() * scale, Color{0, 0, 0, 150});
 	
 	if ( GuiButtonTexture(m_button, button_pos, 0, scale, WHITE, GRAY, "Resume") ) {
 		gApp()->call_later([]() {
