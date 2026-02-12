@@ -44,11 +44,12 @@ void DeathScreenLayer::on_render()
 	GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, 0xff0000ff);
 	GuiSetStyle(DEFAULT, TEXT_SIZE, 28 * sk);
 
-	GuiLabel(rect, "Du bist gestorben :(");
+	GuiLabel(rect, "Du bist gesunken :(");
 
+	GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, 0xffffffff);
 	GuiSetStyle(DEFAULT, TEXT_SIZE, 14 * sk);
 
-	GuiLabel(score, ("Score: " + bounty_text).c_str());
+	GuiLabel(score, ("Kopfgeld: " + bounty_text).c_str());
 	if ( m_score_should_be_saved ) {
 		GuiLabel(score_info_bounds, "Du hast es in die Top 10 geschafft!");
 
