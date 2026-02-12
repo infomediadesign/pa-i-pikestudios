@@ -30,7 +30,7 @@ namespace PSCore {
 				std::function<bool(std::weak_ptr<PSInterfaces::IEntity> other, const Vector2& point)> exclusion_criterion
 		)
 		{
-			static float cb_timeout = 0.f;
+			std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
 
 			if ( auto locked = m_parent.lock() ) {
 				if ( auto val = check_entity_collision(locked, entity_pool) ) {
@@ -38,11 +38,11 @@ namespace PSCore {
 					auto point = val.value().second;
 					if ( m_collion_cb && exclusion_criterion(other, point) ) {
 
-						if ( cb_timeout <= 0.f ) {
+						std::chrono::duration<float> elapsed = now - cb_last_called;
+						if ( elapsed.count() >= m_collision_cb_timeout ) {
 							m_collion_cb(other, point);
-							cb_timeout = m_collision_cb_timeout;
-						} else
-							cb_timeout -= gApp()->delta_time();
+							cb_last_called = now;
+						}
 
 						return true;
 					}

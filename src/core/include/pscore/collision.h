@@ -68,6 +68,7 @@ namespace PSCore {
 		private:
 			std::weak_ptr<PSInterfaces::IEntity> m_parent;
 			std::function<void(std::weak_ptr<PSInterfaces::IEntity> other, const Vector2& point)> m_collion_cb;
+			std::chrono::steady_clock::time_point cb_last_called = std::chrono::steady_clock::now();
 			
 			float m_collision_cb_timeout = 0;
 		};

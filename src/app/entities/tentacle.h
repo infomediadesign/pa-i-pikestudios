@@ -8,6 +8,7 @@
 
 
 #include "pscore/collision.h"
+#include "pscore/settings.h"
 #include "pscore/sprite.h"
 #include "psinterfaces/renderable.h"
 
@@ -54,6 +55,8 @@ private:
 	float max_time_until_attack=0.8;
 	float max_time_until_retreat=0.5;
 	float max_until_reposition=0.6;
+	
+	int m_spawn_area_margin = CFG_VALUE<int>("tentacle_spawn_area_margin", 80);
 
 	void IdleUpdate(float dt);
 	void WaterBreakUpdate(float dt);
