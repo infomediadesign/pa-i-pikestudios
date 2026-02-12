@@ -12,6 +12,9 @@ ScoreLayer::ScoreLayer() : m_filemanager(m_score_filename)
 	HighscoreEntries default_entry = {0, "No score yet"};
 	highscore.push_back(default_entry);
 	m_scoreboard_background = LoadTexture("resources/ui/scoreboard_layer.png");
+	
+	Vector2 frame_grid{1, 1};
+	m_button = PRELOAD_TEXTURE("smallbutton", "resources/ui/button_small.png", frame_grid)->m_s_texture;
 }
 
 ScoreLayer::~ScoreLayer()
@@ -25,29 +28,20 @@ void ScoreLayer::on_update(float dt)
 		update_typing();
 	}
 }
+
 void ScoreLayer::on_render()
 {
 	if ( m_layer_is_visible ) {
 		auto& vp	   = gApp()->viewport();
 		Vector2 origin = vp->viewport_origin();
 		float scale	   = vp->viewport_scale();
-		float spacing  = 10 * scale;
+		
 		vp->draw_in_viewport(
-				m_scoreboard_background,{0, 0, static_cast<float>(m_scoreboard_background.width), static_cast<float>(m_scoreboard_background.height)},
+				m_scoreboard_background, {0, 0, static_cast<float>(m_scoreboard_background.width), static_cast<float>(m_scoreboard_background.height)},
 				{vp->viewport_base_size().x / 2, vp->viewport_base_size().y / 2}, 0, WHITE);
-
-		Vector2 button_size{50 * scale, 25 * scale};
-
-		Rectangle button_rect{origin.x, origin.y, button_size.x, button_size.y};
-		auto next_btn_rect = [&button_rect, spacing]() {
-			Rectangle rec{button_rect.x, button_rect.y + button_rect.height + spacing, button_rect.width, button_rect.height};
-			button_rect = rec;
-			return rec;
-		};
 
 		draw_score_board();
 		draw_score_board_buttons(); 
-
 	}
 }
 
@@ -201,36 +195,30 @@ void ScoreLayer::draw_score_board_buttons()
 	float scale	   = vp->viewport_scale();
 	Vector2 screen_size = vp->viewport_base_size();
 	
-	Vector2 button_size_viewport{80, 24};
+	float btn_width = static_cast<float>(m_button.width);
+	float btn_height = static_cast<float>(m_button.height);
 	float button_boarder_padding = 20;
 	
-	Vector2 button_size_screen{button_size_viewport.x * scale, button_size_viewport.y * scale};
-	
-	float button_pos_y = screen_size.y - button_size_viewport.y - button_boarder_padding;
-	float retry_button_pos_x = screen_size.x - button_size_viewport.x - button_boarder_padding;
+	float button_pos_y = screen_size.y - btn_height / 2.0f - button_boarder_padding;
 
-	if ( GuiButton(
-				 Rectangle{
-					 anchor.x + button_boarder_padding * scale, 
-					 anchor.y + button_pos_y * scale, 
-					 button_size_screen.x, 
-					 button_size_screen.y
-				 }, 
-				 "Mainmenu"
-		 ) ) {
+	GuiSetStyle(DEFAULT, TEXT_SIZE, 14 * scale);
+
+	Vector2 mainmenu_pos = {
+		anchor.x / scale + button_boarder_padding + btn_width / 2.0f,
+		anchor.y / scale + button_pos_y
+	};
+	
+	if ( GuiButtonTexture(m_button, mainmenu_pos, 0, scale, WHITE, GRAY, "Mainmenu") ) {
 		gApp()->call_later([]() { gApp()->switch_layer<ScoreLayer, MainMenuLayer>(); });
 	}
 
 	if ( m_retry_button_visible ) {
-		if ( GuiButton(
-					 Rectangle{
-						 anchor.x + retry_button_pos_x * scale, 
-						 anchor.y + button_pos_y * scale, 
-						 button_size_screen.x, 
-						 button_size_screen.y
-					 }, 
-					 "Retry"
-			 ) ) {
+		Vector2 retry_pos = {
+			anchor.x / scale + screen_size.x - button_boarder_padding - btn_width / 2.0f,
+			anchor.y / scale + button_pos_y
+		};
+		
+		if ( GuiButtonTexture(m_button, retry_pos, 0, scale, WHITE, GRAY, "Retry") ) {
 			gApp()->call_later([]() { gApp()->pop_layer<AppLayer>(); });
 			gApp()->call_later([]() { gApp()->switch_layer<ScoreLayer, AppLayer>(); });
 			gApp()->call_later([]() { gApp()->game_director_ref().reset(new FortunaDirector()); });

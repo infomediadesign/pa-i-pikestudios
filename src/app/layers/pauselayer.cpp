@@ -9,8 +9,11 @@
 #include <pscore/viewport.h>
 #include <raygui.h>
 #include <raylib.h>
+
 PauseLayer::PauseLayer()
 {
+	Vector2 frame_grid{1, 1};
+	m_button = PRELOAD_TEXTURE("smallbutton", "resources/ui/button_small.png", frame_grid)->m_s_texture;
 }
 
 void PauseLayer::on_render()
@@ -18,41 +21,37 @@ void PauseLayer::on_render()
 	auto& vp	   = gApp()->viewport();
 	Vector2 origin = vp->viewport_origin();
 	float scale	   = vp->viewport_scale();
-	float spacing  = 10 * scale;
-	Color btn_clr;
-	float screen_width	= static_cast<float>(GetScreenWidth());
-	float screen_height = static_cast<float>(GetScreenHeight());
+	float spacing  = 8;
 
-	Vector2 button_size{100 * scale, 50 * scale};
+	float button_width = static_cast<float>(m_button.width);
+	float button_height = static_cast<float>(m_button.height);
+	Vector2 screen_size = vp->viewport_base_size();
+	Vector2 button_pos	= {origin.x / scale + screen_size.x / 2.0f, origin.y / scale + screen_size.y / 2.0f - button_height / 2.0f - 10.0f};
 
-	Rectangle button_rect{origin.x, origin.y, button_size.x, button_size.y};
+	GuiSetStyle(DEFAULT, TEXT_SIZE, 14 * scale);
+	GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt({0, 0, 0, 255}));
 
-
-	GuiSetStyle(DEFAULT, TEXT_SIZE, 6 * scale);
-		if ( GuiButton(
-					 Rectangle{screen_width / 2 - (40 * scale), screen_height / 2 - (12 * scale) - 20 * scale, 80 * scale, 24 * scale}, "Resume"
-			 ) ) {
-			gApp()->call_later([]() {
-				gApp()->pop_layer<PauseLayer>();
-				if ( auto app_layer = gApp()->get_layer<AppLayer>() )
-					app_layer->resume();
-			});
-		}
-
-		if ( GuiButton(Rectangle{screen_width / 2 - (40 * scale), screen_height / 2 - (12 * scale) + 20 * scale, 80 * scale, 24 * scale}, "Main Menu") ) {
-			gApp()->call_later([]() {
-				gApp()->pop_layer<PauseLayer>();
-				gApp()->pop_layer<UILayer>();
-				gApp()->switch_layer<AppLayer, MainMenuLayer>();
-			});
-		}
+	DrawRectangle(origin.x, origin.y, GetScreenWidth() * scale, GetScreenHeight() * scale, Color{0, 0, 0, 150});
+	
+	if ( GuiButtonTexture(m_button, button_pos, 0, scale, WHITE, GRAY, "Resume") ) {
+		gApp()->call_later([]() {
+			gApp()->pop_layer<PauseLayer>();
+			if ( auto app_layer = gApp()->get_layer<AppLayer>() )
+				app_layer->resume();
+		});
 	}
+
+	button_pos.y += button_height + 8.0f;
+	
+	if ( GuiButtonTexture(m_button, button_pos, 0, scale, WHITE, GRAY, "Main Menu") ) {
+		gApp()->call_later([]() {
+			gApp()->pop_layer<PauseLayer>();
+			gApp()->pop_layer<UILayer>();
+			gApp()->switch_layer<AppLayer, MainMenuLayer>();
+		});
+	}
+}
 
 void PauseLayer::on_update(float dt)
 {
-	float btn_width	 = 100;
-	float btn_height = 50;
-
-	float btn_x = (GetScreenWidth() / 2.f) - (btn_width / 2.f);
-	float btn_y = (GetScreenHeight() / 2.f) - (btn_height / 2.f);
 }

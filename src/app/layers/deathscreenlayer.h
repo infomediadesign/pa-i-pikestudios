@@ -3,11 +3,14 @@
 //
 #pragma once 
 #include <psinterfaces/layer.h>
+#include <pscore/sprite.h>
+#include <raylib.h>
 #include "scorelayer.h"
 
 class DeathScreenLayer : public PSInterfaces::Layer
 {
 	public:
+		DeathScreenLayer();
 		void on_update(float dt) override;
 		void on_render() override;
 
@@ -18,6 +21,7 @@ class DeathScreenLayer : public PSInterfaces::Layer
 
 	private:
 		bool m_score_should_be_saved = false;
-		bool m_name_entered				   = false;
+		bool m_name_entered = false;
 		ScoreLayer* m_score_layer_instance = nullptr;
+		Texture2D m_button;
 };
