@@ -1,6 +1,5 @@
 #include <pscore/viewport.h>
 
-#include <cmath>
 #include <imgui.h>
 #include "psinterfaces/entity.h"
 
@@ -16,7 +15,13 @@ void Viewport::update(float dt)
 	auto screen_widthf	= static_cast<float>(GetScreenWidth());
 	auto screen_heightf = static_cast<float>(GetScreenHeight());
 
-	m_viewport_scale  = static_cast<float>(std::min(truncf(screen_widthf / m_viewport_base_size.x), truncf(screen_heightf / m_viewport_base_size.y)));
+	if ( m_sub_pixel_scale ) {
+		m_viewport_scale = static_cast<float>(std::min(screen_widthf / m_viewport_base_size.x, screen_heightf / m_viewport_base_size.y));
+	} else {
+		m_viewport_scale =
+				static_cast<float>(std::min(truncf(screen_widthf / m_viewport_base_size.x), truncf(screen_heightf / m_viewport_base_size.y)));
+	}
+
 	m_viewport_origin = {
 			(screen_widthf - m_viewport_base_size.x * m_viewport_scale) / 2, (screen_heightf - m_viewport_base_size.y * m_viewport_scale) / 2
 	};
@@ -25,7 +30,7 @@ void Viewport::update(float dt)
 
 void Viewport::render()
 {
-	draw_outline_boxes(BLUE);
+	draw_outline_boxes(BLACK);
 }
 
 void Viewport::draw_debug()

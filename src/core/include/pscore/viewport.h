@@ -70,6 +70,8 @@ namespace PSCore {
 		Vector2 m_viewport_origin = {(GetScreenWidth() - m_viewport_base_size.x) / 2, (GetScreenHeight() - m_viewport_base_size.y) / 2};
 
 		bool m_draw_viewport_frame = false;
+
+		bool m_sub_pixel_scale = false;
 	};
 
 } // namespace PSCore
