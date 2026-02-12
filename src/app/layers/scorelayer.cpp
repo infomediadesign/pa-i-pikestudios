@@ -1,18 +1,17 @@
 #include "scorelayer.h"
 #include <algorithm>
+#include <entities/director.h>
 #include <filesystem>
 #include <fstream>
-#include <system_error>
-#include <entities/director.h>
-#include <raygui.h>
-#include <pscore/viewport.h>
 #include <layers/mainmenulayer.h>
+#include <pscore/viewport.h>
+#include <raygui.h>
 
 ScoreLayer::ScoreLayer() : m_filemanager(m_score_filename)
 {
-	HighscoreEntries default_entry	= {0, "No score yet"};
+	HighscoreEntries default_entry = {0, "No score yet"};
 	highscore.push_back(default_entry);
-
+	m_scoreboard_background = LoadTexture("resources/ui/Scoreboard_and_Background_Layer.png");
 }
 
 ScoreLayer::~ScoreLayer()
@@ -21,42 +20,44 @@ ScoreLayer::~ScoreLayer()
 
 void ScoreLayer::on_update(float dt)
 {
-	m_time_since_lase_input += dt;	
+	m_time_since_lase_input += dt;
 	if ( list_state == AWAITING_INPUT ) {
 		update_typing();
 	}
 }
 void ScoreLayer::on_render()
 {
-	auto& vp	   = gApp()->viewport();
-	Vector2 origin = vp->viewport_origin();
-	float scale	   = vp->viewport_scale();
-	float spacing  = 10 * scale;
+	if ( m_layer_is_visible ) {
+		auto& vp	   = gApp()->viewport();
+		Vector2 origin = vp->viewport_origin();
+		float scale	   = vp->viewport_scale();
+		float spacing  = 10 * scale;
+		vp->draw_in_viewport(
+				m_scoreboard_background,{0, 0, static_cast<float>(m_scoreboard_background.width), static_cast<float>(m_scoreboard_background.height)},
+				{vp->viewport_base_size().x / 2, vp->viewport_base_size().y / 2}, 0, WHITE);
 
-	Vector2 button_size{50 * scale, 25 * scale};
+		Vector2 button_size{50 * scale, 25 * scale};
 
-	Rectangle button_rect{origin.x, origin.y, button_size.x, button_size.y};
-	auto next_btn_rect = [&button_rect, spacing]() {
-		Rectangle rec{button_rect.x, button_rect.y + button_rect.height + spacing, button_rect.width, button_rect.height};
-		button_rect = rec;
-		return rec;
-	};
+		Rectangle button_rect{origin.x, origin.y, button_size.x, button_size.y};
+		auto next_btn_rect = [&button_rect, spacing]() {
+			Rectangle rec{button_rect.x, button_rect.y + button_rect.height + spacing, button_rect.width, button_rect.height};
+			button_rect = rec;
+			return rec;
+		};
+
+		draw_score_board();
+		draw_score_board_buttons();
 
 
-	GuiSetStyle(DEFAULT, TEXT_SIZE, 6 * scale);
 
-	if ( GuiButton(button_rect, "Main Menu") ) {
-		gApp()->call_later([]() { gApp()->pop_layer<ScoreLayer>(); });
-		gApp()->call_later([]() { gApp()->switch_layer<AppLayer, MainMenuLayer>(); });
 	}
-	draw_score_board();
 }
+
+// does the file exist? create it if not. / delete highscore / open txt file and check
 void ScoreLayer::load_highscore(const std::string& filename)
 {
-	// does the file exist? create it if not. / delete highscore / open txt file and check
 	m_filemanager.ensurefileexists(filename);
-	if ( highscore.size() > 0 ) 
-	{
+	if ( highscore.size() > 0 ) {
 		highscore.clear();
 	}
 	std::ifstream infile(filename);
@@ -92,15 +93,15 @@ void ScoreLayer::save_highscore(const std::string& filename)
 // if the achieved high score fits into the top 10 list: true, otherwise false
 bool ScoreLayer::check_for_new_highscore(int currentscore)
 {
-    if (highscore.empty()) {
-        return true;
-    }
-    
-    if (highscore.size() < 10) {
-        return true;
-    }
-    
-    return currentscore > highscore.back().score;
+	if ( highscore.empty() ) {
+		return true;
+	}
+
+	if ( highscore.size() < 10 ) {
+		return true;
+	}
+
+	return currentscore > highscore.back().score;
 }
 
 // Checks if the score qualifies as a new highscore and saves it with the player name if applicable
@@ -110,18 +111,13 @@ void ScoreLayer::save_new_highscore(int score)
 		if ( list_state == VIEWING ) {
 			list_state = AWAITING_INPUT;
 			return;
-		} else if ( list_state == INPUT_MADE ) 
-		{
-			if ( highscore.size() >= 10 ) 
-			{
-				highscore.back().score				 = score;
-				highscore.back().name   = player_name_input;
-			} 
-			else 
-			{
-			set_highscore(player_name_input, score);
+		} else if ( list_state == INPUT_MADE ) {
+			if ( highscore.size() >= 10 ) {
+				highscore.back().score = score;
+				highscore.back().name  = player_name_input;
+			} else {
+				set_highscore(player_name_input, score);
 			}
-
 		}
 		std::sort(highscore.begin(), highscore.end(), [](const HighscoreEntries& a, const HighscoreEntries& b) -> bool { return a.score > b.score; });
 	}
@@ -137,8 +133,8 @@ void ScoreLayer::update_typing()
 		key = GetCharPressed();
 	}
 	if ( IsKeyDown(KEY_BACKSPACE) && !player_name_input.empty() && m_time_since_lase_input > 0.08 ) {
-			player_name_input.pop_back();
-			m_time_since_lase_input = 0.0f;
+		player_name_input.pop_back();
+		m_time_since_lase_input = 0.0f;
 	}
 	if ( IsKeyPressed(KEY_ENTER) ) {
 		if ( player_name_input.size() > 0 ) 
@@ -150,10 +146,10 @@ void ScoreLayer::update_typing()
 	}
 }
 
-void ScoreLayer::set_highscore(std::string name, int score)
+void ScoreLayer::set_highscore(std::string& name, int score)
 {
 	HighscoreEntries new_entry;
-	new_entry.name = name;
+	new_entry.name	= name;
 	new_entry.score = score;
 
 	highscore.push_back(new_entry);
@@ -161,39 +157,85 @@ void ScoreLayer::set_highscore(std::string name, int score)
 
 void ScoreLayer::draw_score_board()
 {
-	auto& vp = gApp()->viewport();
-	GuiSetStyle(DEFAULT, TEXT_SIZE, 24);
-	GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt(RED));
-
-	float y_offset	  = 100.0f;
-	float line_height = 30.0f;
+	auto& vp	   = gApp()->viewport();
+	float scale	   = vp->viewport_scale();
+	Vector2 anchor = vp->viewport_origin();
 	
-	
+	GuiSetStyle(DEFAULT, TEXT_SIZE, 7 * scale);
+	GuiSetStyle(DEFAULT, BACKGROUND_COLOR, ColorToInt({0, 0, 0, 20}));
+	GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt({0,0,0,255}));
 
-	for ( const auto& entry: highscore ) 
-	{
-		Rectangle label_rect = {(float) vp->viewport_base_size().x / 2 - 100, y_offset, 400, line_height};
+	Rectangle name_field_rect{anchor.x + 184 * scale, anchor.y + 64 * scale, 120 * scale, 16 * scale};
+	Rectangle score_field_rect{name_field_rect.x + 152 * scale, name_field_rect.y, name_field_rect.width, name_field_rect.height};
+	Rectangle left_rank_rect{name_field_rect.x - 32 * scale, name_field_rect.y, 16 * scale, name_field_rect.height};
+	Rectangle right_color_rect{score_field_rect.x + score_field_rect.width + 16 * scale, name_field_rect.y, 16 * scale, name_field_rect.height};
 
+	int rank = 1;
+	int spacing = 24 * scale;
 
-		std::string text = entry.name + " " + std::to_string(entry.score);
-		GuiLabel(label_rect, text.c_str());
+	for ( const auto& entry: highscore ) {
 
-		y_offset += line_height;
+		GuiPanel(name_field_rect, NULL);
+		GuiLabel(name_field_rect, (" " + entry.name).c_str());
+
+		GuiPanel(score_field_rect, NULL);
+		GuiLabel(score_field_rect, (" " + std::to_string(entry.score)).c_str());
+
+		GuiPanel(left_rank_rect, NULL);
+		GuiLabel(left_rank_rect, (" " + std::to_string(rank) + ".").c_str());
+
+		GuiPanel(right_color_rect, NULL);
+		GuiLabel(right_color_rect, "");
+
+		name_field_rect.y += spacing;
+		score_field_rect.y += spacing;
+		left_rank_rect.y += spacing;
+		right_color_rect.y += spacing;
+		rank++;
 	}
-	if ( list_state == AWAITING_INPUT ) {
-		Rectangle prompt_label_rect = {(float) vp->viewport_base_size().x / 2 - 100, y_offset - line_height, 400, 200 + line_height * highscore.size()};
-		std::string prompt_text		= "Enter Name: " + player_name_input;
-		std::string your_score_text = "Your Score: " + std::to_string(dynamic_cast<FortunaDirector*>(gApp()->game_director())->m_b_bounty.bounty());
-		GuiLabel(prompt_label_rect, your_score_text.c_str());
-		prompt_label_rect = {(float) vp->viewport_base_size().x / 2 - 100, y_offset - line_height, 400, 200 + line_height * (highscore.size() + 2)};
-		GuiLabel(prompt_label_rect, prompt_text.c_str());
-	}
+}
 
-	GuiSetStyle(DEFAULT, TEXT_SIZE, 10);
-	GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt(DARKGRAY));
+void ScoreLayer::draw_score_board_buttons()
+{
+	auto& vp	   = gApp()->viewport();
+	Vector2 anchor = vp->viewport_origin();
+	float scale	   = vp->viewport_scale();
+	Vector2 button_size{80 * scale, 24 * scale};
+
+	if ( GuiButton(Rectangle{anchor.x + 40 * scale, anchor.y + 312 * scale, button_size.x, button_size.y}, "Mainmenu") ) {
+		gApp()->call_later([]() { gApp()->switch_layer<ScoreLayer, MainMenuLayer>(); });
+	}
+	if ( m_retry_button_visible ) {
+		if ( GuiButton(Rectangle{anchor.x + 520 * scale, anchor.y + 312 * scale, button_size.x, button_size.y}, "Retry") ) {
+			gApp()->call_later([]() { gApp()->pop_layer<AppLayer>(); });
+			gApp()->call_later([]() { gApp()->switch_layer<ScoreLayer, AppLayer>(); });
+			gApp()->call_later([]() { gApp()->game_director_ref().reset(new FortunaDirector()); });
+		}
+	}
 }
 
 std::string ScoreLayer::score_filename() const
 {
 	return m_score_filename;
+}
+
+void ScoreLayer::set_layer_is_visible(bool visible)
+{
+	m_layer_is_visible = visible;
+}
+
+void ScoreLayer::set_retry_button_visible(bool visible)
+{
+	m_retry_button_visible = visible;
+}
+
+void ScoreLayer::reset_state()
+{
+	highscore.clear();
+	HighscoreEntries default_entry = {0, "No score yet"};
+	highscore.push_back(default_entry);
+	highscores_loaded = false;
+	player_name_input.clear();
+	list_state = VIEWING;
+	m_time_since_lase_input = 0.0f;
 }
