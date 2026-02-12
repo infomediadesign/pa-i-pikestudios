@@ -13,7 +13,7 @@ static const Color STANDARD_TEXT_COLOR	= DARKGRAY;
 UILayer::UILayer()
 {
 	bounty_coin						= LoadTexture("resources/icon/bounty_icon.png");
-	m_health_icon				  = LoadTexture("resources/icon/test_health.png");
+	m_health_icon				  = LoadTexture("resources/icon/hp_icon.png");
 }
 
 void UILayer::on_update(const float dt)
@@ -98,7 +98,7 @@ void UILayer::draw_health_ui()
 		float y_pos = vp_height - heart_size / 2 - padding;
 
 		for ( int i = 0; i < max_health; ++i ) {
-			Color color = i < health ? RED : DARKGRAY;
+			Color color = i < health ? WHITE : DARKGRAY;
 			vp->draw_in_viewport(
 					m_health_icon, {0, 0, static_cast<float>(m_health_icon.width), static_cast<float>(m_health_icon.height)},
 					{padding + heart_size / 2 + i * (heart_size + 5), y_pos}, 0.0f, color

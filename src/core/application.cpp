@@ -173,6 +173,16 @@ std::unique_ptr<PSCore::sprites::SpriteLoader>& PSCore::Application::sprite_load
 	return _p->m_sprite_loader;
 }
 
+void Application::set_current_player_name(std::string& name)
+{
+	m_current_player_name = name;
+}
+
+std::string Application::current_player_name()
+{
+	return m_current_player_name;
+}
+
 float PSCore::Application::delta_time() {
 	return _p->m_time_manager->delta_t().count();
 };

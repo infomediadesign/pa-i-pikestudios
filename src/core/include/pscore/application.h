@@ -128,6 +128,9 @@ namespace PSCore {
 			m_call_stack.push_back(fn);
 		}
 
+		void set_current_player_name(std::string& name);
+		std::string current_player_name();
+
 		float delta_time();
 
 	private:
@@ -135,6 +138,7 @@ namespace PSCore {
 		std::vector<std::unique_ptr<PSInterfaces::Layer>> m_layer_stack;
 		std::unique_ptr<PSInterfaces::IEntity> m_game_director;
 		std::deque<std::function<void()>> m_call_stack;
+		std::string m_current_player_name;
 	};
 } // namespace PSCore
 
