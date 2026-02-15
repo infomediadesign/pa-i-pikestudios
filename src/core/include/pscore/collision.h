@@ -8,6 +8,7 @@
 #include <raymath.h>
 #include <vector>
 #include <psinterfaces/entity.h>
+#include <chrono>
 
 namespace PSInterfaces {
 	class IEntity;

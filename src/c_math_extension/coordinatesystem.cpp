@@ -108,8 +108,9 @@ Vector2 coordinatesystem::point_global_to_relative_leftdown(Vector2 origin, floa
 std::vector<Vector2> coordinatesystem::points_relative_to_globle_rightup(Vector2 origin, float rotation, std::vector<Vector2>& points)
 {
 	std::vector<Vector2> relative_points;
+	relative_points.reserve(points.size());
 
-	for ( auto point: points ) {
+	for ( const auto& point: points ) {
 		relative_points.push_back(point_relative_to_global_rightup(origin, rotation, point));
 	}
 

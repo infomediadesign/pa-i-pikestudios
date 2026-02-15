@@ -1,7 +1,6 @@
 #pragma once
 
 #include <algorithm>
-#include <chrono>
 #include <functional>
 #include <imgui.h>
 #include <iterator>
@@ -88,8 +87,6 @@ namespace PSCore {
 				if ( m_spawn_cb )
 					m_spawn_cb(entity);
 			}
-
-			m_last_time = std::chrono::steady_clock::now();
 		}
 
 		void despawn(std::shared_ptr<T> entity, bool suspend = true)
@@ -146,13 +143,12 @@ namespace PSCore {
 			return m_limit;
 		}
 
-		auto entities() const
+		auto& entities() const
 		{
 			return m_entities;
 		}
 
 	private:
-		std::chrono::time_point<std::chrono::steady_clock> m_last_time = std::chrono::steady_clock::now();
 		std::function<bool(PSInterfaces::Layer* layer)> m_custom_spawn;
 		std::function<void(std::shared_ptr<T> entity)> m_spawn_cb;
 		std::vector<std::shared_ptr<T>> m_entities;
@@ -185,6 +181,8 @@ namespace PSCore {
 				const int excessive = a_c - m_limit;
 
 				std::vector<std::shared_ptr<T>> active_entities;
+				active_entities.reserve(excessive);
+				
 				std::copy_if(m_entities.begin(), m_entities.end(), std::back_inserter(active_entities), [](std::shared_ptr<T> entity) {
 					return !is_suspended_(entity);
 				});

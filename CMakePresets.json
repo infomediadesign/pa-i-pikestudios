@@ -34,6 +34,14 @@
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release"
       }
+    },
+    {
+      "inherits": "root",
+      "name": "x64-ninja-release-debug",
+      "displayName": "x64 (Ninja) Release with debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+      }
     }
   ]
 }

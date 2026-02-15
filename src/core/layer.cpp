@@ -23,7 +23,7 @@ const std::unique_ptr<PSCore::Renderer>& PSInterfaces::Layer::renderer()
 	return renderer_;
 }
 
-std::vector<std::weak_ptr<PSInterfaces::IEntity>> PSInterfaces::Layer::entities() const
+std::vector<std::weak_ptr<PSInterfaces::IEntity>>& PSInterfaces::Layer::entities()
 {
 	return entities_;
 }

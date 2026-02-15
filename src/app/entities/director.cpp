@@ -1,4 +1,5 @@
 #include <chrono>
+#include <cstdint>
 #include <entities/cannon.h>
 #include <entities/director.h>
 #include <entities/projectile.h>
@@ -23,7 +24,7 @@ FortunaDirector::FortunaDirector() : PSInterfaces::IEntity("fortuna_director")
 	_p = std::make_unique<FortunaDirectorPriv>();
 
 	_p->shark_spawner = std::make_unique<PSCore::Spawner<Shark, AppLayer>>(_p->shark_spawn_time, _p->shark_spawn_variation, _p->shark_limit, false);
-	_p->projectile_spawner = std::make_unique<PSCore::Spawner<Projectile, AppLayer>>(0.0f);
+	_p->projectile_spawner = std::make_unique<PSCore::Spawner<Projectile, AppLayer>>(0.0f, 0, INT32_MAX);
 	_p->tentacle_spawner =
 			std::make_unique<PSCore::Spawner<tentacle, AppLayer>>(_p->tentacle_spawn_time, _p->tentacle_spawn_variation, _p->tentacle_limit);
 }
@@ -77,6 +78,8 @@ void FortunaDirector::initialize_entities()
 		app_layer->register_entity(initial_player, true);
 	}
 	initial_player->add_cannons(2);
+	
+	upgrade_player_invincibility(_p->player_invincibility);
 }
 
 
