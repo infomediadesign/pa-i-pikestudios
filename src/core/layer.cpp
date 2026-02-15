@@ -27,3 +27,8 @@ std::vector<std::weak_ptr<PSInterfaces::IEntity>>& PSInterfaces::Layer::entities
 {
 	return entities_;
 }
+
+std::vector<std::weak_ptr<PSInterfaces::IEntity>> PSInterfaces::Layer::entities() const
+{
+	return entities_;
+}

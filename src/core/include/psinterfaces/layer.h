@@ -67,6 +67,8 @@ namespace PSInterfaces {
 		}
 
 		std::vector<std::weak_ptr<PSInterfaces::IEntity>>& entities();
+		
+		std::vector<std::weak_ptr<PSInterfaces::IEntity>> entities() const;
 
 	private:
 		std::vector<std::weak_ptr<PSInterfaces::IEntity>> entities_;

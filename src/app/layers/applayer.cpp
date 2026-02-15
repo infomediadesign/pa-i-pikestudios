@@ -1,7 +1,9 @@
 #include "applayer.h"
 #include "debuglayer.h"
 #include "pauselayer.h"
+#include "psinterfaces/entity.h"
 
+#include <algorithm>
 #include <memory>
 #include <pscore/application.h>
 #include <pscore/viewport.h>
@@ -12,6 +14,7 @@
 #include <entities/player.h>
 #include <layers/uilayer.h>
 #include <misc/mapborderinteraction.h>
+#include <utility>
 
 class Water : public PSInterfaces::IRenderable
 {
@@ -92,8 +95,7 @@ AppLayer::AppLayer()
 	});
 
 	_p->water->propose_z_index(-20);
-	renderer_->submit_renderable(_p->water);
-	register_entity(_p->water);
+	register_entity(_p->water, true);
 }
 
 AppLayer::~AppLayer()
@@ -112,8 +114,7 @@ void AppLayer::on_update(const float dt)
 				app->push_layer<DebugLayer>();
 		}
 #endif
-		if ( m_can_open_pause_menu ) 
-		{
+		if ( m_can_open_pause_menu ) {
 			if ( IsKeyPressed(KEY_ESCAPE) ) {
 				auto& director = gApp()->game_director_ref();
 				if ( app->get_layer<PauseLayer>() ) {
@@ -136,12 +137,9 @@ void AppLayer::on_update(const float dt)
 	if ( !active )
 		return;
 
-	for ( const auto& entity: entities() ) {
-		if ( auto locked_entity = entity.lock() ) {
-
-			if ( locked_entity->is_active() ) {
-				locked_entity->update(dt);
-			}
+	for ( const auto& entity: const_cast<const AppLayer*>(this)->entities() ) {
+		if ( auto locked_entity = entity.lock(); locked_entity->is_active() ) {
+			locked_entity->update(dt);
 
 			if ( auto player = dynamic_cast<Player*>(locked_entity.get()) ) {
 				misc::map::map_border_wrap_around(*player);
