@@ -144,7 +144,7 @@ void tentacle::IdleUpdate(float dt)
 	if ( time_until_water_break <= 0 ) {
 		m_state = State::WaterBreak;
 		m_animation_controller.set_animation_at_index(0, 0, 0);
-		propose_z_index(-10);
+		propose_z_index(-5);
 	}
 }
 
