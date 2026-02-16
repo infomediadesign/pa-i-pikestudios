@@ -3,6 +3,7 @@
 #include <pscore/application.h>
 #include <pscore/viewport.h>
 #include <layers/scorelayer.h>
+#include <layers/upgradelayer.h>
 #include <entities/director.h>
 #include <raygui.h>
 #include <raylib.h>
@@ -58,6 +59,7 @@ void MainMenuLayer::on_render()
 			}
 		});
 		gApp()->call_later([]() { gApp()->switch_layer<MainMenuLayer, AppLayer>(); });
+		gApp()->call_later([]() { gApp()->push_layer<UpgradeLayer>(); });
 	}
 
 	button_pos.y += spacing + m_button_1.height;
