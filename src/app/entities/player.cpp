@@ -64,7 +64,7 @@ Player::Player() : PSInterfaces::IEntity("player")
 
 	m_sails = std::make_shared<Sails>(this);
 
-	m_sails->propose_z_index(30);
+	m_sails->propose_z_index(20);
 	m_sails->set_is_active(true);
 
 	if ( auto app_layer = gApp()->get_layer<AppLayer>() ) {
@@ -137,6 +137,9 @@ void Player::update(const float dt)
 			m_animation_controller.set_animation_at_index(m_sprite_sheet_animation_index, m_sprite_sheet_frame_index, 3);
 		}
 		else {
+			m_target_velocity = 0;
+			m_velocity = {0,0};
+
 			if ( m_animation_controller.get_sprite_sheet_frame_index(1) == 9 ) {
 				set_is_active(false);
 			}
@@ -309,12 +312,14 @@ void Player::render()
 {
 	// Draw Smear
 
-	if ( auto& vp = gApp()->viewport() ) {
-		m_smear.draw_smear(0, Linear, 2 * vp->viewport_scale(), 1, m_smear_color);
-		m_smear.draw_smear(1, Linear, 2 * vp->viewport_scale(), 1, m_smear_color);
-		m_smear.draw_smear(2, Exponential, 2 * vp->viewport_scale(), 1, m_smear_color);
-		m_smear.draw_smear(3, Exponential, 2 * vp->viewport_scale(), 1, m_smear_color);
-		m_smear.draw_smear_wave(Vector2Length(m_velocity), m_max_velocity, 2 * vp->viewport_scale(), 1, m_smear_color);
+	if ( Vector2Length(m_velocity) > CALCULATION_VELOCITY_MIN ) {
+		if ( auto& vp = gApp()->viewport() ) {
+			m_smear.draw_smear(0, Linear, 2 * vp->viewport_scale(), 1, m_smear_color);
+			m_smear.draw_smear(1, Linear, 2 * vp->viewport_scale(), 1, m_smear_color);
+			m_smear.draw_smear(2, Exponential, 2 * vp->viewport_scale(), 1, m_smear_color);
+			m_smear.draw_smear(3, Exponential, 2 * vp->viewport_scale(), 1, m_smear_color);
+			m_smear.draw_smear_wave(Vector2Length(m_velocity), m_max_velocity, 2 * vp->viewport_scale(), 1, m_smear_color);
+		}
 	}
 
 	// Draw Ship
