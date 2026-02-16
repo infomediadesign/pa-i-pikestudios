@@ -111,4 +111,10 @@ public:
 private:
 	const Shark* m_shark;
 	Vector2 m_size{60.0f, 120.0f};
+
+	Shader m_outline_shader = LoadShader(NULL, "resources/shader/2d_outline.fs");
+	Vector4 m_outline_color = {255, 215, 0, 255};
+	Vector2 m_texture_size	= {
+			 static_cast<float>(m_shark->m_shark_sprite->m_s_texture.width), static_cast<float>(m_shark->m_shark_sprite->m_s_texture.height)
+	 };
 };

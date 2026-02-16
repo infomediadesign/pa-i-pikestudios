@@ -77,14 +77,20 @@ Body::Body(Shark* shark) : PSInterfaces::IEntity("shark_body"), m_shark(shark)
 	auto tex		= m_shark->m_shark_sprite;
 	auto frame_rect = tex->frame_rect({0, 0});
 	m_size			= {frame_rect.width, frame_rect.height};
+
+	SetShaderValue(m_outline_shader, GetShaderLocation(m_outline_shader, "outline_color"), &m_outline_color, SHADER_UNIFORM_VEC4);
+	SetShaderValue(m_outline_shader, GetShaderLocation(m_outline_shader, "texture_size"), &m_texture_size, SHADER_UNIFORM_VEC2);
 }
 
 Body::~Body()
 {
+	UnloadShader(m_outline_shader);
 }
 
 void Body::render()
 {
+	BeginShaderMode(m_outline_shader);
+
 	if ( auto& vp = gApp()->viewport() ) {
 		auto tex = m_shark->m_shark_sprite;
 		vp->draw_in_viewport(
@@ -92,6 +98,8 @@ void Body::render()
 				m_shark->m_shark_rotation + 90, WHITE
 		);
 	}
+
+	EndShaderMode();
 }
 
 void Body::update(float dt)
