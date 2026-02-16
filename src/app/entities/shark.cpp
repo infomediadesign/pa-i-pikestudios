@@ -122,7 +122,7 @@ Shark::Shark() : PSInterfaces::IEntity("shark")
 	m_fin  = std::make_shared<Fin>(this);
 
 	m_body->propose_z_index(-30);
-	m_fin->propose_z_index(-5);
+	m_fin->propose_z_index(-10);
 
 	// Has an droppable upgrade
 	float drop_roll = static_cast<float>(PSUtils::gen_rand(0, 1000)) / 1000.0f;
