@@ -60,6 +60,13 @@ void MainMenuLayer::on_render()
 		});
 		gApp()->call_later([]() { gApp()->switch_layer<MainMenuLayer, AppLayer>(); });
 		gApp()->call_later([]() { gApp()->push_layer<UpgradeLayer>(); });
+		gApp()->call_later([]() { 
+			auto upgrade_layer = gApp()->get_layer<UpgradeLayer>();
+			if ( upgrade_layer ) {
+				upgrade_layer->m_current_loot_table_values = upgrade_layer->m_loot_table.loot_table_values(2);
+				upgrade_layer->print_loot_table_values(upgrade_layer->m_current_loot_table_values);
+			}
+		});
 	}
 
 	button_pos.y += spacing + m_button_1.height;

@@ -13,13 +13,15 @@ public:
 
 	void on_render() override;
 
-	void test_upgrade();
+	void apply_upgrade(int upgrdae_index);
 
 	void draw_upgrade_cards();
 
-public:
+	void print_loot_table_values(std::vector<LootTableValue>);
 
-	std::vector<int> m_chances{50, 30, 20,};
+
+	std::vector<int> m_chances{33, 33, 34,};
 	Texture2D m_card_texture;
 	LootTable m_loot_table;
+	std::vector<LootTableValue> m_current_loot_table_values;
 };
