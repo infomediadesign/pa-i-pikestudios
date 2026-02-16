@@ -16,6 +16,7 @@
 #include <psinterfaces/entity.h>
 #include <raylib.h>
 #include <raymath.h>
+#include "entities/chonkyshark.h"
 #include "entities/tentacle.h"
 
 
