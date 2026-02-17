@@ -64,7 +64,7 @@ Player::Player() : PSInterfaces::IEntity("player")
 
 	m_sails = std::make_shared<Sails>(this);
 
-	m_sails->propose_z_index(30);
+	m_sails->propose_z_index(20);
 	m_sails->set_is_active(true);
 
 	if ( auto app_layer = gApp()->get_layer<AppLayer>() ) {
@@ -77,13 +77,13 @@ Player::Player() : PSInterfaces::IEntity("player")
 
 	// Upgrades
 	std::vector<int> chances = {50, 25, 25};
-	m_loot_table.add_loot_table(0, chances);
+	m_loot_table.add_loot_table(0, 20, chances);
 	chances = {30, 10, 40, 20};
-	m_loot_table.add_loot_table(1, chances);
+	m_loot_table.add_loot_table(1, 30, chances);
 	chances = {99, 1};
-	m_loot_table.add_loot_table(2, chances);
+	m_loot_table.add_loot_table(2, 10, chances);
 
-	m_loot_table.loot_table_values(1);
+	m_loot_table.loot_table_values(3);
 }
 
 Player::~Player()
@@ -126,17 +126,19 @@ void Player::update(const float dt)
 			if ( m_animation_controller.get_sprite_sheet_animation_index(3).value_or(2) == 2 &&
 				 fabsf(m_rotation_velocity) > SCHMITT_TRIGGER_DELTA_ROTATION_MAX ) {
 				m_sprite_sheet_animation_index = m_rotation_velocity < 0 ? 1 : 3;
-				 }
+			}
 			if ( m_animation_controller.get_sprite_sheet_animation_index(3).value_or(2) != 2 &&
 				 fabsf(m_rotation_velocity) < SCHMITT_TRIGGER_DELTA_ROTATION_MIN ) {
 				m_sprite_sheet_animation_index = 2;
-				 }
+			}
 
 			m_sprite_sheet_frame_index = static_cast<int>(round((Vector2Length(m_velocity) / m_max_velocity) * 2));
 
 			m_animation_controller.set_animation_at_index(m_sprite_sheet_animation_index, m_sprite_sheet_frame_index, 3);
-		}
-		else {
+		} else {
+			m_target_velocity = 0;
+			m_velocity		  = {0, 0};
+
 			if ( m_animation_controller.get_sprite_sheet_frame_index(1) == 9 ) {
 				set_is_active(false);
 			}
@@ -190,27 +192,26 @@ void Player::on_hit()
 
 void Player::on_death()
 {
-	if (gApp()->get_layer<ScoreLayer>()) {
+	if ( gApp()->get_layer<ScoreLayer>() ) {
 		gApp()->pop_layer<ScoreLayer>();
 	}
-	if (gApp()->get_layer<DeathScreenLayer>()) {
+	if ( gApp()->get_layer<DeathScreenLayer>() ) {
 		gApp()->pop_layer<DeathScreenLayer>();
 	}
-	if (gApp()->get_layer<UILayer>()){
+	if ( gApp()->get_layer<UILayer>() ) {
 		gApp()->pop_layer<UILayer>();
 	}
 
 	gApp()->push_layer<ScoreLayer>();
 	auto score_layer = gApp()->get_layer<ScoreLayer>();
-	if (score_layer) {
+	if ( score_layer ) {
 		score_layer->set_layer_is_visible(false);
 		score_layer->reset_state();
 		score_layer->load_highscore(score_layer->score_filename());
-		score_layer->save_new_highscore(
-			dynamic_cast<FortunaDirector*>(gApp()->game_director())->m_b_bounty.bounty());
+		score_layer->save_new_highscore(dynamic_cast<FortunaDirector*>(gApp()->game_director())->m_b_bounty.bounty());
 		score_layer->player_name_input = gApp()->current_player_name();
 	}
-	
+
 	m_sails->set_is_active(false);
 	for ( const auto& cannon: m_cannon_container ) {
 		cannon->set_is_active(false);
@@ -220,12 +221,10 @@ void Player::on_death()
 	gApp()->get_layer<AppLayer>()->set_can_open_pause_menu(false);
 	gApp()->push_layer<DeathScreenLayer>();
 	auto death_layer = gApp()->get_layer<DeathScreenLayer>();
-	if (death_layer && score_layer) {
+	if ( death_layer && score_layer ) {
 		death_layer->set_score_layer_instance(score_layer);
 		death_layer->set_score_should_be_saved(
-			score_layer->check_for_new_highscore(
-				dynamic_cast<FortunaDirector*>(gApp()->game_director())->m_b_bounty.bounty()
-			)
+				score_layer->check_for_new_highscore(dynamic_cast<FortunaDirector*>(gApp()->game_director())->m_b_bounty.bounty())
 		);
 	}
 }
@@ -309,12 +308,14 @@ void Player::render()
 {
 	// Draw Smear
 
-	if ( auto& vp = gApp()->viewport() ) {
-		m_smear.draw_smear(0, Linear, 2 * vp->viewport_scale(), 1, m_smear_color);
-		m_smear.draw_smear(1, Linear, 2 * vp->viewport_scale(), 1, m_smear_color);
-		m_smear.draw_smear(2, Exponential, 2 * vp->viewport_scale(), 1, m_smear_color);
-		m_smear.draw_smear(3, Exponential, 2 * vp->viewport_scale(), 1, m_smear_color);
-		m_smear.draw_smear_wave(Vector2Length(m_velocity), m_max_velocity, 2 * vp->viewport_scale(), 1, m_smear_color);
+	if ( Vector2Length(m_velocity) > CALCULATION_VELOCITY_MIN ) {
+		if ( auto& vp = gApp()->viewport() ) {
+			m_smear.draw_smear(0, Linear, 2 * vp->viewport_scale(), 1, m_smear_color);
+			m_smear.draw_smear(1, Linear, 2 * vp->viewport_scale(), 1, m_smear_color);
+			m_smear.draw_smear(2, Exponential, 2 * vp->viewport_scale(), 1, m_smear_color);
+			m_smear.draw_smear(3, Exponential, 2 * vp->viewport_scale(), 1, m_smear_color);
+			m_smear.draw_smear_wave(Vector2Length(m_velocity), m_max_velocity, 2 * vp->viewport_scale(), 1, m_smear_color);
+		}
 	}
 
 	// Draw Ship
@@ -342,8 +343,7 @@ void Player::reset_iframe(float dt)
 			float n_flash_lerp_scale = m_flash_lerp_scale / director->player_iframe_duration();
 			m_flash_alpha			 = 0.5f * cosf(m_iframe_timer * sqrtf(m_iframe_timer) * n_flash_lerp_scale * sqrtf(n_flash_lerp_scale)) + 0.5;
 		}
-	}
-	else {
+	} else {
 		m_flash_alpha = 0;
 	}
 
