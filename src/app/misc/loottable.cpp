@@ -59,6 +59,15 @@ void LootTable::set_expected_value(float expected_value)
 	m_expected_value = std::clamp(expected_value, -1.0f, 1.0f);
 }
 
+void LootTable::set_pull_chance(int index, int pull_chance)
+{
+	for ( auto& element: m_indices ) {
+		if ( element.index == index ) {
+			element.pull_chance = pull_chance;
+		}
+	}
+}
+
 std::vector<LootTableValue> LootTable::loot_table_values(int count)
 {
 	random_values_from_loot_table(count);
@@ -74,12 +83,20 @@ void LootTable::random_values_from_loot_table(int indices_count)
 	int largest_random_chance			  = 0;
 	std::vector<LootTableIndices> indices = m_indices;
 
-	if ( indices_count > m_indices.size() ) {
-		count = static_cast<int>(m_indices.size());
+	int valid_pull_chance_count = 0;
+	for ( auto& element: indices ) {
+		largest_random_chance += element.pull_chance;
+
+		if ( element.pull_chance == 0 ) {
+			element.index = -1;
+		}
+		else {
+			valid_pull_chance_count++;
+		}
 	}
 
-	for ( auto index: indices ) {
-		largest_random_chance += index.pull_chance;
+	if ( indices_count > valid_pull_chance_count ) {
+		count = valid_pull_chance_count;
 	}
 
 	while ( m_values.size() < count ) {
@@ -91,19 +108,19 @@ void LootTable::random_values_from_loot_table(int indices_count)
 
 		int previous_pull_chance_sum = 0;
 
-		for ( int j = 0; auto& index: indices ) {
-			if ( index.index != -1 ) {
-				if ( random_index < index.pull_chance + previous_pull_chance_sum ) {
+		for ( int j = 0; auto& element: indices ) {
+			if ( element.index != -1 ) {
+				if ( random_index < element.pull_chance + previous_pull_chance_sum ) {
 					m_values.at(i).index = m_indices.at(j).index;
 					m_values.at(i).value = PSUtils::gen_rand(0, 99);
 
-					largest_random_chance -= index.pull_chance;
+					largest_random_chance -= element.pull_chance;
 
-					index.index = -1;
+					element.index = -1;
 
 					break;
 				}
-				previous_pull_chance_sum += index.pull_chance;
+				previous_pull_chance_sum += element.pull_chance;
 			}
 			j++;
 		}
@@ -136,8 +153,8 @@ void LootTable::calculate_curve_boundary()
 void LootTable::calculate_rarity()
 {
 	for ( auto& value: m_values ) {
-		for ( int i = 0; auto index: m_indices ) {
-			if ( value.index == index.index ) {
+		for ( int i = 0; auto element: m_indices ) {
+			if ( value.index == element.index ) {
 				value.rarity = 0;
 
 				int length;
