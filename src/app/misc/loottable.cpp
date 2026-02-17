@@ -35,7 +35,7 @@ void LootTable::add_loot_table(int index, int pull_chance, std::vector<int>& cha
 		}
 	}
 
-	if ( pull_chance < 0 ) {
+	if ( pull_chance <= 0 ) {
 		return;
 	}
 
