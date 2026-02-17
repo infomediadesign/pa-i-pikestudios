@@ -61,6 +61,8 @@ void UpgradeLayer::draw_upgrade_cards()
 		gApp()->call_later([]() { gApp()->pop_layer<UpgradeLayer>(); });
 	}
 
+	draw_card_text({(screen_middel.x + m_card_texture.width + 16) * scale, screen_middel.y * scale}, m_current_loot_table_values[1]);
+
 	if ( GuiButtonTexture(
 				 m_card_texture, {screen_middel.x - m_card_texture.width - 16, screen_middel.y}, 0, scale, WHITE, GRAY,
 				 std::to_string(m_current_loot_table_values[2].index).c_str()))
@@ -68,6 +70,8 @@ void UpgradeLayer::draw_upgrade_cards()
 		apply_upgrade(m_current_loot_table_values[2]);
 		gApp()->call_later([]() { gApp()->pop_layer<UpgradeLayer>(); });
 	}
+
+draw_card_text({(screen_middel.x - m_card_texture.width - 16) * scale, screen_middel.y * scale}, m_current_loot_table_values[2]);
 
 }
 
@@ -159,9 +163,13 @@ void UpgradeLayer::draw_card_text(Vector2 card_pos, LootTableValue upgrade_info)
 	auto& vp = gApp()->viewport();
 	float scale = vp->viewport_scale();
 	float text_size = 14 * scale;
-	Rectangle rarity_text_pos = {card_pos.x + 10 * scale, card_pos.y - 60 * scale, 50 * scale, text_size};
-	float text_pos_x		  = card_pos.x - 25 * scale;
+	Rectangle rarity_text_pos = {card_pos.x + 10 * scale, card_pos.y - 60 * scale, 100 * scale, text_size};
+	Rectangle value_text_pos  = {card_pos.x + 10 * scale, card_pos.y + 10 * scale + 2 * text_size, 100 * scale, text_size};
+	Rectangle type_text_pos	  = {card_pos.x + 10 * scale, card_pos.y + 10 * scale + text_size, 100 * scale, text_size};
+	float text_pos_x		  = card_pos.x - 50 * scale;
 	rarity_text_pos.x		  = text_pos_x;
+	type_text_pos.x			  = text_pos_x;
+	value_text_pos.x		  = text_pos_x;
 	
 
 	GuiSetStyle(DEFAULT, TEXT_SIZE, text_size);
@@ -171,13 +179,13 @@ void UpgradeLayer::draw_card_text(Vector2 card_pos, LootTableValue upgrade_info)
 	float line_height = text_size + 4 * scale;
 
 	GuiLabel(rarity_text_pos, rarity_to_string(upgrade_info.rarity).c_str());
-	GuiLabel({card_pos.x + 10 * scale, card_pos.y + 10 * scale + line_height, 200 * scale, text_size}, upgrade_type_to_string(upgrade_info.index).c_str());
-	GuiLabel(
-			{card_pos.x + 10 * scale, card_pos.y + 10 * scale + line_height * 2, 200 * scale, text_size}, value_to_string(upgrade_info.index, 0).c_str()
+	GuiLabel(type_text_pos, upgrade_type_to_string(upgrade_info.index).c_str());
+	GuiLabel(value_text_pos, value_to_string(upgrade_info.index, 0).c_str()
 	);
 
 	GuiSetStyle(DEFAULT, TEXT_SIZE, 14 * scale);
 	GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt(BLACK));
+	GuiSetStyle(LABEL, TEXT_ALIGNMENT, TEXT_ALIGN_LEFT);
 }
 
 std::string UpgradeLayer::rarity_to_string(int rarity)
