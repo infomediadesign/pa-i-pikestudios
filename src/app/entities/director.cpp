@@ -7,6 +7,7 @@
 #include <memory>
 #include <misc/mapborderinteraction.h>
 #include <pscore/application.h>
+#include <layers/upgradelayer.h>
 
 #include <entities/shark.h>
 #include <imgui.h>
@@ -147,6 +148,30 @@ void FortunaDirector::draw_debug()
 		}
 	}
 
+	// Get Upgrade
+	ImGui::Separator();
+
+	if ( ImGui::Button("Get Upgrade") ) {
+		if ( gApp()->get_layer<UpgradeLayer>() ) {
+			gApp()->call_later([]() {
+				auto upgrade_layer = gApp()->get_layer<UpgradeLayer>();
+				if ( upgrade_layer ) {
+					upgrade_layer->m_current_loot_table_values = upgrade_layer->m_loot_table.loot_table_values(3);
+					upgrade_layer->print_loot_table_values(upgrade_layer->m_current_loot_table_values);
+				}
+			});
+		} else {
+			gApp()->call_later([]() { gApp()->push_layer<UpgradeLayer>(); });
+			gApp()->call_later([]() {
+				auto upgrade_layer = gApp()->get_layer<UpgradeLayer>();
+				if ( upgrade_layer ) {
+					upgrade_layer->m_current_loot_table_values = upgrade_layer->m_loot_table.loot_table_values(3);
+					upgrade_layer->print_loot_table_values(upgrade_layer->m_current_loot_table_values);
+				}
+			}); 
+		} 
+	}
+
 	ImGui::Separator();
 	ImGui::Text("Player Upgrades");
 
@@ -207,12 +232,7 @@ void FortunaDirector::draw_debug()
 	ImGui::InputInt("##health_amount", &health_amount);
 	ImGui::SameLine();
 	if ( ImGui::Button("Add Health") ) {
-		if ( player_health() + health_amount > player_max_health() ) {
-			set_player_max_health(player_max_health() + health_amount);
-			set_player_health(player_health() + health_amount);
-		} else {
-			set_player_health(player_health() + health_amount);
-		}
+		upgrade_player_health(health_amount);
 	}
 }
 
@@ -343,11 +363,62 @@ void FortunaDirector::upgrade_player_add_cannon(int amount)
 	}
 }
 
+void FortunaDirector::upgrade_player_health(int amount)
+{
+	if ( player_health() + amount > player_max_health() ) {
+		set_player_max_health(player_max_health() + amount);
+		set_player_health(player_health() + amount);
+	} else {
+		set_player_health(player_health() + amount);
+	}
+}
+
 void FortunaDirector::upgrade_player_invincibility(bool invincibility)
 {
 	for ( auto player: _p->players ) {
 		player->set_is_invincible(invincibility);
 	};
+}
+
+void FortunaDirector::upgrade_player_speed(float amount)
+{
+	_p->player_max_velocity += amount;
+	for ( auto player: _p->players ) {
+		player->set_max_velocity(_p->player_max_velocity);
+	}
+}
+
+void FortunaDirector::upgrade_player_rotation_speed(float amount)
+{
+	_p->player_input_rotation_mult += amount;
+	for ( auto player: _p->players ) {
+		player->set_input_rotation_multiplier(_p->player_input_rotation_mult);
+	}
+}
+
+float FortunaDirector::player_current_fire_rate() const
+{
+	return _p->player_current_fire_rate;
+}
+
+float FortunaDirector::player_current_projectile_speed() const
+{
+	return _p->player_current_projectile_speed;
+}
+
+float FortunaDirector::player_current_fire_range() const
+{
+	return _p->player_current_fire_range;
+}
+
+float FortunaDirector::player_max_velocity() const
+{
+	return _p->player_max_velocity;
+}
+
+float FortunaDirector::player_input_rotation_mult() const
+{
+	return _p->player_input_rotation_mult;
 }
 
 template<>

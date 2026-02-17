@@ -31,19 +31,6 @@ void Cannon::update(const float dt)
 	set_rotation_to_parent();
 	
 	m_c_time_since_last_shot += dt;
-	/*
-	if ( IsMouseButtonDown(MOUSE_BUTTON_LEFT) ) {
-		if ( m_c_positioning == CannonPositioning::Left ) {
-			fire();
-		}
-	}
-
-	if ( IsMouseButtonDown(MOUSE_BUTTON_RIGHT) ) {
-		if ( m_c_positioning == CannonPositioning::Right ) {
-			fire();
-		}
-	}
-	*/
 
 		m_c_animation_controller.update_animation(dt);
 

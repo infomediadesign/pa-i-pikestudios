@@ -42,12 +42,34 @@ public:
 	template<class E, PSCore::ILayerDerived L>
 	std::unique_ptr<PSCore::Spawner<E, L>>& spawner();
 
+	struct DropChances
+	{
+		int add_cannon		= CFG_VALUE<int>("upgrade_add_cannon_chance", 200);
+		int projectile_speed = CFG_VALUE<int>("upgrade_projectile_speed_chance", 13);
+		int fire_range		= CFG_VALUE<int>("upgrade_fire_range_chance", 13);
+		int fire_rate		= CFG_VALUE<int>("upgrade_fire_rate_chance", 13);
+		int health			= CFG_VALUE<int>("upgrade_health_chance", 13);
+		int speed			= CFG_VALUE<int>("upgrade_speed_chance", 13);
+		int rotation_speed	= CFG_VALUE<int>("upgrade_rotation_speed_chance", 13);
+	};
+
+	DropChances drop_chances;
+
 	// Upgrade functions
 	void upgrade_player_fire_rate(float amount);
 	void upgrade_player_projectile_speed(float amount);
 	void upgrade_player_fire_range(float amount);
 	void upgrade_player_add_cannon(int amount);
 	void upgrade_player_invincibility(bool invincibility);
+	void upgrade_player_health(int amount);
+	void upgrade_player_speed(float amount);
+	void upgrade_player_rotation_speed(float amount);
+
+	float player_current_fire_rate() const;
+	float player_current_projectile_speed() const;
+	float player_current_fire_range() const;
+	float player_max_velocity() const;
+	float player_input_rotation_mult() const;
 
 	// Player Health
 	void set_player_health(const int health);

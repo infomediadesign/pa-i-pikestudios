@@ -63,7 +63,7 @@ void MainMenuLayer::on_render()
 		gApp()->call_later([]() { 
 			auto upgrade_layer = gApp()->get_layer<UpgradeLayer>();
 			if ( upgrade_layer ) {
-				upgrade_layer->m_current_loot_table_values = upgrade_layer->m_loot_table.loot_table_values(2);
+				upgrade_layer->m_current_loot_table_values = upgrade_layer->m_loot_table.loot_table_values(3);
 				upgrade_layer->print_loot_table_values(upgrade_layer->m_current_loot_table_values);
 			}
 		});
@@ -102,6 +102,5 @@ void MainMenuLayer::draw_background()
 	auto& vp = gApp()->viewport();
 	float scale = vp->viewport_scale();
 	DrawTextureEx(m_main_menu_background, {vp->viewport_origin().x, vp->viewport_origin().y}, 0, scale, WHITE);
-	DrawTextureEx(m_main_menu_title, {vp->viewport_origin().x + 30 * scale, vp->viewport_origin().y + 30}, 0, scale, WHITE
-	);
+	DrawTextureEx(m_main_menu_title, {vp->viewport_origin().x + 30 * scale, vp->viewport_origin().y + 30}, 0, scale, WHITE);
 }
