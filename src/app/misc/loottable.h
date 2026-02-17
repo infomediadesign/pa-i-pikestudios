@@ -32,6 +32,8 @@ public:
 
 	void set_expected_value(float expected_value);
 
+	void set_pull_chance(int index, int pull_chance);
+
 	std::vector<LootTableValue> loot_table_values(int count);
 
 private:
