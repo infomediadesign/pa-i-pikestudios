@@ -7,6 +7,8 @@
 #include <raygui.h>
 #include <raylib.h>
 
+#include "optionslayer.h"
+
 static const int STANDART_TEXT_SIZE = 10;
 
 MainMenuLayer::MainMenuLayer()
@@ -65,6 +67,7 @@ void MainMenuLayer::on_render()
 	if ( GuiButtonTexture(m_button_2, button_pos, 0, scale, WHITE, GRAY, "Options") )
 	{
 		gApp()->call_later([]() { PS_LOG(LOG_INFO, "Clicked Settings"); });
+		gApp()->call_later([](){gApp()->switch_layer<MainMenuLayer, OptionsLayer>(); });
 	}
 
 	button_pos.y += spacing + m_button_1.height;
