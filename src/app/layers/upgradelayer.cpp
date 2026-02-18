@@ -79,30 +79,7 @@ void UpgradeLayer::apply_upgrade(LootTableValue upgrade_info)
 {
 	auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
 
-	float upgrade_multyplier = 1.0f;
-
-	switch ( upgrade_info.rarity ) {
-
-		case 0:
-			upgrade_multyplier = m_multiplier_common;
-			break;
-		case 1:
-			upgrade_multyplier = m_multiplier_uncommon;
-			break;
-		case 2:
-			upgrade_multyplier = m_multiplier_rare;
-			break;
-		case 3:
-			upgrade_multyplier = m_multiplier_epic;
-			break;
-		case 4:
-			upgrade_multyplier = m_multiplier_legendary;
-			break;
-		default:
-			std::cout << "Invalid rarity index: " << upgrade_info.rarity << std::endl;
-
-	}
-
+	float upgrade_multyplier = get_multiplier(upgrade_info.rarity);
 	float upgrade_amount;
 
 	switch ( upgrade_info.index ) {
@@ -180,7 +157,7 @@ void UpgradeLayer::draw_card_text(Vector2 card_pos, LootTableValue upgrade_info)
 
 	GuiLabel(rarity_text_pos, rarity_to_string(upgrade_info.rarity).c_str());
 	GuiLabel(type_text_pos, upgrade_type_to_string(upgrade_info.index).c_str());
-	GuiLabel(value_text_pos, value_to_string(upgrade_info.index, 0).c_str()
+	GuiLabel(value_text_pos, value_to_string(upgrade_info.index, upgrade_info.rarity).c_str()
 	);
 
 	GuiSetStyle(DEFAULT, TEXT_SIZE, 14 * scale);
@@ -202,7 +179,6 @@ std::string UpgradeLayer::rarity_to_string(int rarity)
 		case 4:
 			return "Legendary";
 		default:
-			printf("Invalid rarity index: %d\n", rarity);
 			return "Unknown";
 	}
 }
@@ -229,24 +205,45 @@ std::string UpgradeLayer::upgrade_type_to_string(int index)
 	}
 }
 
-std::string UpgradeLayer::value_to_string(int index, float value)
+std::string UpgradeLayer::value_to_string(int index, int rarity)
 {
+	float multiplier = get_multiplier(rarity);
+	float value		 = 0;
 	switch ( index ) {
 		case 0:
-			return "+1 Cannon";
+			return "+" + std::to_string(m_base_upgrade_add_cannon);
 		case 1:
-			return "+" + std::to_string(static_cast<int>(value * 100)) + "% Projectile Speed";
+			return std::format("+{:.1f}%", m_base_upgrade_projectile_speed * multiplier * 100);
 		case 2:
-			return "+" + std::to_string(static_cast<int>(value * 100)) + "% Fire Range";
+			return std::format("+{:.1f}%", m_base_upgrade_fire_range * multiplier * 100);
 		case 3:
-			return "+" + std::to_string(static_cast<int>(value * 100)) + "% Fire Rate";
+			return std::format("+{:.1f}%", m_base_upgrade_fire_rate * multiplier * 100);
 		case 4:
-			return "+1 Health";
+			return "+" + std::to_string(m_base_upgrade_health);
 		case 5:
-			return "+" + std::to_string(static_cast<int>(value * 100)) + "% Player Speed";
+			return std::format("+{:.1f}%", m_base_upgrade_player_speed * multiplier * 100);
 		case 6:
-			return "+" + std::to_string(static_cast<int>(value * 100)) + "% Turn Speed";
+			return std::format("+{:.1f}%", m_base_upgrade_rotation_speed * multiplier * 100);
 		default:
 			return "Unknown";
+	}
+}
+
+float UpgradeLayer::get_multiplier(int rarity)
+{
+	switch ( rarity ) {
+		case 0:
+			return m_multiplier_common;
+		case 1:
+			return m_multiplier_uncommon;
+		case 2:
+			return m_multiplier_rare;
+		case 3:
+			return m_multiplier_epic;
+		case 4:
+			return m_multiplier_legendary;
+		default:
+			std::cout << "Invalid rarity index: " << rarity << std::endl;
+			return 1.0f;
 	}
 }

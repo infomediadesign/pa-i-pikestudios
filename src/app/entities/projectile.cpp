@@ -1,5 +1,6 @@
 #include "projectile.h"
 #include <cmath>
+#include <cstdlib>
 #include <coordinatesystem.h>
 #include <entities/director.h>
 #include <iostream>
@@ -14,6 +15,7 @@
 #include <layers/applayer.h>
 #include <psinterfaces/entity.h>
 #include <raymath.h>
+#include "pscore/utils.h"
 #include <vector>
 
 Projectile::Projectile() : PSInterfaces::IEntity("projectile")
@@ -78,10 +80,22 @@ void Projectile::update(const float dt)
 	}
 	play_hit_anim(dt);
 	play_no_hit_anim(dt);
+	update_pierce_hit_anims(dt);
 }
 
 void Projectile::render()
 {
+	for ( auto& pierce : m_p_pierce_hit_anims ) {
+		if ( !pierce.finished ) {
+			if ( auto& vp = gApp()->viewport() ) {
+				vp->draw_in_viewport(
+						m_p_hit_anim_texture, pierce.anim_controller.get_source_rectangle(m_p_z_index).value_or(Rectangle{0}), pierce.position,
+						pierce.rotation, WHITE
+				);
+			}
+		}
+	}
+
 	if ( is_active_ && !m_p_hit_aninm_playing && !m_p_no_hit_anim_playing) {
 		m_p_source = {0, 0, (float) m_p_texture.width, (float) m_p_texture.height};
 		if ( auto& vp = gApp()->viewport() ) {
@@ -91,7 +105,7 @@ void Projectile::render()
 	if ( m_p_hit_aninm_playing ) {
 		if ( auto& vp = gApp()->viewport() ) {
 			vp->draw_in_viewport(
-					m_p_hit_anim_texture, m_p_animation_controller.get_source_rectangle(m_p_z_index).value_or(Rectangle{0}), m_p_position,
+					m_p_hit_anim_texture, m_p_animation_controller.get_source_rectangle(m_p_z_index).value_or(Rectangle{0}), m_p_hit_anim_pos,
 					m_p_rotation, WHITE
 			);
 		}
@@ -108,6 +122,17 @@ void Projectile::render()
 
 void Projectile::on_hit()
 {
+	if ( can_pierce() ) {
+		PierceHitAnim pierce;
+		pierce.position = m_p_position;
+		pierce.rotation = m_p_rotation;
+		pierce.anim_controller = PSCore::sprites::SpriteSheetAnimation(m_p_hit_anim_texture, {{9, 0.1, PSCore::sprites::Forward, m_p_z_index}});
+		pierce.anim_controller.add_animation_at_index(0, m_p_z_index);
+		pierce.anim_controller.set_animation_at_index(0, 0, m_p_z_index);
+		m_p_pierce_hit_anims.push_back(std::move(pierce));
+		return;
+	}
+	m_p_hit_anim_pos = m_p_position;
 	m_p_animation_controller.set_animation_at_index(0, 0, m_p_z_index);
 	m_p_hit_aninm_playing = true;
 }
@@ -119,10 +144,10 @@ void Projectile::play_hit_anim(float dt)
 		if ( m_p_animation_controller.get_sprite_sheet_frame_index(m_p_z_index) == 8 ) {
 			m_p_animation_controller.set_animation_at_index(0, 0, m_p_z_index);
 			m_p_hit_aninm_playing = false;
+			m_p_pierce_hit_anims.clear();
 			set_is_active(false);
 		}
 	}
-	
 }
 
 void Projectile::play_no_hit_anim(float dt)
@@ -132,7 +157,27 @@ void Projectile::play_no_hit_anim(float dt)
 		if ( m_p_no_hit_anim_controller.get_sprite_sheet_frame_index(m_p_z_index) == 9 ) {
 			m_p_no_hit_anim_controller.set_animation_at_index(0, 0, m_p_z_index);
 			m_p_no_hit_anim_playing = false;
+			m_p_pierce_hit_anims.clear();
 			set_is_active(false);
+		}
+	}
+}
+
+void Projectile::update_pierce_hit_anims(float dt)
+{
+	for ( auto& pierce : m_p_pierce_hit_anims ) {
+		if ( !pierce.finished ) {
+			pierce.anim_controller.update_animation(dt);
+			if ( pierce.anim_controller.get_sprite_sheet_frame_index(m_p_z_index) == 8 ) {
+				pierce.finished = true;
+			}
+		}
+	}
+	for ( auto index = m_p_pierce_hit_anims.begin(); index != m_p_pierce_hit_anims.end(); ) {
+		if ( index->finished ) {
+			index = m_p_pierce_hit_anims.erase(index);
+		} else {
+			++index;
 		}
 	}
 }
@@ -198,67 +243,24 @@ void Projectile::launch()
 	m_p_rotation = atan2f(combined.y, combined.x) * (180.0f / PI);
 
 	m_p_travel_distance = 0.0f;
+	m_p_pierce_hit_anims.clear();
 }
 
-/*
-void Projectile::calculate_parenting()
+bool Projectile::can_pierce() const
 {
-	if ( !m_p_fiering_cannon ) {
-		return;
-	}
-
-	Vector2 cannon_pos = m_p_fiering_cannon->position().value_or(Vector2{0, 0});
-	float cannon_rot   = m_p_fiering_cannon->rotation();
-
-	Vector2 diff = Vector2Subtract(m_p_target_position, cannon_pos);
-	float rad = -cannon_rot * (PI / 180.0f);
-	Vector2 target_local_offset = {
-		diff.x * cosf(rad) - diff.y * sinf(rad),
-		diff.x * sinf(rad) + diff.y * cosf(rad)
-	};
-
-	m_p_initial_distance = Vector2Length(target_local_offset);
-	m_p_local_direction = Vector2Normalize(target_local_offset);
-
-	m_p_local_offset = {0, 0};
-	m_p_position = cannon_pos;
+	int roll = PSUtils::gen_rand(1, 100);
+	return roll <= m_p_piercing_chance;
 }
 
-void Projectile::fire_from_cannon(const float dt)
+int Projectile::piercing_chance() const
 {
-	if ( !m_p_fiering_cannon ) {
-		return;
-	}
-
-	float current_distance = Vector2Length(m_p_local_offset);
-
-	if ( current_distance >= m_p_initial_distance ) {
-		is_active_ = false;
-		return;
-	}
-
-	m_p_local_offset.x += m_p_local_direction.x * m_p_speed * dt;
-	m_p_local_offset.y += m_p_local_direction.y * m_p_speed * dt;
-
-	m_p_travel_distance = Vector2Length(m_p_local_offset);
+	return m_p_piercing_chance;
 }
 
-void Projectile::parent_to_cannon()
+void Projectile::set_piercing_chance(const int chance)
 {
-	if ( !m_p_fiering_cannon ) {
-		return;
-	}
-	Vector2 cannon_pos = m_p_fiering_cannon->position().value_or(Vector2{0, 0});
-	float cannon_rot   = m_p_fiering_cannon->rotation();
-
-	m_p_position = coordinatesystem::point_relative_to_global_rightup(
-		cannon_pos,
-		cannon_rot,
-		m_p_local_offset
-	);
-	m_p_rotation = cannon_rot;
+	m_p_piercing_chance = chance;
 }
-*/
 
 Texture2D Projectile::texture()
 {
@@ -414,8 +416,6 @@ std::optional<std::vector<Vector2>> Projectile::bounds() const
 
 			return coordinatesystem::points_relative_to_globle_rightup(vp_pos, m_p_rotation, hitbox_points);
 		}
-
-	return std::nullopt;
 
 	return std::nullopt;
 };
