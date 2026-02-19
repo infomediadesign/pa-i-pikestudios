@@ -105,7 +105,6 @@ private:
 	std::shared_ptr<PSCore::sprites::Sprite> m_p_sprite;
 	Rectangle m_p_source;
 	Rectangle m_p_dest;
-	bool m_p_is_first_tick = true;
 	std::shared_ptr<Projectile> m_p_shared_ptr;
 	std::shared_ptr<Player> m_p_owner;
 	std::shared_ptr<Cannon> m_p_fiering_cannon;
