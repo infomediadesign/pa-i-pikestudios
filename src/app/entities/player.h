@@ -200,4 +200,10 @@ public:
 
 private:
 	const Player* m_player;
+	std::shared_ptr<PSCore::sprites::Sprite> m_sprite;
+
+	// Shader
+	Shader m_emissive_shader = LoadShader(NULL, "resources/shader/emissive_color.fs");
+	Vector3 m_emissive_color = {255,255,255};
+	int m_emissive_texture_location;
 };
