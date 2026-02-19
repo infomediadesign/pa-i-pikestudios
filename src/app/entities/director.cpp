@@ -172,6 +172,17 @@ void FortunaDirector::draw_debug()
 		} 
 	}
 
+	// Add Bounty
+	static int bounty_amount = 100;
+	ImGui::Text("Bounty: %i", m_b_bounty.bounty());
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(100);
+	ImGui::InputInt("##bounty_amount", &bounty_amount);
+	ImGui::SameLine();
+	if ( ImGui::Button("Add Bounty##Bounty") ) {
+		m_b_bounty.add_bounty(bounty_amount);
+	}
+
 	ImGui::Separator();
 	ImGui::Text("Player Upgrades");
 
@@ -495,7 +506,13 @@ void FortunaDirector::increase_difficulty(int bounty)
 	if ( bounty >= _p->shark_start_increase_difficulty_bounty_amount ) {
 		_p->shark_spawner->set_interval(std::max(_p->shark_min_spawn_time, _p->shark_spawn_time - _p->shark_spawn_increase_base_value * (static_cast<float>(bounty) / _p->shark_spawn_increase_bounty_divider)));
 		_p->shark_spawner->set_limit(std::min(_p->shark_max_limit, _p->shark_limit + (bounty / _p->shark_limit_increase_bounty_divider)));
-		printf("Bounty: %d, Shark Spawn Time: %.2f, Shark Limit: %d\n", bounty, _p->shark_spawner->interval(), _p->shark_spawner->limit());
+	}
+	if ( bounty >= _p->shark_start_decrease_difficulty_bounty_amount ) {
+		_p->shark_spawner->set_interval(std::max(_p->shark_min_spawn_time,_p->shark_spawn_time +_p->shark_spawn_increase_base_value * (static_cast<float>(bounty) / _p->shark_spawn_increase_bounty_divider)));
+		_p->shark_spawner->set_limit(std::min(_p->shark_max_limit, _p->shark_limit - (bounty / _p->shark_limit_increase_bounty_divider)));
+	}
+	if ( bounty >= _p->shark_stop_spawn_bounty_amount ) {
+		_p->shark_spawner->suspend();
 	}
 	// Increase tentacle spawn rate and limit based on bounty
 	if ( bounty >= _p->tentacle_start_spawn_bounty_amount ) 

@@ -13,11 +13,11 @@ UpgradeLayer::UpgradeLayer()
 	m_card_texture = PRELOAD_TEXTURE("card", "resources/ui/test_upgrade_card.png", frame_grid)->m_s_texture;
 	auto director  = dynamic_cast<FortunaDirector*>(gApp()->game_director());
 	
-	m_loot_table.add_loot_table(0,director->drop_chances.add_cannon, m_chances); //Add Cannon
+	m_loot_table.add_loot_table(0, director->drop_chances.add_cannon, m_only_mithic_chance); // Add Cannon
 	m_loot_table.add_loot_table(1,director->drop_chances.projectile_speed, m_chances); //Projectile Speed
 	m_loot_table.add_loot_table(2,director->drop_chances.fire_range , m_chances); //Fire Range
 	m_loot_table.add_loot_table(3,director->drop_chances.fire_rate, m_chances); //Fire Rate
-	m_loot_table.add_loot_table(4,director->drop_chances.health, m_chances); //Health
+	m_loot_table.add_loot_table(4, director->drop_chances.health, m_only_epic_chance); // Health
 	m_loot_table.add_loot_table(5,director->drop_chances.speed, m_chances); //Player Speed
 	m_loot_table.add_loot_table(6,director->drop_chances.rotation_speed, m_chances); //Turn Speed
 	m_loot_table.add_loot_table(7, director->drop_chances.piercing_chance, m_chances); // Piercing Chance
@@ -47,16 +47,14 @@ void UpgradeLayer::draw_upgrade_cards()
 	GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt(BLACK));
 	
 	
-	if ( GuiButtonTexture(m_card_texture, screen_middel, 0, scale, WHITE, GRAY, std::to_string(m_current_loot_table_values[0].index).c_str()) ) {
+	if ( GuiButtonTexture(m_card_texture, screen_middel, 0, scale, WHITE, GRAY, "") ) {
 		apply_upgrade(m_current_loot_table_values[0]);
 		gApp()->call_later([]() {
 			gApp()->pop_layer<UpgradeLayer>(); });
 	}
 	draw_card_text(card_pos * scale, m_current_loot_table_values[0]);
 	
-	if ( GuiButtonTexture(
-				 m_card_texture, {screen_middel.x + m_card_texture.width + 16, screen_middel.y}, 0, scale, WHITE, GRAY,
-				 std::to_string(m_current_loot_table_values[1].index).c_str()))
+	if ( GuiButtonTexture(m_card_texture, {screen_middel.x + m_card_texture.width + 16, screen_middel.y}, 0, scale, WHITE, GRAY, ""))
 		{
 		apply_upgrade(m_current_loot_table_values[1]);
 		gApp()->call_later([]() { gApp()->pop_layer<UpgradeLayer>(); });
@@ -64,9 +62,7 @@ void UpgradeLayer::draw_upgrade_cards()
 
 	draw_card_text({(screen_middel.x + m_card_texture.width + 16) * scale, screen_middel.y * scale}, m_current_loot_table_values[1]);
 
-	if ( GuiButtonTexture(
-				 m_card_texture, {screen_middel.x - m_card_texture.width - 16, screen_middel.y}, 0, scale, WHITE, GRAY,
-				 std::to_string(m_current_loot_table_values[2].index).c_str()))
+	if ( GuiButtonTexture(m_card_texture, {screen_middel.x - m_card_texture.width - 16, screen_middel.y}, 0, scale, WHITE, GRAY, "") )
 		{
 		apply_upgrade(m_current_loot_table_values[2]);
 		gApp()->call_later([]() { gApp()->pop_layer<UpgradeLayer>(); });
@@ -141,10 +137,10 @@ void UpgradeLayer::draw_card_text(Vector2 card_pos, LootTableValue upgrade_info)
 	auto& vp = gApp()->viewport();
 	float scale = vp->viewport_scale();
 	float text_size = 14 * scale;
-	Rectangle rarity_text_pos = {card_pos.x + 10 * scale, card_pos.y - 60 * scale, 100 * scale, text_size};
-	Rectangle value_text_pos  = {card_pos.x + 10 * scale, card_pos.y + 10 * scale + 2 * text_size, 100 * scale, text_size};
-	Rectangle type_text_pos	  = {card_pos.x + 10 * scale, card_pos.y + 10 * scale + text_size, 100 * scale, text_size};
-	float text_pos_x		  = card_pos.x - 50 * scale;
+	Rectangle rarity_text_pos = {card_pos.x + 10 * scale, card_pos.y - 60 * scale, 120 * scale, text_size};
+	Rectangle value_text_pos  = {card_pos.x + 10 * scale, card_pos.y + 10 * scale + 2 * text_size, 120 * scale, text_size};
+	Rectangle type_text_pos	  = {card_pos.x + 10 * scale, card_pos.y + 10 * scale + text_size, 120 * scale, text_size};
+	float text_pos_x		  = card_pos.x - 60 * scale;
 	rarity_text_pos.x		  = text_pos_x;
 	type_text_pos.x			  = text_pos_x;
 	value_text_pos.x		  = text_pos_x;
@@ -179,6 +175,8 @@ std::string UpgradeLayer::rarity_to_string(int rarity)
 			return "Epic";
 		case 4:
 			return "Legendary";
+		case 5:
+			return "Mythic";
 		default:
 			return "Unknown";
 	}
@@ -247,6 +245,8 @@ float UpgradeLayer::get_multiplier(int rarity)
 			return m_multiplier_epic;
 		case 4:
 			return m_multiplier_legendary;
+		case 5:
+			return m_multiplier_mythic;
 		default:
 			std::cout << "Invalid rarity index: " << rarity << std::endl;
 			return 1.0f;

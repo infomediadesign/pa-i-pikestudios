@@ -140,16 +140,18 @@ struct FortunaDirectorPriv
 	int shark_max_limit							= CFG_VALUE<int>("shark_max_limit", 100);
 	float shark_min_spawn_time					= CFG_VALUE<float>("shark_min_spawn_time", 0.1f);
 	int shark_start_increase_difficulty_bounty_amount = CFG_VALUE<int>("shark_start_increase_at_bounty", 160);
+	int shark_start_decrease_difficulty_bounty_amount = CFG_VALUE<int>("shark_start_decrease_at_bounty", 4000);
+	int shark_stop_spawn_bounty_amount				  = CFG_VALUE<int>("shark_stop_spawn_at_bounty", 6000);
 
 	std::unique_ptr<PSCore::Spawner<tentacle, AppLayer>> tentacle_spawner;
-	int tentacle_limit = CFG_VALUE<int>("tentacle_limit", 10);
-	float tentacle_spawn_time = CFG_VALUE<float>("tentacle_spawn_time", 5.0f);
-	float tentacle_spawn_variation = CFG_VALUE<float>("tentacle_spawn_variation", 3.0f);
-	float tentacle_spawn_increase_base_value		= CFG_VALUE<float>("tentacle_spawn_increase_base_value", 0.05f);
-	float tentacle_spawn_increase_bounty_divider	= CFG_VALUE<float>("tentacle_spawn_increase_bounty_divider", 100.0f);
-	int tentacle_limit_increase_bounty_divider		= CFG_VALUE<int>("tentacle_limit_increase_bounty_divider", 200);
+	int tentacle_limit							 = CFG_VALUE<int>("tentacle_limit", 10);
+	float tentacle_spawn_time					 = CFG_VALUE<float>("tentacle_spawn_time", 5.0f);
+	float tentacle_spawn_variation				 = CFG_VALUE<float>("tentacle_spawn_variation", 3.0f);
+	float tentacle_spawn_increase_base_value	 = CFG_VALUE<float>("tentacle_spawn_increase_base_value", 0.05f);
+	float tentacle_spawn_increase_bounty_divider = CFG_VALUE<float>("tentacle_spawn_increase_bounty_divider", 100.0f);
+	int tentacle_limit_increase_bounty_divider	 = CFG_VALUE<int>("tentacle_limit_increase_bounty_divider", 200);
 	int tentacle_max_limit						 = CFG_VALUE<int>("tentacle_max_limit", 100);
-	float tentacle_min_spawn_time					 = CFG_VALUE<float>("tentacle_min_spawn_time", 0.5f);
+	float tentacle_min_spawn_time				 = CFG_VALUE<float>("tentacle_min_spawn_time", 0.5f);
 	int tentacle_start_spawn_bounty_amount		 = CFG_VALUE<int>("tentacle_start_spawn_at_bounty", 200);
 	bool m_tentacle_spawn_active				 = false;
 
