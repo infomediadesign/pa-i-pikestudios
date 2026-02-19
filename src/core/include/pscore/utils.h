@@ -14,6 +14,7 @@ namespace PSUtils {
 	 * @param max: the maximum value
 	 */
 	int gen_rand(const int min, const int max);
+	float gen_rand_float(const float min, const float max);
 
 	std::string generate_uid();
 

@@ -38,6 +38,7 @@ public:
 	float m_base_upgrade_projectile_speed = 0.1f;
 	float m_base_upgrade_fire_range		  = 0.1f;
 	float m_base_upgrade_fire_rate		  = 0.075f;
+	float m_base_upgrade_piercing_chance  = 0.05f;
 	int m_base_upgrade_health			  = 1;
 	int m_base_upgrade_add_cannon		  = 1;
 

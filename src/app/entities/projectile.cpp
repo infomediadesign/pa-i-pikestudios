@@ -248,16 +248,16 @@ void Projectile::launch()
 
 bool Projectile::can_pierce() const
 {
-	int roll = PSUtils::gen_rand(1, 100);
+	float roll = PSUtils::gen_rand_float(0.01f, 100.0f);
 	return roll <= m_p_piercing_chance;
 }
 
-int Projectile::piercing_chance() const
+float Projectile::piercing_chance() const
 {
 	return m_p_piercing_chance;
 }
 
-void Projectile::set_piercing_chance(const int chance)
+void Projectile::set_piercing_chance(const float chance)
 {
 	m_p_piercing_chance = chance;
 }

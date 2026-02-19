@@ -20,6 +20,7 @@ UpgradeLayer::UpgradeLayer()
 	m_loot_table.add_loot_table(4,director->drop_chances.health, m_chances); //Health
 	m_loot_table.add_loot_table(5,director->drop_chances.speed, m_chances); //Player Speed
 	m_loot_table.add_loot_table(6,director->drop_chances.rotation_speed, m_chances); //Turn Speed
+	m_loot_table.add_loot_table(7, director->drop_chances.piercing_chance, m_chances); // Piercing Chance
 }
 
 void UpgradeLayer::on_update(float dt)
@@ -84,44 +85,44 @@ void UpgradeLayer::apply_upgrade(LootTableValue upgrade_info)
 
 	switch ( upgrade_info.index ) {
 		case 0:
-			director->upgrade_player_add_cannon(1);
+			director->upgrade_player_add_cannon(m_base_upgrade_add_cannon);
 			director->drop_chances.add_cannon = 0;
-			printf("Upgrade applied: Added Cannon\n");
+			printf("Add Cannon Upgrade Applied\n");
 			break;
 		case 1:
-			upgrade_amount = director->player_current_projectile_speed() * (0.2f * upgrade_multyplier);
+			upgrade_amount = director->player_current_projectile_speed() * (m_base_upgrade_projectile_speed * upgrade_multyplier);
 			director->upgrade_player_projectile_speed(upgrade_amount);
-			printf("Upgrade applied: Projectile Speed increased by %f\n", 20.0f * upgrade_multyplier);
-			printf("Current Projectile Speed: %f\n", director->player_current_projectile_speed());
+			printf("Projectile Speed Upgrade Applied: %.2f\n", upgrade_amount);
 			break;
 		case 2:
-			upgrade_amount = director->player_current_fire_range() * (0.2f * upgrade_multyplier);
-			director->upgrade_player_fire_range(20.0f * upgrade_multyplier);
-			printf("Upgrade applied: Fire Range increased by %f\n", 20.0f * upgrade_multyplier);
-			printf("Current Fire Range: %f\n", director->player_current_fire_range());
+			upgrade_amount = director->player_current_fire_range() * (m_base_upgrade_fire_range * upgrade_multyplier);
+			director->upgrade_player_fire_range(upgrade_amount);
+			printf("Fire Range Upgrade Applied: %.2f\n", upgrade_amount);
 			break;
 		case 3:
-			upgrade_amount = director->player_current_fire_rate() * (0.1f * upgrade_multyplier);
-			director->upgrade_player_fire_rate(0.1f * upgrade_multyplier);
-			printf("Upgrade applied: Fire Rate increased by %f\n", 0.1f * upgrade_multyplier);
-			printf("Current Fire Rate: %f\n", director->player_current_fire_rate());
+			upgrade_amount = director->player_current_fire_rate() * (m_base_upgrade_fire_rate * upgrade_multyplier);
+			director->upgrade_player_fire_rate(upgrade_amount);
+			printf("Fire Rate Upgrade Applied: %.2f\n", upgrade_amount);
 			break;
 		case 4:
-			director->upgrade_player_health(1);
-			printf("Upgrade applied: Health increased by 1\n");
-			printf("Current Health: %d / %d\n", director->player_health(), director->player_max_health());
+			director->upgrade_player_health(m_base_upgrade_health);
+			printf("Health Upgrade Applied: %d\n", m_base_upgrade_health);
 			break;
 		case 5:
-			upgrade_amount = director->player_max_velocity() * (0.1f * upgrade_multyplier);
+			upgrade_amount = director->player_max_velocity() * (m_base_upgrade_player_speed * upgrade_multyplier);
 			director->upgrade_player_speed(upgrade_amount);
-			printf("Upgrade applied: Speed increased by %f\n", upgrade_amount);
-			printf("Current Speed: %f\n", director->player_max_velocity());
+			printf("Player Speed Upgrade Applied: %.2f\n", upgrade_amount);
 			break;
 		case 6:
-			upgrade_amount = director->player_input_rotation_mult() * (0.1f * upgrade_multyplier);
+			upgrade_amount = director->player_input_rotation_mult() * (m_base_upgrade_rotation_speed * upgrade_multyplier);
 			director->upgrade_player_rotation_speed(upgrade_amount);
-			printf("Upgrade applied: Rotation Speed increased by %f\n", upgrade_amount);
-			printf("Current Rotation Speed: %f\n", director->player_input_rotation_mult());
+			printf("Rotation Speed Upgrade Applied: %.2f\n", upgrade_amount);
+			break;
+		case 7:
+			upgrade_amount = director->player_piercing_chance() * (m_base_upgrade_piercing_chance * upgrade_multyplier);
+			director->upgrade_player_piercing_chance(upgrade_amount);
+			printf("Piercing Chance Upgrade Applied: %.2f\n", upgrade_amount);
+			printf("Player Piercing Chance: %.2f\n", director->player_piercing_chance());
 			break;
 		default:
 			std::cout << "Invalid upgrade index: " << upgrade_info.index << std::endl;
@@ -200,6 +201,8 @@ std::string UpgradeLayer::upgrade_type_to_string(int index)
 			return "Player Speed";
 		case 6:
 			return "Turn Speed";
+		case 7:
+			return "Piercing Chance";
 		default:
 			return "Unknown";
 	}
@@ -224,6 +227,8 @@ std::string UpgradeLayer::value_to_string(int index, int rarity)
 			return std::format("+{:.1f}%", m_base_upgrade_player_speed * multiplier * 100);
 		case 6:
 			return std::format("+{:.1f}%", m_base_upgrade_rotation_speed * multiplier * 100);
+		case 7:
+			return std::format("+{:.1f}%", m_base_upgrade_piercing_chance * multiplier * 100);
 		default:
 			return "Unknown";
 	}

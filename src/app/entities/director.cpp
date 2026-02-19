@@ -297,6 +297,7 @@ std::shared_ptr<Cannon> FortunaDirector::spawn_cannon(const Vector2& position)
 			cannon->set_fire_rate(_p->player_current_fire_rate);
 			cannon->set_projectile_speed(_p->player_current_projectile_speed);
 			cannon->set_range(_p->player_current_fire_range);
+			cannon->set_projectile_piercing_chance(_p->player_current_piercing_chance);
 			cannon->set_shared_ptr_this(cannon);
 			return cannon;
 		}
@@ -306,6 +307,7 @@ std::shared_ptr<Cannon> FortunaDirector::spawn_cannon(const Vector2& position)
 	new_cannon->set_fire_rate(_p->player_current_fire_rate);
 	new_cannon->set_projectile_speed(_p->player_current_projectile_speed);
 	new_cannon->set_range(_p->player_current_fire_range);
+	new_cannon->set_projectile_piercing_chance(_p->player_current_piercing_chance);
 	_p->cannons.push_back(new_cannon);
 
 	if ( auto app_layer = gApp()->get_layer<AppLayer>() )
@@ -396,6 +398,16 @@ void FortunaDirector::upgrade_player_rotation_speed(float amount)
 	}
 }
 
+void FortunaDirector::upgrade_player_piercing_chance(float amount)
+{
+	_p->player_current_piercing_chance += amount;
+	for ( auto player: _p->players ) {
+		for ( auto& cannon: player->cannon_container() ) {
+			cannon->set_projectile_piercing_chance(_p->player_current_piercing_chance);
+		}
+	}
+}
+
 float FortunaDirector::player_current_fire_rate() const
 {
 	return _p->player_current_fire_rate;
@@ -419,6 +431,16 @@ float FortunaDirector::player_max_velocity() const
 float FortunaDirector::player_input_rotation_mult() const
 {
 	return _p->player_input_rotation_mult;
+}
+
+float FortunaDirector::player_piercing_chance() const
+{
+	return _p->player_current_piercing_chance;
+}
+
+void FortunaDirector::set_player_piercing_chance(const int chance)
+{
+	_p->player_current_piercing_chance = chance;
 }
 
 template<>

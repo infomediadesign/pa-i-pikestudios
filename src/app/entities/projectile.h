@@ -73,8 +73,8 @@ public:
 	void calculate_movment(const float dt);
 
 	bool can_pierce() const;
-	int piercing_chance() const;
-	void set_piercing_chance(const int chance);
+	float piercing_chance() const;
+	void set_piercing_chance(const float chance);
 
 	void draw_debug() override;
 	void launch();
@@ -99,7 +99,7 @@ private:
 	float m_p_speed;
 	float m_p_travel_distance;
 	Vector2 m_p_owner_velocity;
-	int m_p_piercing_chance = 50;
+	float m_p_piercing_chance;
 
 	Texture2D m_p_texture;
 	std::shared_ptr<PSCore::sprites::Sprite> m_p_sprite;

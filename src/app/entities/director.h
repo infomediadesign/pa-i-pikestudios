@@ -44,13 +44,14 @@ public:
 
 	struct DropChances
 	{
-		int add_cannon		= CFG_VALUE<int>("upgrade_add_cannon_chance", 200);
+		int add_cannon		= CFG_VALUE<int>("upgrade_add_cannon_chance", 1);
 		int projectile_speed = CFG_VALUE<int>("upgrade_projectile_speed_chance", 13);
 		int fire_range		= CFG_VALUE<int>("upgrade_fire_range_chance", 13);
 		int fire_rate		= CFG_VALUE<int>("upgrade_fire_rate_chance", 13);
 		int health			= CFG_VALUE<int>("upgrade_health_chance", 13);
 		int speed			= CFG_VALUE<int>("upgrade_speed_chance", 13);
 		int rotation_speed	= CFG_VALUE<int>("upgrade_rotation_speed_chance", 13);
+		int piercing_chance	 = CFG_VALUE<int>("upgrade_piercing_chance_chance", 13);
 	};
 
 	DropChances drop_chances;
@@ -64,6 +65,7 @@ public:
 	void upgrade_player_health(int amount);
 	void upgrade_player_speed(float amount);
 	void upgrade_player_rotation_speed(float amount);
+	void upgrade_player_piercing_chance(float amount);
 
 	float player_current_fire_rate() const;
 	float player_current_projectile_speed() const;
@@ -71,12 +73,16 @@ public:
 	float player_max_velocity() const;
 	float player_input_rotation_mult() const;
 
+	void set_player_piercing_chance(const int chance);
+	float player_piercing_chance() const;
+
 	// Player Health
 	void set_player_health(const int health);
 	int player_health() const;
 
 	void set_player_max_health(const int max_health);
 	int player_max_health() const;
+
 
 	// Bounty
 	struct Bounty
@@ -122,6 +128,7 @@ struct FortunaDirectorPriv
 	float player_current_fire_rate		  = CFG_VALUE<float>("player_current_fire_rate", 0.5f);
 	float player_current_projectile_speed = CFG_VALUE<float>("player_current_projectile_speed", 300.0f);
 	float player_current_fire_range		  = CFG_VALUE<float>("player_current_fire_range", 100.0f);
+	float player_current_piercing_chance  = CFG_VALUE<float>("player_current_piercing_chance", 5.0f);
 
 	std::unique_ptr<PSCore::Spawner<Shark, AppLayer>> shark_spawner;
 	float shark_spawn_time		= CFG_VALUE<float>("shark_spawn_time", 1.0f);
