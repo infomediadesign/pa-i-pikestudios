@@ -51,6 +51,8 @@ public:
 
 	bool m_layer_is_visible = true;
 	Texture2D m_button;
+	bool m_can_receive_input = false;
+	float m_time_since_opened = 0;
 
 	// base upgrade values for the different upgrades
 	float m_base_upgrade_player_speed	  = CFG_VALUE<float>("upgrade_player_speed_base_value", 0.075f);

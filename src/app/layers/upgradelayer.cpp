@@ -26,6 +26,10 @@ UpgradeLayer::UpgradeLayer()
 
 void UpgradeLayer::on_update(float dt)
 {
+	m_time_since_opened += dt;
+	if ( m_time_since_opened > 0.5f ) {
+		m_can_receive_input = true;
+	}
 }
 
 void UpgradeLayer::on_render()
@@ -51,7 +55,7 @@ void UpgradeLayer::draw_upgrade_cards()
 	GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt(BLACK));
 	
 	
-	if ( GuiButtonTexture(m_card_texture, screen_middel, 0, scale, WHITE, GRAY, "") ) {
+	if ( GuiButtonTexture(m_card_texture, screen_middel, 0, scale, WHITE, GRAY, "") && m_can_receive_input ) {
 		apply_upgrade(m_current_loot_table_values[0]);
 		gApp()->call_later([]() {
 			gApp()->pop_layer<UpgradeLayer>(); });
@@ -63,7 +67,8 @@ void UpgradeLayer::draw_upgrade_cards()
 	}
 	draw_card_text(card_pos * scale, m_current_loot_table_values[0]);
 	
-	if ( GuiButtonTexture(m_card_texture, {screen_middel.x + m_card_texture.width + 16, screen_middel.y}, 0, scale, WHITE, GRAY, ""))
+	if ( GuiButtonTexture(m_card_texture, {screen_middel.x + m_card_texture.width + 16, screen_middel.y}, 0, scale, WHITE, GRAY, "") &&
+		 m_can_receive_input )
 		{
 		apply_upgrade(m_current_loot_table_values[1]);
 		gApp()->call_later([]() { gApp()->pop_layer<UpgradeLayer>(); });
@@ -76,7 +81,8 @@ void UpgradeLayer::draw_upgrade_cards()
 
 	draw_card_text({(screen_middel.x + m_card_texture.width + 16) * scale, screen_middel.y * scale}, m_current_loot_table_values[1]);
 
-	if ( GuiButtonTexture(m_card_texture, {screen_middel.x - m_card_texture.width - 16, screen_middel.y}, 0, scale, WHITE, GRAY, "") )
+	if ( GuiButtonTexture(m_card_texture, {screen_middel.x - m_card_texture.width - 16, screen_middel.y}, 0, scale, WHITE, GRAY, "") &&
+		 m_can_receive_input )
 		{
 		apply_upgrade(m_current_loot_table_values[2]);
 		gApp()->call_later([]() { gApp()->pop_layer<UpgradeLayer>(); });
@@ -349,7 +355,10 @@ void UpgradeLayer::draw_reroll_button()
 		};
 		float scale = vp->viewport_scale();
 		if ( GuiButtonTexture(
-					 m_button, {screen_middel.x, screen_middel.y + 130}, 0, scale, WHITE, GRAY,std::format("{}x Reroll", director->reroll_amount()).c_str()) ) {
+					 m_button, {screen_middel.x, screen_middel.y + 130}, 0, scale, WHITE, GRAY,
+					 std::format("{}x Reroll", director->reroll_amount()).c_str()
+			 ) &&
+			 m_can_receive_input ) {
 			m_current_loot_table_values = m_loot_table.loot_table_values(3);
 			director->set_reroll_amount(director->reroll_amount() - 1);
 		}
