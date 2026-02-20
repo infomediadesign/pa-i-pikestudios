@@ -93,6 +93,5 @@ void MainMenuLayer::draw_background()
 	auto& vp = gApp()->viewport();
 	float scale = vp->viewport_scale();
 	DrawTextureEx(m_main_menu_background, {vp->viewport_origin().x, vp->viewport_origin().y}, 0, scale, WHITE);
-	DrawTextureEx(m_main_menu_title, {vp->viewport_origin().x + 30 * scale, vp->viewport_origin().y + 30}, 0, scale, WHITE
-	);
+	DrawTextureEx(m_main_menu_title, {vp->viewport_origin().x + 30 * scale, vp->viewport_origin().y + 30}, 0, scale, WHITE);
 }

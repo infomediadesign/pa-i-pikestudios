@@ -124,9 +124,7 @@ Shark::Shark() : PSInterfaces::IEntity("shark")
 	m_body->propose_z_index(-30);
 	m_fin->propose_z_index(-10);
 
-	// Has an droppable upgrade
-	float drop_roll = static_cast<float>(PSUtils::gen_rand(0, 1000)) / 1000.0f;
-	m_marked		= drop_roll < m_drop_upgrade_chance;
+	determined_if_marked();
 }
 
 void Shark::init(std::shared_ptr<Shark> self, const Vector2& pos)
@@ -153,10 +151,6 @@ void Shark::init(std::shared_ptr<Shark> self, const Vector2& pos)
 
 Shark::~Shark()
 {
-	if ( m_marked ) {
-		PS_LOG(LOG_INFO, "Dropped an upgrade");
-		// TODO: implement loot drop
-	}
 }
 
 void Shark::update(float dt)
@@ -281,6 +275,12 @@ void Shark::on_hit()
 	set_is_active(false);
 	printf("hit shark\n");
 	m_director->m_b_bounty.add_bounty(m_director->m_b_bounty_amounts.shark_bounty);
+	if ( m_marked ) {
+		PS_LOG(LOG_INFO, "Dropped an upgrade");
+		if ( auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director()) ) {
+			director->spawn_loot_chest(m_pos);
+		}
+	}
 }
 
 void Shark::draw_debug()
@@ -361,8 +361,15 @@ std::optional<Vector2> Shark::position() const
 void Shark::set_is_active(bool active)
 {
 	is_active_ = active;
+	determined_if_marked();
 	m_body->set_is_active(active);
 	m_fin->set_is_active(active);
+}
+
+void Shark::determined_if_marked()
+{
+	float drop_roll = static_cast<float>(PSUtils::gen_rand_float(0.0f, 100.0f));
+	m_marked		= drop_roll < m_drop_upgrade_chance;
 }
 
 float Shark::calculate_rotation_velocity(float frequency, float dt)
