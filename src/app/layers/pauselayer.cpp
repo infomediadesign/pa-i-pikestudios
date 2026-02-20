@@ -41,10 +41,11 @@ void PauseLayer::on_render()
 		});
 		gApp()->call_later([]() {
 			auto upgrade_layer = gApp()->get_layer<UpgradeLayer>();
-			if ( upgrade_layer )
+			if ( upgrade_layer ) {
 				if ( auto app_layer = gApp()->get_layer<AppLayer>() )
 					app_layer->suspend();
-					upgrade_layer->m_layer_is_visible = true;
+				upgrade_layer->m_layer_is_visible = true;
+			}
 		});
 	}
 

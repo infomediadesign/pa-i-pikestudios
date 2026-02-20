@@ -11,13 +11,12 @@
 
 #include <entities/shark.h>
 #include <imgui.h>
-#include <pscore/settings.h>
 #include <pscore/spawner.h>
 #include <pscore/utils.h>
 #include <psinterfaces/entity.h>
 #include <raylib.h>
-#include <raymath.h>
 #include "entities/tentacle.h"
+#include "entities/lootchest.h"
 
 
 FortunaDirector::FortunaDirector() : PSInterfaces::IEntity("fortuna_director")
@@ -189,6 +188,11 @@ void FortunaDirector::draw_debug()
 		m_b_bounty.add_bounty(bounty_amount);
 	}
 
+	// Spawn Loot Chest
+	if ( ImGui::Button("Spawn Loot Chest") ) {
+		spawn_loot_chest({(float) PSUtils::gen_rand(10, 300), (float) PSUtils::gen_rand(10, 300)});
+	}
+
 	ImGui::Separator();
 	ImGui::Text("Player Upgrades");
 
@@ -340,6 +344,25 @@ void FortunaDirector::destroy_cannon(std::shared_ptr<Cannon> cannon)
 
 	auto& cannons = _p->cannons;
 	cannons.erase(std::remove(cannons.begin(), cannons.end(), cannon), cannons.end());
+}
+
+std::shared_ptr<LootChest> FortunaDirector::spawn_loot_chest(const Vector2& position)
+{
+	for (auto loot : _p->loot_chests){
+		if ( !loot->is_active() ) {
+			loot->init(position, loot);
+			loot->set_is_active(true);
+			return loot;
+		}
+	}
+	auto new_loot = std::make_shared<LootChest>();
+	_p->loot_chests.push_back(new_loot);
+
+	if ( auto app_layer = gApp()->get_layer<AppLayer>() )
+		app_layer->register_entity(new_loot, true);
+
+	new_loot->init(position, new_loot);
+	return new_loot;
 }
 
 void FortunaDirector::upgrade_player_fire_rate(float amount)

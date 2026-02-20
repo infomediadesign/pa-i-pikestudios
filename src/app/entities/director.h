@@ -12,6 +12,7 @@
 #include <layers/applayer.h>
 #include <pscore/spawner.h>
 #include <entities/tentacle.h>
+#include <entities/lootchest.h>
 
 class FortunaDirectorPriv;
 class FortunaDirector : public PSInterfaces::IEntity
@@ -38,6 +39,8 @@ public:
 	// Functions to spawn and destroy cannons
 	std::shared_ptr<Cannon> spawn_cannon(const Vector2& position);
 	void destroy_cannon(std::shared_ptr<Cannon> cannon);
+
+	std::shared_ptr<LootChest> spawn_loot_chest(const Vector2& position);
 
 	template<class E, PSCore::ILayerDerived L>
 	std::unique_ptr<PSCore::Spawner<E, L>>& spawner();
@@ -123,6 +126,7 @@ struct FortunaDirectorPriv
 {
 	std::vector<std::shared_ptr<Player>> players;
 	std::vector<std::shared_ptr<Cannon>> cannons;
+	std::vector<std::shared_ptr<LootChest>> loot_chests;
 	bool on_screen_warp_around = CFG_VALUE<bool>("on_screen_warp_around", true);
 
 	float player_current_fire_rate		  = CFG_VALUE<float>("player_current_fire_rate", 0.5f);
