@@ -45,6 +45,8 @@ public:
 	LootTable m_loot_table;
 	std::vector<LootTableValue> m_current_loot_table_values;
 
+	bool m_layer_is_visible = true;
+
 	// base upgrade values for the different upgrades
 	float m_base_upgrade_player_speed	  = CFG_VALUE<float>("upgrade_player_speed_base_value", 0.075f);
 	float m_base_upgrade_rotation_speed	  = CFG_VALUE<float>("upgrade_player_rotation_speed_base_value", 0.075f);

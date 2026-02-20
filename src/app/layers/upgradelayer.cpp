@@ -29,7 +29,9 @@ void UpgradeLayer::on_update(float dt)
 
 void UpgradeLayer::on_render()
 {
-	draw_upgrade_cards();
+	if ( m_layer_is_visible ) {
+		draw_upgrade_cards();
+	}
 }
 
 
@@ -51,6 +53,11 @@ void UpgradeLayer::draw_upgrade_cards()
 		apply_upgrade(m_current_loot_table_values[0]);
 		gApp()->call_later([]() {
 			gApp()->pop_layer<UpgradeLayer>(); });
+		gApp()->call_later([]() {
+			auto app_layer = gApp()->get_layer<AppLayer>();
+			if ( app_layer )
+					app_layer->resume();
+		});
 	}
 	draw_card_text(card_pos * scale, m_current_loot_table_values[0]);
 	
@@ -58,6 +65,11 @@ void UpgradeLayer::draw_upgrade_cards()
 		{
 		apply_upgrade(m_current_loot_table_values[1]);
 		gApp()->call_later([]() { gApp()->pop_layer<UpgradeLayer>(); });
+		gApp()->call_later([]() {
+			auto app_layer = gApp()->get_layer<AppLayer>();
+			if ( app_layer )
+				app_layer->resume();
+		});
 	}
 
 	draw_card_text({(screen_middel.x + m_card_texture.width + 16) * scale, screen_middel.y * scale}, m_current_loot_table_values[1]);
@@ -66,9 +78,14 @@ void UpgradeLayer::draw_upgrade_cards()
 		{
 		apply_upgrade(m_current_loot_table_values[2]);
 		gApp()->call_later([]() { gApp()->pop_layer<UpgradeLayer>(); });
+		gApp()->call_later([]() {
+			auto app_layer = gApp()->get_layer<AppLayer>();
+			if ( app_layer )
+				app_layer->resume();
+		});
 	}
 
-draw_card_text({(screen_middel.x - m_card_texture.width - 16) * scale, screen_middel.y * scale}, m_current_loot_table_values[2]);
+	draw_card_text({(screen_middel.x - m_card_texture.width - 16) * scale, screen_middel.y * scale}, m_current_loot_table_values[2]);
 
 }
 

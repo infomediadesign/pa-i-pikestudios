@@ -159,6 +159,9 @@ void FortunaDirector::draw_debug()
 					upgrade_layer->m_current_loot_table_values = upgrade_layer->m_loot_table.loot_table_values(3);
 					upgrade_layer->print_loot_table_values(upgrade_layer->m_current_loot_table_values);
 				}
+				auto app_layer = gApp()->get_layer<AppLayer>();	
+				if ( app_layer )
+					app_layer->suspend();
 			});
 		} else {
 			gApp()->call_later([]() { gApp()->push_layer<UpgradeLayer>(); });
@@ -168,6 +171,9 @@ void FortunaDirector::draw_debug()
 					upgrade_layer->m_current_loot_table_values = upgrade_layer->m_loot_table.loot_table_values(3);
 					upgrade_layer->print_loot_table_values(upgrade_layer->m_current_loot_table_values);
 				}
+				auto app_layer = gApp()->get_layer<AppLayer>();
+				if ( app_layer )
+					app_layer->suspend();
 			}); 
 		} 
 	}
@@ -503,13 +509,27 @@ void FortunaDirector::Bounty::subtract_bounty(const int amount)
 void FortunaDirector::increase_difficulty(int bounty)
 {
 	// Increase shark spawn rate and limit based on bounty
-	if ( bounty >= _p->shark_start_increase_difficulty_bounty_amount ) {
+	if ( bounty >= _p->shark_start_increase_difficulty_bounty_amount && bounty <= _p->shark_start_decrease_difficulty_bounty_amount &&
+		 bounty <= _p->shark_stop_spawn_bounty_amount ) {
 		_p->shark_spawner->set_interval(std::max(_p->shark_min_spawn_time, _p->shark_spawn_time - _p->shark_spawn_increase_base_value * (static_cast<float>(bounty) / _p->shark_spawn_increase_bounty_divider)));
 		_p->shark_spawner->set_limit(std::min(_p->shark_max_limit, _p->shark_limit + (bounty / _p->shark_limit_increase_bounty_divider)));
 	}
-	if ( bounty >= _p->shark_start_decrease_difficulty_bounty_amount ) {
-		_p->shark_spawner->set_interval(std::max(_p->shark_min_spawn_time,_p->shark_spawn_time +_p->shark_spawn_increase_base_value * (static_cast<float>(bounty) / _p->shark_spawn_increase_bounty_divider)));
-		_p->shark_spawner->set_limit(std::min(_p->shark_max_limit, _p->shark_limit - (bounty / _p->shark_limit_increase_bounty_divider)));
+	// Decrease shark spawn rate and limit if bounty is above the decrease difficulty threshold
+	if ( bounty >= _p->shark_start_decrease_difficulty_bounty_amount && bounty <= _p->shark_stop_spawn_bounty_amount ) {
+		float bounty_above_threshold = static_cast<float>(bounty - _p->shark_start_decrease_difficulty_bounty_amount);
+
+		float peak_spawn_time = std::max(
+				_p->shark_min_spawn_time,
+				_p->shark_spawn_time - _p->shark_spawn_increase_base_value * (static_cast<float>(_p->shark_start_decrease_difficulty_bounty_amount) /
+																			  _p->shark_spawn_increase_bounty_divider));
+		float decreased_spawn_time =
+				peak_spawn_time + _p->shark_spawn_increase_base_value * (bounty_above_threshold / _p->shark_spawn_increase_bounty_divider);
+		_p->shark_spawner->set_interval(std::min(_p->shark_spawn_time, decreased_spawn_time));
+
+		int decreased_limit = _p->shark_limit + (bounty / _p->shark_limit_increase_bounty_divider);
+		int peak_limit		= _p->shark_limit + (_p->shark_start_decrease_difficulty_bounty_amount / _p->shark_limit_increase_bounty_divider);
+		_p->shark_spawner->set_limit(
+				std::max(_p->shark_limit, peak_limit - (static_cast<int>(bounty_above_threshold) / _p->shark_limit_increase_bounty_divider)));
 	}
 	if ( bounty >= _p->shark_stop_spawn_bounty_amount ) {
 		_p->shark_spawner->suspend();
