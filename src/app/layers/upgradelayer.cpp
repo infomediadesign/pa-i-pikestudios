@@ -11,6 +11,7 @@ UpgradeLayer::UpgradeLayer()
 {
 	Vector2 frame_grid{1, 1};
 	m_card_texture = PRELOAD_TEXTURE("card", "resources/ui/test_upgrade_card.png", frame_grid)->m_s_texture;
+	m_button	   = PRELOAD_TEXTURE("smallbutton", "resources/ui/button_small.png", frame_grid)->m_s_texture;
 	auto director  = dynamic_cast<FortunaDirector*>(gApp()->game_director());
 	
 	m_loot_table.add_loot_table(0, director->drop_chances.add_cannon, m_only_mithic_chance); // Add Cannon
@@ -31,6 +32,7 @@ void UpgradeLayer::on_render()
 {
 	if ( m_layer_is_visible ) {
 		draw_upgrade_cards();
+		draw_reroll_button();
 	}
 }
 
@@ -174,6 +176,8 @@ void UpgradeLayer::draw_card_text(Vector2 card_pos, LootTableValue upgrade_info)
 	GuiLabel(value_text_pos, value_to_string(upgrade_info.index, upgrade_info.rarity).c_str()
 	);
 
+	draw_upgrade_preview(card_pos, upgrade_info);
+
 	GuiSetStyle(DEFAULT, TEXT_SIZE, 14 * scale);
 	GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt(BLACK));
 	GuiSetStyle(LABEL, TEXT_ALIGNMENT, TEXT_ALIGN_LEFT);
@@ -268,4 +272,86 @@ float UpgradeLayer::get_multiplier(int rarity)
 			std::cout << "Invalid rarity index: " << rarity << std::endl;
 			return 1.0f;
 	}
+}
+
+void UpgradeLayer::draw_upgrade_preview(Vector2 card_pos, LootTableValue upgrade_info)
+{
+	auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
+	float upgrade_multyplier = get_multiplier(upgrade_info.rarity);
+
+	auto& vp				  = gApp()->viewport();
+	float scale				  = vp->viewport_scale();
+	float text_size			  = 10 * scale;
+	Rectangle text_pos		  = {card_pos.x - 60 * scale, card_pos.y + 30 * scale + 3 * 14 * scale, 120 * scale, text_size};
+
+	GuiSetStyle(DEFAULT, TEXT_SIZE, text_size);
+	GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt(BLACK));
+	GuiSetStyle(LABEL, TEXT_ALIGNMENT, TEXT_ALIGN_CENTER);
+
+	std::string preview;
+
+	switch ( upgrade_info.index ) {
+		case 0:
+			break;
+		case 1:
+			preview = std::format("{:.1f} -> {:.1f}",
+				director->player_current_projectile_speed(),
+				director->player_current_projectile_speed() + director->player_current_projectile_speed() * (m_base_upgrade_projectile_speed * upgrade_multyplier));
+			break;
+		case 2:
+			preview = std::format("{:.1f} -> {:.1f}",
+				director->player_current_fire_range(),
+				director->player_current_fire_range() + director->player_current_fire_range() * (m_base_upgrade_fire_range * upgrade_multyplier));
+			break;
+		case 3:
+			preview = std::format("{:.3f}s -> {:.3f}s",
+				director->player_current_fire_rate(),
+				director->player_current_fire_rate() - director->player_current_fire_rate() * (m_base_upgrade_fire_rate * upgrade_multyplier));
+			break;
+		case 4:
+			break;
+		case 5:
+			preview = std::format("{:.1f} -> {:.1f}",
+				director->player_max_velocity(),
+				director->player_max_velocity() + director->player_max_velocity() * (m_base_upgrade_player_speed * upgrade_multyplier));
+			break;
+		case 6:
+			preview = std::format("{:.1f} -> {:.1f}",
+				director->player_input_rotation_mult(),
+				director->player_input_rotation_mult() + director->player_input_rotation_mult() * (m_base_upgrade_rotation_speed * upgrade_multyplier));
+			break;
+		case 7:
+			preview = std::format("{:.1f}% -> {:.1f}%",
+				director->player_piercing_chance(),
+				(director->player_piercing_chance() + director->player_piercing_chance() * (m_base_upgrade_piercing_chance * upgrade_multyplier)));
+			break;
+		default:
+			break;
+	}
+
+	if ( !preview.empty() ) {
+		GuiLabel(text_pos, preview.c_str());
+	}
+
+	GuiSetStyle(DEFAULT, TEXT_SIZE, 14 * scale);
+	GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt(BLACK));
+	GuiSetStyle(LABEL, TEXT_ALIGNMENT, TEXT_ALIGN_LEFT);
+}
+
+void UpgradeLayer::draw_reroll_button()
+{
+	auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
+	if ( director->reroll_amount() > 0 ){
+		auto& vp			  = gApp()->viewport();
+		Vector2 origin		  = vp->viewport_origin();
+		Vector2 screen_middel = {
+				origin.x / vp->viewport_scale() + vp->viewport_base_size().x / 2, origin.y / vp->viewport_scale() + vp->viewport_base_size().y / 2
+		};
+		float scale = vp->viewport_scale();
+		if ( GuiButtonTexture(
+					 m_button, {screen_middel.x, screen_middel.y + 130}, 0, scale, WHITE, GRAY,std::format("{}x Reroll", director->reroll_amount()).c_str()) ) {
+			m_current_loot_table_values = m_loot_table.loot_table_values(3);
+			director->set_reroll_amount(director->reroll_amount() - 1);
+		}
+		}
 }

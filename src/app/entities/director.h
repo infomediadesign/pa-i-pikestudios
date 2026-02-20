@@ -86,6 +86,9 @@ public:
 	void set_player_max_health(const int max_health);
 	int player_max_health() const;
 
+	void set_reroll_amount(const int amount);
+	int reroll_amount() const;
+
 
 	// Bounty
 	struct Bounty
@@ -128,6 +131,8 @@ struct FortunaDirectorPriv
 	std::vector<std::shared_ptr<Cannon>> cannons;
 	std::vector<std::shared_ptr<LootChest>> loot_chests;
 	bool on_screen_warp_around = CFG_VALUE<bool>("on_screen_warp_around", true);
+
+	int upgrade_reroll_amount = CFG_VALUE<int>("upgrade_reroll_amount", 3);
 
 	float player_current_fire_rate		  = CFG_VALUE<float>("player_current_fire_rate", 0.5f);
 	float player_current_projectile_speed = CFG_VALUE<float>("player_current_projectile_speed", 300.0f);

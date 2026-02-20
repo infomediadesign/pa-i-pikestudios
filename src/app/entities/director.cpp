@@ -595,3 +595,13 @@ float FortunaDirector::player_iframe_duration() const
 {
 	return _p->player_iframe_duration;
 }
+
+int FortunaDirector::reroll_amount() const
+{
+	return _p->upgrade_reroll_amount;
+}
+
+void FortunaDirector::set_reroll_amount(const int amount)
+{
+	_p->upgrade_reroll_amount = amount;
+}

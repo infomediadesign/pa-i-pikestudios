@@ -22,6 +22,10 @@ public:
 
 	void draw_card_text(Vector2 card_pos, LootTableValue upgrade_info);
 
+	void draw_reroll_button();
+
+	void draw_upgrade_preview(Vector2 card_pos, LootTableValue upgrade_info);
+
 	float get_multiplier(int rarity);
 
 	std::string rarity_to_string(int rarity);
@@ -46,6 +50,7 @@ public:
 	std::vector<LootTableValue> m_current_loot_table_values;
 
 	bool m_layer_is_visible = true;
+	Texture2D m_button;
 
 	// base upgrade values for the different upgrades
 	float m_base_upgrade_player_speed	  = CFG_VALUE<float>("upgrade_player_speed_base_value", 0.075f);
@@ -65,5 +70,4 @@ public:
 	float m_multiplier_epic		 = CFG_VALUE<float>("upgrade_epic_multiplier", 1.7f);
 	float m_multiplier_legendary = CFG_VALUE<float>("upgrade_legendary_multiplier", 2.0f);
 	float m_multiplier_mythic	 = CFG_VALUE<float>("upgrade_mythical_multiplier", 3.0f);
-
 };
