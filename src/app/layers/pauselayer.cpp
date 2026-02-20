@@ -2,13 +2,12 @@
 #include <entities/director.h>
 #include <layers/applayer.h>
 #include <layers/mainmenulayer.h>
-#include <layers/scorelayer.h>
 #include <layers/uilayer.h>
 #include <pscore/application.h>
-#include <pscore/utils.h>
 #include <pscore/viewport.h>
 #include <raygui.h>
 #include <raylib.h>
+#include <layers/upgradelayer.h>
 
 PauseLayer::PauseLayer()
 {
@@ -38,6 +37,14 @@ void PauseLayer::on_render()
 			gApp()->pop_layer<PauseLayer>();
 			if ( auto app_layer = gApp()->get_layer<AppLayer>() )
 				app_layer->resume();
+
+		});
+		gApp()->call_later([]() {
+			auto upgrade_layer = gApp()->get_layer<UpgradeLayer>();
+			if ( upgrade_layer )
+				if ( auto app_layer = gApp()->get_layer<AppLayer>() )
+					app_layer->suspend();
+					upgrade_layer->m_layer_is_visible = true;
 		});
 	}
 
@@ -47,7 +54,9 @@ void PauseLayer::on_render()
 		gApp()->call_later([]() {
 			gApp()->pop_layer<PauseLayer>();
 			gApp()->pop_layer<UILayer>();
+			gApp()->pop_layer<UpgradeLayer>();
 			gApp()->switch_layer<AppLayer, MainMenuLayer>();
+
 		});
 	}
 }

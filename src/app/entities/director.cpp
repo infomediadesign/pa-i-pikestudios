@@ -531,6 +531,7 @@ void FortunaDirector::increase_difficulty(int bounty)
 		_p->shark_spawner->set_limit(
 				std::max(_p->shark_limit, peak_limit - (static_cast<int>(bounty_above_threshold) / _p->shark_limit_increase_bounty_divider)));
 	}
+	// Stop shark spawner if bounty is above the stop spawn threshold
 	if ( bounty >= _p->shark_stop_spawn_bounty_amount ) {
 		_p->shark_spawner->suspend();
 	}
