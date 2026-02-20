@@ -72,7 +72,8 @@ void Projectile::update(const float dt)
 					bool is_player = l->ident() == "player";
 					bool is_same   = l->ident() == ident_;
 					bool is_cannon = l->ident() == "cannon";
-					return !(is_player || is_same || is_cannon);
+					bool is_loot   = l->ident() == "loot_chest";
+					return !(is_player || is_same || is_cannon || is_loot);
 				}
 				return true;
 			});
