@@ -6,7 +6,10 @@
 #include <raylib.h>
 
 class FortunaDirector;
-class Player;
+
+namespace PSInterfaces {
+class IEntity;
+}
 
 class Cannon : public PSInterfaces::IRenderable
 {
@@ -25,8 +28,8 @@ public:
 
 	void set_rotation_to_parent(); // Sets the cannon's rotation to match its parent player
 
-	std::shared_ptr<Player> parent(); // Returns the shared pointer to the parent
-	void set_parent(std::shared_ptr<Player> parent); // Sets the shared pointer to the parent
+	std::shared_ptr<PSInterfaces::IEntity> parent(); // Returns the shared pointer to the parent
+	void set_parent(std::shared_ptr<PSInterfaces::IEntity> parent); // Sets the shared pointer to the parent
 
 	std::optional<Vector2> position() const override; // Returns the cannon's position
 	void set_position(const Vector2& position); // Sets the cannon's position
@@ -82,5 +85,5 @@ private:
 	std::shared_ptr<PSCore::sprites::Sprite> m_c_sprite;
 	std::shared_ptr<Cannon> m_c_shared_ptr_this;
 
-	std::shared_ptr<Player> m_c_parent;
+	std::shared_ptr<PSInterfaces::IEntity> m_c_parent;
 };

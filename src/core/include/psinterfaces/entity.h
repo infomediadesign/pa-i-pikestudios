@@ -28,12 +28,27 @@ namespace PSInterfaces {
 		{
 			return std::nullopt;
 		};
+		
+		virtual std::optional<Vector2> size() const
+		{
+			return std::nullopt;
+		}
 
 		virtual std::optional<Vector2> position() const
 		{
 			return std::nullopt;
 		}
 
+		virtual std::optional<Vector2> velocity() const
+		{
+			return std::nullopt;
+		}
+		
+		virtual std::optional<float> rotation() const
+		{
+			return std::nullopt;
+		}
+		
 		virtual bool is_active() const
 		{
 			return is_active_;

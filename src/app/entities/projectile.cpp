@@ -52,6 +52,13 @@ void Projectile::init(const Vector2& position, std::shared_ptr<Projectile> self)
 			if ( locked->is_active() ) {
 				locked->on_hit();
 				on_hit();
+
+				if (locked->is_active())
+					return;
+				
+				if (auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director())) {
+					director->entity_died(m_p_owner, locked->ident());
+				}
 			}
 	});
 }
@@ -67,15 +74,16 @@ void Projectile::update(const float dt)
 		if ( auto app_layer = gApp()->get_layer<AppLayer>() ) {
 			m_collider->check_collision(app_layer->entities(), [this](std::weak_ptr<PSInterfaces::IEntity> other, const Vector2& point) {
 				if ( auto l = other.lock() ) {
-					bool is_player = l->ident() == "player";
+					bool is_owner = l->ident() == m_p_owner->ident();
 					bool is_same   = l->ident() == ident_;
 					bool is_cannon = l->ident() == "cannon";
-					return !(is_player || is_same || is_cannon);
+					return !(is_owner || is_same || is_cannon);
 				}
 				return true;
 			});
 		}
 	}
+
 	play_hit_anim(dt);
 	play_no_hit_anim(dt);
 }
@@ -188,7 +196,7 @@ void Projectile::launch()
 	};
 
 	if ( m_p_owner ) {
-		m_p_owner_velocity = m_p_owner->velocity();
+		m_p_owner_velocity = m_p_owner->velocity().value_or(Vector2{0, 0});
 	}
 
 	Vector2 combined = {
@@ -199,66 +207,6 @@ void Projectile::launch()
 
 	m_p_travel_distance = 0.0f;
 }
-
-/*
-void Projectile::calculate_parenting()
-{
-	if ( !m_p_fiering_cannon ) {
-		return;
-	}
-
-	Vector2 cannon_pos = m_p_fiering_cannon->position().value_or(Vector2{0, 0});
-	float cannon_rot   = m_p_fiering_cannon->rotation();
-
-	Vector2 diff = Vector2Subtract(m_p_target_position, cannon_pos);
-	float rad = -cannon_rot * (PI / 180.0f);
-	Vector2 target_local_offset = {
-		diff.x * cosf(rad) - diff.y * sinf(rad),
-		diff.x * sinf(rad) + diff.y * cosf(rad)
-	};
-
-	m_p_initial_distance = Vector2Length(target_local_offset);
-	m_p_local_direction = Vector2Normalize(target_local_offset);
-
-	m_p_local_offset = {0, 0};
-	m_p_position = cannon_pos;
-}
-
-void Projectile::fire_from_cannon(const float dt)
-{
-	if ( !m_p_fiering_cannon ) {
-		return;
-	}
-
-	float current_distance = Vector2Length(m_p_local_offset);
-
-	if ( current_distance >= m_p_initial_distance ) {
-		is_active_ = false;
-		return;
-	}
-
-	m_p_local_offset.x += m_p_local_direction.x * m_p_speed * dt;
-	m_p_local_offset.y += m_p_local_direction.y * m_p_speed * dt;
-
-	m_p_travel_distance = Vector2Length(m_p_local_offset);
-}
-
-void Projectile::parent_to_cannon()
-{
-	if ( !m_p_fiering_cannon ) {
-		return;
-	}
-	Vector2 cannon_pos = m_p_fiering_cannon->position().value_or(Vector2{0, 0});
-	float cannon_rot   = m_p_fiering_cannon->rotation();
-
-	m_p_position = coordinatesystem::point_relative_to_global_rightup(
-		cannon_pos,
-		cannon_rot,
-		m_p_local_offset
-	);
-	m_p_rotation = cannon_rot;
-}
-*/
 
 Texture2D Projectile::texture()
 {
@@ -370,12 +318,12 @@ std ::shared_ptr<Projectile> Projectile::shared_ptr()
 	return m_p_shared_ptr;
 }
 
-std::shared_ptr<Player> Projectile::owner()
+std::shared_ptr<PSInterfaces::IEntity> Projectile::owner()
 {
 	return m_p_owner;
 }
 
-void Projectile::set_owner(std::shared_ptr<Player>& owner)
+void Projectile::set_owner(std::shared_ptr<PSInterfaces::IEntity>& owner)
 {
 	m_p_owner = owner;
 }

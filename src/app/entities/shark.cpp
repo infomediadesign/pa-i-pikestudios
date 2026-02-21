@@ -280,7 +280,6 @@ void Shark::on_hit()
 {
 	set_is_active(false);
 	printf("hit shark\n");
-	m_director->m_b_bounty.add_bounty(m_director->m_b_bounty_amounts.shark_bounty);
 }
 
 void Shark::draw_debug()

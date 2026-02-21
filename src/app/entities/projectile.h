@@ -8,9 +8,12 @@
 #include <raylib.h>
 #include "pscore/sprite.h"
 
-class Player;
 class FortunaDirector;
 class Cannon;
+
+namespace PSInterfaces {
+class IEntity;
+}
 
 class Projectile : public PSInterfaces::IRenderable
 {
@@ -60,8 +63,8 @@ public:
 	std::shared_ptr<Projectile> shared_ptr();
 	void set_shared_ptr(std::shared_ptr<Projectile>& ptr);
 
-	std::shared_ptr<Player> owner();
-	void set_owner(std::shared_ptr<Player>& owner);
+	std::shared_ptr<PSInterfaces::IEntity> owner();
+	void set_owner(std::shared_ptr<PSInterfaces::IEntity>& owner);
 
 	Vector2 owner_velocity();
 	void set_owner_velocity(const Vector2& velocity);
@@ -103,7 +106,7 @@ private:
 	Rectangle m_p_dest;
 	bool m_p_is_first_tick = true;
 	std::shared_ptr<Projectile> m_p_shared_ptr;
-	std::shared_ptr<Player> m_p_owner;
+	std::shared_ptr<PSInterfaces::IEntity> m_p_owner;
 	std::shared_ptr<Cannon> m_p_fiering_cannon;
 	
 	PSCore::sprites::SpriteSheetAnimation m_p_animation_controller;

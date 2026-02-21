@@ -1,8 +1,8 @@
 #pragma once
 
 #include <raylib.h>
-#include <vector>
 #include <string>
+#include <vector>
 
 namespace PSUtils {
 
@@ -39,7 +39,7 @@ namespace PSUtils {
 		{
 			return w;
 		}
-		
+
 		int height() const
 		{
 			return h;
@@ -48,6 +48,20 @@ namespace PSUtils {
 	private:
 		std::vector<T> data;
 		size_t w, h;
+	};
+
+	template<typename T>
+	T clamp_with_overflow(T min, T max, T val)
+	{
+		if ( val > max ) {
+			T overflow = val - max;
+			return min + overflow;
+		} else if ( val < min ) {
+			T underflow = min - val;
+			return max - underflow;
+		}
+
+		return val;
 	};
 
 	// Raylib specific

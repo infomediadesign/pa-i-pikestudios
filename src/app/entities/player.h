@@ -36,13 +36,13 @@ public:
 
 	std::optional<std::vector<Vector2>> bounds() const override;
 
-	Vector2 velocity();
+	virtual std::optional<Vector2> velocity() const override;
+
+	virtual std::optional<float> rotation() const override;
 
 	float target_velocity();
 
 	float max_velocity();
-
-	float rotation();
 
 	float target_rotation();
 
@@ -85,9 +85,7 @@ public:
 
 	bool is_clone() const;
 
-	float dest_width() const;
-
-	float dest_height() const;
+	std::optional<Vector2> size() const override;
 
 	// Cannons & Projectiles Variables and Methods
 	std::vector<std::shared_ptr<Cannon>>& cannon_container();

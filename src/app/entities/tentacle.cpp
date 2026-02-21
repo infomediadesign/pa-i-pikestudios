@@ -194,9 +194,6 @@ void tentacle::SetNewPos()
 void tentacle::on_hit()
 {
 	set_is_active(false);
-	if ( const auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director()) ) {
-		director->m_b_bounty.add_bounty(225);
-	}
 }
 
 void tentacle::set_pos(const Vector2& pos)

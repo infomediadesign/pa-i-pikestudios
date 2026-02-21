@@ -1,4 +1,5 @@
 #include "cannon.h"
+#include <cmath>
 #include <coordinatesystem.h>
 #include <entities/director.h>
 #include <iostream>
@@ -9,7 +10,6 @@
 #include <raylib.h>
 #include "entities/projectile.h"
 #include "layers/applayer.h"
-#include <cmath>
 
 Cannon::Cannon() : PSInterfaces::IEntity("cannon")
 {
@@ -29,23 +29,10 @@ void Cannon::update(const float dt)
 
 	set_position_to_parent();
 	set_rotation_to_parent();
-	
+
 	m_c_time_since_last_shot += dt;
-	/*
-	if ( IsMouseButtonDown(MOUSE_BUTTON_LEFT) ) {
-		if ( m_c_positioning == CannonPositioning::Left ) {
-			fire();
-		}
-	}
 
-	if ( IsMouseButtonDown(MOUSE_BUTTON_RIGHT) ) {
-		if ( m_c_positioning == CannonPositioning::Right ) {
-			fire();
-		}
-	}
-	*/
-
-		m_c_animation_controller.update_animation(dt);
+	m_c_animation_controller.update_animation(dt);
 
 	if ( m_c_animation_controller.get_sprite_sheet_animation_index(2).value_or(-1) == 1 &&
 		 m_c_animation_controller.get_sprite_sheet_frame_index(2).value_or(-1) == 0 ) {
@@ -56,9 +43,11 @@ void Cannon::update(const float dt)
 void Cannon::render()
 {
 	if ( is_active_ ) {
-	//	m_c_source = {0, 0, (float) m_c_texture.width, (float) m_c_texture.height};
+		//	m_c_source = {0, 0, (float) m_c_texture.width, (float) m_c_texture.height};
 		if ( auto& vp = gApp()->viewport() ) {
-		vp->draw_in_viewport(m_c_texture, m_c_animation_controller.get_source_rectangle(2).value_or(Rectangle{0}), m_c_position, m_c_rotation, WHITE);
+			vp->draw_in_viewport(
+					m_c_texture, m_c_animation_controller.get_source_rectangle(2).value_or(Rectangle{0}), m_c_position, m_c_rotation, WHITE
+			);
 		}
 	}
 }
@@ -70,7 +59,7 @@ void Cannon::fire()
 		if ( !director ) {
 			return;
 		}
-		
+
 		if ( auto& spawner = director->spawner<Projectile, AppLayer>() ) {
 			spawner->register_spawn_callback([this](std::shared_ptr<Projectile> projectile) {
 				projectile->init(m_c_position, projectile);
@@ -83,7 +72,7 @@ void Cannon::fire()
 				}
 				projectile->launch();
 			});
-			
+
 			spawner->spawn();
 		}
 
@@ -109,7 +98,7 @@ void Cannon::set_position_to_parent()
 		case Cannon::CannonPositioning::Right:
 			set_position(
 					coordinatesystem::point_relative_to_global_rightup(
-							m_c_parent->position().value_or(Vector2{0, 0}), m_c_parent->rotation(),
+							m_c_parent->position().value_or(Vector2{0, 0}), m_c_parent->rotation().value_or(0),
 							Vector2{m_c_parent_position_x_offset, m_c_parent_position_y_offset}
 					)
 			);
@@ -118,7 +107,7 @@ void Cannon::set_position_to_parent()
 		case Cannon::CannonPositioning::Left:
 			set_position(
 					coordinatesystem::point_relative_to_global_rightdown(
-							m_c_parent->position().value_or(Vector2{0, 0}), m_c_parent->rotation(),
+							m_c_parent->position().value_or(Vector2{0, 0}), m_c_parent->rotation().value_or(0),
 							Vector2{m_c_parent_position_x_offset, m_c_parent_position_y_offset}
 					)
 			);
@@ -132,11 +121,11 @@ void Cannon::set_rotation_to_parent()
 
 		switch ( m_c_positioning ) {
 			case Cannon::CannonPositioning::Right:
-				set_rotation(m_c_parent->rotation() + 90);
+				set_rotation(m_c_parent->rotation().value_or(0) + 90);
 				break;
 
 			case Cannon::CannonPositioning::Left:
-				set_rotation(m_c_parent->rotation() - 90);
+				set_rotation(m_c_parent->rotation().value_or(0) - 90);
 				break;
 		}
 	}
@@ -243,12 +232,12 @@ void Cannon::set_parent_position_y_offset(const float offset)
 	m_c_parent_position_y_offset = offset;
 }
 
-std::shared_ptr<Player> Cannon::parent()
+std::shared_ptr<PSInterfaces::IEntity> Cannon::parent()
 {
 	return m_c_parent;
 }
 
-void Cannon::set_parent(std::shared_ptr<Player> parent)
+void Cannon::set_parent(std::shared_ptr<PSInterfaces::IEntity> parent)
 {
 	m_c_parent = parent;
 }
