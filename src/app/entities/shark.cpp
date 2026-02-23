@@ -370,6 +370,7 @@ void Shark::determined_if_marked()
 {
 	float drop_roll = static_cast<float>(PSUtils::gen_rand_float(0.0f, 100.0f));
 	m_marked		= drop_roll < m_drop_upgrade_chance;
+	printf("Shark marked: %s (roll: %.2f)\n", m_marked ? "true" : "false", drop_roll);
 }
 
 float Shark::calculate_rotation_velocity(float frequency, float dt)
