@@ -77,20 +77,34 @@ Body::Body(Shark* shark) : PSInterfaces::IEntity("shark_body"), m_shark(shark)
 	auto tex		= m_shark->m_shark_sprite;
 	auto frame_rect = tex->frame_rect({0, 0});
 	m_size			= {frame_rect.width, frame_rect.height};
+	m_texture_size	= {(float)tex->m_s_texture.width, (float)tex->m_s_texture.height};
+	SetShaderValue(m_outline_shader, GetShaderLocation(m_outline_shader, "outline_color"), &m_shader_color, SHADER_UNIFORM_VEC4);
+	SetShaderValue(m_outline_shader, GetShaderLocation(m_outline_shader, "texture_size"), &m_texture_size, SHADER_UNIFORM_VEC2);
 }
 
 Body::~Body()
 {
+	UnloadShader(m_outline_shader);
 }
 
 void Body::render()
 {
 	if ( auto& vp = gApp()->viewport() ) {
 		auto tex = m_shark->m_shark_sprite;
-		vp->draw_in_viewport(
-				tex->m_s_texture, m_shark->m_animation_controller.get_source_rectangle(-1).value_or(Rectangle{0}), m_shark->m_pos,
-				m_shark->m_shark_rotation + 90, WHITE
-		);
+		if ( m_shark->m_marked ) {
+			BeginShaderMode(m_outline_shader);
+			vp->draw_in_viewport(
+					tex->m_s_texture, m_shark->m_animation_controller.get_source_rectangle(-1).value_or(Rectangle{0}), m_shark->m_pos,
+					m_shark->m_shark_rotation + 90, WHITE
+			);
+			EndShaderMode();
+		} else
+		{
+			vp->draw_in_viewport(
+					tex->m_s_texture, m_shark->m_animation_controller.get_source_rectangle(-1).value_or(Rectangle{0}), m_shark->m_pos,
+					m_shark->m_shark_rotation + 90, WHITE
+			);
+		}
 	}
 }
 
@@ -280,6 +294,10 @@ void Shark::on_hit()
 		if ( auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director()) ) {
 			director->spawn_loot_chest(m_pos);
 		}
+		printf("Shark was marked, dropped upgrade\n");
+	} 
+	else{
+		printf("Shark was not marked, no upgrade dropped\n");
 	}
 }
 
@@ -369,7 +387,9 @@ void Shark::set_is_active(bool active)
 void Shark::determined_if_marked()
 {
 	float drop_roll = static_cast<float>(PSUtils::gen_rand_float(0.0f, 100.0f));
-	m_marked		= drop_roll < m_drop_upgrade_chance;
+	m_marked		= drop_roll <= m_drop_upgrade_chance;
+	printf("Chance %i: ", m_drop_upgrade_chance);
+	printf("Shark marked: %s (roll: %.2f)\n", m_marked ? "true" : "false", drop_roll);
 }
 
 float Shark::calculate_rotation_velocity(float frequency, float dt)
