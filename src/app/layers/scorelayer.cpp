@@ -135,6 +135,7 @@ void ScoreLayer::update_typing()
 		save_new_highscore(dynamic_cast<FortunaDirector*>(gApp()->game_director())->m_b_bounty.bounty());
 		save_highscore(m_score_filename);
 		}
+
 	}
 }
 

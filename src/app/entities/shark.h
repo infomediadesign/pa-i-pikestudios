@@ -113,4 +113,7 @@ public:
 private:
 	const Shark* m_shark;
 	Vector2 m_size{60.0f, 120.0f};
+	Vector2 m_texture_size;
+	Vector4 m_shader_color{251,206,39,255};
+	Shader m_outline_shader = LoadShader(0, "resources/shader/2d_outline.fs");
 };
