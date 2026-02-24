@@ -44,4 +44,6 @@ private:
 	void traverse_path_(float dt);
 	bool player_in_range_(Vector2* to_player);
 	void fire_available_cannon_(bool right_side, float dt);
+	void avoid_other_hunters_(float dt);
+	float gen_phase_offset_();
 };

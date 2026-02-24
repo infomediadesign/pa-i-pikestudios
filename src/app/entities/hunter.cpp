@@ -92,7 +92,7 @@ void HunterPriv::update_smear(float dt)
 
 Hunter::Hunter() : PSInterfaces::IEntity("hunter")
 {
-	_p = std::make_unique<HunterPriv>();
+	_p				 = std::make_unique<HunterPriv>();
 
 	Vector2 frame_grid{3, 4};
 	_p->sprite = PRELOAD_TEXTURE(ident_, "resources/entity/enemy_ship.png", frame_grid);
@@ -116,6 +116,7 @@ void Hunter::update(float dt)
 		case Patrolling: {
 			_p->prev_pos = _p->pos;
 			traverse_path_(dt);
+			avoid_other_hunters_(dt);
 
 			_p->forward_vec = coordinatesystem::vector_forward(_p->rotation);
 			_p->velocity	= Vector2Scale(Vector2Subtract(_p->pos, _p->prev_pos), 1 / dt);
@@ -193,6 +194,8 @@ void Hunter::draw_debug()
 		for ( auto& point: debug_points ) {
 			point.x *= scale;
 			point.y *= scale;
+
+			DrawRectanglePro({point.x, point.y, 10 * scale, 10 * scale}, {5 * scale, 5 * scale}, 0, GREEN);
 		}
 
 		Vector2* arr = new Vector2[debug_points.size()];
@@ -237,7 +240,7 @@ std::pair<Vector2, Vector2> Hunter::gen_path_egde()
 	MapEdge map_edge;
 
 	auto gen_tip = [&map_edge, &vp_size, this]() -> Vector2 {
-		MapEdge rand_map_edge = static_cast<MapEdge>(PSUtils::gen_rand(MapEdge::Left, MapEdge::Bottom));
+		MapEdge rand_map_edge = static_cast<MapEdge>(PSUtils::gen_rand<int>(MapEdge::Left, MapEdge::Bottom));
 		if ( rand_map_edge == map_edge )
 			map_edge = static_cast<MapEdge>(PSUtils::clamp_with_overflow<int>(0, MapEdge::Bottom, map_edge + 1));
 		else
@@ -247,18 +250,18 @@ std::pair<Vector2, Vector2> Hunter::gen_path_egde()
 		switch ( map_edge ) {
 			case Left:
 				x = -size().value().x;
-				y = PSUtils::gen_rand(20, (vp_size.y) - 20);
+				y = PSUtils::gen_rand<int>(20, (vp_size.y) - 20);
 				break;
 			case Right:
 				x = vp_size.x + size().value().x;
-				y = PSUtils::gen_rand(20, (vp_size.y) - 20);
+				y = PSUtils::gen_rand<int>(20, (vp_size.y) - 20);
 				break;
 			case Top:
-				x = PSUtils::gen_rand(20, (vp_size.y) - 20);
+				x = PSUtils::gen_rand<int>(20, (vp_size.y) - 20);
 				y = -size().value().y;
 				break;
 			case Bottom:
-				x = PSUtils::gen_rand(20, (vp_size.y) - 20);
+				x = PSUtils::gen_rand<int>(20, (vp_size.y) - 20);
 				y = vp_size.x + size().value().y;
 		}
 
@@ -405,6 +408,63 @@ void Hunter::traverse_path_(float dt)
 	}
 };
 
+void Hunter::avoid_other_hunters_(float dt)
+{
+}
+// void Hunter::avoid_other_hunters_(float dt)
+// {
+// 	if ( !_p->current_patrol_path.size() )
+// 		return;
+
+// 	auto appLayer = gApp()->get_layer<AppLayer>();
+// 	if ( !appLayer )
+// 		return;
+
+// 	Vector2 *next_path_point, *prev_path_point;
+// 	try {
+// 		next_path_point = &_p->current_patrol_path.at(_p->current_point_index + 2);
+// 		prev_path_point = &_p->current_patrol_path.at(_p->current_point_index + 1);
+// 	} catch ( const std::out_of_range& e ) {
+// 		return;
+// 	}
+
+// 	Vector2 separation = {0, 0};
+// 	int count		   = 0;
+
+// 	const float avoidRadius = Vector2Length(Vector2Subtract(*next_path_point, *prev_path_point)) * 0.5;
+
+// 	for ( auto& weak: appLayer->entities() ) {
+// 		if ( auto other = weak.lock() ) {
+// 			if ( other.get() == this )
+// 				continue;
+
+// 			auto otherHunter = std::dynamic_pointer_cast<Hunter>(other);
+// 			if ( !otherHunter )
+// 				continue;
+
+// 			auto otherPosOpt = otherHunter->position();
+// 			if ( !otherPosOpt.has_value() )
+// 				continue;
+
+// 			Vector2 diff = Vector2Subtract(_p->pos, otherPosOpt.value());
+// 			float dist	 = Vector2Length(diff);
+// 			if ( dist > 0 && dist < avoidRadius ) {
+// 				// steer away, stronger when closer
+// 				std::cout << "Distance to other hunter: " << dist << std::endl;
+// 				separation = Vector2Add(separation, Vector2Scale(Vector2Normalize(diff), 1.0f / dist));
+// 				++count;
+// 			}
+// 		}
+// 	}
+
+// 	if ( count > 0 ) {
+// 		separation = Vector2Scale(separation, 1.0f / count);
+// 		// turn this into a small velocity or speed change
+// 		float steerStrength = 1000.0f;
+// 		*next_path_point	= Vector2Add(*next_path_point, Vector2Scale(separation, steerStrength * dt));
+// 	}
+// }
+
 void Hunter::init(std::shared_ptr<Hunter> self)
 {
 	_p->collider = std::make_unique<PSCore::collision::EntityCollider>(self);
@@ -535,4 +595,9 @@ void Hunter::fire_available_cannon_(bool right_side, float dt)
 	} else {
 		_p->time_since_last_shot += dt;
 	}
+};
+
+float Hunter::gen_phase_offset_()
+{
+	return PSUtils::gen_rand(0.f, 1.f);
 };

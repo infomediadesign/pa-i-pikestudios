@@ -76,7 +76,8 @@ void FortunaDirector::initialize_entities()
 		hunter->init(hunter);
 	});
 
-	_p->shark_spawner->resume();
+	//_p->shark_spawner->resume();
+	_p->hunter_spawner->resume();
 
 	auto initial_player = std::make_shared<Player>();
 	_p->players.push_back(initial_player);

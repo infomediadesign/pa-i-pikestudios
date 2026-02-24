@@ -1,5 +1,6 @@
 #pragma once
 
+#include <random>
 #include <raylib.h>
 #include <string>
 #include <vector>
@@ -13,7 +14,15 @@ namespace PSUtils {
 	 * @param min: the minimum value
 	 * @param max: the maximum value
 	 */
-	int gen_rand(const int min, const int max);
+	template<typename T>
+	T gen_rand(const T min, const T max)
+	{
+		std::random_device rd;
+		std::mt19937 gen(rd());
+		std::uniform_int_distribution<> distr(min, max);
+
+		return distr(gen);
+	}
 
 	std::string generate_uid();
 

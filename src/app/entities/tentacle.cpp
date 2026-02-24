@@ -185,8 +185,8 @@ void tentacle::SetNewPos()
 {
 	if ( auto& vp = gApp()->viewport() ) {
 		Vector2 coords;
-		coords.x = PSUtils::gen_rand(m_spawn_area_margin, vp->viewport_base_size().x - m_spawn_area_margin);
-		coords.y = PSUtils::gen_rand(m_spawn_area_margin, vp->viewport_base_size().y - m_spawn_area_margin);
+		coords.x = PSUtils::gen_rand<int>(m_spawn_area_margin, vp->viewport_base_size().x - m_spawn_area_margin);
+		coords.y = PSUtils::gen_rand<int>(m_spawn_area_margin, vp->viewport_base_size().y - m_spawn_area_margin);
 		set_pos(coords);
 	}
 }
