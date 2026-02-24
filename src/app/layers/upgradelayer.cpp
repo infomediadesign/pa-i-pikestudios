@@ -10,7 +10,9 @@
 UpgradeLayer::UpgradeLayer()
 {
 	Vector2 frame_grid{1, 1};
-	m_card_texture = PRELOAD_TEXTURE("card", "resources/ui/test_upgrade_card.png", frame_grid)->m_s_texture;
+	m_card_texture_1 = PRELOAD_TEXTURE("card_1", "resources/ui/upgrade_card_1.png", frame_grid)->m_s_texture;
+	m_card_texture_2 = PRELOAD_TEXTURE("card_2", "resources/ui/upgrade_card_2.png", frame_grid)->m_s_texture;
+	m_card_texture_3 = PRELOAD_TEXTURE("card_3", "resources/ui/upgrade_card_3.png", frame_grid)->m_s_texture;
 	m_button	   = PRELOAD_TEXTURE("smallbutton", "resources/ui/button_small.png", frame_grid)->m_s_texture;
 	auto director  = dynamic_cast<FortunaDirector*>(gApp()->game_director());
 	
@@ -55,7 +57,7 @@ void UpgradeLayer::draw_upgrade_cards()
 	GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt(BLACK));
 	
 	
-	if ( GuiButtonTexture(m_card_texture, screen_middel, 0, scale, WHITE, GRAY, "") && m_can_receive_input ) {
+	if ( GuiButtonTexture(m_card_texture_1, screen_middel, 0, scale, WHITE, GRAY, "") && m_can_receive_input ) {
 		apply_upgrade(m_current_loot_table_values[0]);
 		gApp()->call_later([]() {
 			gApp()->pop_layer<UpgradeLayer>(); });
@@ -67,7 +69,7 @@ void UpgradeLayer::draw_upgrade_cards()
 	}
 	draw_card_text(card_pos * scale, m_current_loot_table_values[0]);
 	
-	if ( GuiButtonTexture(m_card_texture, {screen_middel.x + m_card_texture.width + 16, screen_middel.y}, 0, scale, WHITE, GRAY, "") &&
+	if ( GuiButtonTexture(m_card_texture_2, {screen_middel.x + m_card_texture_2.width + 16, screen_middel.y}, 0, scale, WHITE, GRAY, "") &&
 		 m_can_receive_input )
 		{
 		apply_upgrade(m_current_loot_table_values[1]);
@@ -79,9 +81,9 @@ void UpgradeLayer::draw_upgrade_cards()
 		});
 	}
 
-	draw_card_text({(screen_middel.x + m_card_texture.width + 16) * scale, screen_middel.y * scale}, m_current_loot_table_values[1]);
+	draw_card_text({(screen_middel.x + m_card_texture_2.width + 16) * scale, screen_middel.y * scale}, m_current_loot_table_values[1]);
 
-	if ( GuiButtonTexture(m_card_texture, {screen_middel.x - m_card_texture.width - 16, screen_middel.y}, 0, scale, WHITE, GRAY, "") &&
+	if ( GuiButtonTexture(m_card_texture_3, {screen_middel.x - m_card_texture_3.width - 16, screen_middel.y}, 0, scale, WHITE, GRAY, "") &&
 		 m_can_receive_input )
 		{
 		apply_upgrade(m_current_loot_table_values[2]);
@@ -93,7 +95,7 @@ void UpgradeLayer::draw_upgrade_cards()
 		});
 	}
 
-	draw_card_text({(screen_middel.x - m_card_texture.width - 16) * scale, screen_middel.y * scale}, m_current_loot_table_values[2]);
+	draw_card_text({(screen_middel.x - m_card_texture_3.width - 16) * scale, screen_middel.y * scale}, m_current_loot_table_values[2]);
 
 }
 
@@ -162,7 +164,7 @@ void UpgradeLayer::draw_card_text(Vector2 card_pos, LootTableValue upgrade_info)
 	auto& vp = gApp()->viewport();
 	float scale = vp->viewport_scale();
 	float text_size = 14 * scale;
-	Rectangle rarity_text_pos = {card_pos.x + 10 * scale, card_pos.y - 60 * scale, 120 * scale, text_size};
+	Rectangle rarity_text_pos = {card_pos.x + 10 * scale, card_pos.y - 80 * scale, 120 * scale, text_size};
 	Rectangle value_text_pos  = {card_pos.x + 10 * scale, card_pos.y + 10 * scale + 2 * text_size, 120 * scale, text_size};
 	Rectangle type_text_pos	  = {card_pos.x + 10 * scale, card_pos.y + 10 * scale + text_size, 120 * scale, text_size};
 	float text_pos_x		  = card_pos.x - 60 * scale;
@@ -178,6 +180,7 @@ void UpgradeLayer::draw_card_text(Vector2 card_pos, LootTableValue upgrade_info)
 	float line_height = text_size + 4 * scale;
 
 	GuiLabel(rarity_text_pos, rarity_to_string(upgrade_info.rarity).c_str());
+	GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt({219, 180, 132, 255}));
 	GuiLabel(type_text_pos, upgrade_type_to_string(upgrade_info.index).c_str());
 	GuiLabel(value_text_pos, value_to_string(upgrade_info.index, upgrade_info.rarity).c_str()
 	);
@@ -193,18 +196,25 @@ std::string UpgradeLayer::rarity_to_string(int rarity)
 {
 	switch ( rarity ) {
 		case 0:
+			GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt({128, 128, 128, 255}));
 			return "Common";
 		case 1:
+			GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt({84, 130, 53, 255}));
 			return "Uncommon";
 		case 2:
+			GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt({0, 112, 192, 255}));
 			return "Rare";
 		case 3:
+			GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt({112, 48, 160, 255}));
 			return "Epic";
 		case 4:
+			GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt({255, 192, 0, 255}));
 			return "Legendary";
 		case 5:
+			GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt({255, 0, 0, 255}));
 			return "Mythic";
 		default:
+			GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt(BLACK));
 			return "Unknown";
 	}
 }
@@ -291,7 +301,7 @@ void UpgradeLayer::draw_upgrade_preview(Vector2 card_pos, LootTableValue upgrade
 	Rectangle text_pos		  = {card_pos.x - 60 * scale, card_pos.y + 30 * scale + 3 * 14 * scale, 120 * scale, text_size};
 
 	GuiSetStyle(DEFAULT, TEXT_SIZE, text_size);
-	GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt(BLACK));
+	GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt({219, 180, 132, 255}));
 	GuiSetStyle(LABEL, TEXT_ALIGNMENT, TEXT_ALIGN_CENTER);
 
 	std::string preview;

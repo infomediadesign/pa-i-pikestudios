@@ -45,7 +45,10 @@ public:
 	std::vector<float> m_only_mythic_chance{0, 0, 0, 0, 0, 100};
 	std::vector<float> m_only_epic_chance{0, 0, 0, 100, 0, 0};
 
-	Texture2D m_card_texture;
+	Texture2D m_card_texture_1;
+	Texture2D m_card_texture_2;
+	Texture2D m_card_texture_3;
+
 	LootTable m_loot_table;
 	std::vector<LootTableValue> m_current_loot_table_values;
 
