@@ -37,7 +37,10 @@ void PauseLayer::on_render()
 			gApp()->pop_layer<PauseLayer>();
 			if ( auto app_layer = gApp()->get_layer<AppLayer>() )
 				app_layer->resume();
-
+			auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
+			if ( director ) {
+				director->set_is_active(true);
+			}
 		});
 		gApp()->call_later([]() {
 			auto upgrade_layer = gApp()->get_layer<UpgradeLayer>();
