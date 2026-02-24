@@ -127,14 +127,14 @@ Shark::Shark() : PSInterfaces::IEntity("shark")
 	// Has an droppable upgrade
 	float drop_roll = static_cast<float>(PSUtils::gen_rand(0, 1000)) / 1000.0f;
 	m_marked		= drop_roll < m_drop_upgrade_chance;
+	
+	m_director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
 }
 
 void Shark::init(std::shared_ptr<Shark> self, const Vector2& pos)
 {
 	m_self = self;
 	m_pos  = pos;
-
-	m_director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
 
 	m_collider = std::make_unique<PSCore::collision::EntityCollider>(m_self);
 	m_collider->register_collision_handler([](std::weak_ptr<PSInterfaces::IEntity> other, const Vector2& pos) {

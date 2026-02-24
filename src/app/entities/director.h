@@ -12,6 +12,7 @@
 #include <layers/applayer.h>
 #include <pscore/spawner.h>
 #include <entities/tentacle.h>
+#include "entities/chonkyshark.h"
 
 class FortunaDirectorPriv;
 class FortunaDirector : public PSInterfaces::IEntity
@@ -111,6 +112,11 @@ struct FortunaDirectorPriv
 	int shark_max_limit							= CFG_VALUE<int>("shark_max_limit", 100);
 	float shark_min_spawn_time					= CFG_VALUE<float>("shark_min_spawn_time", 0.1f);
 	int shark_start_increase_difficulty_bounty_amount = CFG_VALUE<int>("shark_start_increase_at_bounty", 160);
+	
+	std::unique_ptr<PSCore::Spawner<ChonkyShark, AppLayer>> chonky_shark_spawner;
+	float chonky_shark_spawn_time		= CFG_VALUE<float>("chonky_shark_spawn_time", 5.0f);
+	float chonky_shark_spawn_variation = CFG_VALUE<float>("chonky_shark_spawn_variation", 2.0f);
+	int chonky_shark_limit				= CFG_VALUE<int>("chonky_shark_limit", 5);
 
 	std::unique_ptr<PSCore::Spawner<tentacle, AppLayer>> tentacle_spawner;
 	int tentacle_limit = CFG_VALUE<int>("tentacle_limit", 10);
