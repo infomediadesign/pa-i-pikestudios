@@ -14,7 +14,7 @@ UpgradeLayer::UpgradeLayer()
 	m_button	   = PRELOAD_TEXTURE("smallbutton", "resources/ui/button_small.png", frame_grid)->m_s_texture;
 	auto director  = dynamic_cast<FortunaDirector*>(gApp()->game_director());
 	
-	m_loot_table.add_loot_table(0, director->drop_chances.add_cannon, m_only_mithic_chance); // Add Cannon
+	m_loot_table.add_loot_table(0, director->drop_chances.add_cannon, m_only_mythic_chance); // Add Cannon
 	m_loot_table.add_loot_table(1,director->drop_chances.projectile_speed, m_chances); //Projectile Speed
 	m_loot_table.add_loot_table(2,director->drop_chances.fire_range , m_chances); //Fire Range
 	m_loot_table.add_loot_table(3,director->drop_chances.fire_rate, m_chances); //Fire Rate

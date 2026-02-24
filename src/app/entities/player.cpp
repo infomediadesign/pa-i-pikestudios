@@ -76,7 +76,7 @@ Player::Player() : PSInterfaces::IEntity("player")
 	m_flash_alpha_location = GetShaderLocation(m_flash_shader, "flash_alpha");
 
 	// Upgrades
-	std::vector<int> chances = {50, 25, 25};
+	std::vector<float> chances = {50, 25, 25};
 	m_loot_table.add_loot_table(0, 20, chances);
 	chances = {30, 10, 40, 20};
 	m_loot_table.add_loot_table(1, 30, chances);
