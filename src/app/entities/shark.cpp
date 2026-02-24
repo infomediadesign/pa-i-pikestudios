@@ -294,10 +294,6 @@ void Shark::on_hit()
 		if ( auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director()) ) {
 			director->spawn_loot_chest(m_pos);
 		}
-		printf("Shark was marked, dropped upgrade\n");
-	} 
-	else{
-		printf("Shark was not marked, no upgrade dropped\n");
 	}
 }
 
@@ -390,8 +386,6 @@ void Shark::determined_if_marked()
 {
 	float drop_roll = static_cast<float>(PSUtils::gen_rand_float(0.0f, 100.0f));
 	m_marked		= drop_roll <= m_drop_upgrade_chance;
-	printf("Chance: %f ", m_drop_upgrade_chance);
-	printf("Shark marked: %s (roll: %.2f)\n", m_marked ? "true" : "false", drop_roll);
 }
 
 float Shark::calculate_rotation_velocity(float frequency, float dt)
