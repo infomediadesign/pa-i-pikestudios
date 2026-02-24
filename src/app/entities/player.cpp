@@ -35,11 +35,11 @@ Player::Player() : PSInterfaces::IEntity("player")
 	m_sprite = PRELOAD_TEXTURE(ident_, "resources/entity/player.png", frame_grid);
 
 	m_animation_controller = PSCore::sprites::SpriteSheetAnimation(
-			FETCH_SPRITE_TEXTURE(ident_), {{1, 1, PSCore::sprites::KeyFrame, 1},
+			FETCH_SPRITE_TEXTURE(ident_), {{2, 1, PSCore::sprites::KeyFrame, 1},
 										   {3, 1, PSCore::sprites::KeyFrame, 3},
 										   {3, 1, PSCore::sprites::KeyFrame, 3},
 										   {3, 1, PSCore::sprites::KeyFrame, 3},
-										   {10, 0.1, PSCore::sprites::Forward, 1}}
+										   {10, 0.1, PSCore::sprites::Forward, 3}}
 	);
 
 	m_animation_controller.add_animation_at_index(0, 1);
@@ -77,13 +77,13 @@ Player::Player() : PSInterfaces::IEntity("player")
 
 	// Upgrades
 	std::vector<int> chances = {50, 25, 25};
-	m_loot_table.add_loot_table(0, chances);
+	m_loot_table.add_loot_table(0, 20, chances);
 	chances = {30, 10, 40, 20};
-	m_loot_table.add_loot_table(1, chances);
+	m_loot_table.add_loot_table(1, 30, chances);
 	chances = {99, 1};
-	m_loot_table.add_loot_table(2, chances);
+	m_loot_table.add_loot_table(2, 10, chances);
 
-	m_loot_table.loot_table_values(1);
+	m_loot_table.loot_table_values(3);
 }
 
 Player::~Player()
@@ -139,8 +139,9 @@ void Player::update(const float dt)
 			m_target_velocity = 0;
 			m_velocity		  = {0, 0};
 
-			if ( m_animation_controller.get_sprite_sheet_frame_index(1) == 9 ) {
+			if ( m_animation_controller.get_sprite_sheet_frame_index(3) == 9 ) {
 				set_is_active(false);
+				m_sails->set_is_active(false);
 			}
 		}
 	}
@@ -215,7 +216,9 @@ void Player::on_death()
 	for ( const auto& cannon: m_cannon_container ) {
 		cannon->set_is_active(false);
 	}
-	m_animation_controller.set_animation_at_index(4, 0, 1);
+
+	m_animation_controller.set_animation_at_index(0, 1, 1);
+	m_animation_controller.set_animation_at_index(4, 0, 3);
 
 	gApp()->get_layer<AppLayer>()->set_can_open_pause_menu(false);
 	gApp()->push_layer<DeathScreenLayer>();
@@ -618,10 +621,16 @@ void Player::set_fire_mode(FireMode mode)
 //
 Sails::Sails(Player* player) : PSInterfaces::IEntity("player_sails"), m_player(player)
 {
+	Vector2 frame_grid{3, 4};
+	m_sprite = PRELOAD_TEXTURE(ident_, "resources/emissive/player_emissive.png", frame_grid);
+
+	m_emissive_texture_location = GetShaderLocation(m_emissive_shader, "texture_emissive");
+	SetShaderValue(m_emissive_shader, GetShaderLocation(m_emissive_shader, "emissive_color"), &m_emissive_color, SHADER_UNIFORM_VEC3);
 }
 
 Sails::~Sails()
 {
+	UnloadShader(m_emissive_shader);
 }
 
 void Sails::update(float dt)
@@ -630,6 +639,10 @@ void Sails::update(float dt)
 
 void Sails::render()
 {
+	BeginShaderMode(m_emissive_shader);
+
+	SetShaderValueTexture(m_emissive_shader, m_emissive_texture_location, m_sprite->m_s_texture);
+
 	if ( auto& vp = gApp()->viewport() ) {
 		auto texture = m_player->m_sprite;
 		vp->draw_in_viewport(
@@ -637,6 +650,8 @@ void Sails::render()
 				m_player->m_rotation + m_player->m_rotation_offset, WHITE
 		);
 	}
+
+	EndShaderMode();
 }
 
 void Sails::draw_debug()

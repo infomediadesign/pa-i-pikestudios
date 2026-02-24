@@ -8,6 +8,7 @@
 struct LootTableIndices
 {
 	int index;
+	int pull_chance;
 	int location;
 };
 
@@ -27,9 +28,11 @@ struct LootTableValue
 class LootTable
 {
 public:
-	void add_loot_table(int index, std::vector<int>& chances);
+	void add_loot_table(int index, int pull_chance, std::vector<int>& chances);
 
 	void set_expected_value(float expected_value);
+
+	void set_pull_chance(int index, int pull_chance);
 
 	std::vector<LootTableValue> loot_table_values(int count);
 

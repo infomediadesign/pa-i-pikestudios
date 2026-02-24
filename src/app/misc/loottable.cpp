@@ -16,7 +16,7 @@
 #define SQRT2HALF 0.7071067811865f
 #endif
 
-void LootTable::add_loot_table(int index, std::vector<int>& chances)
+void LootTable::add_loot_table(int index, int pull_chance, std::vector<int>& chances)
 {
 	for ( auto element: m_indices ) {
 		if ( element.index == index ) {
@@ -35,8 +35,12 @@ void LootTable::add_loot_table(int index, std::vector<int>& chances)
 		}
 	}
 
+	if ( pull_chance <= 0 ) {
+		return;
+	}
+
 	int location = static_cast<int>(m_chances.size());
-	m_indices.push_back({index, location});
+	m_indices.push_back({index, pull_chance, location});
 
 	for ( int i = 0; auto chance: chances ) {
 		if ( i == 0 ) {
@@ -55,6 +59,15 @@ void LootTable::set_expected_value(float expected_value)
 	m_expected_value = std::clamp(expected_value, -1.0f, 1.0f);
 }
 
+void LootTable::set_pull_chance(int index, int pull_chance)
+{
+	for ( auto& element: m_indices ) {
+		if ( element.index == index ) {
+			element.pull_chance = pull_chance;
+		}
+	}
+}
+
 std::vector<LootTableValue> LootTable::loot_table_values(int count)
 {
 	random_values_from_loot_table(count);
@@ -67,11 +80,23 @@ std::vector<LootTableValue> LootTable::loot_table_values(int count)
 void LootTable::random_values_from_loot_table(int indices_count)
 {
 	int count							  = indices_count;
-	int max_indices_index				  = static_cast<int>(m_indices.size()) - 1;
+	int largest_random_chance			  = 0;
 	std::vector<LootTableIndices> indices = m_indices;
 
-	if ( indices_count > m_indices.size() ) {
-		count = static_cast<int>(m_indices.size());
+	int valid_pull_chance_count = 0;
+	for ( auto& element: indices ) {
+		largest_random_chance += element.pull_chance;
+
+		if ( element.pull_chance == 0 ) {
+			element.index = -1;
+		}
+		else {
+			valid_pull_chance_count++;
+		}
+	}
+
+	if ( indices_count > valid_pull_chance_count ) {
+		count = valid_pull_chance_count;
 	}
 
 	while ( m_values.size() < count ) {
@@ -79,25 +104,25 @@ void LootTable::random_values_from_loot_table(int indices_count)
 	}
 
 	for ( int i = 0; i < count; i++ ) {
-		int random_index = PSUtils::gen_rand(0, max_indices_index);
+		int random_index = PSUtils::gen_rand(0, largest_random_chance - 1);
 
-		int current_index		= 0;
-		int current_valid_index = 0;
-		bool active				= true;
+		int previous_pull_chance_sum = 0;
 
-		while ( active ) {
-			int current_index_in_range = current_index % max_indices_index;
+		for ( int j = 0; auto& element: indices ) {
+			if ( element.index != -1 ) {
+				if ( random_index < element.pull_chance + previous_pull_chance_sum ) {
+					m_values.at(i).index = m_indices.at(j).index;
+					m_values.at(i).value = PSUtils::gen_rand(0, 99);
 
-			if ( indices.at(current_index_in_range).index != -1 ) {
-				if ( current_valid_index == random_index ) {
-					m_values.at(i).index					 = m_indices.at(current_index_in_range).index;
-					m_values.at(i).value					 = PSUtils::gen_rand(0, 99);
-					indices.at(current_index_in_range).index = -1;
-					active									 = false;
+					largest_random_chance -= element.pull_chance;
+
+					element.index = -1;
+
+					break;
 				}
-				current_valid_index++;
+				previous_pull_chance_sum += element.pull_chance;
 			}
-			current_index++;
+			j++;
 		}
 	}
 }
@@ -114,7 +139,7 @@ void LootTable::calculate_curve_boundary()
 				float curve_value =
 						static_cast<float>(0.5 * std::erff(SQRT2HALF * ((delta_sigma / static_cast<float>(divisor)) + boundary)) + 0.5) * 100;
 
-				if ( curve_value > static_cast<float>(chance.chance) ) {
+				if ( curve_value <= static_cast<float>(chance.chance) ) {
 					boundary += delta_sigma / static_cast<float>(divisor);
 				}
 
@@ -128,13 +153,13 @@ void LootTable::calculate_curve_boundary()
 void LootTable::calculate_rarity()
 {
 	for ( auto& value: m_values ) {
-		for ( int i = 0; auto index: m_indices ) {
-			if ( value.index == index.index ) {
+		for ( int i = 0; auto element: m_indices ) {
+			if ( value.index == element.index ) {
 				value.rarity = 0;
 
 				int length;
 				if ( m_indices.size() - 1 == i ) {
-					length = static_cast<int>(m_indices.size()) - m_indices.at(i).location;
+					length = static_cast<int>(m_chances.size()) - m_indices.at(i).location;
 				} else {
 					length = m_indices.at(i + 1).location - m_indices.at(i).location;
 				}
