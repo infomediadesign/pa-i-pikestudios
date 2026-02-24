@@ -32,18 +32,18 @@ public:
 	std::string upgrade_type_to_string(int index);
 	std::string value_to_string(int index, int rarity);
 
-	int common_pull_chance    = CFG_VALUE<int>("upgrade_common_chance", 50);
-	int uncommon_pull_chance  = CFG_VALUE<int>("upgrade_uncommon_chance", 30);
-	int rare_pull_chance	  = CFG_VALUE<int>("upgrade_rare_chance", 15);
-	int epic_pull_chance	  = CFG_VALUE<int>("upgrade_epic_chance", 4);
-	int legendary_pull_chance = CFG_VALUE<int>("upgrade_legendary_chance", 1);
-	int mythic_pull_chance    = CFG_VALUE<int>("upgrade_mythical_chance", 0);
+	float common_pull_chance    = CFG_VALUE<float>("upgrade_common_chance", 50);
+	float uncommon_pull_chance  = CFG_VALUE<float>("upgrade_uncommon_chance", 30);
+	float rare_pull_chance	  = CFG_VALUE<float>("upgrade_rare_chance", 15);
+	float epic_pull_chance	  = CFG_VALUE<float>("upgrade_epic_chance", 4.5);
+	float legendary_pull_chance = CFG_VALUE<float>("upgrade_legendary_chance", 0.5);
+	float mythic_pull_chance    = CFG_VALUE<float>("upgrade_mythical_chance", 0);
 
-	std::vector<int> m_chances{common_pull_chance, uncommon_pull_chance,  rare_pull_chance,
+	std::vector<float> m_chances{common_pull_chance, uncommon_pull_chance,  rare_pull_chance,
 							   epic_pull_chance,   legendary_pull_chance, mythic_pull_chance};
 
-	std::vector<int> m_only_mithic_chance{0, 0, 0, 0, 0, 100};
-	std::vector<int> m_only_epic_chance{0, 0, 0, 100, 0, 0};
+	std::vector<float> m_only_mythic_chance{0, 0, 0, 0, 0, 100};
+	std::vector<float> m_only_epic_chance{0, 0, 0, 100, 0, 0};
 
 	Texture2D m_card_texture;
 	LootTable m_loot_table;
