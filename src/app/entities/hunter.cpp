@@ -30,6 +30,7 @@ class HunterPriv
 	int current_point_index = 0;
 	float speed				= CFG_VALUE<float>("hunter_speed", 10);
 	bool in_view			= false;
+	float avoidance_steer_strength = CFG_VALUE<float>("hunter_avoidance_steer_strength", 1000.f);
 
 	Vector2 velocity = {0, 0};
 
@@ -450,8 +451,8 @@ void Hunter::avoid_other_hunters_(float dt)
 	if ( !_p->current_patrol_path.size() )
 		return;
 
-	auto appLayer = gApp()->get_layer<AppLayer>();
-	if ( !appLayer )
+	auto app_layer = gApp()->get_layer<AppLayer>();
+	if ( !app_layer )
 		return;
 
 	Vector2 *next_path_point, *prev_path_point;
@@ -465,26 +466,25 @@ void Hunter::avoid_other_hunters_(float dt)
 	Vector2 separation = {0, 0};
 	int count		   = 0;
 
-	const float avoidRadius = Vector2Length(Vector2Subtract(*next_path_point, *prev_path_point)) * 0.5;
+	const float avoid_radius = Vector2Length(Vector2Subtract(*next_path_point, *prev_path_point)) * 0.5;
 
-	for ( auto& weak: appLayer->entities() ) {
+	for ( auto& weak: app_layer->entities() ) {
 		if ( auto other = weak.lock() ) {
 			if ( other.get() == this )
 				continue;
 
-			auto otherHunter = std::dynamic_pointer_cast<Hunter>(other);
-			if ( !otherHunter )
+			auto other_hunter = std::dynamic_pointer_cast<Hunter>(other);
+			if ( !other_hunter )
 				continue;
 
-			auto otherPosOpt = otherHunter->position();
-			if ( !otherPosOpt.has_value() )
+			auto other_pos_opt = other_hunter->position();
+			if ( !other_pos_opt.has_value() )
 				continue;
 
-			Vector2 diff = Vector2Subtract(_p->pos, otherPosOpt.value());
+			Vector2 diff = Vector2Subtract(_p->pos, other_pos_opt.value());
 			float dist	 = Vector2Length(diff);
-			if ( dist > 0 && dist < avoidRadius ) {
+			if ( dist > 0 && dist < avoid_radius ) {
 				// steer away, stronger when closer
-				std::cout << "Distance to other hunter: " << dist << std::endl;
 				separation = Vector2Add(separation, Vector2Scale(Vector2Normalize(diff), 1.0f / dist));
 				++count;
 			}
@@ -493,9 +493,9 @@ void Hunter::avoid_other_hunters_(float dt)
 
 	if ( count > 0 ) {
 		separation = Vector2Scale(separation, 1.0f / count);
-		// turn this into a small velocity or speed change
-		float steerStrength = 1000.0f;
-		*next_path_point	= Vector2Add(*next_path_point, Vector2Scale(separation, steerStrength * dt));
+
+		float steer_strength = _p->avoidance_steer_strength;
+		*next_path_point	= Vector2Add(*next_path_point, Vector2Scale(separation, steer_strength * dt));
 	}
 }
 
