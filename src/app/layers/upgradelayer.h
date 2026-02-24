@@ -9,6 +9,7 @@ class UpgradeLayer : public PSInterfaces::Layer
 public:
 
 	UpgradeLayer();
+	~UpgradeLayer();
 
 	void on_update(float dt) override;
 
@@ -25,6 +26,8 @@ public:
 	void draw_reroll_button();
 
 	void draw_upgrade_preview(Vector2 card_pos, LootTableValue upgrade_info);
+
+	void set_boarder_color(int rarity);
 
 	float get_multiplier(int rarity);
 
@@ -48,6 +51,12 @@ public:
 	Texture2D m_card_texture_1;
 	Texture2D m_card_texture_2;
 	Texture2D m_card_texture_3;
+
+	Texture2D m_card_texture_emissive;
+	Shader m_card_emissive_shader = LoadShader(NULL, "resources/shader/emissive_color.fs");
+	Vector3 m_emissive_color{255,0,0};
+	int m_emissive_texture_position;
+	int m_emissive_color_position;
 
 	LootTable m_loot_table;
 	std::vector<LootTableValue> m_current_loot_table_values;

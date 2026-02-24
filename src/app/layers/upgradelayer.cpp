@@ -14,6 +14,15 @@ UpgradeLayer::UpgradeLayer()
 	m_card_texture_2 = PRELOAD_TEXTURE("card_2", "resources/ui/upgrade_card_2.png", frame_grid)->m_s_texture;
 	m_card_texture_3 = PRELOAD_TEXTURE("card_3", "resources/ui/upgrade_card_3.png", frame_grid)->m_s_texture;
 	m_button	   = PRELOAD_TEXTURE("smallbutton", "resources/ui/button_small.png", frame_grid)->m_s_texture;
+
+	
+
+	m_card_texture_emissive = PRELOAD_TEXTURE("card_emissive", "resources/emissive/upgrate_card_emissive_border.png", frame_grid)->m_s_texture;
+	m_emissive_texture_position = GetShaderLocation(m_card_emissive_shader, "texture_emissive");
+	m_emissive_color_position	= GetShaderLocation(m_card_emissive_shader, "emissive_color");
+	SetShaderValue(m_card_emissive_shader, m_emissive_color_position, &m_card_texture_emissive, SHADER_UNIFORM_SAMPLER2D);
+
+
 	auto director  = dynamic_cast<FortunaDirector*>(gApp()->game_director());
 	
 	m_loot_table.add_loot_table(0, director->drop_chances.add_cannon, m_only_mythic_chance); // Add Cannon
@@ -24,6 +33,11 @@ UpgradeLayer::UpgradeLayer()
 	m_loot_table.add_loot_table(5,director->drop_chances.speed, m_chances); //Player Speed
 	m_loot_table.add_loot_table(6,director->drop_chances.rotation_speed, m_chances); //Turn Speed
 	m_loot_table.add_loot_table(7, director->drop_chances.piercing_chance, m_chances); // Piercing Chance
+}
+
+UpgradeLayer::~UpgradeLayer()
+{
+	UnloadShader(m_card_emissive_shader);
 }
 
 void UpgradeLayer::on_update(float dt)
@@ -56,6 +70,10 @@ void UpgradeLayer::draw_upgrade_cards()
 	GuiSetStyle(DEFAULT, TEXT_SIZE, 14 * scale);
 	GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt(BLACK));
 	
+	set_boarder_color(m_current_loot_table_values[0].rarity);
+	BeginShaderMode(m_card_emissive_shader);
+	SetShaderValueTexture(m_card_emissive_shader, m_emissive_texture_position, m_card_texture_emissive);
+	SetShaderValue(m_card_emissive_shader, m_emissive_color_position, &m_emissive_color, SHADER_UNIFORM_VEC3);
 	
 	if ( GuiButtonTexture(m_card_texture_1, screen_middel, 0, scale, WHITE, GRAY, "") && m_can_receive_input ) {
 		apply_upgrade(m_current_loot_table_values[0]);
@@ -67,8 +85,13 @@ void UpgradeLayer::draw_upgrade_cards()
 					app_layer->resume();
 		});
 	}
+	EndShaderMode();
 	draw_card_text(card_pos * scale, m_current_loot_table_values[0]);
 	
+	set_boarder_color(m_current_loot_table_values[1].rarity);
+	BeginShaderMode(m_card_emissive_shader);
+	SetShaderValueTexture(m_card_emissive_shader, m_emissive_texture_position, m_card_texture_emissive);
+	SetShaderValue(m_card_emissive_shader, m_emissive_color_position, &m_emissive_color, SHADER_UNIFORM_VEC3);
 	if ( GuiButtonTexture(m_card_texture_2, {screen_middel.x + m_card_texture_2.width + 16, screen_middel.y}, 0, scale, WHITE, GRAY, "") &&
 		 m_can_receive_input )
 		{
@@ -80,9 +103,13 @@ void UpgradeLayer::draw_upgrade_cards()
 				app_layer->resume();
 		});
 	}
-
+	EndShaderMode();
 	draw_card_text({(screen_middel.x + m_card_texture_2.width + 16) * scale, screen_middel.y * scale}, m_current_loot_table_values[1]);
 
+	set_boarder_color(m_current_loot_table_values[2].rarity);
+	BeginShaderMode(m_card_emissive_shader);
+	SetShaderValueTexture(m_card_emissive_shader, m_emissive_texture_position, m_card_texture_emissive);
+	SetShaderValue(m_card_emissive_shader, m_emissive_color_position, &m_emissive_color, SHADER_UNIFORM_VEC3);
 	if ( GuiButtonTexture(m_card_texture_3, {screen_middel.x - m_card_texture_3.width - 16, screen_middel.y}, 0, scale, WHITE, GRAY, "") &&
 		 m_can_receive_input )
 		{
@@ -94,9 +121,8 @@ void UpgradeLayer::draw_upgrade_cards()
 				app_layer->resume();
 		});
 	}
-
+	EndShaderMode();
 	draw_card_text({(screen_middel.x - m_card_texture_3.width - 16) * scale, screen_middel.y * scale}, m_current_loot_table_values[2]);
-
 }
 
 void UpgradeLayer::apply_upgrade(LootTableValue upgrade_info)
@@ -216,6 +242,33 @@ std::string UpgradeLayer::rarity_to_string(int rarity)
 		default:
 			GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt(BLACK));
 			return "Unknown";
+	}
+}
+
+void UpgradeLayer::set_boarder_color(int rarity)
+{
+	switch ( rarity ) {
+		case 0:
+			m_emissive_color = {128, 128, 128};
+			break;
+		case 1:
+			m_emissive_color = {84, 130, 53};
+			break;
+		case 2:
+			m_emissive_color = {0, 112, 192};
+			break;
+		case 3:
+			m_emissive_color = {112, 48, 160};
+			break;
+		case 4:
+			m_emissive_color = {255, 192, 0};
+			break;
+		case 5:
+			m_emissive_color = {255, 0, 0};
+			break;
+		default:
+			m_emissive_color = {255, 255, 255};
+			break;
 	}
 }
 

@@ -20,7 +20,7 @@ void main() {
     vec4 emissive_texture = texture(texture_emissive, fragTexCoord);
 
     if(emissive_texture.a > 0){
-        finalColor = emissive_texture * colDiffuse * vec4(emissive_color / 255, emissive_texture.a);
+        finalColor = emissive_texture * colDiffuse * vec4(emissive_color / 255, emissive_texture.a) * fragColor;
     }
     else{
         finalColor = diffuse_texture * colDiffuse * fragColor;
