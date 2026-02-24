@@ -52,6 +52,10 @@ class HunterPriv
 	float invulnerability_time			 = CFG_VALUE<float>("hunter_invulnerability_time", 0.5f);
 	float remaining_invulnerability_time = 0.f;
 
+	// animation
+	bool to_wreck_anim_playing = false;
+	bool to_death_anim_playing = false;
+
 	std::unique_ptr<PSCore::collision::EntityCollider> collider;
 
 	Hunter::State current_state = Hunter::State::Patrolling;
@@ -92,14 +96,23 @@ void HunterPriv::update_smear(float dt)
 
 Hunter::Hunter() : PSInterfaces::IEntity("hunter")
 {
-	_p				 = std::make_unique<HunterPriv>();
+	_p = std::make_unique<HunterPriv>();
 
 	Vector2 frame_grid{3, 4};
 	_p->sprite = PRELOAD_TEXTURE(ident_, "resources/entity/enemy_ship.png", frame_grid);
 
-	_p->animation_controller = PSCore::sprites::SpriteSheetAnimation(FETCH_SPRITE_TEXTURE(ident_), {{1, 1, PSCore::sprites::KeyFrame, 1}});
+	std::vector<PSCore::sprites::SpriteSheetData> sp_data{
+			{1, 1, PSCore::sprites::KeyFrame, 1},
+			{1, 1, PSCore::sprites::KeyFrame, 2},
+			{7, 0.1, PSCore::sprites::Forward, 1},
+			{1, 1, PSCore::sprites::KeyFrame, 1},
+			{7, 0.1, PSCore::sprites::Forward, 1}
+	};
+
+	_p->animation_controller = PSCore::sprites::SpriteSheetAnimation(FETCH_SPRITE_TEXTURE(ident_), sp_data);
 
 	_p->animation_controller.add_animation_at_index(0, 1);
+	_p->animation_controller.add_animation_at_index(1, 2);
 
 	propose_z_index(30);
 };
@@ -140,6 +153,17 @@ void Hunter::update(float dt)
 			_p->current_patrol_path.clear();
 
 			_p->pos = Vector2Add(_p->pos, _p->velocity * dt);
+
+			if ( _p->animation_controller.get_sprite_sheet_frame_index(1).value_or(0) == 6 ) {
+				if ( _p->to_wreck_anim_playing ) {
+					_p->animation_controller.set_animation_at_index(3, 0, 1);
+					_p->to_wreck_anim_playing = false;
+				} else if ( _p->to_death_anim_playing ) {
+					_p->to_death_anim_playing = false;
+					set_is_active(false);
+				}
+			}
+
 			break;
 		}
 	}
@@ -150,6 +174,7 @@ void Hunter::update(float dt)
 	_p->previous_rotation = _p->rotation;
 
 	_p->update_smear(dt);
+	_p->animation_controller.update_animation(dt);
 
 	_p->remaining_invulnerability_time = std::max(0.f, _p->remaining_invulnerability_time - dt);
 
@@ -171,13 +196,18 @@ void Hunter::render()
 		}
 
 		vp->draw_in_viewport(
-				_p->sprite->m_s_texture, _p->animation_controller.get_source_rectangle(1).value_or(Rectangle{0}), _p->pos, _p->rotation + 90,
-				_p->current_state == State::Patrolling ? WHITE : YELLOW
+				_p->sprite->m_s_texture, _p->animation_controller.get_source_rectangle(1).value_or(Rectangle{0}), _p->pos, _p->rotation + 90, WHITE
 		);
-	}
 
-	for ( auto& cannon: _p->cannons ) {
-		cannon->render();
+		for ( auto& cannon: _p->cannons ) {
+			cannon->render();
+		}
+
+		if ( _p->current_state == Patrolling )
+			vp->draw_in_viewport(
+					_p->sprite->m_s_texture, _p->animation_controller.get_source_rectangle(2).value_or(Rectangle{0}), _p->pos, _p->rotation + 90,
+					WHITE
+			);
 	}
 }
 
@@ -299,7 +329,7 @@ std::vector<Vector2> Hunter::gen_patrol_path()
 	Vector2 perp  = {-dir.y, dir.x}; // Perpendicular vector
 
 	// Generate 2 intermediate points
-	for ( int i = 1; i <= 2; i++ ) {
+	for ( int i = 1; i <= 3; i++ ) {
 		float t		  = i / 3.0f;
 		Vector2 point = Vector2Add(start, Vector2Scale(diff, t));
 
@@ -369,11 +399,15 @@ void Hunter::set_is_active(bool active)
 	}
 
 	_p->current_patrol_path.clear();
-	_p->current_state		= State::Patrolling;
-	_p->current_point_index = 0;
-	_p->point_t				= 0.0f;
-	_p->forward_vec			= {0, 0};
-	_p->in_view				= false;
+	_p->current_state		  = State::Patrolling;
+	_p->current_point_index	  = 0;
+	_p->point_t				  = 0.0f;
+	_p->forward_vec			  = {0, 0};
+	_p->in_view				  = false;
+	_p->to_wreck_anim_playing = false;
+	_p->to_death_anim_playing = false;
+
+	_p->animation_controller.set_animation_at_index(0, 0, 1);
 }
 
 void Hunter::traverse_path_(float dt)
@@ -408,62 +442,62 @@ void Hunter::traverse_path_(float dt)
 	}
 };
 
-void Hunter::avoid_other_hunters_(float dt)
-{
-}
 // void Hunter::avoid_other_hunters_(float dt)
 // {
-// 	if ( !_p->current_patrol_path.size() )
-// 		return;
-
-// 	auto appLayer = gApp()->get_layer<AppLayer>();
-// 	if ( !appLayer )
-// 		return;
-
-// 	Vector2 *next_path_point, *prev_path_point;
-// 	try {
-// 		next_path_point = &_p->current_patrol_path.at(_p->current_point_index + 2);
-// 		prev_path_point = &_p->current_patrol_path.at(_p->current_point_index + 1);
-// 	} catch ( const std::out_of_range& e ) {
-// 		return;
-// 	}
-
-// 	Vector2 separation = {0, 0};
-// 	int count		   = 0;
-
-// 	const float avoidRadius = Vector2Length(Vector2Subtract(*next_path_point, *prev_path_point)) * 0.5;
-
-// 	for ( auto& weak: appLayer->entities() ) {
-// 		if ( auto other = weak.lock() ) {
-// 			if ( other.get() == this )
-// 				continue;
-
-// 			auto otherHunter = std::dynamic_pointer_cast<Hunter>(other);
-// 			if ( !otherHunter )
-// 				continue;
-
-// 			auto otherPosOpt = otherHunter->position();
-// 			if ( !otherPosOpt.has_value() )
-// 				continue;
-
-// 			Vector2 diff = Vector2Subtract(_p->pos, otherPosOpt.value());
-// 			float dist	 = Vector2Length(diff);
-// 			if ( dist > 0 && dist < avoidRadius ) {
-// 				// steer away, stronger when closer
-// 				std::cout << "Distance to other hunter: " << dist << std::endl;
-// 				separation = Vector2Add(separation, Vector2Scale(Vector2Normalize(diff), 1.0f / dist));
-// 				++count;
-// 			}
-// 		}
-// 	}
-
-// 	if ( count > 0 ) {
-// 		separation = Vector2Scale(separation, 1.0f / count);
-// 		// turn this into a small velocity or speed change
-// 		float steerStrength = 1000.0f;
-// 		*next_path_point	= Vector2Add(*next_path_point, Vector2Scale(separation, steerStrength * dt));
-// 	}
 // }
+void Hunter::avoid_other_hunters_(float dt)
+{
+	if ( !_p->current_patrol_path.size() )
+		return;
+
+	auto appLayer = gApp()->get_layer<AppLayer>();
+	if ( !appLayer )
+		return;
+
+	Vector2 *next_path_point, *prev_path_point;
+	try {
+		next_path_point = &_p->current_patrol_path.at(_p->current_point_index + 2);
+		prev_path_point = &_p->current_patrol_path.at(_p->current_point_index + 1);
+	} catch ( const std::out_of_range& e ) {
+		return;
+	}
+
+	Vector2 separation = {0, 0};
+	int count		   = 0;
+
+	const float avoidRadius = Vector2Length(Vector2Subtract(*next_path_point, *prev_path_point)) * 0.5;
+
+	for ( auto& weak: appLayer->entities() ) {
+		if ( auto other = weak.lock() ) {
+			if ( other.get() == this )
+				continue;
+
+			auto otherHunter = std::dynamic_pointer_cast<Hunter>(other);
+			if ( !otherHunter )
+				continue;
+
+			auto otherPosOpt = otherHunter->position();
+			if ( !otherPosOpt.has_value() )
+				continue;
+
+			Vector2 diff = Vector2Subtract(_p->pos, otherPosOpt.value());
+			float dist	 = Vector2Length(diff);
+			if ( dist > 0 && dist < avoidRadius ) {
+				// steer away, stronger when closer
+				std::cout << "Distance to other hunter: " << dist << std::endl;
+				separation = Vector2Add(separation, Vector2Scale(Vector2Normalize(diff), 1.0f / dist));
+				++count;
+			}
+		}
+	}
+
+	if ( count > 0 ) {
+		separation = Vector2Scale(separation, 1.0f / count);
+		// turn this into a small velocity or speed change
+		float steerStrength = 1000.0f;
+		*next_path_point	= Vector2Add(*next_path_point, Vector2Scale(separation, steerStrength * dt));
+	}
+}
 
 void Hunter::init(std::shared_ptr<Hunter> self)
 {
@@ -531,10 +565,14 @@ void Hunter::on_hit()
 			for ( auto& cannon: _p->cannons ) {
 				cannon->set_is_active(false);
 			}
+
+			_p->to_wreck_anim_playing = true;
+			_p->animation_controller.set_animation_at_index(2, 0, 1);
 			break;
 		}
 		case Wreck: {
-			set_is_active(false);
+			_p->to_death_anim_playing = true;
+			_p->animation_controller.set_animation_at_index(4, 0, 1);
 			// TODO: if has upgrade, drop it
 			break;
 		}
