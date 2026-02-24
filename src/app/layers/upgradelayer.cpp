@@ -234,7 +234,7 @@ std::string UpgradeLayer::rarity_to_string(int rarity)
 			GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt({112, 48, 160, 255}));
 			return "Epic";
 		case 4:
-			GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt({255, 192, 0, 255}));
+			GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt({255, 128, 0, 255}));
 			return "Legendary";
 		case 5:
 			GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt({255, 0, 0, 255}));
@@ -261,7 +261,7 @@ void UpgradeLayer::set_boarder_color(int rarity)
 			m_emissive_color = {112, 48, 160};
 			break;
 		case 4:
-			m_emissive_color = {255, 192, 0};
+			m_emissive_color = {255, 128, 0};
 			break;
 		case 5:
 			m_emissive_color = {255, 0, 0};
