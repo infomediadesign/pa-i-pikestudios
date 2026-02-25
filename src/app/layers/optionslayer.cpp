@@ -9,8 +9,9 @@
 OptionsLayer::OptionsLayer()
 {
 	Vector2 frame_grid{1, 1};
-	m_background = PRELOAD_TEXTURE("background", "resources/ui/scoreboard_layer.png", frame_grid)->m_s_texture;
+	m_background = PRELOAD_TEXTURE("background", "resources/ui/background_layer.png", frame_grid)->m_s_texture;
 	m_button	 = PRELOAD_TEXTURE("button", "resources/ui/button_small.png", frame_grid)->m_s_texture;
+	m_paper		 = PRELOAD_TEXTURE("paper", "resources/ui/settings_box.png", frame_grid)->m_s_texture;
 }
 
 void OptionsLayer::on_update(float dt)
