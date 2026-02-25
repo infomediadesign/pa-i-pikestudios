@@ -422,8 +422,21 @@ void FortunaDirector::increase_difficulty(int bounty)
 				)
 		);
 		_p->shark_spawner->set_limit(std::min(_p->shark_max_limit, _p->shark_limit + (bounty / _p->shark_limit_increase_bounty_divider)));
-		printf("Bounty: %d, Shark Spawn Time: %.2f, Shark Limit: %d\n", bounty, _p->shark_spawner->interval(), _p->shark_spawner->limit());
 	}
+	
+	if (bounty >= _p->chonky_shark_takeover_threshold) {
+		_p->shark_spawner->suspend();
+		_p->chonky_shark_spawner->resume();
+		_p->chonky_shark_spawner->set_interval(
+				std::max(
+						_p->chonky_shark_min_spawn_time,
+						_p->chonky_shark_spawn_time -
+								_p->chonky_shark_spawn_increase_base_value * (static_cast<float>(bounty) / _p->chonky_shark_spawn_increase_bounty_divider)
+				)
+		);
+		_p->chonky_shark_spawner->set_limit(std::min(_p->chonky_shark_max_limit, _p->chonky_shark_limit + (bounty / _p->chonky_shark_limit_increase_bounty_divider)));
+	}
+	
 	// Increase tentacle spawn rate and limit based on bounty
 	if ( bounty >= _p->tentacle_start_spawn_bounty_amount ) {
 		_p->tentacle_spawner->set_interval(

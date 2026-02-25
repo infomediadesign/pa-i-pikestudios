@@ -9,9 +9,9 @@
 #include <psinterfaces/entity.h>
 
 #include <entities/shark.h>
+#include <entities/tentacle.h>
 #include <layers/applayer.h>
 #include <pscore/spawner.h>
-#include <entities/tentacle.h>
 #include "entities/chonkyshark.h"
 
 class FortunaDirectorPriv;
@@ -103,34 +103,40 @@ struct FortunaDirectorPriv
 	float player_current_fire_range		  = CFG_VALUE<float>("player_current_fire_range", 100.0f);
 
 	std::unique_ptr<PSCore::Spawner<Shark, AppLayer>> shark_spawner;
-	float shark_spawn_time		= CFG_VALUE<float>("shark_spawn_time", 1.0f);
-	float shark_spawn_variation = CFG_VALUE<float>("shark_spawn_variation", 0.0f);
-	int shark_limit				= CFG_VALUE<int>("shark_limit", 10);
-	float shark_spawn_increase_base_value		= CFG_VALUE<float>("shark_spawn_increase_base_value", 0.05f);
-	float shark_spawn_increase_bounty_divider	= CFG_VALUE<float>("shark_spawn_increase_bounty_divider", 100.0f);
-	int shark_limit_increase_bounty_divider		= CFG_VALUE<int>("shark_limit_increase_bounty_divider", 200);
-	int shark_max_limit							= CFG_VALUE<int>("shark_max_limit", 100);
-	float shark_min_spawn_time					= CFG_VALUE<float>("shark_min_spawn_time", 0.1f);
+	float shark_spawn_time							  = CFG_VALUE<float>("shark_spawn_time", 1.0f);
+	float shark_spawn_variation						  = CFG_VALUE<float>("shark_spawn_variation", 0.0f);
+	int shark_limit									  = CFG_VALUE<int>("shark_limit", 10);
+	float shark_spawn_increase_base_value			  = CFG_VALUE<float>("shark_spawn_increase_base_value", 0.05f);
+	float shark_spawn_increase_bounty_divider		  = CFG_VALUE<float>("shark_spawn_increase_bounty_divider", 100.0f);
+	int shark_limit_increase_bounty_divider			  = CFG_VALUE<int>("shark_limit_increase_bounty_divider", 200);
+	int shark_max_limit								  = CFG_VALUE<int>("shark_max_limit", 100);
+	float shark_min_spawn_time						  = CFG_VALUE<float>("shark_min_spawn_time", 0.1f);
 	int shark_start_increase_difficulty_bounty_amount = CFG_VALUE<int>("shark_start_increase_at_bounty", 160);
-	
+
 	std::unique_ptr<PSCore::Spawner<ChonkyShark, AppLayer>> chonky_shark_spawner;
-	float chonky_shark_spawn_time		= CFG_VALUE<float>("chonky_shark_spawn_time", 5.0f);
-	float chonky_shark_spawn_variation = CFG_VALUE<float>("chonky_shark_spawn_variation", 2.0f);
-	int chonky_shark_limit				= CFG_VALUE<int>("chonky_shark_limit", 5);
+	float chonky_shark_spawn_time					 = CFG_VALUE<float>("chonky_shark_spawn_time", 5.0f);
+	float chonky_shark_spawn_variation				 = CFG_VALUE<float>("chonky_shark_spawn_variation", 2.0f);
+	int chonky_shark_limit							 = CFG_VALUE<int>("chonky_shark_limit", 5);
+	float chonky_shark_spawn_increase_base_value	 = CFG_VALUE<float>("chonky_shark_spawn_increase_base_value", 0.1f);
+	float chonky_shark_spawn_increase_bounty_divider = CFG_VALUE<float>("chonky_shark_spawn_increase_bounty_divider", 100.0f);
+	int chonky_shark_limit_increase_bounty_divider	 = CFG_VALUE<int>("chonky_shark_limit_increase_bounty_divider", 200);
+	int chonky_shark_max_limit						 = CFG_VALUE<int>("chonky_shark_max_limit", 50);
+	float chonky_shark_min_spawn_time				 = CFG_VALUE<float>("chonky_shark_min_spawn_time", 0.5f);
+	int chonky_shark_takeover_threshold				 = CFG_VALUE<int>("chonky_shark_takeover_threshold", 7000);
 
 	std::unique_ptr<PSCore::Spawner<tentacle, AppLayer>> tentacle_spawner;
-	int tentacle_limit = CFG_VALUE<int>("tentacle_limit", 10);
-	float tentacle_spawn_time = CFG_VALUE<float>("tentacle_spawn_time", 5.0f);
-	float tentacle_spawn_variation = CFG_VALUE<float>("tentacle_spawn_variation", 3.0f);
-	float tentacle_spawn_increase_base_value		= CFG_VALUE<float>("tentacle_spawn_increase_base_value", 0.05f);
-	float tentacle_spawn_increase_bounty_divider	= CFG_VALUE<float>("tentacle_spawn_increase_bounty_divider", 100.0f);
-	int tentacle_limit_increase_bounty_divider		= CFG_VALUE<int>("tentacle_limit_increase_bounty_divider", 200);
+	int tentacle_limit							 = CFG_VALUE<int>("tentacle_limit", 10);
+	float tentacle_spawn_time					 = CFG_VALUE<float>("tentacle_spawn_time", 5.0f);
+	float tentacle_spawn_variation				 = CFG_VALUE<float>("tentacle_spawn_variation", 3.0f);
+	float tentacle_spawn_increase_base_value	 = CFG_VALUE<float>("tentacle_spawn_increase_base_value", 0.05f);
+	float tentacle_spawn_increase_bounty_divider = CFG_VALUE<float>("tentacle_spawn_increase_bounty_divider", 100.0f);
+	int tentacle_limit_increase_bounty_divider	 = CFG_VALUE<int>("tentacle_limit_increase_bounty_divider", 200);
 	int tentacle_max_limit						 = CFG_VALUE<int>("tentacle_max_limit", 100);
-	float tentacle_min_spawn_time					 = CFG_VALUE<float>("tentacle_min_spawn_time", 0.5f);
+	float tentacle_min_spawn_time				 = CFG_VALUE<float>("tentacle_min_spawn_time", 0.5f);
 	int tentacle_start_spawn_bounty_amount		 = CFG_VALUE<int>("tentacle_start_spawn_at_bounty", 200);
 	bool m_tentacle_spawn_active				 = false;
 
-	
+
 	std::unique_ptr<PSCore::Spawner<Projectile, AppLayer>> projectile_spawner;
 	float player_max_velocity		 = CFG_VALUE<float>("player_max_velocity", 200.0f);
 	float player_input_rotation_mult = CFG_VALUE<float>("player_input_rotation_mult", 200.0f);

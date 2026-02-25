@@ -75,6 +75,7 @@ protected:
 	float m_rotation_velocity = 0;
 
 	PSCore::sprites::SpriteSheetAnimation m_animation_controller;
+	Vector2 m_smear_origin{5, -0.5};
 };
 
 class Fin : public PSInterfaces::IRenderable
