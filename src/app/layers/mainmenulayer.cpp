@@ -19,6 +19,10 @@ MainMenuLayer::MainMenuLayer()
 	m_main_menu_background = PRELOAD_TEXTURE("main_menu_bg", "resources/ui/main_menu_background.png", frame_grid)->m_s_texture;
 	m_main_menu_title	   = PRELOAD_TEXTURE("main_menu_title", "resources/ui/fortunas_echo_title.png", frame_grid)->m_s_texture;
 	m_button			   = PRELOAD_TEXTURE("smallbutton", "resources/ui/button_small.png", frame_grid)->m_s_texture;
+
+	m_custom_font = LoadFontEx("resources/fonts/fax_font.ttf", 126, nullptr, 0);
+	m_main_menu_font = LoadFontEx("resources/fonts/pirate_font.ttf", 126, nullptr, 0);
+	SetTextureFilter(m_custom_font.texture, TEXTURE_FILTER_BILINEAR);
 }
 
 void MainMenuLayer::on_update(float dt)
@@ -27,6 +31,7 @@ void MainMenuLayer::on_update(float dt)
 
 void MainMenuLayer::on_render()
 {
+	GuiSetFont(m_custom_font);
 	draw_background();
 
 	auto& vp	   = gApp()->viewport();

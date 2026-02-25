@@ -56,7 +56,6 @@ public:
 		float rotation_speed	= CFG_VALUE<int>("upgrade_rotation_speed_chance", 13);
 		float piercing_chance	 = CFG_VALUE<int>("upgrade_piercing_chance_chance", 13);
 		float luck				= CFG_VALUE<int>("upgrade_luck_chance", 6);
-		float loot_drop			 = CFG_VALUE<int>("loot_drop_chance", 13);
 	};
 
 	DropChances drop_chances;
