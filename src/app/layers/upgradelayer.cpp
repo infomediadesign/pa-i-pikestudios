@@ -176,7 +176,7 @@ void UpgradeLayer::apply_upgrade(LootTableValue upgrade_info)
 			break;
 		case 8:
 			upgrade_amount = director->player_luck() * (m_base_upgrade_luck * upgrade_multyplier);
-			director->upgrade_player_luck(1);
+			director->upgrade_player_luck(upgrade_amount);
 			m_loot_table.set_expected_value(director->player_luck());
 			if (director->player_luck() >= 1.0){
 				director->drop_chances.luck = 0;
