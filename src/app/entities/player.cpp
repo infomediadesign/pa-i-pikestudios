@@ -212,7 +212,6 @@ void Player::on_death()
 		score_layer->player_name_input = gApp()->current_player_name();
 	}
 
-	m_sails->set_is_active(false);
 	for ( const auto& cannon: m_cannon_container ) {
 		cannon->set_is_active(false);
 	}

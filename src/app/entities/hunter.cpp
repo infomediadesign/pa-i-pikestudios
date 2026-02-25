@@ -37,7 +37,8 @@ class HunterPriv
 	// Movement decoration
 	Smear smear;
 	void update_smear(float dt);
-	float max_velocity = 0.1;
+	float max_velocity = 1;
+	float rotation_velocity = 0;
 
 	// wreck movement
 	Vector2 forward_vec = {0, 0};
@@ -67,29 +68,33 @@ class HunterPriv
 void HunterPriv::update_smear(float dt)
 {
 	// calculate the rotation velocity for the smear effect
-	auto rotation_velocity = (rotation - previous_rotation) / dt;
+	if ( abs(rotation - previous_rotation) < 1 ) {
+		rotation_velocity = (rotation - previous_rotation) / dt;
+	}
 
-	smear.update_smear(rotation_velocity, 0.5, 10, dt);
+	previous_rotation = rotation;
+
+	smear.update_smear(rotation_velocity, -0.5, 10, dt);
 
 	if ( auto& vp = gApp()->viewport() ) {
 
 		Vector2 position_absolute	 = vp->position_viewport_to_global(pos);
 		float scale					 = vp->viewport_scale();
-		Vector2 smear_right_position = coordinatesystem::point_relative_to_global_leftup(position_absolute, rotation, Vector2Scale({22, 5}, scale));
-		Vector2 smear_left_position	 = coordinatesystem::point_relative_to_global_leftdown(position_absolute, rotation, Vector2Scale({22, 5}, scale));
+		Vector2 smear_right_position = coordinatesystem::point_relative_to_global_leftup(position_absolute, rotation, Vector2Scale({20, 5}, scale));
+		Vector2 smear_left_position	 = coordinatesystem::point_relative_to_global_leftdown(position_absolute, rotation, Vector2Scale({20, 5}, scale));
 		Vector2 smear_forward_position =
 				coordinatesystem::point_relative_to_global_rightup(position_absolute, rotation, Vector2Scale({24, 0}, scale));
 
-		smear.calculate_linear_smear(smear_right_position, Vector2Length(velocity), rotation, 0.3f * scale, 0, 0);
-		smear.calculate_linear_smear(smear_left_position, Vector2Length(velocity), rotation, 0.3f * scale, 0, 1);
+		smear.calculate_linear_smear(smear_right_position, Vector2Length(velocity), rotation, 0.6f * scale, 0, 0);
+		smear.calculate_linear_smear(smear_left_position, Vector2Length(velocity), rotation, 0.6f * scale, 0, 1);
 		smear.calculate_exponential_smear(
-				smear_forward_position, Vector2Length(velocity), rotation, 0.3f * scale, 0, 0.03f * scale, 0.05f * scale, 2
+				smear_forward_position, Vector2Length(velocity), rotation, 0.5f * scale, 0, 0.15f * scale, 0.25f * scale, 2
 		);
 		smear.calculate_exponential_smear(
-				smear_forward_position, Vector2Length(velocity), rotation, 0.3f * scale, 0, -0.03f * scale, -0.05f * scale, 3
+				smear_forward_position, Vector2Length(velocity), rotation, 0.5f * scale, 0, -0.15f * scale, -0.25f * scale, 3
 		);
 
-		smear.add_smear_wave(0.1, 0.25, Vector2Length(velocity), max_velocity, dt, 0);
+		smear.add_smear_wave(0.1, 10, Vector2Length(velocity), max_velocity, dt, 0);
 
 		smear.update_smear_wave({0, 1}, Linear, 1, 10, Vector2Length(velocity), max_velocity, dt);
 	}
@@ -172,8 +177,6 @@ void Hunter::update(float dt)
 	if ( auto layer = gApp()->get_layer<AppLayer>() )
 		_p->collider->check_collision(layer->entities());
 
-	_p->previous_rotation = _p->rotation;
-
 	_p->update_smear(dt);
 	_p->animation_controller.update_animation(dt);
 
@@ -188,7 +191,7 @@ void Hunter::update(float dt)
 void Hunter::render()
 {
 	if ( auto& vp = gApp()->viewport() ) {
-		if ( Vector2Length(_p->velocity) > 0 ) {
+		if ( Vector2Length(_p->velocity) > 0 && !_p->to_death_anim_playing ) {
 			_p->smear.draw_smear(0, Linear, 2 * vp->viewport_scale(), 1, {9, 75, 101, 127});
 			_p->smear.draw_smear(1, Linear, 2 * vp->viewport_scale(), 1, {9, 75, 101, 127});
 			_p->smear.draw_smear(2, Exponential, 2 * vp->viewport_scale(), 1, {9, 75, 101, 127});
