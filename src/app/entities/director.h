@@ -47,14 +47,16 @@ public:
 
 	struct DropChances
 	{
-		int add_cannon		= CFG_VALUE<int>("upgrade_add_cannon_chance", 1);
-		int projectile_speed = CFG_VALUE<int>("upgrade_projectile_speed_chance", 13);
-		int fire_range		= CFG_VALUE<int>("upgrade_fire_range_chance", 13);
-		int fire_rate		= CFG_VALUE<int>("upgrade_fire_rate_chance", 13);
-		int health			= CFG_VALUE<int>("upgrade_health_chance", 13);
-		int speed			= CFG_VALUE<int>("upgrade_speed_chance", 13);
-		int rotation_speed	= CFG_VALUE<int>("upgrade_rotation_speed_chance", 13);
-		int piercing_chance	 = CFG_VALUE<int>("upgrade_piercing_chance_chance", 13);
+		float add_cannon		= CFG_VALUE<int>("upgrade_add_cannon_chance", 1);
+		float projectile_speed = CFG_VALUE<int>("upgrade_projectile_speed_chance", 13);
+		float fire_range		= CFG_VALUE<int>("upgrade_fire_range_chance", 13);
+		float fire_rate		= CFG_VALUE<int>("upgrade_fire_rate_chance", 13);
+		float health			= CFG_VALUE<int>("upgrade_health_chance", 13);
+		float speed			= CFG_VALUE<int>("upgrade_speed_chance", 13);
+		float rotation_speed	= CFG_VALUE<int>("upgrade_rotation_speed_chance", 13);
+		float piercing_chance	 = CFG_VALUE<int>("upgrade_piercing_chance_chance", 13);
+		float luck				= CFG_VALUE<int>("upgrade_luck_chance", 6);
+		float loot_drop			 = CFG_VALUE<int>("loot_drop_chance", 13);
 	};
 
 	DropChances drop_chances;
@@ -69,6 +71,7 @@ public:
 	void upgrade_player_speed(float amount);
 	void upgrade_player_rotation_speed(float amount);
 	void upgrade_player_piercing_chance(float amount);
+	void upgrade_player_luck(float amount);
 
 	float player_current_fire_rate() const;
 	float player_current_projectile_speed() const;
@@ -78,6 +81,7 @@ public:
 
 	void set_player_piercing_chance(const int chance);
 	float player_piercing_chance() const;
+	float player_luck() const;
 
 	// Player Health
 	void set_player_health(const int health);
@@ -138,6 +142,7 @@ struct FortunaDirectorPriv
 	float player_current_projectile_speed = CFG_VALUE<float>("player_current_projectile_speed", 300.0f);
 	float player_current_fire_range		  = CFG_VALUE<float>("player_current_fire_range", 100.0f);
 	float player_current_piercing_chance  = CFG_VALUE<float>("player_current_piercing_chance", 5.0f);
+	float player_current_luck			  = 0.1; // CFG_VALUE<float>("player_current_luck", 0.1f);
 
 	std::unique_ptr<PSCore::Spawner<Shark, AppLayer>> shark_spawner;
 	float shark_spawn_time		= CFG_VALUE<float>("shark_spawn_time", 1.0f);

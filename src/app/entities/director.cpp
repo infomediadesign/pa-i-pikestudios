@@ -415,6 +415,11 @@ void FortunaDirector::upgrade_player_health(int amount)
 	}
 }
 
+void FortunaDirector::upgrade_player_luck(float amount)
+{
+	_p->player_current_luck = std::clamp(_p->player_current_luck + amount, -1.0f, 1.0f);
+}
+
 void FortunaDirector::upgrade_player_invincibility(bool invincibility)
 {
 	for ( auto player: _p->players ) {
@@ -481,6 +486,11 @@ float FortunaDirector::player_piercing_chance() const
 void FortunaDirector::set_player_piercing_chance(const int chance)
 {
 	_p->player_current_piercing_chance = chance;
+}
+
+float FortunaDirector::player_luck() const
+{
+	return _p->player_current_luck;
 }
 
 template<>

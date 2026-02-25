@@ -33,6 +33,7 @@ UpgradeLayer::UpgradeLayer()
 	m_loot_table.add_loot_table(5,director->drop_chances.speed, m_chances); //Player Speed
 	m_loot_table.add_loot_table(6,director->drop_chances.rotation_speed, m_chances); //Turn Speed
 	m_loot_table.add_loot_table(7, director->drop_chances.piercing_chance, m_chances); // Piercing Chance
+	m_loot_table.add_loot_table(8, director->drop_chances.luck, m_chances); // Luck
 }
 
 UpgradeLayer::~UpgradeLayer()
@@ -173,6 +174,16 @@ void UpgradeLayer::apply_upgrade(LootTableValue upgrade_info)
 			printf("Piercing Chance Upgrade Applied: %.2f\n", upgrade_amount);
 			printf("Player Piercing Chance: %.2f\n", director->player_piercing_chance());
 			break;
+		case 8:
+			upgrade_amount = director->player_luck() * (m_base_upgrade_luck * upgrade_multyplier);
+			director->upgrade_player_luck(upgrade_amount);
+			m_loot_table.set_expected_value(director->player_luck());
+			if (director->player_luck() >= 1.0){
+				director->drop_chances.luck = 0;
+			}
+			printf("Luck Upgrade Applied: %.2f\n", upgrade_amount);
+			printf("Player Luck: %.2f\n", director->player_luck());
+			break;
 		default:
 			std::cout << "Invalid upgrade index: " << upgrade_info.index << std::endl;
 	}
@@ -291,6 +302,8 @@ std::string UpgradeLayer::upgrade_type_to_string(int index)
 			return "Turn Speed";
 		case 7:
 			return "Piercing Chance";
+		case 8:
+			return "Luck";
 		default:
 			return "Unknown";
 	}
@@ -317,6 +330,8 @@ std::string UpgradeLayer::value_to_string(int index, int rarity)
 			return std::format("+{:.1f}%", m_base_upgrade_rotation_speed * multiplier * 100);
 		case 7:
 			return std::format("+{:.1f}%", m_base_upgrade_piercing_chance * multiplier * 100);
+		case 8:
+			return std::format("+{:.1f}%", m_base_upgrade_luck * multiplier * 100);
 		default:
 			return "Unknown";
 	}
@@ -393,6 +408,11 @@ void UpgradeLayer::draw_upgrade_preview(Vector2 card_pos, LootTableValue upgrade
 			preview = std::format("{:.1f}% -> {:.1f}%",
 				director->player_piercing_chance(),
 				(director->player_piercing_chance() + director->player_piercing_chance() * (m_base_upgrade_piercing_chance * upgrade_multyplier)));
+			break;
+		case 8:
+			preview = std::format("{:.1f}% -> {:.1f}%", director->player_luck() * 100,
+					std::clamp(
+							(director->player_luck() + director->player_luck() * (m_base_upgrade_luck * upgrade_multyplier)) * 100, -100.0f, 100.0f));
 			break;
 		default:
 			break;

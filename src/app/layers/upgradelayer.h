@@ -73,8 +73,12 @@ public:
 	float m_base_upgrade_fire_range		  = CFG_VALUE<float>("upgrade_fire_range_base_value", 0.1f);
 	float m_base_upgrade_fire_rate		  = CFG_VALUE<float>("upgrade_fire_rate_base_value", 0.075f);
 	float m_base_upgrade_piercing_chance  = CFG_VALUE<float>("upgrade_piercing_chance_base_value", 0.05f);
+	float m_base_upgrade_loot_drop_chance = CFG_VALUE<float>("upgrade_loot_drop_chance_base_value", 0.05);
+	float m_base_upgrade_luck			  = CFG_VALUE<float>("upgrade_luck_base_value", 0.075);
 	int m_base_upgrade_health			  = CFG_VALUE<int>("upgrade_health_base_value", 1);
 	int m_base_upgrade_add_cannon		  = CFG_VALUE<int>("upgrade_add_cannon_base_value", 1);
+
+
 
 
 	// multipliers for the different rarities

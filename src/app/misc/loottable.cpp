@@ -57,6 +57,7 @@ void LootTable::add_loot_table(int index, int pull_chance, std::vector<float>& c
 void LootTable::set_expected_value(float expected_value)
 {
 	m_expected_value = std::clamp(expected_value, -1.0f, 1.0f);
+	printf("Expected Value Set To: %.4f\n", m_expected_value);
 }
 
 void LootTable::set_pull_chance(int index, int pull_chance)
