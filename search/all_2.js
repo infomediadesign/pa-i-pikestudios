@@ -7,5 +7,6 @@ var searchData=
   ['cannon_4',['Cannon',['../classCannon.html',1,'']]],
   ['check_5fcollision_5fhorizontal_5',['check_collision_horizontal',['../namespacemisc_1_1map.html#a81207649060ca1284e5279749bd26156',1,'misc::map']]],
   ['check_5fcollision_5fvertical_6',['check_collision_vertical',['../namespacemisc_1_1map.html#a23e00bbb83661f4e958f56571c95a509',1,'misc::map']]],
-  ['coordinatesystem_7',['coordinatesystem',['../namespacecoordinatesystem.html',1,'']]]
+  ['chonkyshark_7',['ChonkyShark',['../classChonkyShark.html',1,'']]],
+  ['coordinatesystem_8',['coordinatesystem',['../namespacecoordinatesystem.html',1,'']]]
 ];

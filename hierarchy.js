@@ -26,7 +26,9 @@ var hierarchy =
         [ "Player", "classPlayer.html", null ],
         [ "Projectile", "classProjectile.html", null ],
         [ "Sails", "classSails.html", null ],
-        [ "Shark", "classShark.html", null ],
+        [ "Shark", "classShark.html", [
+          [ "ChonkyShark", "classChonkyShark.html", null ]
+        ] ],
         [ "Water", "classWater.html", null ],
         [ "tentacle", "classtentacle.html", null ]
       ] ]

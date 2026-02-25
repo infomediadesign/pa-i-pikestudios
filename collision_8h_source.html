@@ -117,16 +117,16 @@ $(document).ready(function(){initNavTree('collision_8h_source.html',''); initRes
 <div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="keyword">namespace </span>PSCore {</div>
 <div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>    <span class="keyword">namespace </span>collision {</div>
 <div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span> </div>
-<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>        <span class="keyword">template</span>&lt;<span class="keyword">class</span> O,<span class="keyword">class</span> E, <span class="keyword">class</span> L&gt;</div>
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>            <span class="keyword">requires</span> std::is_base_of_v&lt;PSInterfaces::IEntity, E&gt; &amp;&amp; std::is_base_of_v&lt;PSInterfaces::Layer, L&gt;</div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>        Vector2 entity_repel_force(std::shared_ptr&lt;O&gt; self, <span class="keyword">const</span> Spawner&lt;E, L&gt;&amp; spawner, <span class="keywordtype">float</span> min_distance, <span class="keywordtype">float</span> repel_strenght)</div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>        <span class="keyword">template</span>&lt;<span class="keyword">class</span> E&gt;</div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>            <span class="keyword">requires</span> std::is_base_of_v&lt;PSInterfaces::IEntity, E&gt;</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>        Vector2 entity_repel_force(std::shared_ptr&lt;E&gt; self, <span class="keyword">const</span> std::vector&lt;std::shared_ptr&lt;PSInterfaces::IEntity&gt;&gt; other_entities, <span class="keywordtype">float</span> min_distance, <span class="keywordtype">float</span> repel_strenght)</div>
 <div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>        {</div>
 <div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>            std::shared_ptr&lt;PSInterfaces::IEntity&gt; origin_entity;</div>
 <div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>            <span class="keywordflow">if</span> ( !(origin_entity = std::dynamic_pointer_cast&lt;PSInterfaces::IEntity&gt;(self)) )</div>
 <div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>                <span class="keywordflow">return</span> {0, 0};</div>
 <div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span> </div>
 <div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>            Vector2 repel_force{0, 0};</div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>            <span class="keywordflow">for</span> ( <span class="keyword">const</span> <span class="keyword">auto</span>&amp; entity: spawner.entities() ) {</div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>            <span class="keywordflow">for</span> ( <span class="keyword">const</span> <span class="keyword">auto</span>&amp; entity: other_entities ) {</div>
 <div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>                <span class="keywordflow">if</span> ( std::shared_ptr&lt;PSInterfaces::IEntity&gt; other_entity = std::dynamic_pointer_cast&lt;PSInterfaces::IEntity&gt;(entity) ) {</div>
 <div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>                    <span class="keywordflow">if</span> ( !other_entity-&gt;is_active() || other_entity-&gt;uid() == origin_entity-&gt;uid() )</div>
 <div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>                        <span class="keywordflow">continue</span>;</div>
