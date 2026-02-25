@@ -80,7 +80,7 @@ void FortunaDirector::initialize_entities()
 		tentacle->init(tentacle, {(float) PSUtils::gen_rand(10, 300), (float) PSUtils::gen_rand(10, 300)});
 	});
 
-	_p->chonky_shark_spawner->resume();
+	_p->shark_spawner->resume();
 
 	auto initial_player = std::make_shared<Player>();
 	_p->players.push_back(initial_player);
@@ -118,18 +118,8 @@ void FortunaDirector::draw_debug()
 		misc::map::set_wrap_around_mode(_p->on_screen_warp_around);
 	}
 
-	// ImGui::Separator();
-	// ImGui::Text("Spawner");
-
 	_p->shark_spawner->draw_debug();
 	_p->chonky_shark_spawner->draw_debug();
-	// static bool shark_sp_active = true;
-	// if ( ImGui::Checkbox("Shark Spawner", &shark_sp_active) ) {
-	// 	if ( shark_sp_active )
-	// 		_p->shark_spawner->resume();
-	// 	else
-	// 		_p->shark_spawner->suspend();
-	// }
 
 	ImGui::Separator();
 	ImGui::Text("Player Speed");
@@ -245,7 +235,6 @@ std::shared_ptr<Player> FortunaDirector::spawn_player(const Vector2& position)
 
 	_p->players.push_back(new_player);
 
-	// gApp()->register_entity(new_player);
 	if ( auto app_layer = gApp()->get_layer<AppLayer>() )
 		app_layer->register_entity(new_player, true);
 	new_player->set_shared_ptr_this(new_player);
