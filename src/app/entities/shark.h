@@ -42,6 +42,9 @@ public:
 
 	float calculate_rotation_velocity(float frequency, float dt);
 
+protected:
+	std::shared_ptr<PSCore::sprites::Sprite> m_shark_sprite;
+
 	void determined_if_marked();
 
 private:
@@ -69,13 +72,13 @@ private:
 	float m_horde_cohesion_strength	  = CFG_VALUE<float>("shark_cohesion_strength", 50.0f);
 	bool m_horde_sync_rotation		  = CFG_VALUE<bool>("shark_sync_rotation", false);
 
-	std::shared_ptr<PSCore::sprites::Sprite> m_shark_sprite;
 	std::unique_ptr<PSCore::collision::EntityCollider> m_collider;
 
 	float m_shark_rotation	  = 0;
 	float m_rotation_velocity = 0;
 
 	PSCore::sprites::SpriteSheetAnimation m_animation_controller;
+	Vector2 m_smear_origin{5, -0.5};
 };
 
 class Fin : public PSInterfaces::IRenderable

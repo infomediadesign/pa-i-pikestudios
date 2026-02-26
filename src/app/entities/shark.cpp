@@ -49,10 +49,11 @@ void Fin::render()
 void Fin::update(float dt)
 {
 	if ( auto& vp = gApp()->viewport() ) {
-		Vector2 position_absolute = vp->position_viewport_to_global(m_shark->m_pos);
-		float scale				  = vp->viewport_scale();
-		Vector2 smear_forward_position =
-				coordinatesystem::point_relative_to_global_rightup(position_absolute, m_shark->m_shark_rotation, Vector2Scale({5, -0.5}, scale));
+		Vector2 position_absolute	   = vp->position_viewport_to_global(m_shark->m_pos);
+		float scale					   = vp->viewport_scale();
+		Vector2 smear_forward_position = coordinatesystem::point_relative_to_global_rightup(
+				position_absolute, m_shark->m_shark_rotation, Vector2Scale(m_shark->m_smear_origin, scale)
+		);
 
 		m_smear.calculate_exponential_smear(
 				smear_forward_position, m_shark->m_speed, m_shark->m_shark_rotation, 0.2f * scale, 0, 0.03f * scale, 0.05f * scale, 0
@@ -139,14 +140,14 @@ Shark::Shark() : PSInterfaces::IEntity("shark")
 	m_fin->propose_z_index(-10);
 
 	determined_if_marked();
+
+	m_director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
 }
 
 void Shark::init(std::shared_ptr<Shark> self, const Vector2& pos)
 {
 	m_self = self;
 	m_pos  = pos;
-
-	m_director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
 
 	m_collider = std::make_unique<PSCore::collision::EntityCollider>(m_self);
 	m_collider->register_collision_handler([](std::weak_ptr<PSInterfaces::IEntity> other, const Vector2& pos) {
@@ -177,12 +178,15 @@ void Shark::update(float dt)
 	m_rotation_velocity = calculate_rotation_velocity(0.01, dt);
 
 	std::shared_ptr<Player> player_entity;
+	std::vector<std::shared_ptr<PSInterfaces::IEntity>> shark_entities;
 
 	if ( auto app_layer = gApp()->get_layer<AppLayer>() ) {
 		for ( auto entity: app_layer->entities() ) {
 			if ( auto locked = entity.lock() ) {
 				if ( auto player = std::dynamic_pointer_cast<Player>(locked) )
 					player_entity = player;
+				else if ( auto shark = std::dynamic_pointer_cast<Shark>(locked) )
+					shark_entities.push_back(locked);
 			}
 		}
 	}
@@ -196,10 +200,8 @@ void Shark::update(float dt)
 
 	m_shark_rotation = utilities::rotation_look_at(m_pos, player_pos);
 
-	auto& spawner = m_director->spawner<Shark, AppLayer>();
-
 	Vector2 separation =
-			PSCore::collision::entity_repel_force<Shark, Shark, AppLayer>(m_self, *spawner, m_horde_separation_distance, m_horde_separation_strength);
+			PSCore::collision::entity_repel_force<Shark>(m_self, shark_entities, m_horde_separation_distance, m_horde_separation_strength);
 
 	// Cohesion: steer toward the average position of nearby sharks
 	Vector2 cohesion{0, 0};
@@ -207,7 +209,7 @@ void Shark::update(float dt)
 		Vector2 center_sum{0, 0};
 		int neighbor_count = 0;
 
-		for ( const auto& other: spawner->entities() ) {
+		for ( const auto& other: shark_entities ) {
 			if ( !other || !other->is_active() || other.get() == this )
 				continue;
 

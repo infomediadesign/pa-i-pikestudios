@@ -15,6 +15,7 @@
 #include <pscore/utils.h>
 #include <psinterfaces/entity.h>
 #include <raylib.h>
+#include "entities/chonkyshark.h"
 #include "entities/tentacle.h"
 #include "entities/lootchest.h"
 
@@ -27,6 +28,9 @@ FortunaDirector::FortunaDirector() : PSInterfaces::IEntity("fortuna_director")
 	_p->projectile_spawner = std::make_unique<PSCore::Spawner<Projectile, AppLayer>>(0.0f, 0, INT32_MAX);
 	_p->tentacle_spawner =
 			std::make_unique<PSCore::Spawner<tentacle, AppLayer>>(_p->tentacle_spawn_time, _p->tentacle_spawn_variation, _p->tentacle_limit);
+	_p->chonky_shark_spawner = std::make_unique<PSCore::Spawner<ChonkyShark, AppLayer>>(
+			_p->chonky_shark_spawn_time, _p->chonky_shark_spawn_variation, _p->chonky_shark_limit
+	);
 }
 
 void FortunaDirector::initialize_entities()
@@ -36,7 +40,7 @@ void FortunaDirector::initialize_entities()
 	if ( !app_layer )
 		return;
 
-	_p->shark_spawner->register_spawn_callback([](std::shared_ptr<Shark> shark) {
+	auto set_shark_spawn = [](std::shared_ptr<Shark> shark) {
 		// Set the position of the shark to be spawned outsside of the screen
 		float x = 0, y = 0;
 		int side = PSUtils::gen_rand(0, 3);
@@ -62,6 +66,14 @@ void FortunaDirector::initialize_entities()
 		}
 
 		shark->init(shark, {x, y});
+	};
+
+	_p->shark_spawner->register_spawn_callback([set_shark_spawn](std::shared_ptr<Shark> shark) {
+		set_shark_spawn(shark);
+	});
+	
+	_p->chonky_shark_spawner->register_spawn_callback([set_shark_spawn](std::shared_ptr<ChonkyShark> shark) {
+		set_shark_spawn(shark);
 	});
 
 	_p->tentacle_spawner->register_spawn_callback([](std::shared_ptr<tentacle> tentacle) {
@@ -78,7 +90,7 @@ void FortunaDirector::initialize_entities()
 		app_layer->register_entity(initial_player, true);
 	}
 	initial_player->add_cannons(2);
-	
+
 	upgrade_player_invincibility(_p->player_invincibility);
 }
 
@@ -96,6 +108,7 @@ void FortunaDirector::update(float dt)
 	sync_player_entities();
 
 	_p->shark_spawner->update(dt);
+	_p->chonky_shark_spawner->update(dt);
 	_p->tentacle_spawner->update(dt);
 }
 
@@ -105,17 +118,8 @@ void FortunaDirector::draw_debug()
 		misc::map::set_wrap_around_mode(_p->on_screen_warp_around);
 	}
 
-	// ImGui::Separator();
-	// ImGui::Text("Spawner");
-
 	_p->shark_spawner->draw_debug();
-	// static bool shark_sp_active = true;
-	// if ( ImGui::Checkbox("Shark Spawner", &shark_sp_active) ) {
-	// 	if ( shark_sp_active )
-	// 		_p->shark_spawner->resume();
-	// 	else
-	// 		_p->shark_spawner->suspend();
-	// }
+	_p->chonky_shark_spawner->draw_debug();
 
 	ImGui::Separator();
 	ImGui::Text("Player Speed");
@@ -272,7 +276,6 @@ std::shared_ptr<Player> FortunaDirector::spawn_player(const Vector2& position)
 
 	_p->players.push_back(new_player);
 
-	// gApp()->register_entity(new_player);
 	if ( auto app_layer = gApp()->get_layer<AppLayer>() )
 		app_layer->register_entity(new_player, true);
 	new_player->set_shared_ptr_this(new_player);
@@ -544,7 +547,13 @@ void FortunaDirector::increase_difficulty(int bounty)
 	// Increase shark spawn rate and limit based on bounty
 	if ( bounty >= _p->shark_start_increase_difficulty_bounty_amount && bounty <= _p->shark_start_decrease_difficulty_bounty_amount &&
 		 bounty <= _p->shark_stop_spawn_bounty_amount ) {
-		_p->shark_spawner->set_interval(std::max(_p->shark_min_spawn_time, _p->shark_spawn_time - _p->shark_spawn_increase_base_value * (static_cast<float>(bounty) / _p->shark_spawn_increase_bounty_divider)));
+		_p->shark_spawner->set_interval(
+				std::max(
+						_p->shark_min_spawn_time,
+						_p->shark_spawn_time -
+								_p->shark_spawn_increase_base_value * (static_cast<float>(bounty) / _p->shark_spawn_increase_bounty_divider)
+				)
+		);
 		_p->shark_spawner->set_limit(std::min(_p->shark_max_limit, _p->shark_limit + (bounty / _p->shark_limit_increase_bounty_divider)));
 	}
 	// Decrease shark spawn rate and limit if bounty is above the decrease difficulty threshold
@@ -568,10 +577,29 @@ void FortunaDirector::increase_difficulty(int bounty)
 	if ( bounty >= _p->shark_stop_spawn_bounty_amount ) {
 		_p->shark_spawner->suspend();
 	}
+	
+	if (bounty >= _p->chonky_shark_takeover_threshold) {
+		_p->shark_spawner->suspend();
+		_p->chonky_shark_spawner->resume();
+		_p->chonky_shark_spawner->set_interval(
+				std::max(
+						_p->chonky_shark_min_spawn_time,
+						_p->chonky_shark_spawn_time -
+								_p->chonky_shark_spawn_increase_base_value * (static_cast<float>(bounty) / _p->chonky_shark_spawn_increase_bounty_divider)
+				)
+		);
+		_p->chonky_shark_spawner->set_limit(std::min(_p->chonky_shark_max_limit, _p->chonky_shark_limit + (bounty / _p->chonky_shark_limit_increase_bounty_divider)));
+	}
+	
 	// Increase tentacle spawn rate and limit based on bounty
-	if ( bounty >= _p->tentacle_start_spawn_bounty_amount ) 
-	{
-		_p->tentacle_spawner->set_interval(std::max(_p->tentacle_min_spawn_time, _p->tentacle_spawn_time - _p->tentacle_spawn_increase_base_value * (static_cast<float>(bounty) / _p->tentacle_spawn_increase_bounty_divider)));
+	if ( bounty >= _p->tentacle_start_spawn_bounty_amount ) {
+		_p->tentacle_spawner->set_interval(
+				std::max(
+						_p->tentacle_min_spawn_time,
+						_p->tentacle_spawn_time -
+								_p->tentacle_spawn_increase_base_value * (static_cast<float>(bounty) / _p->tentacle_spawn_increase_bounty_divider)
+				)
+		);
 		_p->tentacle_spawner->set_limit(std::min(_p->tentacle_max_limit, _p->tentacle_limit + (bounty / _p->tentacle_limit_increase_bounty_divider)));
 	}
 	// Activate tentacle spawner if bounty threshold is reached

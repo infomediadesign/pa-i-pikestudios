@@ -147,6 +147,13 @@ namespace PSCore {
 		{
 			return m_entities;
 		}
+		
+		std::vector<std::shared_ptr<PSInterfaces::IEntity>> primitive_entities()
+		{
+			std::vector<std::shared_ptr<PSInterfaces::IEntity>> primitive_entities;
+			std::copy(m_entities.begin(), m_entities.end(), std::back_inserter(primitive_entities));
+			return primitive_entities;
+		}
 
 	private:
 		std::function<bool(PSInterfaces::Layer* layer)> m_custom_spawn;

@@ -231,11 +231,17 @@ SpriteLoader::~SpriteLoader()
 	}
 }
 
-std::shared_ptr<Sprite> SpriteLoader::preload(const std::string& ident, const std::string& texture_path, const Vector2& frame_grid)
+std::shared_ptr<Sprite>
+SpriteLoader::preload(const std::string& ident, const std::string& texture_path, const Vector2& frame_grid, bool replace_if_exists)
 {
-	if ( m_texture_cache.contains(ident) )
-		return fetch_sprite(ident);
+	if ( m_texture_cache.contains(ident) ) {
+		if ( replace_if_exists )
+			unload(ident);
+		else
+			return fetch_sprite(ident);
+	}
 
+	PS_LOG(LOG_INFO, TextFormat("Loading texture '%s' (%s) into cache...", texture_path.c_str(), ident.c_str()));
 	auto sp			   = std::make_shared<Sprite>();
 	sp->m_s_texture	   = LoadTexture(texture_path.data());
 	sp->m_s_frame_grid = frame_grid;
