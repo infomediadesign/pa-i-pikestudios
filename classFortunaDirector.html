@@ -113,6 +113,8 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structFortunaDirector_1_1BountyAmount.html">BountyAmount</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structFortunaDirector_1_1DropChances.html">DropChances</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -138,6 +140,9 @@ std::shared_ptr&lt; <a class="el" href="classCannon.html">Cannon</a> &gt;&#160;<
 <tr class="memitem:a20ee669e5816eef26d9a2f0c159fa0bc" id="r_a20ee669e5816eef26d9a2f0c159fa0bc"><td class="memItemLeft" align="right" valign="top"><a id="a20ee669e5816eef26d9a2f0c159fa0bc" name="a20ee669e5816eef26d9a2f0c159fa0bc"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>destroy_cannon</b> (std::shared_ptr&lt; <a class="el" href="classCannon.html">Cannon</a> &gt; cannon)</td></tr>
 <tr class="separator:a20ee669e5816eef26d9a2f0c159fa0bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0ebbdb300a08e697c273bcd14cbb4511" id="r_a0ebbdb300a08e697c273bcd14cbb4511"><td class="memItemLeft" align="right" valign="top"><a id="a0ebbdb300a08e697c273bcd14cbb4511" name="a0ebbdb300a08e697c273bcd14cbb4511"></a>
+std::shared_ptr&lt; <a class="el" href="classLootChest.html">LootChest</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>spawn_loot_chest</b> (const Vector2 &amp;position)</td></tr>
+<tr class="separator:a0ebbdb300a08e697c273bcd14cbb4511"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a762f0f06266468e40d2286fc582785de" id="r_a762f0f06266468e40d2286fc582785de"><td class="memTemplParams" colspan="2"><a id="a762f0f06266468e40d2286fc582785de" name="a762f0f06266468e40d2286fc582785de"></a>
 template&lt;class E , <a class="el" href="conceptPSCore_1_1ILayerDerived.html">PSCore::ILayerDerived</a> L&gt; </td></tr>
 <tr class="memitem:a762f0f06266468e40d2286fc582785de"><td class="memTemplItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classPSCore_1_1Spawner.html">PSCore::Spawner</a>&lt; E, L &gt; &gt; &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><b>spawner</b> ()</td></tr>
@@ -157,6 +162,45 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>upgrade_player_add_ca
 <tr class="memitem:a4f10ae7e6c8dc23cf768e5f5c55d3ef2" id="r_a4f10ae7e6c8dc23cf768e5f5c55d3ef2"><td class="memItemLeft" align="right" valign="top"><a id="a4f10ae7e6c8dc23cf768e5f5c55d3ef2" name="a4f10ae7e6c8dc23cf768e5f5c55d3ef2"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>upgrade_player_invincibility</b> (bool invincibility)</td></tr>
 <tr class="separator:a4f10ae7e6c8dc23cf768e5f5c55d3ef2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4db51a58bc989d8866db1ee836f5f909" id="r_a4db51a58bc989d8866db1ee836f5f909"><td class="memItemLeft" align="right" valign="top"><a id="a4db51a58bc989d8866db1ee836f5f909" name="a4db51a58bc989d8866db1ee836f5f909"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>upgrade_player_health</b> (int amount)</td></tr>
+<tr class="separator:a4db51a58bc989d8866db1ee836f5f909"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac7edcb1d4c340a914bd3a052a9c16ce1" id="r_ac7edcb1d4c340a914bd3a052a9c16ce1"><td class="memItemLeft" align="right" valign="top"><a id="ac7edcb1d4c340a914bd3a052a9c16ce1" name="ac7edcb1d4c340a914bd3a052a9c16ce1"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>upgrade_player_speed</b> (float amount)</td></tr>
+<tr class="separator:ac7edcb1d4c340a914bd3a052a9c16ce1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a75db0840ad55418370ea5f8688308da9" id="r_a75db0840ad55418370ea5f8688308da9"><td class="memItemLeft" align="right" valign="top"><a id="a75db0840ad55418370ea5f8688308da9" name="a75db0840ad55418370ea5f8688308da9"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>upgrade_player_rotation_speed</b> (float amount)</td></tr>
+<tr class="separator:a75db0840ad55418370ea5f8688308da9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5aa9d83ee1f74dc8ec8b84a465187f13" id="r_a5aa9d83ee1f74dc8ec8b84a465187f13"><td class="memItemLeft" align="right" valign="top"><a id="a5aa9d83ee1f74dc8ec8b84a465187f13" name="a5aa9d83ee1f74dc8ec8b84a465187f13"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>upgrade_player_piercing_chance</b> (float amount)</td></tr>
+<tr class="separator:a5aa9d83ee1f74dc8ec8b84a465187f13"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0515e636f9fe4135f6e733fa83533b0d" id="r_a0515e636f9fe4135f6e733fa83533b0d"><td class="memItemLeft" align="right" valign="top"><a id="a0515e636f9fe4135f6e733fa83533b0d" name="a0515e636f9fe4135f6e733fa83533b0d"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>upgrade_player_luck</b> (float amount)</td></tr>
+<tr class="separator:a0515e636f9fe4135f6e733fa83533b0d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad5a508275b981f89aa10c666aa9541fc" id="r_ad5a508275b981f89aa10c666aa9541fc"><td class="memItemLeft" align="right" valign="top"><a id="ad5a508275b981f89aa10c666aa9541fc" name="ad5a508275b981f89aa10c666aa9541fc"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><b>player_current_fire_rate</b> () const</td></tr>
+<tr class="separator:ad5a508275b981f89aa10c666aa9541fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2f6ee0df60f31676adea7be43a68f467" id="r_a2f6ee0df60f31676adea7be43a68f467"><td class="memItemLeft" align="right" valign="top"><a id="a2f6ee0df60f31676adea7be43a68f467" name="a2f6ee0df60f31676adea7be43a68f467"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><b>player_current_projectile_speed</b> () const</td></tr>
+<tr class="separator:a2f6ee0df60f31676adea7be43a68f467"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afb0a3a7d05b501489c014c6840120423" id="r_afb0a3a7d05b501489c014c6840120423"><td class="memItemLeft" align="right" valign="top"><a id="afb0a3a7d05b501489c014c6840120423" name="afb0a3a7d05b501489c014c6840120423"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><b>player_current_fire_range</b> () const</td></tr>
+<tr class="separator:afb0a3a7d05b501489c014c6840120423"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a293c73a1e1183bf98f7b0570b8d9d970" id="r_a293c73a1e1183bf98f7b0570b8d9d970"><td class="memItemLeft" align="right" valign="top"><a id="a293c73a1e1183bf98f7b0570b8d9d970" name="a293c73a1e1183bf98f7b0570b8d9d970"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><b>player_max_velocity</b> () const</td></tr>
+<tr class="separator:a293c73a1e1183bf98f7b0570b8d9d970"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3d485ab2dc53c61a9456ae9b25930e47" id="r_a3d485ab2dc53c61a9456ae9b25930e47"><td class="memItemLeft" align="right" valign="top"><a id="a3d485ab2dc53c61a9456ae9b25930e47" name="a3d485ab2dc53c61a9456ae9b25930e47"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><b>player_input_rotation_mult</b> () const</td></tr>
+<tr class="separator:a3d485ab2dc53c61a9456ae9b25930e47"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adfb8c75f052ae742f21461b067ccc586" id="r_adfb8c75f052ae742f21461b067ccc586"><td class="memItemLeft" align="right" valign="top"><a id="adfb8c75f052ae742f21461b067ccc586" name="adfb8c75f052ae742f21461b067ccc586"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set_player_piercing_chance</b> (const int chance)</td></tr>
+<tr class="separator:adfb8c75f052ae742f21461b067ccc586"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5eded09a38e6045862dced0d9e901e82" id="r_a5eded09a38e6045862dced0d9e901e82"><td class="memItemLeft" align="right" valign="top"><a id="a5eded09a38e6045862dced0d9e901e82" name="a5eded09a38e6045862dced0d9e901e82"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><b>player_piercing_chance</b> () const</td></tr>
+<tr class="separator:a5eded09a38e6045862dced0d9e901e82"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae048ce042a2251a72cfac2687e5ccd41" id="r_ae048ce042a2251a72cfac2687e5ccd41"><td class="memItemLeft" align="right" valign="top"><a id="ae048ce042a2251a72cfac2687e5ccd41" name="ae048ce042a2251a72cfac2687e5ccd41"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><b>player_luck</b> () const</td></tr>
+<tr class="separator:ae048ce042a2251a72cfac2687e5ccd41"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a86ff3295ab019a1b060b9c673506aeb7" id="r_a86ff3295ab019a1b060b9c673506aeb7"><td class="memItemLeft" align="right" valign="top"><a id="a86ff3295ab019a1b060b9c673506aeb7" name="a86ff3295ab019a1b060b9c673506aeb7"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>set_player_health</b> (const int health)</td></tr>
 <tr class="separator:a86ff3295ab019a1b060b9c673506aeb7"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -169,6 +213,12 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>set_player_max_health
 <tr class="memitem:a6c8b051e0a0611a155c4d8852794b627" id="r_a6c8b051e0a0611a155c4d8852794b627"><td class="memItemLeft" align="right" valign="top"><a id="a6c8b051e0a0611a155c4d8852794b627" name="a6c8b051e0a0611a155c4d8852794b627"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>player_max_health</b> () const</td></tr>
 <tr class="separator:a6c8b051e0a0611a155c4d8852794b627"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae3f2780b35f8c1a5b2d6d3f838ec84c1" id="r_ae3f2780b35f8c1a5b2d6d3f838ec84c1"><td class="memItemLeft" align="right" valign="top"><a id="ae3f2780b35f8c1a5b2d6d3f838ec84c1" name="ae3f2780b35f8c1a5b2d6d3f838ec84c1"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set_reroll_amount</b> (const int amount)</td></tr>
+<tr class="separator:ae3f2780b35f8c1a5b2d6d3f838ec84c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afd12fb3610db9772545544e4ee571f54" id="r_afd12fb3610db9772545544e4ee571f54"><td class="memItemLeft" align="right" valign="top"><a id="afd12fb3610db9772545544e4ee571f54" name="afd12fb3610db9772545544e4ee571f54"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>reroll_amount</b> () const</td></tr>
+<tr class="separator:afd12fb3610db9772545544e4ee571f54"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a78717e6161b5ede4d359b618efd59c69" id="r_a78717e6161b5ede4d359b618efd59c69"><td class="memItemLeft" align="right" valign="top"><a id="a78717e6161b5ede4d359b618efd59c69" name="a78717e6161b5ede4d359b618efd59c69"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>increase_difficulty</b> (int bounty)</td></tr>
 <tr class="separator:a78717e6161b5ede4d359b618efd59c69"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -227,6 +277,9 @@ const std::string&#160;</td><td class="memItemRight" valign="bottom"><b>uid</b> 
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
+<tr class="memitem:a25b9cfea6a5134b7b8166f5765e360cd" id="r_a25b9cfea6a5134b7b8166f5765e360cd"><td class="memItemLeft" align="right" valign="top"><a id="a25b9cfea6a5134b7b8166f5765e360cd" name="a25b9cfea6a5134b7b8166f5765e360cd"></a>
+<a class="el" href="structFortunaDirector_1_1DropChances.html">DropChances</a>&#160;</td><td class="memItemRight" valign="bottom"><b>drop_chances</b></td></tr>
+<tr class="separator:a25b9cfea6a5134b7b8166f5765e360cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2a3434793f773b98f1998609425debea" id="r_a2a3434793f773b98f1998609425debea"><td class="memItemLeft" align="right" valign="top"><a id="a2a3434793f773b98f1998609425debea" name="a2a3434793f773b98f1998609425debea"></a>
 <a class="el" href="structFortunaDirector_1_1Bounty.html">Bounty</a>&#160;</td><td class="memItemRight" valign="bottom"><b>m_b_bounty</b></td></tr>
 <tr class="separator:a2a3434793f773b98f1998609425debea"><td class="memSeparator" colspan="2">&#160;</td></tr>

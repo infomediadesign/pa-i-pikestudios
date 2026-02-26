@@ -7,6 +7,7 @@ var hierarchy =
     [ "FortunaDirector::Bounty", "structFortunaDirector_1_1Bounty.html", null ],
     [ "FortunaDirector::BountyAmount", "structFortunaDirector_1_1BountyAmount.html", null ],
     [ "PSCore::DeltaTimeManager", "classPSCore_1_1DeltaTimeManager.html", null ],
+    [ "FortunaDirector::DropChances", "structFortunaDirector_1_1DropChances.html", null ],
     [ "PSCore::collision::EntityCollider", "classPSCore_1_1collision_1_1EntityCollider.html", null ],
     [ "PSInterfaces::Events::Event", "structPSInterfaces_1_1Events_1_1Event.html", null ],
     [ "Filemanager", "classFilemanager.html", null ],
@@ -22,6 +23,7 @@ var hierarchy =
         [ "Body", "classBody.html", null ],
         [ "Cannon", "classCannon.html", null ],
         [ "Fin", "classFin.html", null ],
+        [ "LootChest", "classLootChest.html", null ],
         [ "PSCore::Viewport", "classPSCore_1_1Viewport.html", null ],
         [ "Player", "classPlayer.html", null ],
         [ "Projectile", "classProjectile.html", null ],
@@ -41,7 +43,8 @@ var hierarchy =
       [ "MainMenuLayer", "classMainMenuLayer.html", null ],
       [ "PauseLayer", "classPauseLayer.html", null ],
       [ "ScoreLayer", "classScoreLayer.html", null ],
-      [ "UILayer", "classUILayer.html", null ]
+      [ "UILayer", "classUILayer.html", null ],
+      [ "UpgradeLayer", "classUpgradeLayer.html", null ]
     ] ],
     [ "LootTable", "classLootTable.html", null ],
     [ "LootTableChances", "structLootTableChances.html", null ],
