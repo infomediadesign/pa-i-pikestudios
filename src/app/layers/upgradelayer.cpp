@@ -17,6 +17,7 @@ UpgradeLayer::UpgradeLayer()
 
 	// Icons
 	m_fire_rate_icon = PRELOAD_TEXTURE("fire_rate_icon", "resources/icon/upgr_icon_firerate.png", frame_grid)->m_s_texture;
+	m_luck_icon		 = PRELOAD_TEXTURE("luck_icon", "resources/icon/upgr_icon_luck.png", frame_grid)->m_s_texture;
 
 
 	m_card_texture_emissive =
@@ -177,7 +178,7 @@ void UpgradeLayer::draw_card_text(Vector2 card_pos, LootTableValue upgrade_info)
 	float scale				  = vp->viewport_scale();
 	float text_size			  = 13 * scale;
 	Rectangle rarity_text_pos = {card_pos.x + 10 * scale, card_pos.y - 80 * scale, 150 * scale, text_size};
-	Rectangle value_text_pos  = {card_pos.x + 10 * scale, card_pos.y + 25 * scale + 2 * text_size, 150 * scale, text_size};
+	Rectangle value_text_pos  = {card_pos.x + 10 * scale, card_pos.y + 28 * scale + 2 * text_size, 150 * scale, text_size};
 	Rectangle type_text_pos	  = {card_pos.x + 10 * scale, card_pos.y + 25 * scale + text_size, 150 * scale, text_size};
 	float text_pos_x		  = card_pos.x - 75 * scale;
 	rarity_text_pos.x		  = text_pos_x;
@@ -207,7 +208,7 @@ std::string UpgradeLayer::rarity_to_string(int rarity)
 {
 	switch ( rarity ) {
 		case 0:
-			GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt({128, 128, 128, 255}));
+			GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt({60, 60, 60, 255}));
 			return "Common";
 		case 1:
 			GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt({84, 130, 53, 255}));
@@ -465,7 +466,7 @@ void UpgradeLayer::draw_upgrade_icon(int index, Vector2 card_pos)
 			DrawTextureEx(m_fire_rate_icon, pos, 0, scale, WHITE);
 			break;
 		case 8:
-			DrawTextureEx(m_fire_rate_icon, pos, 0, scale, WHITE);
+			DrawTextureEx(m_luck_icon, pos, 0, scale, WHITE);
 			break;
 		default:
 			break;
