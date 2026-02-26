@@ -1,7 +1,6 @@
 #pragma once
 
 #include <psinterfaces/layer.h>
-#include <raylib.h>
 
 class PauseLayer: public PSInterfaces::Layer
 {
@@ -21,4 +20,6 @@ class PauseLayer: public PSInterfaces::Layer
 	Rectangle m_quit_bounding_rect;
 	BtnState m_current_quit_state = Idle;
 	Texture2D m_button;
+
+
 };

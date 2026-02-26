@@ -78,20 +78,33 @@ Body::Body(Shark* shark) : PSInterfaces::IEntity("shark_body"), m_shark(shark)
 	auto tex		= m_shark->m_shark_sprite;
 	auto frame_rect = tex->frame_rect({0, 0});
 	m_size			= {frame_rect.width, frame_rect.height};
+	m_texture_size	= {(float) tex->m_s_texture.width, (float) tex->m_s_texture.height};
+	SetShaderValue(m_outline_shader, GetShaderLocation(m_outline_shader, "outline_color"), &m_shader_color, SHADER_UNIFORM_VEC4);
+	SetShaderValue(m_outline_shader, GetShaderLocation(m_outline_shader, "texture_size"), &m_texture_size, SHADER_UNIFORM_VEC2);
 }
 
 Body::~Body()
 {
+	UnloadShader(m_outline_shader);
 }
 
 void Body::render()
 {
 	if ( auto& vp = gApp()->viewport() ) {
 		auto tex = m_shark->m_shark_sprite;
-		vp->draw_in_viewport(
-				tex->m_s_texture, m_shark->m_animation_controller.get_source_rectangle(-1).value_or(Rectangle{0}), m_shark->m_pos,
-				m_shark->m_shark_rotation + 90, WHITE
-		);
+		if ( m_shark->m_marked ) {
+			BeginShaderMode(m_outline_shader);
+			vp->draw_in_viewport(
+					tex->m_s_texture, m_shark->m_animation_controller.get_source_rectangle(-1).value_or(Rectangle{0}), m_shark->m_pos,
+					m_shark->m_shark_rotation + 90, WHITE
+			);
+			EndShaderMode();
+		} else {
+			vp->draw_in_viewport(
+					tex->m_s_texture, m_shark->m_animation_controller.get_source_rectangle(-1).value_or(Rectangle{0}), m_shark->m_pos,
+					m_shark->m_shark_rotation + 90, WHITE
+			);
+		}
 	}
 }
 
@@ -125,9 +138,7 @@ Shark::Shark() : PSInterfaces::IEntity("shark")
 	m_body->propose_z_index(-30);
 	m_fin->propose_z_index(-10);
 
-	// Has an droppable upgrade
-	float drop_roll = static_cast<float>(PSUtils::gen_rand(0, 1000)) / 1000.0f;
-	m_marked		= drop_roll < m_drop_upgrade_chance;
+	determined_if_marked();
 
 	m_director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
 }
@@ -154,10 +165,6 @@ void Shark::init(std::shared_ptr<Shark> self, const Vector2& pos)
 
 Shark::~Shark()
 {
-	if ( m_marked ) {
-		PS_LOG(LOG_INFO, "Dropped an upgrade");
-		// TODO: implement loot drop
-	}
 }
 
 void Shark::update(float dt)
@@ -283,6 +290,12 @@ void Shark::on_hit()
 	set_is_active(false);
 	printf("hit shark\n");
 	m_director->m_b_bounty.add_bounty(m_director->m_b_bounty_amounts.shark_bounty);
+	if ( m_marked ) {
+		PS_LOG(LOG_INFO, "Dropped an upgrade");
+		if ( auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director()) ) {
+			director->spawn_loot_chest(m_pos);
+		}
+	}
 }
 
 void Shark::draw_debug()
@@ -363,8 +376,17 @@ std::optional<Vector2> Shark::position() const
 void Shark::set_is_active(bool active)
 {
 	is_active_ = active;
+	if ( is_active_ == true ) {
+		determined_if_marked();
+	}
 	m_body->set_is_active(active);
 	m_fin->set_is_active(active);
+}
+
+void Shark::determined_if_marked()
+{
+	float drop_roll = static_cast<float>(PSUtils::gen_rand_float(0.0f, 100.0f));
+	m_marked		= drop_roll <= m_drop_upgrade_chance;
 }
 
 float Shark::calculate_rotation_velocity(float frequency, float dt)

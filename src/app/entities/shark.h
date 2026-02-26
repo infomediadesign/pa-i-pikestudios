@@ -45,6 +45,9 @@ public:
 protected:
 	std::shared_ptr<PSCore::sprites::Sprite> m_shark_sprite;
 
+	void determined_if_marked();
+
+
 	bool m_marked;
 
 	std::shared_ptr<Shark> m_self;
@@ -57,7 +60,7 @@ protected:
 	float m_pursue_stop_distance	  = CFG_VALUE<float>("shark_pursue_stop_distance", 20.0f);
 	float m_retreat_reengage_distance = CFG_VALUE<float>("shark_retreat_reengage_distance", 40.0f);
 	float m_retreat_speed			  = CFG_VALUE<float>("shark_retreat_speed", 20.0f);
-	float m_drop_upgrade_chance		  = CFG_VALUE<float>("shark_drop_upgrade_chance", 0.5f);
+	float m_drop_upgrade_chance		  = CFG_VALUE<float>("shark_drop_upgrade_chance", 10.0f);
 
 	State m_state = State::Idle;
 	std::string m_state_string;
@@ -113,4 +116,7 @@ public:
 private:
 	const Shark* m_shark;
 	Vector2 m_size{60.0f, 120.0f};
+	Vector2 m_texture_size;
+	Vector4 m_shader_color{251, 206, 39, 255};
+	Shader m_outline_shader = LoadShader(0, "resources/shader/2d_outline.fs");
 };

@@ -3,7 +3,6 @@
 #include <deque>
 #include <functional>
 #include <memory>
-#include <optional>
 #include <psinterfaces/layer.h>
 #include <raylib.h>
 #include <type_traits>

@@ -135,6 +135,7 @@ void ScoreLayer::update_typing()
 		save_new_highscore(dynamic_cast<FortunaDirector*>(gApp()->game_director())->m_b_bounty.bounty());
 		save_highscore(m_score_filename);
 		}
+
 	}
 }
 
@@ -201,7 +202,7 @@ void ScoreLayer::draw_score_board_buttons()
 	
 	float button_pos_y = screen_size.y - btn_height / 2.0f - button_boarder_padding;
 
-	GuiSetStyle(DEFAULT, TEXT_SIZE, 14 * scale);
+	GuiSetStyle(DEFAULT, TEXT_SIZE, 10 * scale);
 
 	Vector2 mainmenu_pos = {
 		anchor.x / scale + button_boarder_padding + btn_width / 2.0f,

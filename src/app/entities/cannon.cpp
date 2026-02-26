@@ -1,4 +1,5 @@
 #include "cannon.h"
+#include <cmath>
 #include <coordinatesystem.h>
 #include <entities/director.h>
 #include <iostream>
@@ -9,7 +10,6 @@
 #include <raylib.h>
 #include "entities/projectile.h"
 #include "layers/applayer.h"
-#include <cmath>
 
 Cannon::Cannon() : PSInterfaces::IEntity("cannon")
 {
@@ -29,23 +29,10 @@ void Cannon::update(const float dt)
 
 	set_position_to_parent();
 	set_rotation_to_parent();
-	
+
 	m_c_time_since_last_shot += dt;
-	/*
-	if ( IsMouseButtonDown(MOUSE_BUTTON_LEFT) ) {
-		if ( m_c_positioning == CannonPositioning::Left ) {
-			fire();
-		}
-	}
 
-	if ( IsMouseButtonDown(MOUSE_BUTTON_RIGHT) ) {
-		if ( m_c_positioning == CannonPositioning::Right ) {
-			fire();
-		}
-	}
-	*/
-
-		m_c_animation_controller.update_animation(dt);
+	m_c_animation_controller.update_animation(dt);
 
 	if ( m_c_animation_controller.get_sprite_sheet_animation_index(2).value_or(-1) == 1 &&
 		 m_c_animation_controller.get_sprite_sheet_frame_index(2).value_or(-1) == 0 ) {
@@ -56,9 +43,11 @@ void Cannon::update(const float dt)
 void Cannon::render()
 {
 	if ( is_active_ ) {
-	//	m_c_source = {0, 0, (float) m_c_texture.width, (float) m_c_texture.height};
+		//	m_c_source = {0, 0, (float) m_c_texture.width, (float) m_c_texture.height};
 		if ( auto& vp = gApp()->viewport() ) {
-		vp->draw_in_viewport(m_c_texture, m_c_animation_controller.get_source_rectangle(2).value_or(Rectangle{0}), m_c_position, m_c_rotation, WHITE);
+			vp->draw_in_viewport(
+					m_c_texture, m_c_animation_controller.get_source_rectangle(2).value_or(Rectangle{0}), m_c_position, m_c_rotation, WHITE
+			);
 		}
 	}
 }
@@ -70,20 +59,21 @@ void Cannon::fire()
 		if ( !director ) {
 			return;
 		}
-		
+
 		if ( auto& spawner = director->spawner<Projectile, AppLayer>() ) {
 			spawner->register_spawn_callback([this](std::shared_ptr<Projectile> projectile) {
 				projectile->init(m_c_position, projectile);
 				projectile->set_speed(m_c_projectile_speed);
 				projectile->set_fiering_cannon(m_c_shared_ptr_this);
 				projectile->set_max_range(m_c_range);
+				projectile->set_piercing_chance(m_c_projectile_piercing_chance);
 
 				if ( m_c_parent ) {
 					projectile->set_owner(m_c_parent);
 				}
 				projectile->launch();
 			});
-			
+
 			spawner->spawn();
 		}
 
@@ -266,4 +256,9 @@ void Cannon::set_positioning(const Cannon::CannonPositioning positioning)
 void Cannon::set_shared_ptr_this(std::shared_ptr<Cannon> ptr)
 {
 	m_c_shared_ptr_this = ptr;
+}
+
+void Cannon::set_projectile_piercing_chance(const float chance)
+{
+	m_c_projectile_piercing_chance = chance;
 }
