@@ -47,7 +47,7 @@ protected:
 
 	void determined_if_marked();
 
-private:
+
 	bool m_marked;
 
 	std::shared_ptr<Shark> m_self;
