@@ -90,7 +90,8 @@ Application::Application()
 	g_app = this;
 }
 
-void PSCore::Application::init(const AppSpec& spec) {
+void PSCore::Application::init(const AppSpec& spec)
+{
 	SetConfigFlags(FLAG_WINDOW_RESIZABLE);
 	SetTraceLogCallback(_p->log_callback);
 
@@ -99,12 +100,12 @@ void PSCore::Application::init(const AppSpec& spec) {
 
 	if ( CFG_VALUE<bool>("enable_msaa", false) )
 		SetConfigFlags(FLAG_MSAA_4X_HINT);
-
+	
 	if ( CFG_VALUE<bool>("default_fullscreeen", true) )
 		_p->toggle_fullscreen();
-	
+
 	InitWindow(spec.size.x, spec.size.y, spec.title);
-	
+
 	SetWindowIcon(LoadImage("resources/appicon.png"));
 
 	SetExitKey(KEY_NULL);
@@ -203,4 +204,14 @@ std::string Application::current_player_name()
 float PSCore::Application::delta_time()
 {
 	return _p->m_time_manager->delta_t().count();
+};
+
+bool PSCore::Application::toggle_fullscreen()
+{
+	_p->toggle_fullscreen();
+#ifdef _WIN32
+	return IsWindowState(FLAG_BORDERLESS_WINDOWED_MODE);
+#else
+	return IsWindowFullscreen();
+#endif
 };
