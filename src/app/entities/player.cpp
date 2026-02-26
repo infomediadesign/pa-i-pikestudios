@@ -253,7 +253,7 @@ void Player::fire_cannons(float dt)
 				m_fire_sequence_ongoing_right = true;
 			}
 			if ( m_time_since_last_shot_right > m_cannon_container.at(0)->fire_rate() / m_cannon_container.size() && m_fire_sequence_ongoing_right ) {
-				m_cannon_container.at(m_firing_cannon_index.right)->fire();
+				m_cannon_container.at(m_firing_cannon_index.right)->fire(1);
 
 				m_firing_cannon_index.right += 2;
 				m_time_since_last_shot_right = 0;
@@ -269,7 +269,7 @@ void Player::fire_cannons(float dt)
 			}
 
 			if ( m_time_since_last_shot_left > m_cannon_container.at(0)->fire_rate() / m_cannon_container.size() && m_fire_sequence_ongoing_left ) {
-				m_cannon_container.at(m_firing_cannon_index.left)->fire();
+				m_cannon_container.at(m_firing_cannon_index.left)->fire(1);
 				m_firing_cannon_index.left += 2;
 				m_time_since_last_shot_left = 0;
 				if ( m_firing_cannon_index.left >= m_cannon_container.size() ) {
@@ -285,20 +285,20 @@ void Player::fire_cannons(float dt)
 			if ( IsMouseButtonDown(MOUSE_BUTTON_LEFT) ) {
 				for ( auto cannon: m_cannon_container ) {
 					if ( cannon->positioning() == Cannon::CannonPositioning::Left ) {
-						cannon->fire();
+						cannon->fire(1);
 					}
 				}
 			}
 			if ( IsMouseButtonDown(MOUSE_BUTTON_RIGHT) ) {
 				for ( auto cannon: m_cannon_container ) {
 					if ( cannon->positioning() == Cannon::CannonPositioning::Right ) {
-						cannon->fire();
+						cannon->fire(1);
 					}
 				}
 			}
 			if ( IsKeyDown(KEY_SPACE) ) {
 				for ( auto cannon: m_cannon_container ) {
-					cannon->fire();
+					cannon->fire(1);
 				}
 			}
 			break;

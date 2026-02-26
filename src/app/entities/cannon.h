@@ -19,7 +19,7 @@ public:
 
 	Vector2 calculate_projectile_target_position(); // Calculates the target position based on current position, rotation and range
 
-	void fire(); // Spawns a projectile if the fire rate allows it
+	void fire(int projectile_amount); // Spawns a projectile if the fire rate allows it
 
 	void set_position_to_parent(); // Sets the cannon's position relative to its parent player
 

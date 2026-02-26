@@ -52,7 +52,7 @@ void Cannon::render()
 	}
 }
 
-void Cannon::fire()
+void Cannon::fire(int projectile_amount)
 {
 	if ( m_c_time_since_last_shot >= m_c_fire_rate_in_s ) {
 		auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
