@@ -24,12 +24,12 @@ class HunterPriv
 
 	// movement
 	Vector2 pos, prev_pos;
-	float rotation			= 0;
-	float previous_rotation = 0;
-	float point_t			= 0;
-	int current_point_index = 0;
-	float speed				= CFG_VALUE<float>("hunter_speed", 10);
-	bool in_view			= false;
+	float rotation				   = 0;
+	float previous_rotation		   = 0;
+	float point_t				   = 0;
+	int current_point_index		   = 0;
+	float speed					   = CFG_VALUE<float>("hunter_speed", 10);
+	bool in_view				   = false;
 	float avoidance_steer_strength = CFG_VALUE<float>("hunter_avoidance_steer_strength", 1000.f);
 
 	Vector2 velocity = {0, 0};
@@ -37,7 +37,7 @@ class HunterPriv
 	// Movement decoration
 	Smear smear;
 	void update_smear(float dt);
-	float max_velocity = 1;
+	float max_velocity		= 1;
 	float rotation_velocity = 0;
 
 	// wreck movement
@@ -274,7 +274,7 @@ std::pair<Vector2, Vector2> Hunter::gen_path_egde()
 	MapEdge map_edge;
 
 	auto gen_tip = [&map_edge, &vp_size, this]() -> Vector2 {
-		MapEdge rand_map_edge = static_cast<MapEdge>(PSUtils::gen_rand<int>(MapEdge::Left, MapEdge::Bottom));
+		MapEdge rand_map_edge = static_cast<MapEdge>(PSUtils::gen_rand(MapEdge::Left, MapEdge::Bottom));
 		if ( rand_map_edge == map_edge )
 			map_edge = static_cast<MapEdge>(PSUtils::clamp_with_overflow<int>(0, MapEdge::Bottom, map_edge + 1));
 		else
@@ -284,18 +284,18 @@ std::pair<Vector2, Vector2> Hunter::gen_path_egde()
 		switch ( map_edge ) {
 			case Left:
 				x = -size().value().x;
-				y = PSUtils::gen_rand<int>(20, (vp_size.y) - 20);
+				y = PSUtils::gen_rand(20, (vp_size.y) - 20);
 				break;
 			case Right:
 				x = vp_size.x + size().value().x;
-				y = PSUtils::gen_rand<int>(20, (vp_size.y) - 20);
+				y = PSUtils::gen_rand(20, (vp_size.y) - 20);
 				break;
 			case Top:
-				x = PSUtils::gen_rand<int>(20, (vp_size.y) - 20);
+				x = PSUtils::gen_rand(20, (vp_size.y) - 20);
 				y = -size().value().y;
 				break;
 			case Bottom:
-				x = PSUtils::gen_rand<int>(20, (vp_size.y) - 20);
+				x = PSUtils::gen_rand(20, (vp_size.y) - 20);
 				y = vp_size.x + size().value().y;
 		}
 
@@ -498,7 +498,7 @@ void Hunter::avoid_other_hunters_(float dt)
 		separation = Vector2Scale(separation, 1.0f / count);
 
 		float steer_strength = _p->avoidance_steer_strength;
-		*next_path_point	= Vector2Add(*next_path_point, Vector2Scale(separation, steer_strength * dt));
+		*next_path_point	 = Vector2Add(*next_path_point, Vector2Scale(separation, steer_strength * dt));
 	}
 }
 
@@ -520,7 +520,7 @@ void Hunter::init(std::shared_ptr<Hunter> self)
 						const float repel_strenght = CFG_VALUE<int>("hunter_repel_bounce_strenght", 50);
 						if ( auto& spawner = director->spawner<Hunter, AppLayer>() ) {
 							Vector2 repel_force =
-									PSCore::collision::entity_repel_force<Player, Hunter, AppLayer>(player, *spawner, 50, repel_strenght);
+									PSCore::collision::entity_repel_force<Player>(player, spawner->primitive_entities(), 50, repel_strenght);
 
 							repel_force.x = std::clamp(repel_force.x, (repel_strenght * 2) * -1, repel_strenght * 2);
 							repel_force.y = std::clamp(repel_force.y, (repel_strenght * 2) * -1, repel_strenght * 2);
