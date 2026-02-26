@@ -18,7 +18,6 @@ UILayer::UILayer()
 
 void UILayer::on_update(const float dt)
 {
-	// Update UI elements here
 }
 
 
@@ -57,17 +56,17 @@ void UILayer::draw_bounty_ui()
 
 	float texture_width = static_cast<float>(bounty_coin.width);
 	float texture_height = static_cast<float>(bounty_coin.height);
-	float text_width = bounty_text.length() * 11.0f;
+	float text_width = bounty_text.length() * 14.0f;
 	float padding = 30.0f;
 
 	float panel_padding_horizontal = 3.0f;
 	float panel_padding_vertical = 3.0f;
-	float texture_padding = 0.0f;
+	float texture_padding =0.0f;
 	
 	Vector2 panel_size = {texture_width + text_width + padding, texture_height + 2 * panel_padding_vertical};
 	Vector2 panel_pos = vp->position_viewport_to_global({0, 0});
 
-	draw_panel({panel_pos.x, panel_pos.y, panel_size.x * scale, panel_size.y * scale }, {0, 0, 0, 50}, {0, 0, 0, 0});
+	//draw_panel({panel_pos.x, panel_pos.y, panel_size.x * scale, panel_size.y * scale }, {0, 0, 0, 50}, {0, 0, 0, 0});
 	
 	float texture_viewport_x = panel_padding_horizontal + texture_padding + texture_width / 2;
 	float texture_viewport_y = panel_padding_vertical + texture_height / 2;
@@ -75,8 +74,8 @@ void UILayer::draw_bounty_ui()
 			bounty_coin, {0, 0, texture_width, texture_height},
 			{texture_viewport_x, texture_viewport_y}, 0.0f, WHITE);
 
-	float text_size	 = 23;
-	Vector2 text_pos = vp->position_viewport_to_global({panel_padding_horizontal + texture_padding + texture_width + 10.0f, panel_padding_vertical + (panel_size.y - text_size) / 2}); 
+	float text_size	 = 20;
+	Vector2 text_pos = vp->position_viewport_to_global({panel_padding_horizontal + texture_padding + texture_width + 3.0f, panel_padding_vertical + (panel_size.y - text_size) / 2}); 
 	draw_text(
 			bounty_text, {text_pos.x, text_pos.y, (text_width + 36) * scale, text_size * scale}, static_cast<int>(text_size * scale),
 			{220, 173, 4, 255}

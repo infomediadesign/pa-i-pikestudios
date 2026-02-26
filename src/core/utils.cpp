@@ -4,6 +4,23 @@
 #include <raylib.h>
 #include <sstream>
 
+int PSUtils::gen_rand(const int min, const int max)
+{
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_int_distribution<> distr(min, max);
+
+	return distr(gen);
+}
+
+float PSUtils::gen_rand_float(const float min, const float max)
+{
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_real_distribution<> distr(min, max);
+	return static_cast<float>(distr(gen));
+}
+
 std::string PSUtils::generate_uid()
 {
 	static std::random_device rd;

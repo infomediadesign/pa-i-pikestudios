@@ -14,15 +14,8 @@ namespace PSUtils {
 	 * @param min: the minimum value
 	 * @param max: the maximum value
 	 */
-	template<typename T>
-	T gen_rand(const T min, const T max)
-	{
-		std::random_device rd;
-		std::mt19937 gen(rd());
-		std::uniform_int_distribution<> distr(min, max);
-
-		return distr(gen);
-	}
+	int gen_rand(const int min, const int max);
+	float gen_rand_float(const float min, const float max);
 
 	std::string generate_uid();
 

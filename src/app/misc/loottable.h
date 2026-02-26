@@ -1,9 +1,6 @@
 #pragma once
 
 #include <vector>
-#include <optional>
-
-
 
 struct LootTableIndices
 {
@@ -14,21 +11,21 @@ struct LootTableIndices
 
 struct LootTableChances
 {
-	int chance;
+	float chance;
 	float curve_boundary;
 };
 
 struct LootTableValue
 {
 	int index;
-	int value;
+	float value;
 	int rarity;
 };
 
 class LootTable
 {
 public:
-	void add_loot_table(int index, int pull_chance, std::vector<int>& chances);
+	void add_loot_table(int index, int pull_chance, std::vector<float>& chances);
 
 	void set_expected_value(float expected_value);
 

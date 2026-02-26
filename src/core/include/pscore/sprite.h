@@ -143,7 +143,7 @@ namespace PSCore {
 			SpriteLoader() {};
 			~SpriteLoader();
 
-			std::shared_ptr<Sprite> preload(const std::string& ident, const std::string& texture_path, const Vector2& frame_grid);
+			std::shared_ptr<Sprite> preload(const std::string& ident, const std::string& texture_path, const Vector2& frame_grid, bool replace_if_exists = false);
 
 			int unload(const std::string& ident);
 

@@ -3,13 +3,13 @@
 #include <entities/director.h>
 #include <entities/projectile.h>
 #include <layers/applayer.h>
+#include <layers/upgradelayer.h>
 #include <memory>
 #include <misc/mapborderinteraction.h>
 #include <pscore/application.h>
 
 #include <entities/shark.h>
 #include <imgui.h>
-#include <pscore/settings.h>
 #include <pscore/spawner.h>
 #include <pscore/utils.h>
 #include <psinterfaces/entity.h>
@@ -18,6 +18,10 @@
 #include <entities/hunter.h>
 #include <entities/player.h>
 #include <entities/tentacle.h>
+#include "entities/chonkyshark.h"
+#include "entities/lootchest.h"
+#include "entities/tentacle.h"
+
 
 FortunaDirector::FortunaDirector() : PSInterfaces::IEntity("fortuna_director")
 {
@@ -27,6 +31,9 @@ FortunaDirector::FortunaDirector() : PSInterfaces::IEntity("fortuna_director")
 	_p->projectile_spawner = std::make_unique<PSCore::Spawner<Projectile, AppLayer>>(0.0f, 0, INT32_MAX);
 	_p->tentacle_spawner =
 			std::make_unique<PSCore::Spawner<tentacle, AppLayer>>(_p->tentacle_spawn_time, _p->tentacle_spawn_variation, _p->tentacle_limit);
+	_p->chonky_shark_spawner = std::make_unique<PSCore::Spawner<ChonkyShark, AppLayer>>(
+			_p->chonky_shark_spawn_time, _p->chonky_shark_spawn_variation, _p->chonky_shark_limit
+	);
 	_p->hunter_spawner = std::make_unique<PSCore::Spawner<Hunter, AppLayer>>(_p->hunter_spawn_time, _p->hunter_spawn_variation, _p->hunter_limit);
 }
 
@@ -37,7 +44,7 @@ void FortunaDirector::initialize_entities()
 	if ( !app_layer )
 		return;
 
-	_p->shark_spawner->register_spawn_callback([](std::shared_ptr<Shark> shark) {
+	auto set_shark_spawn = [](std::shared_ptr<Shark> shark) {
 		// Set the position of the shark to be spawned outsside of the screen
 		float x = 0, y = 0;
 		int side = PSUtils::gen_rand(0, 3);
@@ -63,7 +70,11 @@ void FortunaDirector::initialize_entities()
 		}
 
 		shark->init(shark, {x, y});
-	});
+	};
+
+	_p->shark_spawner->register_spawn_callback([set_shark_spawn](std::shared_ptr<Shark> shark) { set_shark_spawn(shark); });
+
+	_p->chonky_shark_spawner->register_spawn_callback([set_shark_spawn](std::shared_ptr<ChonkyShark> shark) { set_shark_spawn(shark); });
 
 	_p->tentacle_spawner->register_spawn_callback([](std::shared_ptr<tentacle> tentacle) {
 		tentacle->init(tentacle, {(float) PSUtils::gen_rand(10, 300), (float) PSUtils::gen_rand(10, 300)});
@@ -101,6 +112,7 @@ void FortunaDirector::update(float dt)
 	sync_player_entities();
 
 	_p->shark_spawner->update(dt);
+	_p->chonky_shark_spawner->update(dt);
 	_p->tentacle_spawner->update(dt);
 	_p->hunter_spawner->update(dt);
 }
@@ -112,6 +124,7 @@ void FortunaDirector::draw_debug()
 	}
 
 	_p->shark_spawner->draw_debug();
+	_p->chonky_shark_spawner->draw_debug();
 	_p->hunter_spawner->draw_debug();
 	_p->tentacle_spawner->draw_debug();
 
@@ -143,6 +156,52 @@ void FortunaDirector::draw_debug()
 		for ( auto& player: _p->players ) {
 			player->set_fire_mode(mode);
 		}
+	}
+
+	// Get Upgrade
+	ImGui::Separator();
+
+	if ( ImGui::Button("Get Upgrade") ) {
+		if ( gApp()->get_layer<UpgradeLayer>() ) {
+			gApp()->call_later([]() {
+				auto upgrade_layer = gApp()->get_layer<UpgradeLayer>();
+				if ( upgrade_layer ) {
+					upgrade_layer->m_current_loot_table_values = upgrade_layer->m_loot_table.loot_table_values(3);
+					upgrade_layer->print_loot_table_values(upgrade_layer->m_current_loot_table_values);
+				}
+				auto app_layer = gApp()->get_layer<AppLayer>();
+				if ( app_layer )
+					app_layer->suspend();
+			});
+		} else {
+			gApp()->call_later([]() { gApp()->push_layer<UpgradeLayer>(); });
+			gApp()->call_later([]() {
+				auto upgrade_layer = gApp()->get_layer<UpgradeLayer>();
+				if ( upgrade_layer ) {
+					upgrade_layer->m_current_loot_table_values = upgrade_layer->m_loot_table.loot_table_values(3);
+					upgrade_layer->print_loot_table_values(upgrade_layer->m_current_loot_table_values);
+				}
+				auto app_layer = gApp()->get_layer<AppLayer>();
+				if ( app_layer )
+					app_layer->suspend();
+			});
+		}
+	}
+
+	// Add Bounty
+	static int bounty_amount = 100;
+	ImGui::Text("Bounty: %i", m_b_bounty.bounty());
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(100);
+	ImGui::InputInt("##bounty_amount", &bounty_amount);
+	ImGui::SameLine();
+	if ( ImGui::Button("Add Bounty##Bounty") ) {
+		m_b_bounty.add_bounty(bounty_amount);
+	}
+
+	// Spawn Loot Chest
+	if ( ImGui::Button("Spawn Loot Chest") ) {
+		spawn_loot_chest({(float) PSUtils::gen_rand(10, 300), (float) PSUtils::gen_rand(10, 300)});
 	}
 
 	ImGui::Separator();
@@ -205,12 +264,7 @@ void FortunaDirector::draw_debug()
 	ImGui::InputInt("##health_amount", &health_amount);
 	ImGui::SameLine();
 	if ( ImGui::Button("Add Health") ) {
-		if ( player_health() + health_amount > player_max_health() ) {
-			set_player_max_health(player_max_health() + health_amount);
-			set_player_health(player_health() + health_amount);
-		} else {
-			set_player_health(player_health() + health_amount);
-		}
+		upgrade_player_health(health_amount);
 	}
 }
 
@@ -274,6 +328,7 @@ std::shared_ptr<Cannon> FortunaDirector::spawn_cannon(const Vector2& position)
 			cannon->set_fire_rate(_p->player_current_fire_rate);
 			cannon->set_projectile_speed(_p->player_current_projectile_speed);
 			cannon->set_range(_p->player_current_fire_range);
+			cannon->set_projectile_piercing_chance(_p->player_current_piercing_chance);
 			cannon->set_shared_ptr_this(cannon);
 			return cannon;
 		}
@@ -283,6 +338,7 @@ std::shared_ptr<Cannon> FortunaDirector::spawn_cannon(const Vector2& position)
 	new_cannon->set_fire_rate(_p->player_current_fire_rate);
 	new_cannon->set_projectile_speed(_p->player_current_projectile_speed);
 	new_cannon->set_range(_p->player_current_fire_range);
+	new_cannon->set_projectile_piercing_chance(_p->player_current_piercing_chance);
 	_p->cannons.push_back(new_cannon);
 
 	if ( auto app_layer = gApp()->get_layer<AppLayer>() )
@@ -298,6 +354,25 @@ void FortunaDirector::destroy_cannon(std::shared_ptr<Cannon> cannon)
 
 	auto& cannons = _p->cannons;
 	cannons.erase(std::remove(cannons.begin(), cannons.end(), cannon), cannons.end());
+}
+
+std::shared_ptr<LootChest> FortunaDirector::spawn_loot_chest(const Vector2& position)
+{
+	for ( auto loot: _p->loot_chests ) {
+		if ( !loot->is_active() ) {
+			loot->init(position, loot);
+			loot->set_is_active(true);
+			return loot;
+		}
+	}
+	auto new_loot = std::make_shared<LootChest>();
+	_p->loot_chests.push_back(new_loot);
+
+	if ( auto app_layer = gApp()->get_layer<AppLayer>() )
+		app_layer->register_entity(new_loot, true);
+
+	new_loot->init(position, new_loot);
+	return new_loot;
 }
 
 void FortunaDirector::upgrade_player_fire_rate(float amount)
@@ -340,11 +415,92 @@ void FortunaDirector::upgrade_player_add_cannon(int amount)
 	}
 }
 
+void FortunaDirector::upgrade_player_health(int amount)
+{
+	if ( player_health() + amount > player_max_health() ) {
+		set_player_max_health(player_max_health() + amount);
+		set_player_health(player_health() + amount);
+	} else {
+		set_player_health(player_health() + amount);
+	}
+}
+
+void FortunaDirector::upgrade_player_luck(float amount)
+{
+	_p->player_current_luck = std::clamp(_p->player_current_luck + amount, -1.0f, 1.0f);
+}
+
 void FortunaDirector::upgrade_player_invincibility(bool invincibility)
 {
 	for ( auto player: _p->players ) {
 		player->set_is_invincible(invincibility);
 	};
+}
+
+void FortunaDirector::upgrade_player_speed(float amount)
+{
+	_p->player_max_velocity += amount;
+	for ( auto player: _p->players ) {
+		player->set_max_velocity(_p->player_max_velocity);
+	}
+}
+
+void FortunaDirector::upgrade_player_rotation_speed(float amount)
+{
+	_p->player_input_rotation_mult += amount;
+	for ( auto player: _p->players ) {
+		player->set_input_rotation_multiplier(_p->player_input_rotation_mult);
+	}
+}
+
+void FortunaDirector::upgrade_player_piercing_chance(float amount)
+{
+	_p->player_current_piercing_chance += amount;
+	for ( auto player: _p->players ) {
+		for ( auto& cannon: player->cannon_container() ) {
+			cannon->set_projectile_piercing_chance(_p->player_current_piercing_chance);
+		}
+	}
+}
+
+float FortunaDirector::player_current_fire_rate() const
+{
+	return _p->player_current_fire_rate;
+}
+
+float FortunaDirector::player_current_projectile_speed() const
+{
+	return _p->player_current_projectile_speed;
+}
+
+float FortunaDirector::player_current_fire_range() const
+{
+	return _p->player_current_fire_range;
+}
+
+float FortunaDirector::player_max_velocity() const
+{
+	return _p->player_max_velocity;
+}
+
+float FortunaDirector::player_input_rotation_mult() const
+{
+	return _p->player_input_rotation_mult;
+}
+
+float FortunaDirector::player_piercing_chance() const
+{
+	return _p->player_current_piercing_chance;
+}
+
+void FortunaDirector::set_player_piercing_chance(const int chance)
+{
+	_p->player_current_piercing_chance = chance;
+}
+
+float FortunaDirector::player_luck() const
+{
+	return _p->player_current_luck;
 }
 
 template<>
@@ -401,7 +557,8 @@ void FortunaDirector::Bounty::subtract_bounty(const int amount)
 void FortunaDirector::increase_difficulty(int bounty)
 {
 	// Increase shark spawn rate and limit based on bounty
-	if ( bounty >= _p->shark_start_increase_difficulty_bounty_amount ) {
+	if ( bounty >= _p->shark_start_increase_difficulty_bounty_amount && bounty <= _p->shark_start_decrease_difficulty_bounty_amount &&
+		 bounty <= _p->shark_stop_spawn_bounty_amount ) {
 		_p->shark_spawner->set_interval(
 				std::max(
 						_p->shark_min_spawn_time,
@@ -410,8 +567,46 @@ void FortunaDirector::increase_difficulty(int bounty)
 				)
 		);
 		_p->shark_spawner->set_limit(std::min(_p->shark_max_limit, _p->shark_limit + (bounty / _p->shark_limit_increase_bounty_divider)));
-		printf("Bounty: %d, Shark Spawn Time: %.2f, Shark Limit: %d\n", bounty, _p->shark_spawner->interval(), _p->shark_spawner->limit());
 	}
+	// Decrease shark spawn rate and limit if bounty is above the decrease difficulty threshold
+	if ( bounty >= _p->shark_start_decrease_difficulty_bounty_amount && bounty <= _p->shark_stop_spawn_bounty_amount ) {
+		float bounty_above_threshold = static_cast<float>(bounty - _p->shark_start_decrease_difficulty_bounty_amount);
+
+		float peak_spawn_time = std::max(
+				_p->shark_min_spawn_time,
+				_p->shark_spawn_time - _p->shark_spawn_increase_base_value * (static_cast<float>(_p->shark_start_decrease_difficulty_bounty_amount) /
+																			  _p->shark_spawn_increase_bounty_divider)
+		);
+		float decreased_spawn_time =
+				peak_spawn_time + _p->shark_spawn_increase_base_value * (bounty_above_threshold / _p->shark_spawn_increase_bounty_divider);
+		_p->shark_spawner->set_interval(std::min(_p->shark_spawn_time, decreased_spawn_time));
+
+		int decreased_limit = _p->shark_limit + (bounty / _p->shark_limit_increase_bounty_divider);
+		int peak_limit		= _p->shark_limit + (_p->shark_start_decrease_difficulty_bounty_amount / _p->shark_limit_increase_bounty_divider);
+		_p->shark_spawner->set_limit(
+				std::max(_p->shark_limit, peak_limit - (static_cast<int>(bounty_above_threshold) / _p->shark_limit_increase_bounty_divider))
+		);
+	}
+	// Stop shark spawner if bounty is above the stop spawn threshold
+	if ( bounty >= _p->shark_stop_spawn_bounty_amount ) {
+		_p->shark_spawner->suspend();
+	}
+
+	if ( bounty >= _p->chonky_shark_takeover_threshold ) {
+		_p->shark_spawner->suspend();
+		_p->chonky_shark_spawner->resume();
+		_p->chonky_shark_spawner->set_interval(
+				std::max(
+						_p->chonky_shark_min_spawn_time,
+						_p->chonky_shark_spawn_time - _p->chonky_shark_spawn_increase_base_value *
+															  (static_cast<float>(bounty) / _p->chonky_shark_spawn_increase_bounty_divider)
+				)
+		);
+		_p->chonky_shark_spawner->set_limit(
+				std::min(_p->chonky_shark_max_limit, _p->chonky_shark_limit + (bounty / _p->chonky_shark_limit_increase_bounty_divider))
+		);
+	}
+
 	// Increase tentacle spawn rate and limit based on bounty
 	if ( bounty >= _p->tentacle_start_spawn_bounty_amount ) {
 		_p->tentacle_spawner->set_interval(
@@ -470,6 +665,16 @@ int FortunaDirector::player_max_health() const
 float FortunaDirector::player_iframe_duration() const
 {
 	return _p->player_iframe_duration;
+}
+
+int FortunaDirector::reroll_amount() const
+{
+	return _p->upgrade_reroll_amount;
+}
+
+void FortunaDirector::set_reroll_amount(const int amount)
+{
+	_p->upgrade_reroll_amount = amount;
 }
 
 void FortunaDirector::entity_died(std::shared_ptr<PSInterfaces::IEntity> perpetrator, std::string_view died_type)

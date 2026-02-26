@@ -66,6 +66,8 @@ public:
 
 	void set_shared_ptr_this(std::shared_ptr<Cannon> ptr); // Sets the shared pointer to this cannon
 
+	void set_projectile_piercing_chance(const float chance); // Sets the projectile's piercing chance
+
 private:
 	Vector2 m_c_position;
 	float m_c_rotation;
@@ -73,6 +75,7 @@ private:
 	float m_c_projectile_speed;
 	float m_c_fire_rate_in_s;
 	float m_c_time_since_last_shot;
+	float m_c_projectile_piercing_chance;
 	Vector2 m_c_projectile_target_position;
 	float m_c_parent_position_x_offset;
 	float m_c_parent_position_y_offset;

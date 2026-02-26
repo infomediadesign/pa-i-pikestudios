@@ -16,7 +16,7 @@
 #define SQRT2HALF 0.7071067811865f
 #endif
 
-void LootTable::add_loot_table(int index, int pull_chance, std::vector<int>& chances)
+void LootTable::add_loot_table(int index, int pull_chance, std::vector<float>& chances)
 {
 	for ( auto element: m_indices ) {
 		if ( element.index == index ) {
@@ -24,12 +24,12 @@ void LootTable::add_loot_table(int index, int pull_chance, std::vector<int>& cha
 		}
 	}
 
-	int chances_sum = 0;
+	float chances_sum = 0;
 	for ( int i = 0; i < chances.size(); i++ ) {
 		chances_sum += chances.at(i);
 
 		if ( i == chances.size() - 1 ) {
-			if ( chances_sum != 100 ) {
+			if ( abs(chances_sum - 100) > 0.001 ) {
 				return;
 			}
 		}
@@ -57,6 +57,7 @@ void LootTable::add_loot_table(int index, int pull_chance, std::vector<int>& cha
 void LootTable::set_expected_value(float expected_value)
 {
 	m_expected_value = std::clamp(expected_value, -1.0f, 1.0f);
+	printf("Expected Value Set To: %.4f\n", m_expected_value);
 }
 
 void LootTable::set_pull_chance(int index, int pull_chance)
@@ -89,8 +90,7 @@ void LootTable::random_values_from_loot_table(int indices_count)
 
 		if ( element.pull_chance == 0 ) {
 			element.index = -1;
-		}
-		else {
+		} else {
 			valid_pull_chance_count++;
 		}
 	}
@@ -112,7 +112,7 @@ void LootTable::random_values_from_loot_table(int indices_count)
 			if ( element.index != -1 ) {
 				if ( random_index < element.pull_chance + previous_pull_chance_sum ) {
 					m_values.at(i).index = m_indices.at(j).index;
-					m_values.at(i).value = PSUtils::gen_rand(0, 99);
+					m_values.at(i).value = static_cast<float>(PSUtils::gen_rand(0, 9999)) / 100;
 
 					largest_random_chance -= element.pull_chance;
 
@@ -139,7 +139,7 @@ void LootTable::calculate_curve_boundary()
 				float curve_value =
 						static_cast<float>(0.5 * std::erff(SQRT2HALF * ((delta_sigma / static_cast<float>(divisor)) + boundary)) + 0.5) * 100;
 
-				if ( curve_value <= static_cast<float>(chance.chance) ) {
+				if ( curve_value <= chance.chance ) {
 					boundary += delta_sigma / static_cast<float>(divisor);
 				}
 
@@ -167,7 +167,7 @@ void LootTable::calculate_rarity()
 				for ( int j = 0; j < length; j++ ) {
 					float curve_x = (m_chances.at(j + m_indices.at(i).location).curve_boundary - m_expected_value);
 					float curve_y = (0.5f * std::erff(SQRT2HALF * curve_x) + 0.5f) * 100;
-					if ( static_cast<float>(value.value) > curve_y ) {
+					if ( value.value > curve_y ) {
 						value.rarity = std::min(j + 1, length - 1);
 					} else {
 						break;

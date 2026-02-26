@@ -66,6 +66,7 @@ void Cannon::fire()
 				projectile->set_speed(m_c_projectile_speed);
 				projectile->set_fiering_cannon(m_c_shared_ptr_this);
 				projectile->set_max_range(m_c_range);
+				projectile->set_piercing_chance(m_c_projectile_piercing_chance);
 
 				if ( m_c_parent ) {
 					projectile->set_owner(m_c_parent);
@@ -255,4 +256,9 @@ void Cannon::set_positioning(const Cannon::CannonPositioning positioning)
 void Cannon::set_shared_ptr_this(std::shared_ptr<Cannon> ptr)
 {
 	m_c_shared_ptr_this = ptr;
+}
+
+void Cannon::set_projectile_piercing_chance(const float chance)
+{
+	m_c_projectile_piercing_chance = chance;
 }
