@@ -104,6 +104,8 @@ void PSCore::Application::init(const AppSpec& spec) {
 		_p->toggle_fullscreen();
 	
 	InitWindow(spec.size.x, spec.size.y, spec.title);
+	
+	SetWindowIcon(LoadImage("resources/appicon.png"));
 
 	SetExitKey(KEY_NULL);
 };
