@@ -34,6 +34,7 @@ public:
 	std::string rarity_to_string(int rarity);
 	std::string upgrade_type_to_string(int index);
 	std::string value_to_string(int index, int rarity);
+	void draw_upgrade_icon(int index, Vector2 pos);
 
 	float common_pull_chance    = CFG_VALUE<float>("upgrade_common_chance", 50);
 	float uncommon_pull_chance  = CFG_VALUE<float>("upgrade_uncommon_chance", 30);
@@ -65,6 +66,9 @@ public:
 	Texture2D m_button;
 	bool m_can_receive_input = false;
 	float m_time_since_opened = 0;
+
+	//Upgrade Icons
+	Texture2D m_fire_rate_icon;
 
 	// base upgrade values for the different upgrades
 	float m_base_upgrade_player_speed	  = CFG_VALUE<float>("upgrade_player_speed_base_value", 0.075f);

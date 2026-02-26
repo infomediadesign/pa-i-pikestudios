@@ -27,7 +27,7 @@ void PauseLayer::on_render()
 	Vector2 screen_size = vp->viewport_base_size();
 	Vector2 button_pos	= {origin.x / scale + screen_size.x / 2.0f, origin.y / scale + screen_size.y / 2.0f - button_height / 2.0f - 10.0f};
 
-	GuiSetStyle(DEFAULT, TEXT_SIZE, 14 * scale);
+	GuiSetStyle(DEFAULT, TEXT_SIZE, 10 * scale);
 	GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt({0, 0, 0, 255}));
 
 	DrawRectangle(origin.x, origin.y, GetScreenWidth() * scale, GetScreenHeight() * scale, Color{0, 0, 0, 150});

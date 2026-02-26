@@ -45,25 +45,25 @@ void DeathScreenLayer::on_render()
 	int oldSize	 = GuiGetStyle(DEFAULT, TEXT_SIZE);
 	int oldAlign = GuiGetStyle(LABEL, TEXT_ALIGNMENT);
 
-	GuiSetStyle(LABEL, TEXT_ALIGNMENT, TEXT_ALIGN_CENTER);
+	
 	GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, 0xff0000ff);
 	GuiSetStyle(DEFAULT, TEXT_SIZE, 28 * sk);
 
-	GuiLabel(rect, "Du bist gesunken :(");
-
+	GuiLabel({np.x + x * sk, np.y + 48 * sk, 400 * sk, 40 * sk}, "You were shattered :(");
+	GuiSetStyle(LABEL, TEXT_ALIGNMENT, TEXT_ALIGN_CENTER);
 	GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, 0xffffffff);
-	GuiSetStyle(DEFAULT, TEXT_SIZE, 14 * sk);
+	GuiSetStyle(DEFAULT, TEXT_SIZE, 10 * sk);
 
-	GuiLabel(score, ("Kopfgeld: " + bounty_text).c_str());
+	GuiLabel(score, ("Bounty: " + bounty_text).c_str());
 	if ( m_score_should_be_saved ) {
-		GuiLabel(score_info_bounds, "Du hast es in die Top 10 geschafft!");
+		GuiLabel(score_info_bounds, "You made it into the top 10!");
 
 		float input_row_y  = 200;
 		float input_height = 30;
 		Rectangle name_prompt_rect{np.x + x * sk, np.y + input_row_y * sk, 200 * sk, input_height * sk};
 		Rectangle input_field_rect{np.x + (x + 170) * sk, np.y + input_row_y * sk, 120 * sk, input_height * sk};
 
-		GuiLabel(name_prompt_rect, "Gib deinen Namen ein:");
+		GuiLabel(name_prompt_rect, "Enter your name:");
 
 		if ( !m_name_entered ) {
 			GuiSetStyle(DEFAULT, BACKGROUND_COLOR, ColorToInt({0, 0, 0, 50}));
@@ -78,11 +78,11 @@ void DeathScreenLayer::on_render()
 
 	} 
 	else {
-		GuiLabel(score_info_bounds, "Du hast es nicht unter die Top 10 geschafft");
+		GuiLabel(score_info_bounds, "You didn't make it into the top 10");
 	}
 
 	GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, 0x00000ff);
-	GuiSetStyle(DEFAULT, TEXT_SIZE, 14 * sk);
+	GuiSetStyle(DEFAULT, TEXT_SIZE, 10 * sk);
 	GuiSetStyle(LABEL, TEXT_ALIGNMENT, oldAlign);
 
 	int margin = 20;

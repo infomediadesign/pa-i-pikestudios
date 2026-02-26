@@ -15,9 +15,12 @@ UpgradeLayer::UpgradeLayer()
 	m_card_texture_3 = PRELOAD_TEXTURE("card_3", "resources/ui/upgrade_card_3.png", frame_grid)->m_s_texture;
 	m_button	   = PRELOAD_TEXTURE("smallbutton", "resources/ui/button_small.png", frame_grid)->m_s_texture;
 
+	// Icons
+	m_fire_rate_icon = PRELOAD_TEXTURE("fire_rate_icon", "resources/icon/upgr_icon_firerate.png", frame_grid)->m_s_texture;
+
 	
 
-	m_card_texture_emissive = PRELOAD_TEXTURE("card_emissive", "resources/emissive/upgrate_card_emissive_border.png", frame_grid)->m_s_texture;
+	m_card_texture_emissive = PRELOAD_TEXTURE("card_emissive", "resources/emissive/upgrate_card_emissive_border_and_center.png", frame_grid)->m_s_texture;
 	m_emissive_texture_position = GetShaderLocation(m_card_emissive_shader, "texture_emissive");
 	m_emissive_color_position	= GetShaderLocation(m_card_emissive_shader, "emissive_color");
 	SetShaderValue(m_card_emissive_shader, m_emissive_color_position, &m_card_texture_emissive, SHADER_UNIFORM_SAMPLER2D);
@@ -60,70 +63,47 @@ void UpgradeLayer::on_render()
 
 void UpgradeLayer::draw_upgrade_cards()
 {
-	auto& vp = gApp()->viewport();
+	auto& vp	   = gApp()->viewport();
 	Vector2 origin = vp->viewport_origin();
-	Vector2 screen_middel = {
-			origin.x / vp->viewport_scale() + vp->viewport_base_size().x / 2, origin.y / vp->viewport_scale() + vp->viewport_base_size().y / 2
-	};
 	float scale	   = vp->viewport_scale();
-	Vector2 card_pos	  = screen_middel;
+	Vector2 screen_middel = {
+		origin.x / vp->viewport_scale() + vp->viewport_base_size().x / 2,
+		origin.y / vp->viewport_scale() + vp->viewport_base_size().y / 2
+	};
+
+	Texture2D card_textures[] = {m_card_texture_1, m_card_texture_2, m_card_texture_3};
+	float card_offsets_x[] = {
+		0.0f,
+		static_cast<float>(m_card_texture_2.width + 16),
+		static_cast<float>(-(m_card_texture_3.width + 16))
+	};
 
 	GuiSetStyle(DEFAULT, TEXT_SIZE, 14 * scale);
 	GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt(BLACK));
-	
-	set_boarder_color(m_current_loot_table_values[0].rarity);
-	BeginShaderMode(m_card_emissive_shader);
-	SetShaderValueTexture(m_card_emissive_shader, m_emissive_texture_position, m_card_texture_emissive);
-	SetShaderValue(m_card_emissive_shader, m_emissive_color_position, &m_emissive_color, SHADER_UNIFORM_VEC3);
-	
-	if ( GuiButtonTexture(m_card_texture_1, screen_middel, 0, scale, WHITE, GRAY, "") && m_can_receive_input ) {
-		apply_upgrade(m_current_loot_table_values[0]);
-		gApp()->call_later([]() {
-			gApp()->pop_layer<UpgradeLayer>(); });
-		gApp()->call_later([]() {
-			auto app_layer = gApp()->get_layer<AppLayer>();
-			if ( app_layer )
-					app_layer->resume();
-		});
-	}
-	EndShaderMode();
-	draw_card_text(card_pos * scale, m_current_loot_table_values[0]);
-	
-	set_boarder_color(m_current_loot_table_values[1].rarity);
-	BeginShaderMode(m_card_emissive_shader);
-	SetShaderValueTexture(m_card_emissive_shader, m_emissive_texture_position, m_card_texture_emissive);
-	SetShaderValue(m_card_emissive_shader, m_emissive_color_position, &m_emissive_color, SHADER_UNIFORM_VEC3);
-	if ( GuiButtonTexture(m_card_texture_2, {screen_middel.x + m_card_texture_2.width + 16, screen_middel.y}, 0, scale, WHITE, GRAY, "") &&
-		 m_can_receive_input )
-		{
-		apply_upgrade(m_current_loot_table_values[1]);
-		gApp()->call_later([]() { gApp()->pop_layer<UpgradeLayer>(); });
-		gApp()->call_later([]() {
-			auto app_layer = gApp()->get_layer<AppLayer>();
-			if ( app_layer )
-				app_layer->resume();
-		});
-	}
-	EndShaderMode();
-	draw_card_text({(screen_middel.x + m_card_texture_2.width + 16) * scale, screen_middel.y * scale}, m_current_loot_table_values[1]);
 
-	set_boarder_color(m_current_loot_table_values[2].rarity);
-	BeginShaderMode(m_card_emissive_shader);
-	SetShaderValueTexture(m_card_emissive_shader, m_emissive_texture_position, m_card_texture_emissive);
-	SetShaderValue(m_card_emissive_shader, m_emissive_color_position, &m_emissive_color, SHADER_UNIFORM_VEC3);
-	if ( GuiButtonTexture(m_card_texture_3, {screen_middel.x - m_card_texture_3.width - 16, screen_middel.y}, 0, scale, WHITE, GRAY, "") &&
-		 m_can_receive_input )
-		{
-		apply_upgrade(m_current_loot_table_values[2]);
-		gApp()->call_later([]() { gApp()->pop_layer<UpgradeLayer>(); });
-		gApp()->call_later([]() {
-			auto app_layer = gApp()->get_layer<AppLayer>();
-			if ( app_layer )
-				app_layer->resume();
-		});
+	for ( int i = 0; i < 3; ++i ) {
+		Vector2 card_pos = {screen_middel.x + card_offsets_x[i], screen_middel.y};
+
+		set_boarder_color(m_current_loot_table_values[i].rarity);
+		BeginShaderMode(m_card_emissive_shader);
+		SetShaderValueTexture(m_card_emissive_shader, m_emissive_texture_position, m_card_texture_emissive);
+		SetShaderValue(m_card_emissive_shader, m_emissive_color_position, &m_emissive_color, SHADER_UNIFORM_VEC3);
+
+		if ( GuiButtonTexture(card_textures[i], card_pos, 0, scale, WHITE, GRAY, "") && m_can_receive_input ) {
+			apply_upgrade(m_current_loot_table_values[i]);
+			gApp()->call_later([]() { gApp()->pop_layer<UpgradeLayer>(); });
+			gApp()->call_later([]() {
+				auto app_layer = gApp()->get_layer<AppLayer>();
+				if ( app_layer )
+					app_layer->resume();
+			});
+		}
+		EndShaderMode();
+
+		Vector2 scaled_pos = {card_pos.x * scale, card_pos.y * scale};
+		draw_upgrade_icon(m_current_loot_table_values[i].index, scaled_pos);
+		draw_card_text(scaled_pos, m_current_loot_table_values[i]);
 	}
-	EndShaderMode();
-	draw_card_text({(screen_middel.x - m_card_texture_3.width - 16) * scale, screen_middel.y * scale}, m_current_loot_table_values[2]);
 }
 
 void UpgradeLayer::apply_upgrade(LootTableValue upgrade_info)
@@ -200,11 +180,11 @@ void UpgradeLayer::draw_card_text(Vector2 card_pos, LootTableValue upgrade_info)
 {
 	auto& vp = gApp()->viewport();
 	float scale = vp->viewport_scale();
-	float text_size = 14 * scale;
-	Rectangle rarity_text_pos = {card_pos.x + 10 * scale, card_pos.y - 80 * scale, 120 * scale, text_size};
-	Rectangle value_text_pos  = {card_pos.x + 10 * scale, card_pos.y + 10 * scale + 2 * text_size, 120 * scale, text_size};
-	Rectangle type_text_pos	  = {card_pos.x + 10 * scale, card_pos.y + 10 * scale + text_size, 120 * scale, text_size};
-	float text_pos_x		  = card_pos.x - 60 * scale;
+	float text_size = 13 * scale;
+	Rectangle rarity_text_pos = {card_pos.x + 10 * scale, card_pos.y - 80 * scale, 150 * scale, text_size};
+	Rectangle value_text_pos  = {card_pos.x + 10 * scale, card_pos.y + 25 * scale + 2 * text_size, 150 * scale, text_size};
+	Rectangle type_text_pos	  = {card_pos.x + 10 * scale, card_pos.y + 25 * scale + text_size, 150 * scale, text_size};
+	float text_pos_x		  = card_pos.x - 75 * scale;
 	rarity_text_pos.x		  = text_pos_x;
 	type_text_pos.x			  = text_pos_x;
 	value_text_pos.x		  = text_pos_x;
@@ -366,7 +346,7 @@ void UpgradeLayer::draw_upgrade_preview(Vector2 card_pos, LootTableValue upgrade
 	auto& vp				  = gApp()->viewport();
 	float scale				  = vp->viewport_scale();
 	float text_size			  = 10 * scale;
-	Rectangle text_pos		  = {card_pos.x - 60 * scale, card_pos.y + 30 * scale + 3 * 14 * scale, 120 * scale, text_size};
+	Rectangle text_pos		  = {card_pos.x - 60 * scale, card_pos.y + 40 * scale + 3 * 14 * scale, 120 * scale, text_size};
 
 	GuiSetStyle(DEFAULT, TEXT_SIZE, text_size);
 	GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt({219, 180, 132, 255}));
@@ -446,4 +426,46 @@ void UpgradeLayer::draw_reroll_button()
 			director->set_reroll_amount(director->reroll_amount() - 1);
 		}
 		}
+}
+
+void UpgradeLayer::draw_upgrade_icon(int index, Vector2 card_pos)
+{
+	auto& vp	= gApp()->viewport();
+	float scale = vp->viewport_scale();
+	Vector2 pos = {
+		card_pos.x - (m_fire_rate_icon.width * scale) / 2.0f,
+		card_pos.y - 49 * scale
+	};
+
+	switch ( index ) {
+		case 0:
+			DrawTextureEx(m_fire_rate_icon, pos, 0, scale, WHITE);
+			break;
+		case 1:
+			DrawTextureEx(m_fire_rate_icon, pos, 0, scale, WHITE);
+			break;
+		case 2:
+			DrawTextureEx(m_fire_rate_icon, pos, 0, scale, WHITE);
+			break;
+		case 3:
+			DrawTextureEx(m_fire_rate_icon, pos, 0, scale, WHITE);
+			break;
+		case 4:
+			DrawTextureEx(m_fire_rate_icon, pos, 0, scale, WHITE);
+			break;
+		case 5:
+			DrawTextureEx(m_fire_rate_icon, pos, 0, scale, WHITE);
+			break;
+		case 6:
+			DrawTextureEx(m_fire_rate_icon, pos, 0, scale, WHITE);
+			break;
+		case 7:
+			DrawTextureEx(m_fire_rate_icon, pos, 0, scale, WHITE);
+			break;
+		case 8:
+			DrawTextureEx(m_fire_rate_icon, pos, 0, scale, WHITE);
+			break;
+		default:
+			break;
+	}
 }
