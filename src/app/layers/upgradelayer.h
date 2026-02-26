@@ -1,13 +1,12 @@
 #pragma once
-#include <psinterfaces/layer.h>
 #include <pscore/settings.h>
-#include "raylib.h"
+#include <psinterfaces/layer.h>
 #include "misc/loottable.h"
+#include "raylib.h"
 
 class UpgradeLayer : public PSInterfaces::Layer
 {
 public:
-
 	UpgradeLayer();
 	~UpgradeLayer();
 
@@ -36,15 +35,15 @@ public:
 	std::string value_to_string(int index, int rarity);
 	void draw_upgrade_icon(int index, Vector2 pos);
 
-	float common_pull_chance    = CFG_VALUE<float>("upgrade_common_chance", 50);
-	float uncommon_pull_chance  = CFG_VALUE<float>("upgrade_uncommon_chance", 30);
-	float rare_pull_chance	  = CFG_VALUE<float>("upgrade_rare_chance", 15);
-	float epic_pull_chance	  = CFG_VALUE<float>("upgrade_epic_chance", 4.5);
+	float common_pull_chance	= CFG_VALUE<float>("upgrade_common_chance", 50);
+	float uncommon_pull_chance	= CFG_VALUE<float>("upgrade_uncommon_chance", 30);
+	float rare_pull_chance		= CFG_VALUE<float>("upgrade_rare_chance", 15);
+	float epic_pull_chance		= CFG_VALUE<float>("upgrade_epic_chance", 4.5);
 	float legendary_pull_chance = CFG_VALUE<float>("upgrade_legendary_chance", 0.5);
-	float mythic_pull_chance    = CFG_VALUE<float>("upgrade_mythical_chance", 0);
+	float mythic_pull_chance	= CFG_VALUE<float>("upgrade_mythical_chance", 0);
 
-	std::vector<float> m_chances{common_pull_chance, uncommon_pull_chance,  rare_pull_chance,
-							   epic_pull_chance,   legendary_pull_chance, mythic_pull_chance};
+	std::vector<float> m_chances{common_pull_chance, uncommon_pull_chance,	rare_pull_chance,
+								 epic_pull_chance,	 legendary_pull_chance, mythic_pull_chance};
 
 	std::vector<float> m_only_mythic_chance{0, 0, 0, 0, 0, 100};
 	std::vector<float> m_only_epic_chance{0, 0, 0, 100, 0, 0};
@@ -55,7 +54,7 @@ public:
 
 	Texture2D m_card_texture_emissive;
 	Shader m_card_emissive_shader = LoadShader(NULL, "resources/shader/emissive_color.fs");
-	Vector3 m_emissive_color{255,0,0};
+	Vector3 m_emissive_color{255, 0, 0};
 	int m_emissive_texture_position;
 	int m_emissive_color_position;
 
@@ -64,10 +63,10 @@ public:
 
 	bool m_layer_is_visible = true;
 	Texture2D m_button;
-	bool m_can_receive_input = false;
+	bool m_can_receive_input  = false;
 	float m_time_since_opened = 0;
 
-	//Upgrade Icons
+	// Upgrade Icons
 	Texture2D m_fire_rate_icon;
 
 	// base upgrade values for the different upgrades
@@ -81,8 +80,6 @@ public:
 	float m_base_upgrade_luck			  = CFG_VALUE<float>("upgrade_luck_base_value", 0.075);
 	int m_base_upgrade_health			  = CFG_VALUE<int>("upgrade_health_base_value", 1);
 	int m_base_upgrade_add_cannon		  = CFG_VALUE<int>("upgrade_add_cannon_base_value", 1);
-
-
 
 
 	// multipliers for the different rarities

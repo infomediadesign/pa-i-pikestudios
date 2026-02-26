@@ -1,11 +1,11 @@
 #include "layers/upgradelayer.h"
+#include <entities/director.h>
 #include <iostream>
+#include <raylib.h>
+#include <string>
 #include "pscore/sprite.h"
 #include "pscore/viewport.h"
-#include <raylib.h>
 #include "raygui.h"
-#include <string>
-#include <entities/director.h>
 
 UpgradeLayer::UpgradeLayer()
 {
@@ -13,28 +13,28 @@ UpgradeLayer::UpgradeLayer()
 	m_card_texture_1 = PRELOAD_TEXTURE("card_1", "resources/ui/upgrade_card_1.png", frame_grid)->m_s_texture;
 	m_card_texture_2 = PRELOAD_TEXTURE("card_2", "resources/ui/upgrade_card_2.png", frame_grid)->m_s_texture;
 	m_card_texture_3 = PRELOAD_TEXTURE("card_3", "resources/ui/upgrade_card_3.png", frame_grid)->m_s_texture;
-	m_button	   = PRELOAD_TEXTURE("smallbutton", "resources/ui/button_small.png", frame_grid)->m_s_texture;
+	m_button		 = PRELOAD_TEXTURE("smallbutton", "resources/ui/button_small.png", frame_grid)->m_s_texture;
 
 	// Icons
 	m_fire_rate_icon = PRELOAD_TEXTURE("fire_rate_icon", "resources/icon/upgr_icon_firerate.png", frame_grid)->m_s_texture;
 
-	
 
-	m_card_texture_emissive = PRELOAD_TEXTURE("card_emissive", "resources/emissive/upgrate_card_emissive_border_and_center.png", frame_grid)->m_s_texture;
+	m_card_texture_emissive =
+			PRELOAD_TEXTURE("card_emissive", "resources/emissive/upgrate_card_emissive_border_and_center.png", frame_grid)->m_s_texture;
 	m_emissive_texture_position = GetShaderLocation(m_card_emissive_shader, "texture_emissive");
 	m_emissive_color_position	= GetShaderLocation(m_card_emissive_shader, "emissive_color");
 	SetShaderValue(m_card_emissive_shader, m_emissive_color_position, &m_card_texture_emissive, SHADER_UNIFORM_SAMPLER2D);
 
 
-	auto director  = dynamic_cast<FortunaDirector*>(gApp()->game_director());
-	
+	auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
+
 	m_loot_table.add_loot_table(0, director->drop_chances.add_cannon, m_only_mythic_chance); // Add Cannon
-	m_loot_table.add_loot_table(1,director->drop_chances.projectile_speed, m_chances); //Projectile Speed
-	m_loot_table.add_loot_table(2,director->drop_chances.fire_range , m_chances); //Fire Range
-	m_loot_table.add_loot_table(3,director->drop_chances.fire_rate, m_chances); //Fire Rate
+	m_loot_table.add_loot_table(1, director->drop_chances.projectile_speed, m_chances); // Projectile Speed
+	m_loot_table.add_loot_table(2, director->drop_chances.fire_range, m_chances); // Fire Range
+	m_loot_table.add_loot_table(3, director->drop_chances.fire_rate, m_chances); // Fire Rate
 	m_loot_table.add_loot_table(4, director->drop_chances.health, m_only_epic_chance); // Health
-	m_loot_table.add_loot_table(5,director->drop_chances.speed, m_chances); //Player Speed
-	m_loot_table.add_loot_table(6,director->drop_chances.rotation_speed, m_chances); //Turn Speed
+	m_loot_table.add_loot_table(5, director->drop_chances.speed, m_chances); // Player Speed
+	m_loot_table.add_loot_table(6, director->drop_chances.rotation_speed, m_chances); // Turn Speed
 	m_loot_table.add_loot_table(7, director->drop_chances.piercing_chance, m_chances); // Piercing Chance
 	m_loot_table.add_loot_table(8, director->drop_chances.luck, m_chances); // Luck
 }
@@ -63,20 +63,15 @@ void UpgradeLayer::on_render()
 
 void UpgradeLayer::draw_upgrade_cards()
 {
-	auto& vp	   = gApp()->viewport();
-	Vector2 origin = vp->viewport_origin();
-	float scale	   = vp->viewport_scale();
+	auto& vp			  = gApp()->viewport();
+	Vector2 origin		  = vp->viewport_origin();
+	float scale			  = vp->viewport_scale();
 	Vector2 screen_middel = {
-		origin.x / vp->viewport_scale() + vp->viewport_base_size().x / 2,
-		origin.y / vp->viewport_scale() + vp->viewport_base_size().y / 2
+			origin.x / vp->viewport_scale() + vp->viewport_base_size().x / 2, origin.y / vp->viewport_scale() + vp->viewport_base_size().y / 2
 	};
 
 	Texture2D card_textures[] = {m_card_texture_1, m_card_texture_2, m_card_texture_3};
-	float card_offsets_x[] = {
-		0.0f,
-		static_cast<float>(m_card_texture_2.width + 16),
-		static_cast<float>(-(m_card_texture_3.width + 16))
-	};
+	float card_offsets_x[]	  = {0.0f, static_cast<float>(m_card_texture_2.width + 16), static_cast<float>(-(m_card_texture_3.width + 16))};
 
 	GuiSetStyle(DEFAULT, TEXT_SIZE, 14 * scale);
 	GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt(BLACK));
@@ -158,7 +153,7 @@ void UpgradeLayer::apply_upgrade(LootTableValue upgrade_info)
 			upgrade_amount = director->player_luck() * (m_base_upgrade_luck * upgrade_multyplier);
 			director->upgrade_player_luck(upgrade_amount);
 			m_loot_table.set_expected_value(director->player_luck());
-			if (director->player_luck() >= 1.0){
+			if ( director->player_luck() >= 1.0 ) {
 				director->drop_chances.luck = 0;
 			}
 			printf("Luck Upgrade Applied: %.2f\n", upgrade_amount);
@@ -178,9 +173,9 @@ void UpgradeLayer::print_loot_table_values(std::vector<LootTableValue> values)
 
 void UpgradeLayer::draw_card_text(Vector2 card_pos, LootTableValue upgrade_info)
 {
-	auto& vp = gApp()->viewport();
-	float scale = vp->viewport_scale();
-	float text_size = 13 * scale;
+	auto& vp				  = gApp()->viewport();
+	float scale				  = vp->viewport_scale();
+	float text_size			  = 13 * scale;
 	Rectangle rarity_text_pos = {card_pos.x + 10 * scale, card_pos.y - 80 * scale, 150 * scale, text_size};
 	Rectangle value_text_pos  = {card_pos.x + 10 * scale, card_pos.y + 25 * scale + 2 * text_size, 150 * scale, text_size};
 	Rectangle type_text_pos	  = {card_pos.x + 10 * scale, card_pos.y + 25 * scale + text_size, 150 * scale, text_size};
@@ -188,19 +183,18 @@ void UpgradeLayer::draw_card_text(Vector2 card_pos, LootTableValue upgrade_info)
 	rarity_text_pos.x		  = text_pos_x;
 	type_text_pos.x			  = text_pos_x;
 	value_text_pos.x		  = text_pos_x;
-	
+
 
 	GuiSetStyle(DEFAULT, TEXT_SIZE, text_size);
 	GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt(BLACK));
 	GuiSetStyle(LABEL, TEXT_ALIGNMENT, TEXT_ALIGN_CENTER);
-	
+
 	float line_height = text_size + 4 * scale;
 
 	GuiLabel(rarity_text_pos, rarity_to_string(upgrade_info.rarity).c_str());
 	GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt({219, 180, 132, 255}));
 	GuiLabel(type_text_pos, upgrade_type_to_string(upgrade_info.index).c_str());
-	GuiLabel(value_text_pos, value_to_string(upgrade_info.index, upgrade_info.rarity).c_str()
-	);
+	GuiLabel(value_text_pos, value_to_string(upgrade_info.index, upgrade_info.rarity).c_str());
 
 	draw_upgrade_preview(card_pos, upgrade_info);
 
@@ -340,13 +334,13 @@ float UpgradeLayer::get_multiplier(int rarity)
 
 void UpgradeLayer::draw_upgrade_preview(Vector2 card_pos, LootTableValue upgrade_info)
 {
-	auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
+	auto director			 = dynamic_cast<FortunaDirector*>(gApp()->game_director());
 	float upgrade_multyplier = get_multiplier(upgrade_info.rarity);
 
-	auto& vp				  = gApp()->viewport();
-	float scale				  = vp->viewport_scale();
-	float text_size			  = 10 * scale;
-	Rectangle text_pos		  = {card_pos.x - 60 * scale, card_pos.y + 40 * scale + 3 * 14 * scale, 120 * scale, text_size};
+	auto& vp		   = gApp()->viewport();
+	float scale		   = vp->viewport_scale();
+	float text_size	   = 10 * scale;
+	Rectangle text_pos = {card_pos.x - 60 * scale, card_pos.y + 40 * scale + 3 * 14 * scale, 120 * scale, text_size};
 
 	GuiSetStyle(DEFAULT, TEXT_SIZE, text_size);
 	GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt({219, 180, 132, 255}));
@@ -358,41 +352,52 @@ void UpgradeLayer::draw_upgrade_preview(Vector2 card_pos, LootTableValue upgrade
 		case 0:
 			break;
 		case 1:
-			preview = std::format("{:.1f} -> {:.1f}",
-				director->player_current_projectile_speed(),
-				director->player_current_projectile_speed() + director->player_current_projectile_speed() * (m_base_upgrade_projectile_speed * upgrade_multyplier));
+			preview = std::format(
+					"{:.1f} -> {:.1f}", director->player_current_projectile_speed(),
+					director->player_current_projectile_speed() +
+							director->player_current_projectile_speed() * (m_base_upgrade_projectile_speed * upgrade_multyplier)
+			);
 			break;
 		case 2:
-			preview = std::format("{:.1f} -> {:.1f}",
-				director->player_current_fire_range(),
-				director->player_current_fire_range() + director->player_current_fire_range() * (m_base_upgrade_fire_range * upgrade_multyplier));
+			preview = std::format(
+					"{:.1f} -> {:.1f}", director->player_current_fire_range(),
+					director->player_current_fire_range() + director->player_current_fire_range() * (m_base_upgrade_fire_range * upgrade_multyplier)
+			);
 			break;
 		case 3:
-			preview = std::format("{:.3f}s -> {:.3f}s",
-				director->player_current_fire_rate(),
-				director->player_current_fire_rate() - director->player_current_fire_rate() * (m_base_upgrade_fire_rate * upgrade_multyplier));
+			preview = std::format(
+					"{:.3f}s -> {:.3f}s", director->player_current_fire_rate(),
+					director->player_current_fire_rate() - director->player_current_fire_rate() * (m_base_upgrade_fire_rate * upgrade_multyplier)
+			);
 			break;
 		case 4:
 			break;
 		case 5:
-			preview = std::format("{:.1f} -> {:.1f}",
-				director->player_max_velocity(),
-				director->player_max_velocity() + director->player_max_velocity() * (m_base_upgrade_player_speed * upgrade_multyplier));
+			preview = std::format(
+					"{:.1f} -> {:.1f}", director->player_max_velocity(),
+					director->player_max_velocity() + director->player_max_velocity() * (m_base_upgrade_player_speed * upgrade_multyplier)
+			);
 			break;
 		case 6:
-			preview = std::format("{:.1f} -> {:.1f}",
-				director->player_input_rotation_mult(),
-				director->player_input_rotation_mult() + director->player_input_rotation_mult() * (m_base_upgrade_rotation_speed * upgrade_multyplier));
+			preview = std::format(
+					"{:.1f} -> {:.1f}", director->player_input_rotation_mult(),
+					director->player_input_rotation_mult() +
+							director->player_input_rotation_mult() * (m_base_upgrade_rotation_speed * upgrade_multyplier)
+			);
 			break;
 		case 7:
-			preview = std::format("{:.1f}% -> {:.1f}%",
-				director->player_piercing_chance(),
-				(director->player_piercing_chance() + director->player_piercing_chance() * (m_base_upgrade_piercing_chance * upgrade_multyplier)));
+			preview = std::format(
+					"{:.1f}% -> {:.1f}%", director->player_piercing_chance(),
+					(director->player_piercing_chance() + director->player_piercing_chance() * (m_base_upgrade_piercing_chance * upgrade_multyplier))
+			);
 			break;
 		case 8:
-			preview = std::format("{:.1f}% -> {:.1f}%", director->player_luck() * 100,
+			preview = std::format(
+					"{:.1f}% -> {:.1f}%", director->player_luck() * 100,
 					std::clamp(
-							(director->player_luck() + director->player_luck() * (m_base_upgrade_luck * upgrade_multyplier)) * 100, -100.0f, 100.0f));
+							(director->player_luck() + director->player_luck() * (m_base_upgrade_luck * upgrade_multyplier)) * 100, -100.0f, 100.0f
+					)
+			);
 			break;
 		default:
 			break;
@@ -410,7 +415,7 @@ void UpgradeLayer::draw_upgrade_preview(Vector2 card_pos, LootTableValue upgrade
 void UpgradeLayer::draw_reroll_button()
 {
 	auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
-	if ( director->reroll_amount() > 0 ){
+	if ( director->reroll_amount() > 0 ) {
 		auto& vp			  = gApp()->viewport();
 		Vector2 origin		  = vp->viewport_origin();
 		Vector2 screen_middel = {
@@ -425,17 +430,14 @@ void UpgradeLayer::draw_reroll_button()
 			m_current_loot_table_values = m_loot_table.loot_table_values(3);
 			director->set_reroll_amount(director->reroll_amount() - 1);
 		}
-		}
+	}
 }
 
 void UpgradeLayer::draw_upgrade_icon(int index, Vector2 card_pos)
 {
 	auto& vp	= gApp()->viewport();
 	float scale = vp->viewport_scale();
-	Vector2 pos = {
-		card_pos.x - (m_fire_rate_icon.width * scale) / 2.0f,
-		card_pos.y - 49 * scale
-	};
+	Vector2 pos = {card_pos.x - (m_fire_rate_icon.width * scale) / 2.0f, card_pos.y - 49 * scale};
 
 	switch ( index ) {
 		case 0:

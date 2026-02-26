@@ -1,7 +1,7 @@
 #pragma once
-#include <psinterfaces/renderable.h>
-#include <pscore/sprite.h>
 #include <pscore/collision.h>
+#include <pscore/sprite.h>
+#include <psinterfaces/renderable.h>
 
 class LootChest : public PSInterfaces::IRenderable
 {

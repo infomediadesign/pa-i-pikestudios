@@ -13,9 +13,9 @@ void ChonkyShark::on_hit()
 		return;
 	}
 
-	m_hurt			  = true;
+	m_hurt					= true;
 	m_remaining_iframe_time = m_iframe_duration;
-	int current_frame = m_animation_controller.get_sprite_sheet_frame_index(-1).value_or(0);
+	int current_frame		= m_animation_controller.get_sprite_sheet_frame_index(-1).value_or(0);
 	m_animation_controller.set_animation_at_index(m_uwu ? UwUHurt : Hurt, current_frame, -1);
 }
 

@@ -8,12 +8,12 @@
 #include <pscore/application.h>
 #include <psinterfaces/entity.h>
 
+#include <entities/lootchest.h>
 #include <entities/shark.h>
 #include <entities/tentacle.h>
 #include <layers/applayer.h>
 #include <pscore/spawner.h>
 #include "entities/chonkyshark.h"
-#include <entities/lootchest.h>
 
 class FortunaDirectorPriv;
 class FortunaDirector : public PSInterfaces::IEntity
@@ -48,15 +48,15 @@ public:
 
 	struct DropChances
 	{
-		float add_cannon		= CFG_VALUE<int>("upgrade_add_cannon_chance", 1);
+		float add_cannon	   = CFG_VALUE<int>("upgrade_add_cannon_chance", 1);
 		float projectile_speed = CFG_VALUE<int>("upgrade_projectile_speed_chance", 13);
-		float fire_range		= CFG_VALUE<int>("upgrade_fire_range_chance", 13);
-		float fire_rate		= CFG_VALUE<int>("upgrade_fire_rate_chance", 13);
-		float health			= CFG_VALUE<int>("upgrade_health_chance", 13);
-		float speed			= CFG_VALUE<int>("upgrade_speed_chance", 13);
-		float rotation_speed	= CFG_VALUE<int>("upgrade_rotation_speed_chance", 13);
-		float piercing_chance	 = CFG_VALUE<int>("upgrade_piercing_chance_chance", 13);
-		float luck				= CFG_VALUE<int>("upgrade_luck_chance", 6);
+		float fire_range	   = CFG_VALUE<int>("upgrade_fire_range_chance", 13);
+		float fire_rate		   = CFG_VALUE<int>("upgrade_fire_rate_chance", 13);
+		float health		   = CFG_VALUE<int>("upgrade_health_chance", 13);
+		float speed			   = CFG_VALUE<int>("upgrade_speed_chance", 13);
+		float rotation_speed   = CFG_VALUE<int>("upgrade_rotation_speed_chance", 13);
+		float piercing_chance  = CFG_VALUE<int>("upgrade_piercing_chance_chance", 13);
+		float luck			   = CFG_VALUE<int>("upgrade_luck_chance", 6);
 	};
 
 	DropChances drop_chances;

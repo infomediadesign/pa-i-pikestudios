@@ -1,15 +1,15 @@
 #include "lootchest.h"
-#include "pscore/viewport.h"
-#include "entities/player.h"
 #include <coordinatesystem.h>
 #include <layers/applayer.h>
 #include <layers/upgradelayer.h>
+#include "entities/player.h"
+#include "pscore/viewport.h"
 
 LootChest::LootChest() : PSInterfaces::IEntity("loot_chest")
 {
 	IRenderable::propose_z_index(-3);
 	Vector2 frame_grid{1, 1};
-	m_sprite = PRELOAD_TEXTURE(ident_, "resources/entity/test_loot.png", frame_grid);
+	m_sprite  = PRELOAD_TEXTURE(ident_, "resources/entity/test_loot.png", frame_grid);
 	m_texture = m_sprite->m_s_texture;
 }
 
@@ -23,7 +23,7 @@ void LootChest::init(const Vector2& position, std::shared_ptr<LootChest> self)
 				on_hit();
 			}
 		}
-		});
+	});
 }
 
 void LootChest::update(float dt)
@@ -60,7 +60,7 @@ void LootChest::on_hit()
 		auto app_layer = gApp()->get_layer<AppLayer>();
 		if ( app_layer )
 			app_layer->suspend();
-	}); 
+	});
 	set_is_active(false);
 }
 
@@ -73,8 +73,7 @@ std::optional<std::vector<Vector2>> LootChest::bounds() const
 			float scale	   = vp->viewport_scale();
 
 			float half						   = 8.0f * scale;
-			std::vector<Vector2> hitbox_points = {{-half, -half},{half, -half},{half, half},{-half, half}
-			};
+			std::vector<Vector2> hitbox_points = {{-half, -half}, {half, -half}, {half, half}, {-half, half}};
 
 			return coordinatesystem::points_relative_to_globle_rightup(vp_pos, m_rotation, hitbox_points);
 		}
@@ -100,7 +99,7 @@ void LootChest::set_rotation(const float& rotation)
 void LootChest::draw_debug()
 {
 	if ( auto& vp = gApp()->viewport() ) {
-		Vector2 new_pos = vp->position_viewport_to_global(m_position);
+		Vector2 new_pos		= vp->position_viewport_to_global(m_position);
 		Rectangle chest_rec = {new_pos.x, new_pos.y, (float) m_texture.width * vp->viewport_scale(), (float) m_texture.height * vp->viewport_scale()};
 		PSUtils::DrawRectangleLinesRotated(chest_rec, m_rotation, RED);
 		if ( bounds().has_value() ) {

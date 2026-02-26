@@ -1,9 +1,10 @@
 #include "projectile.h"
 #include <cmath>
-#include <cstdlib>
 #include <coordinatesystem.h>
+#include <cstdlib>
 #include <entities/director.h>
 #include <iostream>
+#include <layers/applayer.h>
 #include <memory>
 #include <optional>
 #include <ostream>
@@ -11,12 +12,11 @@
 #include <pscore/collision.h>
 #include <pscore/sprite.h>
 #include <pscore/viewport.h>
-#include <raylib.h>
-#include <layers/applayer.h>
 #include <psinterfaces/entity.h>
+#include <raylib.h>
 #include <raymath.h>
-#include "pscore/utils.h"
 #include <vector>
+#include "pscore/utils.h"
 
 Projectile::Projectile() : PSInterfaces::IEntity("projectile")
 {
@@ -25,21 +25,21 @@ Projectile::Projectile() : PSInterfaces::IEntity("projectile")
 	m_p_position = {GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f};
 	m_p_rotation = 0.0f;
 	Vector2 frame_grid{1, 1};
-	m_p_sprite			= PRELOAD_TEXTURE(ident_, "resources/entity/projectile.png", frame_grid);
-	m_p_texture			= m_p_sprite->m_s_texture;
+	m_p_sprite	= PRELOAD_TEXTURE(ident_, "resources/entity/projectile.png", frame_grid);
+	m_p_texture = m_p_sprite->m_s_texture;
 	Vector2 hit_anim_frame_grid{1, 1};
 
-	//Hit Anim
+	// Hit Anim
 	m_p_hit_anim_sprite = PRELOAD_TEXTURE("projectile_hit_anim", "resources/vfx/default_hit.png", hit_anim_frame_grid);
 
-	m_p_hit_anim_texture = m_p_hit_anim_sprite->m_s_texture;
+	m_p_hit_anim_texture	 = m_p_hit_anim_sprite->m_s_texture;
 	m_p_animation_controller = PSCore::sprites::SpriteSheetAnimation(m_p_hit_anim_texture, {{9, 0.1, PSCore::sprites::Forward, m_p_z_index}});
 	m_p_animation_controller.add_animation_at_index(0, m_p_z_index);
 
 	// No Hit Anim
 	m_p_no_hit_anim_sprite = PRELOAD_TEXTURE("projectile_no_hit_anim", "resources/vfx/water_splash.png", hit_anim_frame_grid);
 
-	m_p_no_hit_anim_texture = m_p_no_hit_anim_sprite->m_s_texture;
+	m_p_no_hit_anim_texture	   = m_p_no_hit_anim_sprite->m_s_texture;
 	m_p_no_hit_anim_controller = PSCore::sprites::SpriteSheetAnimation(m_p_no_hit_anim_texture, {{10, 0.1, PSCore::sprites::Forward, m_p_z_index}});
 	m_p_no_hit_anim_controller.add_animation_at_index(0, m_p_z_index);
 }
@@ -60,7 +60,7 @@ void Projectile::init(const Vector2& position, std::shared_ptr<Projectile> self)
 
 void Projectile::update(const float dt)
 {
-	if ( !m_p_hit_aninm_playing && !m_p_no_hit_anim_playing) {
+	if ( !m_p_hit_aninm_playing && !m_p_no_hit_anim_playing ) {
 		calculate_movment(dt);
 
 		if ( position()->x == 0 || position()->y == 0 )
@@ -86,7 +86,7 @@ void Projectile::update(const float dt)
 
 void Projectile::render()
 {
-	for ( auto& pierce : m_p_pierce_hit_anims ) {
+	for ( auto& pierce: m_p_pierce_hit_anims ) {
 		if ( !pierce.finished ) {
 			if ( auto& vp = gApp()->viewport() ) {
 				vp->draw_in_viewport(
@@ -97,7 +97,7 @@ void Projectile::render()
 		}
 	}
 
-	if ( is_active_ && !m_p_hit_aninm_playing && !m_p_no_hit_anim_playing) {
+	if ( is_active_ && !m_p_hit_aninm_playing && !m_p_no_hit_anim_playing ) {
 		m_p_source = {0, 0, (float) m_p_texture.width, (float) m_p_texture.height};
 		if ( auto& vp = gApp()->viewport() ) {
 			vp->draw_in_viewport(m_p_texture, m_p_source, m_p_position, m_p_rotation, WHITE);
@@ -125,8 +125,8 @@ void Projectile::on_hit()
 {
 	if ( can_pierce() ) {
 		PierceHitAnim pierce;
-		pierce.position = m_p_position;
-		pierce.rotation = m_p_rotation;
+		pierce.position		   = m_p_position;
+		pierce.rotation		   = m_p_rotation;
 		pierce.anim_controller = PSCore::sprites::SpriteSheetAnimation(m_p_hit_anim_texture, {{9, 0.1, PSCore::sprites::Forward, m_p_z_index}});
 		pierce.anim_controller.add_animation_at_index(0, m_p_z_index);
 		pierce.anim_controller.set_animation_at_index(0, 0, m_p_z_index);
@@ -166,7 +166,7 @@ void Projectile::play_no_hit_anim(float dt)
 
 void Projectile::update_pierce_hit_anims(float dt)
 {
-	for ( auto& pierce : m_p_pierce_hit_anims ) {
+	for ( auto& pierce: m_p_pierce_hit_anims ) {
 		if ( !pierce.finished ) {
 			pierce.anim_controller.update_animation(dt);
 			if ( pierce.anim_controller.get_sprite_sheet_frame_index(m_p_z_index) == 8 ) {
@@ -201,10 +201,7 @@ void Projectile::calculate_movment(const float dt)
 
 	apply_drag(dt);
 
-	Vector2 combined_velocity = {
-		m_p_velocity.x + m_p_owner_velocity.x,
-		m_p_velocity.y + m_p_owner_velocity.y
-	};
+	Vector2 combined_velocity = {m_p_velocity.x + m_p_owner_velocity.x, m_p_velocity.y + m_p_owner_velocity.y};
 
 	m_p_position.x += combined_velocity.x * dt;
 	m_p_position.y += combined_velocity.y * dt;
@@ -226,22 +223,16 @@ void Projectile::launch()
 	m_p_position = m_p_fiering_cannon->position().value_or(Vector2{0, 0});
 
 	float cannon_rot = m_p_fiering_cannon->rotation();
-	float rad = cannon_rot * (PI / 180.0f);
+	float rad		 = cannon_rot * (PI / 180.0f);
 
-	m_p_velocity = {
-		cosf(rad) * m_p_speed,
-		sinf(rad) * m_p_speed
-	};
+	m_p_velocity = {cosf(rad) * m_p_speed, sinf(rad) * m_p_speed};
 
 	if ( m_p_owner ) {
 		m_p_owner_velocity = m_p_owner->velocity();
 	}
 
-	Vector2 combined = {
-		m_p_velocity.x + m_p_owner_velocity.x,
-		m_p_velocity.y + m_p_owner_velocity.y
-	};
-	m_p_rotation = atan2f(combined.y, combined.x) * (180.0f / PI);
+	Vector2 combined = {m_p_velocity.x + m_p_owner_velocity.x, m_p_velocity.y + m_p_owner_velocity.y};
+	m_p_rotation	 = atan2f(combined.y, combined.x) * (180.0f / PI);
 
 	m_p_travel_distance = 0.0f;
 	m_p_pierce_hit_anims.clear();
@@ -411,9 +402,7 @@ std::optional<std::vector<Vector2>> Projectile::bounds() const
 			Vector2 vp_pos = vp->position_viewport_to_global(m_p_position);
 			float scale	   = vp->viewport_scale();
 
-			std::vector<Vector2> hitbox_points = {
-					{1 * scale, 1 * scale}, {1 * scale, -1 * scale}, {-1 * scale, -1 * scale}, {-1 * scale, 1 * scale}
-			};
+			std::vector<Vector2> hitbox_points = {{1 * scale, 1 * scale}, {1 * scale, -1 * scale}, {-1 * scale, -1 * scale}, {-1 * scale, 1 * scale}};
 
 			return coordinatesystem::points_relative_to_globle_rightup(vp_pos, m_p_rotation, hitbox_points);
 		}
@@ -428,8 +417,8 @@ void Projectile::draw_debug()
 
 	if ( auto& vp = gApp()->viewport() ) {
 		Vector2 cannon_pos = m_p_fiering_cannon->position().value_or(Vector2{0, 0});
-		
-		Vector2 cannon_screen = vp->position_viewport_to_global(cannon_pos);
+
+		Vector2 cannon_screen	  = vp->position_viewport_to_global(cannon_pos);
 		Vector2 projectile_screen = vp->position_viewport_to_global(m_p_position);
 
 		DrawLineEx(cannon_screen, projectile_screen, 2.0f, RED);
