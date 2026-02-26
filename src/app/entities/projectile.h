@@ -17,7 +17,7 @@ class Projectile : public PSInterfaces::IRenderable
 {
 public:
 	Projectile();
-	~Projectile();
+	~Projectile(){}
 	void update(const float dt) override;
 	void render() override;
 	void on_hit() override;

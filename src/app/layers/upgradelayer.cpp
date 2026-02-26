@@ -20,7 +20,7 @@ UpgradeLayer::UpgradeLayer()
 
 
 	m_card_texture_emissive =
-			PRELOAD_TEXTURE("card_emissive", "resources/emissive/upgrate_card_emissive_border_and_center.png", frame_grid)->m_s_texture;
+			PRELOAD_TEXTURE("card_emissive", "resources/emissive/upgrate_card_emissive_border_and_center_card_1.png", frame_grid)->m_s_texture;
 	m_emissive_texture_position = GetShaderLocation(m_card_emissive_shader, "texture_emissive");
 	m_emissive_color_position	= GetShaderLocation(m_card_emissive_shader, "emissive_color");
 	SetShaderValue(m_card_emissive_shader, m_emissive_color_position, &m_card_texture_emissive, SHADER_UNIFORM_SAMPLER2D);
