@@ -25,6 +25,8 @@ struct LootTableValue
 class LootTable
 {
 public:
+	LootTable();
+
 	void add_loot_table(int index, int pull_chance, std::vector<float>& chances);
 
 	void set_expected_value(float expected_value);

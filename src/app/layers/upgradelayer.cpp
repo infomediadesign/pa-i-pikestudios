@@ -166,9 +166,6 @@ void UpgradeLayer::apply_upgrade(LootTableValue upgrade_info)
 			upgrade_amount = director->player_luck() * (m_base_upgrade_luck * upgrade_multyplier);
 			director->upgrade_player_luck(upgrade_amount);
 			m_loot_table.set_expected_value(director->player_luck());
-			if ( director->player_luck() >= 1.0 ) {
-				director->drop_chances.luck = 0;
-			}
 			PS_LOG(LOG_INFO, std::format("Luck Upgrade Applied: {:.2f}", upgrade_amount));
 			PS_LOG(LOG_INFO, std::format("Player Luck: {:.2f}", director->player_luck()));
 			break;
@@ -418,9 +415,7 @@ void UpgradeLayer::draw_upgrade_preview(Vector2 card_pos, LootTableValue upgrade
 		case 8:
 			preview = std::format(
 					"{:.1f}% -> {:.1f}%", director->player_luck() * 100,
-					std::clamp(
-							(director->player_luck() + director->player_luck() * (m_base_upgrade_luck * upgrade_multyplier)) * 100, -100.0f, 100.0f
-					)
+					(director->player_luck() + director->player_luck() * (m_base_upgrade_luck * upgrade_multyplier)) * 100
 			);
 			break;
 		case 9:

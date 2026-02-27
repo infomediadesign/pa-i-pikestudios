@@ -1,4 +1,5 @@
 #include "loottable.h"
+#include <entities/director.h>
 
 #include <random>
 
@@ -15,6 +16,15 @@
 #ifndef SQRT2HALF
 #define SQRT2HALF 0.7071067811865f
 #endif
+
+LootTable::LootTable()
+{
+	auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
+	if ( director ) {
+		m_expected_value = director->player_luck();
+		printf("Expected Value Set To: %.4f\n", m_expected_value);
+	}
+}
 
 void LootTable::add_loot_table(int index, int pull_chance, std::vector<float>& chances)
 {
@@ -56,7 +66,7 @@ void LootTable::add_loot_table(int index, int pull_chance, std::vector<float>& c
 
 void LootTable::set_expected_value(float expected_value)
 {
-	m_expected_value = std::clamp(expected_value, -1.0f, 1.0f);
+	//m_expected_value = std::clamp(expected_value, -1.0f, 1.0f);
 	printf("Expected Value Set To: %.4f\n", m_expected_value);
 }
 

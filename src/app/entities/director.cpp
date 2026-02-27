@@ -439,7 +439,7 @@ void FortunaDirector::upgrade_player_health(int amount)
 
 void FortunaDirector::upgrade_player_luck(float amount)
 {
-	_p->player_current_luck = std::clamp(_p->player_current_luck + amount, -1.0f, 1.0f);
+	_p->player_current_luck += amount;
 }
 
 void FortunaDirector::upgrade_player_invincibility(bool invincibility)

@@ -148,7 +148,7 @@ struct FortunaDirectorPriv
 	float player_current_projectile_speed = CFG_VALUE<float>("player_current_projectile_speed", 300.0f);
 	float player_current_fire_range		  = CFG_VALUE<float>("player_current_fire_range", 100.0f);
 	float player_current_piercing_chance  = CFG_VALUE<float>("player_current_piercing_chance", 5.0f);
-	float player_current_luck			  = CFG_VALUE<float>("player_current_luck", 0.1f);
+	float player_current_luck			  = 1; // CFG_VALUE<float>("player_current_luck", 0.1f);
 	float player_projectile_amount		  = CFG_VALUE<float>("player_projectile_amount", 1);
 
 	std::unique_ptr<PSCore::Spawner<Shark, AppLayer>> shark_spawner;
