@@ -372,6 +372,7 @@ std::shared_ptr<LootChest> FortunaDirector::spawn_loot_chest(const Vector2& posi
 	for ( auto loot: _p->loot_chests ) {
 		if ( !loot->is_active() ) {
 			loot->init(position, loot);
+			loot->set_spawn_anim_playing(true);
 			loot->set_is_active(true);
 			return loot;
 		}
