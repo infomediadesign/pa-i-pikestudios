@@ -39,5 +39,10 @@ install(TARGETS ${PROJECT_NAME}
 )
 install(DIRECTORY resources DESTINATION ${CMAKE_INSTALL_BINDIR})
 install(FILES balancing_settings.cfg DESTINATION ${CMAKE_INSTALL_BINDIR})
+# Install VC++ redistributable into a known location in the install tree
+install(
+    FILES "${CMAKE_SOURCE_DIR}/thirdparty/vcredist/VC_redist.x64.exe"
+    DESTINATION vcredist
+)
 
 include(cmake/Package.cmake)

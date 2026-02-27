@@ -171,7 +171,6 @@ void Player::update(const float dt)
 		m_smear.calculate_exponential_smear(
 				smear_forward_position, Vector2Length(m_velocity), m_rotation, 0.15f * scale, 0, -0.03f * scale, -0.05f * scale, 3
 		);
-
 		m_smear.add_smear_wave(0.1, 0.25, Vector2Length(m_velocity), m_max_velocity, dt, 0);
 
 		m_smear.update_smear_wave({0, 1}, Linear, 1, 10, Vector2Length(m_velocity), m_max_velocity, dt);
@@ -377,11 +376,6 @@ std::optional<Vector2> Player::position() const
 	return m_position;
 }
 
-Vector2 Player::velocity()
-{
-	return m_velocity;
-}
-
 float Player::target_velocity()
 {
 	return m_target_velocity;
@@ -390,11 +384,6 @@ float Player::target_velocity()
 float Player::max_velocity()
 {
 	return m_max_velocity;
-}
-
-float Player::rotation()
-{
-	return m_rotation;
 }
 
 float Player::target_rotation()
@@ -577,16 +566,6 @@ bool Player::is_clone() const
 	return m_is_clone;
 }
 
-float Player::dest_width() const
-{
-	return m_animation_controller.get_source_rectangle(1).value_or(Rectangle{0}).width;
-}
-
-float Player::dest_height() const
-{
-	return m_animation_controller.get_source_rectangle(1).value_or(Rectangle{0}).height;
-}
-
 std::vector<std::shared_ptr<Cannon>>& Player::cannon_container()
 {
 	return m_cannon_container;
@@ -682,4 +661,20 @@ void Sails::render()
 
 void Sails::draw_debug()
 {
+}
+std::optional<float> Player::rotation() const
+{
+	return m_rotation;
+}
+
+std::optional<Vector2> Player::velocity() const
+{
+	return m_velocity;
+}
+
+std::optional<Vector2> Player::size() const
+{
+	auto h = m_animation_controller.get_source_rectangle(1).value_or(Rectangle{0}).height;
+	auto w = m_animation_controller.get_source_rectangle(1).value_or(Rectangle{0}).width;
+	return Vector2{w, h};
 }

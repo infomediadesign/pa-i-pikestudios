@@ -1,4 +1,3 @@
-#include <chrono>
 #include <cstdint>
 #include <entities/cannon.h>
 #include <entities/director.h>
@@ -15,6 +14,10 @@
 #include <pscore/utils.h>
 #include <psinterfaces/entity.h>
 #include <raylib.h>
+#include <raymath.h>
+#include <entities/hunter.h>
+#include <entities/player.h>
+#include <entities/tentacle.h>
 #include "entities/chonkyshark.h"
 #include "entities/lootchest.h"
 #include "entities/tentacle.h"
@@ -31,6 +34,7 @@ FortunaDirector::FortunaDirector() : PSInterfaces::IEntity("fortuna_director")
 	_p->chonky_shark_spawner = std::make_unique<PSCore::Spawner<ChonkyShark, AppLayer>>(
 			_p->chonky_shark_spawn_time, _p->chonky_shark_spawn_variation, _p->chonky_shark_limit
 	);
+	_p->hunter_spawner = std::make_unique<PSCore::Spawner<Hunter, AppLayer>>(_p->hunter_spawn_time, _p->hunter_spawn_variation, _p->hunter_limit);
 }
 
 void FortunaDirector::initialize_entities()
@@ -76,6 +80,10 @@ void FortunaDirector::initialize_entities()
 		tentacle->init(tentacle, {(float) PSUtils::gen_rand(10, 300), (float) PSUtils::gen_rand(10, 300)});
 	});
 
+	_p->hunter_spawner->register_spawn_callback([](std::shared_ptr<Hunter> hunter) {
+		hunter->init(hunter);
+	});
+
 	_p->shark_spawner->resume();
 
 	auto initial_player = std::make_shared<Player>();
@@ -106,6 +114,7 @@ void FortunaDirector::update(float dt)
 	_p->shark_spawner->update(dt);
 	_p->chonky_shark_spawner->update(dt);
 	_p->tentacle_spawner->update(dt);
+	_p->hunter_spawner->update(dt);
 }
 
 void FortunaDirector::draw_debug()
@@ -116,6 +125,8 @@ void FortunaDirector::draw_debug()
 
 	_p->shark_spawner->draw_debug();
 	_p->chonky_shark_spawner->draw_debug();
+	_p->hunter_spawner->draw_debug();
+	_p->tentacle_spawner->draw_debug();
 
 	ImGui::Separator();
 	ImGui::Text("Player Speed");
@@ -312,8 +323,8 @@ void FortunaDirector::sync_player_entities()
 			_p->players[i]->set_is_clone(false);
 		} else {
 			_p->players[i]->set_is_clone(true);
-			_p->players[i]->set_velocity(_p->players[0]->velocity());
-			_p->players[i]->set_rotation(_p->players[0]->rotation());
+			_p->players[i]->set_velocity(_p->players[0]->velocity().value_or({0, 0}));
+			_p->players[i]->set_rotation(_p->players[0]->rotation().value_or(0));
 		}
 	}
 }
@@ -526,6 +537,11 @@ std::unique_ptr<PSCore::Spawner<tentacle, AppLayer>>& FortunaDirector::spawner()
 	return _p->tentacle_spawner;
 };
 
+template<>
+std::unique_ptr<PSCore::Spawner<Hunter, AppLayer>>& FortunaDirector::spawner()
+{
+	return _p->hunter_spawner;
+};
 // Bounty functions
 
 void FortunaDirector::Bounty::set_bounty(const int amount)
@@ -623,6 +639,23 @@ void FortunaDirector::increase_difficulty(int bounty)
 		_p->m_tentacle_spawn_active = true;
 		_p->tentacle_spawner->resume();
 	}
+
+	// Increase hunter spawn rate and limit based on bounty
+	if ( bounty >= _p->hunter_start_spawn_bounty_amount ) {
+		_p->hunter_spawner->set_interval(
+				std::max(
+						_p->hunter_min_spawn_time,
+						_p->hunter_spawn_time -
+								_p->hunter_spawn_increase_base_value * (static_cast<float>(bounty) / _p->hunter_spawn_increase_bounty_divider)
+				)
+		);
+		_p->hunter_spawner->set_limit(std::min(_p->hunter_max_limit, _p->hunter_limit + (bounty / _p->hunter_limit_increase_bounty_divider)));
+	}
+	// Activate hunter spawner if bounty threshold is reached
+	if ( !_p->hunter_spawn_active && bounty >= _p->hunter_start_spawn_bounty_amount ) {
+		_p->hunter_spawn_active = true;
+		_p->hunter_spawner->resume();
+	}
 }
 // Player Health functions
 void FortunaDirector::set_player_health(const int health)
@@ -660,6 +693,7 @@ void FortunaDirector::set_reroll_amount(const int amount)
 	_p->upgrade_reroll_amount = amount;
 }
 
+<<<<<<< MAGO-225
 int FortunaDirector::player_projectile_amount() const
 {
 	return _p->player_projectile_amount;
@@ -668,4 +702,16 @@ int FortunaDirector::player_projectile_amount() const
 void FortunaDirector::set_player_projectile_amount(int amount)
 {
 	_p->player_projectile_amount = amount;
+=======
+void FortunaDirector::entity_died(std::shared_ptr<PSInterfaces::IEntity> perpetrator, std::string_view died_type)
+{
+	if ( auto player = std::dynamic_pointer_cast<Player>(perpetrator) ) {
+		if ( _p->shark_spawner->entities().size() > 0 && died_type == _p->shark_spawner->entities().at(0)->ident() )
+			m_b_bounty.add_bounty(m_b_bounty_amounts.shark_bounty);
+		else if ( _p->tentacle_spawner->entities().size() > 0 && died_type == _p->tentacle_spawner->entities().at(0)->ident() )
+			m_b_bounty.add_bounty(m_b_bounty_amounts.tentacle_bounty);
+		else if ( _p->hunter_spawner->entities().size() > 0 && died_type == _p->hunter_spawner->entities().at(0)->ident() )
+			m_b_bounty.add_bounty(m_b_bounty_amounts.ship_bounty);
+	};
+>>>>>>> main
 }

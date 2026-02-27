@@ -57,22 +57,28 @@ std::string base64_decode(const std::string& in)
 void Settings::write_file_()
 {
 	Filemanager file(filename_);
-	std::string data;
+	std::list<std::string> data;
 	for ( const auto& [key, value]: settings_ ) {
 		if ( auto i = std::get_if<int>(&value) )
-			data += key + "=" + std::to_string(*i) + "\n";
+			data.push_back(key + "=" + std::to_string(*i) + "\n");
 		else if ( auto b = std::get_if<bool>(&value) )
-			data += key + "=" + (*b ? "true" : "false") + "\n";
+			data.push_back(key + "=" + (*b ? "true" : "false") + "\n");
 		else if ( auto f = std::get_if<float>(&value) )
-			data += key + "=" + std::to_string(*f) + "\n";
+			data.push_back(key + "=" + std::to_string(*f) + "\n");
 		else if ( auto s = std::get_if<std::string>(&value) )
-			data += key + "=" + *s + "\n";
+			data.push_back(key + "=" + *s + "\n");
 	}
 
+	data.sort();
+	
+	std::string data_str;
+	for ( const auto& line: data )
+		data_str += line;
+	
 	if ( !human_readable_ )
-		data = base64_encode(data);
+		data_str = base64_encode(data_str);
 
-	file.write(data);
+	file.write(data_str);
 }
 
 void Settings::read_file_()
