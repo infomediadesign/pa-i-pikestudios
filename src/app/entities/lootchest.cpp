@@ -98,7 +98,7 @@ std::optional<std::vector<Vector2>> LootChest::bounds() const
 
 			Vector2 vp_pos = vp->position_viewport_to_global(m_position);
 			float scale	   = vp->viewport_scale();
-
+			vp_pos.y += 8 * scale;
 			float half						   = 8.0f * scale;
 			std::vector<Vector2> hitbox_points = {{-half, -half}, {half, -half}, {half, half}, {-half, half}};
 
@@ -126,9 +126,6 @@ void LootChest::set_rotation(const float& rotation)
 void LootChest::draw_debug()
 {
 	if ( auto& vp = gApp()->viewport() ) {
-		Vector2 new_pos		= vp->position_viewport_to_global(m_position);
-		Rectangle chest_rec = {new_pos.x, new_pos.y, (float) m_texture.width * vp->viewport_scale(), (float) m_texture.height * vp->viewport_scale()};
-		PSUtils::DrawRectangleLinesRotated(chest_rec, m_rotation, RED);
 		if ( bounds().has_value() ) {
 			for ( int i = 0; i < bounds().value().size(); i++ ) {
 				if ( i < bounds().value().size() - 1 ) {
