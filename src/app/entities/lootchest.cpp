@@ -51,16 +51,30 @@ void LootChest::render()
 
 void LootChest::on_hit()
 {
-	gApp()->call_later([]() { gApp()->push_layer<UpgradeLayer>(); });
-	gApp()->call_later([]() {
-		auto upgrade_layer = gApp()->get_layer<UpgradeLayer>();
-		if ( upgrade_layer ) {
-			upgrade_layer->m_current_loot_table_values = upgrade_layer->m_loot_table.loot_table_values(3);
-		}
-		auto app_layer = gApp()->get_layer<AppLayer>();
-		if ( app_layer )
-			app_layer->suspend();
-	});
+	if ( gApp()->get_layer<UpgradeLayer>() ) {
+		gApp()->call_later([]() {
+			auto upgrade_layer = gApp()->get_layer<UpgradeLayer>();
+			if ( upgrade_layer ) {
+				upgrade_layer->m_current_loot_table_values = upgrade_layer->m_loot_table.loot_table_values(3);
+				upgrade_layer->print_loot_table_values(upgrade_layer->m_current_loot_table_values);
+			}
+			auto app_layer = gApp()->get_layer<AppLayer>();
+			if ( app_layer )
+				app_layer->suspend();
+		});
+	} else {
+		gApp()->call_later([]() { gApp()->push_layer<UpgradeLayer>(); });
+		gApp()->call_later([]() {
+			auto upgrade_layer = gApp()->get_layer<UpgradeLayer>();
+			if ( upgrade_layer ) {
+				upgrade_layer->m_current_loot_table_values = upgrade_layer->m_loot_table.loot_table_values(3);
+				upgrade_layer->print_loot_table_values(upgrade_layer->m_current_loot_table_values);
+			}
+			auto app_layer = gApp()->get_layer<AppLayer>();
+			if ( app_layer )
+				app_layer->suspend();
+		});
+	}
 	set_is_active(false);
 }
 

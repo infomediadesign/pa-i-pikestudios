@@ -121,6 +121,7 @@ public:
 		int shark_bounty	= 40;
 		int ship_bounty		= 150;
 		int tentacle_bounty = 225;
+		int big_shark_bounty = 120;
 	};
 	Bounty m_b_bounty;
 	BountyAmount m_b_bounty_amounts;
