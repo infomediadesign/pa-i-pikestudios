@@ -464,34 +464,34 @@ void UpgradeLayer::draw_upgrade_icon(int index, Vector2 card_pos)
 
 	switch ( index ) {
 		case 0:
-			DrawTextureEx(m_fire_rate_icon, pos, 0, scale, WHITE);
+			//DrawTextureEx(m_fire_rate_icon, pos, 0, scale, WHITE);
 			break;
 		case 1:
 			DrawTextureEx(m_projectile_speed_icon, pos, 0, scale, WHITE);
 			break;
 		case 2:
-			DrawTextureEx(m_fire_rate_icon, pos, 0, scale, WHITE);
+			//DrawTextureEx(m_fire_rate_icon, pos, 0, scale, WHITE);
 			break;
 		case 3:
 			DrawTextureEx(m_fire_rate_icon, pos, 0, scale, WHITE);
 			break;
 		case 4:
-			DrawTextureEx(m_fire_rate_icon, pos, 0, scale, WHITE);
+			//DrawTextureEx(m_fire_rate_icon, pos, 0, scale, WHITE);
 			break;
 		case 5:
-			DrawTextureEx(m_fire_rate_icon, pos, 0, scale, WHITE);
+			//DrawTextureEx(m_fire_rate_icon, pos, 0, scale, WHITE);
 			break;
 		case 6:
-			DrawTextureEx(m_fire_rate_icon, pos, 0, scale, WHITE);
+			//DrawTextureEx(m_fire_rate_icon, pos, 0, scale, WHITE);
 			break;
 		case 7:
-			DrawTextureEx(m_fire_rate_icon, pos, 0, scale, WHITE);
+			//DrawTextureEx(m_fire_rate_icon, pos, 0, scale, WHITE);
 			break;
 		case 8:
 			DrawTextureEx(m_luck_icon, pos, 0, scale, WHITE);
 			break;
 		case 9:
-			DrawTextureEx(m_fire_rate_icon, pos, 0, scale, WHITE);
+			//DrawTextureEx(m_fire_rate_icon, pos, 0, scale, WHITE);
 			break;
 		default:
 			break;
