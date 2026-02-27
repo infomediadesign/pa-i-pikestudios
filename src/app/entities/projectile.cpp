@@ -54,6 +54,13 @@ void Projectile::init(const Vector2& position, std::shared_ptr<Projectile> self)
 			if ( locked->is_active() ) {
 				locked->on_hit();
 				on_hit();
+
+				if (locked->is_active())
+					return;
+
+				if (auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director())) {
+					director->entity_died(m_p_owner, locked->ident());
+				}
 			}
 	});
 }
@@ -69,16 +76,17 @@ void Projectile::update(const float dt)
 		if ( auto app_layer = gApp()->get_layer<AppLayer>() ) {
 			m_collider->check_collision(app_layer->entities(), [this](std::weak_ptr<PSInterfaces::IEntity> other, const Vector2& point) {
 				if ( auto l = other.lock() ) {
-					bool is_player = l->ident() == "player";
+					bool is_owner = l->ident() == m_p_owner->ident();
 					bool is_same   = l->ident() == ident_;
 					bool is_cannon = l->ident() == "cannon";
 					bool is_loot   = l->ident() == "loot_chest";
-					return !(is_player || is_same || is_cannon || is_loot);
+					return !(is_owner || is_same || is_cannon || is_loot);
 				}
 				return true;
 			});
 		}
 	}
+
 	play_hit_anim(dt);
 	play_no_hit_anim(dt);
 	update_pierce_hit_anims(dt);
@@ -228,7 +236,7 @@ void Projectile::launch()
 	m_p_velocity = {cosf(rad) * m_p_speed, sinf(rad) * m_p_speed};
 
 	if ( m_p_owner ) {
-		m_p_owner_velocity = m_p_owner->velocity();
+		m_p_owner_velocity = m_p_owner->velocity().value_or(Vector2{0, 0});
 	}
 
 	Vector2 combined = {m_p_velocity.x + m_p_owner_velocity.x, m_p_velocity.y + m_p_owner_velocity.y};
@@ -364,12 +372,12 @@ std ::shared_ptr<Projectile> Projectile::shared_ptr()
 	return m_p_shared_ptr;
 }
 
-std::shared_ptr<Player> Projectile::owner()
+std::shared_ptr<PSInterfaces::IEntity> Projectile::owner()
 {
 	return m_p_owner;
 }
 
-void Projectile::set_owner(std::shared_ptr<Player>& owner)
+void Projectile::set_owner(std::shared_ptr<PSInterfaces::IEntity>& owner)
 {
 	m_p_owner = owner;
 }

@@ -8,6 +8,7 @@
 #include <pscore/viewport.h>
 #include <raylib.h>
 #include <vector>
+#include <psinterfaces/entity.h>
 
 namespace misc {
 
@@ -78,14 +79,15 @@ namespace misc {
 
 		void set_player_position_to_opposite_border(Player& p, LastCollisionAxis axis)
 		{
-			float half_w = p.dest_width() / 2.0f;
-			float half_h = p.dest_height() / 2.0f;
+			auto size = p.size().value_or(Vector2{0, 0});
+			float half_w = size.x / 2.0f;
+			float half_h = size.y / 2.0f;
 
 			Vector2 new_pos = calculate_opposite_position(p.position().value(), half_w, half_h, axis);
 			p.set_position(new_pos);
 		}
 
-		bool is_off_screen(Player& p)
+		bool is_off_screen(const PSInterfaces::IEntity* p)
 		{
 			int screen_w;
 			int screen_h;
@@ -98,10 +100,11 @@ namespace misc {
 				screen_h = GetScreenHeight();
 			}
 
-			Vector2 pos = p.position().value();
+			Vector2 pos = p->position().value();
 
-			float half_w = p.dest_width() / 2.0f;
-			float half_h = p.dest_height() / 2.0f;
+			auto size = p->size().value_or(Vector2{0, 0});
+			float half_w = size.x / 2.0f;
+			float half_h = size.y / 2.0f;
 
 			if ( half_w <= 0.0f || half_h <= 0.0f )
 				return false;
@@ -113,7 +116,7 @@ namespace misc {
 
 		bool check_collision_horizontal(Player& p, Vector2 player_pos, int screen_w)
 		{
-			float half_w = p.dest_width() / 2.0f;
+			float half_w = p.size().value_or({0,0}).x / 2.0f;
 
 			bool fully_inside = (player_pos.x - half_w > 0.0f) && (player_pos.x + half_w < screen_w);
 			if ( fully_inside )
@@ -125,7 +128,7 @@ namespace misc {
 
 		bool check_collision_vertical(Player& p, Vector2 player_pos, int screen_h)
 		{
-			float half_h = p.dest_height() / 2.0f;
+			float half_h = p.size().value_or({0,0}).y / 2.0f;
 
 			bool fully_inside = (player_pos.y - half_h > 0.0f) && (player_pos.y + half_h < screen_h);
 			if ( fully_inside )
@@ -144,10 +147,10 @@ namespace misc {
 
 			spawnRequests.push_back(
 					{.position = p.position().value(),
-					 .velocity = p.velocity(),
-					 .rotation = p.rotation(),
-					 .height   = p.dest_height(),
-					 .width	   = p.dest_width(),
+					 .velocity = p.velocity().value_or(Vector2{0, 0}),
+					 .rotation = p.rotation().value_or(0),
+					 .height   = p.size().value_or(Vector2{0, 0}).y,
+					 .width	   = p.size().value_or(Vector2{0, 0}).x,
 					 .axis	   = axis}
 			);
 		}
@@ -164,10 +167,10 @@ namespace misc {
 
 		void use_off_screen_wrap_around(Player& p, Vector2& player_pos, int screen_w, int screen_h)
 		{
-			if ( misc::map::check_collision_horizontal(p, player_pos, screen_w) && misc::map::is_off_screen(p) )
+			if ( misc::map::check_collision_horizontal(p, player_pos, screen_w) && misc::map::is_off_screen(&p) )
 				misc::map::set_player_position_to_opposite_border(p, LastCollisionAxis::Horizontal);
 
-			if ( misc::map::check_collision_vertical(p, player_pos, screen_h) && misc::map::is_off_screen(p) )
+			if ( misc::map::check_collision_vertical(p, player_pos, screen_h) && misc::map::is_off_screen(&p) )
 				misc::map::set_player_position_to_opposite_border(p, LastCollisionAxis::Vertical);
 		}
 
@@ -212,7 +215,7 @@ namespace misc {
 
 			for ( auto& entity: app_layer->entities() ) {
 				if ( auto player = std::dynamic_pointer_cast<Player>(entity.lock()) ) {
-					if ( misc::map::is_off_screen(*player) ) {
+					if ( misc::map::is_off_screen(player.get()) ) {
 						director->destroy_player(player);
 						// player->set_is_active(false);
 						/*

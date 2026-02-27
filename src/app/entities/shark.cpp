@@ -289,13 +289,6 @@ void Shark::on_hit()
 {
 	set_is_active(false);
 	printf("hit shark\n");
-	m_director->m_b_bounty.add_bounty(m_director->m_b_bounty_amounts.shark_bounty);
-	if ( m_marked ) {
-		PS_LOG(LOG_INFO, "Dropped an upgrade");
-		if ( auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director()) ) {
-			director->spawn_loot_chest(m_pos);
-		}
-	}
 }
 
 void Shark::draw_debug()

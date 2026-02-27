@@ -13,6 +13,8 @@
 #include <entities/tentacle.h>
 #include <layers/applayer.h>
 #include <pscore/spawner.h>
+#include <string_view>
+#include "entities/hunter.h"
 #include "entities/chonkyshark.h"
 
 class FortunaDirectorPriv;
@@ -33,9 +35,7 @@ public:
 	void destroy_player(std::shared_ptr<Player> player);
 	void sync_player_entities();
 
-	// Functions to spawn and destroy projectiles
-	// std::shared_ptr<Projectile> spawn_projectile(const Vector2& position);
-	// void destroy_projectile(std::shared_ptr<Projectile> projectile);
+	void entity_died(std::shared_ptr<PSInterfaces::IEntity> perpetrator, std::string_view died_type);
 
 	// Functions to spawn and destroy cannons
 	std::shared_ptr<Cannon> spawn_cannon(const Vector2& position);
@@ -180,7 +180,6 @@ struct FortunaDirectorPriv
 	int tentacle_start_spawn_bounty_amount		 = CFG_VALUE<int>("tentacle_start_spawn_at_bounty", 200);
 	bool m_tentacle_spawn_active				 = false;
 
-
 	std::unique_ptr<PSCore::Spawner<Projectile, AppLayer>> projectile_spawner;
 	float player_max_velocity		 = CFG_VALUE<float>("player_max_velocity", 200.0f);
 	float player_input_rotation_mult = CFG_VALUE<float>("player_input_rotation_mult", 200.0f);
@@ -189,4 +188,16 @@ struct FortunaDirectorPriv
 	int player_health				 = CFG_VALUE<int>("player_health", 3);
 	float player_iframe_duration	 = CFG_VALUE<float>("player_iframe_duration", 0.5f);
 	bool player_invincibility		 = CFG_VALUE<bool>("player_invincibility", false);
+
+	std::unique_ptr<PSCore::Spawner<Hunter, AppLayer>> hunter_spawner;
+	int hunter_limit						   = CFG_VALUE<int>("hunter_limit", 2);
+	float hunter_spawn_time					   = CFG_VALUE<float>("hunter_spawn_time", 10.0f);
+	float hunter_spawn_variation			   = CFG_VALUE<float>("hunter_spawn_variation", 3.0f);
+	float hunter_spawn_increase_base_value	   = CFG_VALUE<float>("hunter_spawn_increase_base_value", 0.05f);
+	float hunter_spawn_increase_bounty_divider = CFG_VALUE<float>("hunter_spawn_increase_bounty_divider", 100.0f);
+	int hunter_limit_increase_bounty_divider   = CFG_VALUE<int>("hunter_limit_increase_bounty_divider", 200);
+	int hunter_max_limit					   = CFG_VALUE<int>("hunter_max_limit", 5);
+	float hunter_min_spawn_time				   = CFG_VALUE<float>("hunter_min_spawn_time", 3.f);
+	int hunter_start_spawn_bounty_amount	   = CFG_VALUE<int>("hunter_start_spawn_at_bounty", 400);
+	bool hunter_spawn_active				 = false;
 };
