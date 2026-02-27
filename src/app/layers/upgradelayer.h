@@ -52,7 +52,10 @@ public:
 	Texture2D m_card_texture_2;
 	Texture2D m_card_texture_3;
 
-	Texture2D m_card_texture_emissive;
+	Texture2D m_card_1_texture_emissive;
+	Texture2D m_card_2_texture_emissive;
+	Texture2D m_card_3_texture_emissive;
+
 	Shader m_card_emissive_shader = LoadShader(NULL, "resources/shader/emissive_color.fs");
 	Vector3 m_emissive_color{255, 0, 0};
 	int m_emissive_texture_position;
@@ -69,6 +72,7 @@ public:
 	// Upgrade Icons
 	Texture2D m_fire_rate_icon;
 	Texture2D m_luck_icon;
+	Texture2D m_projectile_speed_icon;
 
 	// base upgrade values for the different upgrades
 	float m_base_upgrade_player_speed	  = CFG_VALUE<float>("upgrade_player_speed_base_value", 0.075f);
@@ -81,6 +85,7 @@ public:
 	float m_base_upgrade_luck			  = CFG_VALUE<float>("upgrade_luck_base_value", 0.075);
 	int m_base_upgrade_health			  = CFG_VALUE<int>("upgrade_health_base_value", 1);
 	int m_base_upgrade_add_cannon		  = CFG_VALUE<int>("upgrade_add_cannon_base_value", 1);
+	int m_base_upgrade_projectile_amount  = CFG_VALUE<int>("upgrade_projectile_amount_base_value", 1);
 
 
 	// multipliers for the different rarities

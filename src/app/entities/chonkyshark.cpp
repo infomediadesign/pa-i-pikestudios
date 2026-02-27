@@ -3,13 +3,22 @@
 #include <entities/shark.h>
 #include <pscore/settings.h>
 #include <pscore/viewport.h>
+#include "entities/director.h"
 
 enum Type { UwUNormal = 0, UwUHurt, Normal, Hurt, Fin };
 
 void ChonkyShark::on_hit()
 {
 	if ( m_hurt && m_remaining_iframe_time <= 0.0f ) {
-		Shark::on_hit();
+		set_is_active(false);
+		auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
+		if ( !director ) {
+			return;
+		}
+		director->m_b_bounty.add_bounty(director->m_b_bounty_amounts.big_shark_bounty);
+		if ( m_marked ) {
+			director->spawn_loot_chest(m_pos);
+		}
 		return;
 	}
 

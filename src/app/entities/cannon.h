@@ -4,6 +4,7 @@
 #include <pscore/sprite.h>
 #include <psinterfaces/renderable.h>
 #include <raylib.h>
+#include "entities/projectile.h"
 
 class FortunaDirector;
 
@@ -22,7 +23,9 @@ public:
 
 	Vector2 calculate_projectile_target_position(); // Calculates the target position based on current position, rotation and range
 
-	void fire(); // Spawns a projectile if the fire rate allows it
+	void fire(int projectile_amount); // Spawns a projectile if the fire rate allows it
+
+	std::shared_ptr<Projectile> spawn_projectile(); // Spawns a projectile and returns a shared pointer to it
 
 	void set_position_to_parent(); // Sets the cannon's position relative to its parent player
 
@@ -81,6 +84,8 @@ private:
 	float m_c_parent_position_y_offset;
 	CannonPositioning m_c_positioning;
 	PSCore::sprites::SpriteSheetAnimation m_c_animation_controller;
+	float m_c_projectile_rotation_offset;
+	float m_c_projectile_base_rotation_offset;
 
 	Texture2D m_c_texture;
 	Rectangle m_c_source;

@@ -629,7 +629,7 @@ void Hunter::fire_available_cannon_(bool right_side, float dt)
 	if ( _p->time_since_last_shot >= _p->fire_intervall ) {
 		int to_be_fired = right_side ? (cannon_to_be_fired * 2) + 1 : cannon_to_be_fired * 2;
 
-		_p->cannons[to_be_fired]->fire();
+		_p->cannons[to_be_fired]->fire(1);
 
 		_p->time_since_last_shot	= 0.f;
 		_p->last_fired_cannon_index = cannon_to_be_fired;

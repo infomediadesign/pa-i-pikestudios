@@ -1,6 +1,6 @@
 #include "layers/upgradelayer.h"
 #include <entities/director.h>
-#include <iostream>
+#include <format>
 #include <raylib.h>
 #include <string>
 #include "pscore/sprite.h"
@@ -18,13 +18,16 @@ UpgradeLayer::UpgradeLayer()
 	// Icons
 	m_fire_rate_icon = PRELOAD_TEXTURE("fire_rate_icon", "resources/icon/upgr_icon_firerate.png", frame_grid)->m_s_texture;
 	m_luck_icon		 = PRELOAD_TEXTURE("luck_icon", "resources/icon/upgr_icon_luck.png", frame_grid)->m_s_texture;
+	m_projectile_speed_icon = PRELOAD_TEXTURE("projectile_speed_icon", "resources/icon/upgr_icon_projectile_speed.png", frame_grid)->m_s_texture;
 
 
-	m_card_texture_emissive =
-			PRELOAD_TEXTURE("card_emissive", "resources/emissive/upgrate_card_emissive_border_and_center_card_1.png", frame_grid)->m_s_texture;
+	m_card_1_texture_emissive = PRELOAD_TEXTURE("card_emissive_1", "resources/emissive/upgrate_card_emissive_border_and_center_card_1.png", frame_grid)->m_s_texture;
+	m_card_2_texture_emissive = PRELOAD_TEXTURE("card_emissive_2", "resources/emissive/upgrate_card_emissive_border_and_center_card_2.png", frame_grid)->m_s_texture;
+	m_card_3_texture_emissive = PRELOAD_TEXTURE("card_emissive_3", "resources/emissive/upgrate_card_emissive_border_and_center_card_3.png", frame_grid)->m_s_texture;
+
 	m_emissive_texture_position = GetShaderLocation(m_card_emissive_shader, "texture_emissive");
 	m_emissive_color_position	= GetShaderLocation(m_card_emissive_shader, "emissive_color");
-	SetShaderValue(m_card_emissive_shader, m_emissive_color_position, &m_card_texture_emissive, SHADER_UNIFORM_SAMPLER2D);
+	SetShaderValue(m_card_emissive_shader, m_emissive_color_position, &m_card_1_texture_emissive, SHADER_UNIFORM_SAMPLER2D);
 
 
 	auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
@@ -38,6 +41,7 @@ UpgradeLayer::UpgradeLayer()
 	m_loot_table.add_loot_table(6, director->drop_chances.rotation_speed, m_chances); // Turn Speed
 	m_loot_table.add_loot_table(7, director->drop_chances.piercing_chance, m_chances); // Piercing Chance
 	m_loot_table.add_loot_table(8, director->drop_chances.luck, m_chances); // Luck
+	m_loot_table.add_loot_table(9, director->drop_chances.projectile_amount, m_only_mythic_chance); // Projectile Amount
 }
 
 UpgradeLayer::~UpgradeLayer()
@@ -71,7 +75,8 @@ void UpgradeLayer::draw_upgrade_cards()
 			origin.x / vp->viewport_scale() + vp->viewport_base_size().x / 2, origin.y / vp->viewport_scale() + vp->viewport_base_size().y / 2
 	};
 
-	Texture2D card_textures[] = {m_card_texture_1, m_card_texture_2, m_card_texture_3};
+	Texture2D card_textures[]		   = {m_card_texture_1, m_card_texture_2, m_card_texture_3};
+	Texture2D card_emissive_textures[] = {m_card_1_texture_emissive, m_card_2_texture_emissive, m_card_3_texture_emissive};
 	float card_offsets_x[]	  = {0.0f, static_cast<float>(m_card_texture_2.width + 16), static_cast<float>(-(m_card_texture_3.width + 16))};
 
 	GuiSetStyle(DEFAULT, TEXT_SIZE, 14 * scale);
@@ -82,7 +87,7 @@ void UpgradeLayer::draw_upgrade_cards()
 
 		set_boarder_color(m_current_loot_table_values[i].rarity);
 		BeginShaderMode(m_card_emissive_shader);
-		SetShaderValueTexture(m_card_emissive_shader, m_emissive_texture_position, m_card_texture_emissive);
+		SetShaderValueTexture(m_card_emissive_shader, m_emissive_texture_position, card_emissive_textures[i]);
 		SetShaderValue(m_card_emissive_shader, m_emissive_color_position, &m_emissive_color, SHADER_UNIFORM_VEC3);
 
 		if ( GuiButtonTexture(card_textures[i], card_pos, 0, scale, WHITE, GRAY, "") && m_can_receive_input ) {
@@ -113,42 +118,42 @@ void UpgradeLayer::apply_upgrade(LootTableValue upgrade_info)
 		case 0:
 			director->upgrade_player_add_cannon(m_base_upgrade_add_cannon);
 			director->drop_chances.add_cannon = 0;
-			printf("Add Cannon Upgrade Applied\n");
+			PS_LOG(LOG_INFO, "Add Cannon Upgrade Applied");
 			break;
 		case 1:
 			upgrade_amount = director->player_current_projectile_speed() * (m_base_upgrade_projectile_speed * upgrade_multyplier);
 			director->upgrade_player_projectile_speed(upgrade_amount);
-			printf("Projectile Speed Upgrade Applied: %.2f\n", upgrade_amount);
+			PS_LOG(LOG_INFO, std::format("Projectile Speed Upgrade Applied: {:.2f}", upgrade_amount));
 			break;
 		case 2:
 			upgrade_amount = director->player_current_fire_range() * (m_base_upgrade_fire_range * upgrade_multyplier);
 			director->upgrade_player_fire_range(upgrade_amount);
-			printf("Fire Range Upgrade Applied: %.2f\n", upgrade_amount);
+			PS_LOG(LOG_INFO, std::format("Fire Range Upgrade Applied: {:.2f}", upgrade_amount));
 			break;
 		case 3:
 			upgrade_amount = director->player_current_fire_rate() * (m_base_upgrade_fire_rate * upgrade_multyplier);
 			director->upgrade_player_fire_rate(upgrade_amount);
-			printf("Fire Rate Upgrade Applied: %.2f\n", upgrade_amount);
+			PS_LOG(LOG_INFO, std::format("Fire Rate Upgrade Applied: {:.2f}", upgrade_amount));
 			break;
 		case 4:
 			director->upgrade_player_health(m_base_upgrade_health);
-			printf("Health Upgrade Applied: %d\n", m_base_upgrade_health);
+			PS_LOG(LOG_INFO, std::format("Health Upgrade Applied: {}", m_base_upgrade_health));
 			break;
 		case 5:
 			upgrade_amount = director->player_max_velocity() * (m_base_upgrade_player_speed * upgrade_multyplier);
 			director->upgrade_player_speed(upgrade_amount);
-			printf("Player Speed Upgrade Applied: %.2f\n", upgrade_amount);
+			PS_LOG(LOG_INFO, std::format("Player Speed Upgrade Applied: {:.2f}", upgrade_amount));
 			break;
 		case 6:
 			upgrade_amount = director->player_input_rotation_mult() * (m_base_upgrade_rotation_speed * upgrade_multyplier);
 			director->upgrade_player_rotation_speed(upgrade_amount);
-			printf("Rotation Speed Upgrade Applied: %.2f\n", upgrade_amount);
+			PS_LOG(LOG_INFO, std::format("Rotation Speed Upgrade Applied: {:.2f}", upgrade_amount));
 			break;
 		case 7:
 			upgrade_amount = director->player_piercing_chance() * (m_base_upgrade_piercing_chance * upgrade_multyplier);
 			director->upgrade_player_piercing_chance(upgrade_amount);
-			printf("Piercing Chance Upgrade Applied: %.2f\n", upgrade_amount);
-			printf("Player Piercing Chance: %.2f\n", director->player_piercing_chance());
+			PS_LOG(LOG_INFO, std::format("Piercing Chance Upgrade Applied: {:.2f}", upgrade_amount));
+			PS_LOG(LOG_INFO, std::format("Player Piercing Chance: {:.2f}", director->player_piercing_chance()));
 			break;
 		case 8:
 			upgrade_amount = director->player_luck() * (m_base_upgrade_luck * upgrade_multyplier);
@@ -157,18 +162,25 @@ void UpgradeLayer::apply_upgrade(LootTableValue upgrade_info)
 			if ( director->player_luck() >= 1.0 ) {
 				director->drop_chances.luck = 0;
 			}
-			printf("Luck Upgrade Applied: %.2f\n", upgrade_amount);
-			printf("Player Luck: %.2f\n", director->player_luck());
+			PS_LOG(LOG_INFO, std::format("Luck Upgrade Applied: {:.2f}", upgrade_amount));
+			PS_LOG(LOG_INFO, std::format("Player Luck: {:.2f}", director->player_luck()));
+			break;
+		case 9:
+			director->upgrade_player_projectile_amount(1);
+			if ( director->player_projectile_amount() == 3 ) {
+				director->drop_chances.projectile_amount = 0;
+			}
+			PS_LOG(LOG_INFO, "Projectile Amount Upgrade Applied: +1 Projectile");
 			break;
 		default:
-			std::cout << "Invalid upgrade index: " << upgrade_info.index << std::endl;
+			PS_LOG(LOG_WARNING, std::format("Invalid upgrade index: {}", upgrade_info.index));
 	}
 }
 
 void UpgradeLayer::print_loot_table_values(std::vector<LootTableValue> values)
 {
 	for ( const auto& value: values ) {
-		std::cout << "Index: " << value.index << " Value: " << value.value << " Rarity: " << value.rarity << std::endl;
+		PS_LOG(LOG_INFO, std::format("Index: {} Value: {:.2f} Rarity: {}", value.index, value.value, value.rarity));
 	}
 }
 
@@ -279,6 +291,8 @@ std::string UpgradeLayer::upgrade_type_to_string(int index)
 			return "Piercing Chance";
 		case 8:
 			return "Luck";
+		case 9 : 
+			return "Mulit Shot";
 		default:
 			return "Unknown";
 	}
@@ -307,6 +321,8 @@ std::string UpgradeLayer::value_to_string(int index, int rarity)
 			return std::format("+{:.1f}%", m_base_upgrade_piercing_chance * multiplier * 100);
 		case 8:
 			return std::format("+{:.1f}%", m_base_upgrade_luck * multiplier * 100);
+		case 9:
+			return "+" + std::to_string(m_base_upgrade_projectile_amount);
 		default:
 			return "Unknown";
 	}
@@ -328,7 +344,7 @@ float UpgradeLayer::get_multiplier(int rarity)
 		case 5:
 			return m_multiplier_mythic;
 		default:
-			std::cout << "Invalid rarity index: " << rarity << std::endl;
+			PS_LOG(LOG_WARNING, std::format("Invalid rarity index: {}", rarity));
 			return 1.0f;
 	}
 }
@@ -400,6 +416,12 @@ void UpgradeLayer::draw_upgrade_preview(Vector2 card_pos, LootTableValue upgrade
 					)
 			);
 			break;
+		case 9:
+							preview = std::format(
+					"{} -> {}", director->player_projectile_amount(),
+					director->player_projectile_amount() + m_base_upgrade_projectile_amount
+			);
+			break;
 		default:
 			break;
 	}
@@ -445,7 +467,7 @@ void UpgradeLayer::draw_upgrade_icon(int index, Vector2 card_pos)
 			DrawTextureEx(m_fire_rate_icon, pos, 0, scale, WHITE);
 			break;
 		case 1:
-			DrawTextureEx(m_fire_rate_icon, pos, 0, scale, WHITE);
+			DrawTextureEx(m_projectile_speed_icon, pos, 0, scale, WHITE);
 			break;
 		case 2:
 			DrawTextureEx(m_fire_rate_icon, pos, 0, scale, WHITE);
@@ -467,6 +489,9 @@ void UpgradeLayer::draw_upgrade_icon(int index, Vector2 card_pos)
 			break;
 		case 8:
 			DrawTextureEx(m_luck_icon, pos, 0, scale, WHITE);
+			break;
+		case 9:
+			DrawTextureEx(m_fire_rate_icon, pos, 0, scale, WHITE);
 			break;
 		default:
 			break;

@@ -22,6 +22,8 @@ Cannon::Cannon() : PSInterfaces::IEntity("cannon")
 			FETCH_SPRITE_TEXTURE(ident_), {{1, 1, PSCore::sprites::KeyFrame, 2}, {7, 0.1, PSCore::sprites::Forward, 2}}
 	);
 	m_c_animation_controller.add_animation_at_index(0, 2);
+	m_c_projectile_base_rotation_offset = 20;
+	m_c_projectile_rotation_offset = m_c_projectile_base_rotation_offset;
 }
 
 void Cannon::update(const float dt)
@@ -52,34 +54,61 @@ void Cannon::render()
 	}
 }
 
-void Cannon::fire()
+void Cannon::fire(int projectile_amount)
 {
 	if ( m_c_time_since_last_shot >= m_c_fire_rate_in_s ) {
-		auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
-		if ( !director ) {
-			return;
+		projectile_amount = std::clamp(projectile_amount, 1, 3);
+		int fire_angled	  = projectile_amount;
+
+		if ( projectile_amount % 2 != 0 ) {
+			spawn_projectile();
+			fire_angled = projectile_amount - 1;
 		}
 
-		if ( auto& spawner = director->spawner<Projectile, AppLayer>() ) {
-			spawner->register_spawn_callback([this](std::shared_ptr<Projectile> projectile) {
-				projectile->init(m_c_position, projectile);
-				projectile->set_speed(m_c_projectile_speed);
-				projectile->set_fiering_cannon(m_c_shared_ptr_this);
-				projectile->set_max_range(m_c_range);
-				projectile->set_piercing_chance(m_c_projectile_piercing_chance);
+		for ( int i = 0; i < fire_angled; i++ ) {
 
-				if ( m_c_parent ) {
-					projectile->set_owner(m_c_parent);
-				}
-				projectile->launch();
-			});
-
-			spawner->spawn();
+			std::shared_ptr<Projectile> projectile = spawn_projectile();
+			float angled_rad					   = (m_c_rotation + m_c_projectile_rotation_offset) * (PI / 180.0f);
+			projectile->set_velocity({cosf(angled_rad) * m_c_projectile_speed, sinf(angled_rad) * m_c_projectile_speed});
+			projectile->set_rotation(m_c_rotation + m_c_projectile_rotation_offset);
+			m_c_projectile_rotation_offset = m_c_projectile_rotation_offset - m_c_projectile_rotation_offset * 2;
 		}
 
-		m_c_time_since_last_shot = 0.0f;
+		m_c_projectile_rotation_offset = m_c_projectile_base_rotation_offset;
+		m_c_time_since_last_shot	   = 0.0f;
 		m_c_animation_controller.set_animation_at_index(1, 1, 2);
 	}
+}
+
+std::shared_ptr<Projectile> Cannon::spawn_projectile()
+{
+	auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
+
+	if ( !director ) {
+		return nullptr;
+	}
+	
+	std::shared_ptr<Projectile> spawned_projectile = nullptr;
+	
+	if ( auto& spawner = director->spawner<Projectile, AppLayer>() ) {
+		spawner->register_spawn_callback([this, &spawned_projectile](std::shared_ptr<Projectile> projectile) {
+			projectile->init(m_c_position, projectile);
+			projectile->set_speed(m_c_projectile_speed);
+			projectile->set_fiering_cannon(m_c_shared_ptr_this);
+			projectile->set_max_range(m_c_range);
+			projectile->set_piercing_chance(m_c_projectile_piercing_chance);
+
+			if ( m_c_parent ) {
+				projectile->set_owner(m_c_parent);
+			}
+			projectile->launch();
+			
+			spawned_projectile = projectile;
+		});
+		spawner->spawn();
+	}
+	
+	return spawned_projectile;
 }
 
 Vector2 Cannon::calculate_projectile_target_position()
