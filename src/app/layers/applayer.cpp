@@ -32,11 +32,16 @@ public:
 
 		m_shader_time_location = GetShaderLocation(m_wave_shader, "time");
 		SetShaderValue(m_wave_shader, m_shader_time_location, &m_shader_time, SHADER_UNIFORM_FLOAT);
+
+		// Normal map lighting
+		m_normal_map_location = GetShaderLocation(m_wave_shader, "texture1");
+		sync_sun_uniforms();
 	}
 
 	~Water() override
 	{
 		UnloadTexture(m_water);
+		UnloadTexture(m_water_normal);
 
 		UnloadShader(m_wave_shader);
 	}
@@ -49,6 +54,9 @@ public:
 
 	void render() override
 	{
+		sync_sun_uniforms();
+		SetShaderValueTexture(m_wave_shader, m_normal_map_location, m_water_normal);
+
 		BeginShaderMode(m_wave_shader);
 		if ( auto& vp = gApp()->viewport() ) {
 			DrawTextureEx(m_water, vp->viewport_origin(), 0, vp->viewport_scale(), clr);
@@ -57,8 +65,29 @@ public:
 	}
 
 private:
-	Color clr		  = {255, 255, 255, 150};
-	Texture2D m_water = LoadTexture("resources/environment/water.png");
+	void sync_sun_uniforms()
+	{
+		auto* sun = gApp()->sunlight_shader();
+		if ( !sun )
+			return;
+
+		SetShaderValue(m_wave_shader, GetShaderLocation(m_wave_shader, "sun_direction"), &sun->direction, SHADER_UNIFORM_VEC3);
+		SetShaderValue(m_wave_shader, GetShaderLocation(m_wave_shader, "sun_color"), &sun->color, SHADER_UNIFORM_VEC3);
+		SetShaderValue(m_wave_shader, GetShaderLocation(m_wave_shader, "sun_intensity"), &sun->intensity, SHADER_UNIFORM_FLOAT);
+		SetShaderValue(m_wave_shader, GetShaderLocation(m_wave_shader, "ambient_color"), &sun->ambient_color, SHADER_UNIFORM_VEC3);
+		SetShaderValue(m_wave_shader, GetShaderLocation(m_wave_shader, "ambient_intensity"), &sun->ambient_intensity, SHADER_UNIFORM_FLOAT);
+		SetShaderValue(m_wave_shader, GetShaderLocation(m_wave_shader, "spec_intensity"), &sun->spec_intensity, SHADER_UNIFORM_FLOAT);
+		SetShaderValue(m_wave_shader, GetShaderLocation(m_wave_shader, "spec_power"), &sun->spec_power, SHADER_UNIFORM_FLOAT);
+		SetShaderValue(m_wave_shader, GetShaderLocation(m_wave_shader, "use_lighting"), &m_use_lighting, SHADER_UNIFORM_INT);
+	}
+
+	Color clr			   = {255, 255, 255, 150};
+	Texture2D m_water	   = LoadTexture("resources/environment/water.png");
+	Texture2D m_water_normal = LoadTexture("resources/normals/water.png");
+
+	// Normal map lighting
+	int m_normal_map_location = 0;
+	int m_use_lighting		  = 1;
 
 	// Shader
 	Shader m_wave_shader	   = LoadShader(NULL, "resources/shader/wave.fs");

@@ -9,6 +9,7 @@
 
 #include "pscore/collision.h"
 #include "pscore/settings.h"
+#include "pscore/shadow.h"
 #include "pscore/sprite.h"
 #include "psinterfaces/renderable.h"
 
@@ -47,6 +48,10 @@ private:
 	std::shared_ptr<PSCore::sprites::Sprite> m_Tentacle_sprite;
 	std::unique_ptr<PSCore::collision::EntityCollider> m_collider;
 
+	// Normal map lighting
+	Texture2D m_normal_map;
+	int m_normal_map_location = 0;
+
 	PSCore::sprites::SpriteSheetAnimation m_animation_controller;
 
 	float time_until_water_break;
@@ -59,6 +64,9 @@ private:
 	float max_until_reposition=0.6;
 	
 	int m_spawn_area_margin = CFG_VALUE<int>("tentacle_spawn_area_margin", 80);
+
+	// Shadow
+	ShadowCaster m_shadow_caster;
 
 	void IdleUpdate(float dt);
 	void WaterBreakUpdate(float dt);

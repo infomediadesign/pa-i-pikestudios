@@ -4,6 +4,7 @@
 #include <psinterfaces/renderable.h>
 
 #include <entities/cannon.h>
+#include <pscore/shadow.h>
 #include <raylib.h>
 
 #include <misc/smear.h>
@@ -138,7 +139,9 @@ private:
 
 	// Variables for Texture Rendering
 	Texture2D m_texture		= {0};
-	float m_rotation_offset = 0;
+	Texture2D m_normal_map;
+	int m_normal_map_location;
+	float m_rotation_offset = 90;
 	std::shared_ptr<PSCore::sprites::Sprite> m_sprite;
 
 	// Variables for Animation
@@ -178,6 +181,9 @@ private:
 	// Loot Table
 	LootTable m_loot_table;
 
+	// Shadow
+	ShadowCaster m_shadow_caster;
+
 	// Shader
 	Shader m_flash_shader	 = LoadShader(NULL, "resources/shader/sprite_flash.fs");
 	Vector4 m_flash_color	 = {255, 0, 0, 255};
@@ -188,6 +194,7 @@ private:
 
 class Sails : public PSInterfaces::IRenderable
 {
+	friend class Player;
 public:
 	Sails(Player* player);
 	~Sails();

@@ -30,6 +30,7 @@ int main(int argc, char* argv[])
 		app.push_layer<AppLayer>();
 	
 	app.add_game_director<FortunaDirector>();
+	app.set_sunlight_shader("resources/shader/normal_map_lighting.fs");
 	app.run();
 
 	return 0;

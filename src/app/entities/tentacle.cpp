@@ -6,6 +6,7 @@
 
 #include <algorithm>
 #include <pscore/application.h>
+#include <pscore/shadow.h>
 #include <pscore/viewport.h>
 
 #include <pscore/utils.h>
@@ -36,6 +37,10 @@ tentacle::tentacle() : PSInterfaces::IEntity("tentacle")
 	m_animation_controller.add_animation_at_index(1, 1);
 	m_animation_controller.add_animation_at_index(2, 2);
 	m_animation_controller.add_animation_at_index(3, 3);
+
+	// Normal map
+	m_normal_map = PRELOAD_TEXTURE((ident_ + "_n"), "resources/normals/tentacle.png", frame_grid)->m_s_texture;
+	m_normal_map_location = GetShaderLocation(gApp()->sunlight_shader()->shader, "texture1");
 }
 
 void tentacle::init(std::shared_ptr<tentacle> self, const Vector2& pos)
@@ -84,28 +89,41 @@ tentacle::~tentacle()
 void tentacle::render()
 {
 	if ( const auto& vp = gApp()->viewport() ) {
+		auto* sun = gApp()->sunlight_shader();
+		auto tex = m_Tentacle_sprite;
+
+		// Determine the source rectangle for the current state
+		Rectangle src = {0};
 		switch ( m_state ) {
-			case Idle: {
-				auto tex = m_Tentacle_sprite;
-				vp->draw_in_viewport(tex->m_s_texture, m_animation_controller.get_source_rectangle(3).value_or(Rectangle{0}), m_pos, 0, WHITE);
+			case Idle:
+				src = m_animation_controller.get_source_rectangle(3).value_or(Rectangle{0});
 				break;
-			}
-			case WaterBreak: {
-				auto tex = m_Tentacle_sprite;
-				vp->draw_in_viewport(tex->m_s_texture, m_animation_controller.get_source_rectangle(0).value_or(Rectangle{0}), m_pos, 0, WHITE);
+			case WaterBreak:
+				src = m_animation_controller.get_source_rectangle(0).value_or(Rectangle{0});
 				break;
-			}
-			case Attacking: {
-				auto tex = m_Tentacle_sprite;
-				vp->draw_in_viewport(tex->m_s_texture, m_animation_controller.get_source_rectangle(2).value_or(Rectangle{0}), m_pos, 0, WHITE);
+			case Attacking:
+				src = m_animation_controller.get_source_rectangle(2).value_or(Rectangle{0});
 				break;
-			}
-			case Retreat: {
-				auto tex = m_Tentacle_sprite;
-				vp->draw_in_viewport(tex->m_s_texture, m_animation_controller.get_source_rectangle(1).value_or(Rectangle{0}), m_pos, 0, WHITE);
+			case Retreat:
+				src = m_animation_controller.get_source_rectangle(1).value_or(Rectangle{0});
 				break;
-			}
 		}
+
+		// Drop shadow (only when the tentacle is above water)
+		if ( m_state != Idle ) {
+			m_shadow_caster.render_shadow(
+					tex->m_s_texture, src, m_pos, 0, sun->direction, vp->viewport_origin(), vp->viewport_scale()
+			);
+		}
+
+		// Normal map lighting
+		float rot_radians = 0.0f;
+		SetShaderValue(sun->shader, GetShaderLocation(sun->shader, "sprite_rotation"), &rot_radians, SHADER_UNIFORM_FLOAT);
+		SetShaderValueTexture(sun->shader, m_normal_map_location, m_normal_map);
+
+		BeginShaderMode(sun->shader);
+		vp->draw_in_viewport(tex->m_s_texture, src, m_pos, 0, WHITE);
+		EndShaderMode();
 	}
 }
 

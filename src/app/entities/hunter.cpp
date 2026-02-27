@@ -6,6 +6,7 @@
 #include <memory>
 #include <misc/mapborderinteraction.h>
 #include <pscore/application.h>
+#include <pscore/shadow.h>
 #include <pscore/settings.h>
 #include <pscore/utils.h>
 #include <pscore/viewport.h>
@@ -64,6 +65,10 @@ class HunterPriv
 	Shader outline_shader = LoadShader(0, "resources/shader/2d_outline.fs");
 	Vector4 shader_color{251, 206, 39, 255};
 
+	// Normal map lighting
+	Texture2D normal_map;
+	int normal_map_location;
+
 	bool dead = false; // Just for double checking
 
 	std::unique_ptr<PSCore::collision::EntityCollider> collider;
@@ -71,6 +76,9 @@ class HunterPriv
 	Hunter::State current_state = Hunter::State::Patrolling;
 
 	std::vector<std::shared_ptr<Cannon>> cannons;
+
+	// Shadow
+	ShadowCaster shadow_caster;
 };
 
 void HunterPriv::update_smear(float dt)
@@ -134,6 +142,10 @@ Hunter::Hunter() : PSInterfaces::IEntity("hunter")
 	auto texture_size = {(float) _p->sprite->m_s_texture.width, (float) _p->sprite->m_s_texture.height};
 	SetShaderValue(_p->outline_shader, GetShaderLocation(_p->outline_shader, "outline_color"), &_p->shader_color, SHADER_UNIFORM_VEC4);
 	SetShaderValue(_p->outline_shader, GetShaderLocation(_p->outline_shader, "texture_size"), &texture_size, SHADER_UNIFORM_VEC2);
+
+	// Normal map
+	_p->normal_map = PRELOAD_TEXTURE((ident_ + "_n"), "resources/normals/enemy_ship.png", frame_grid)->m_s_texture;
+	_p->normal_map_location = GetShaderLocation(gApp()->sunlight_shader()->shader, "texture1");
 };
 
 void Hunter::update(float dt)
@@ -215,25 +227,40 @@ void Hunter::render()
 			_p->smear.draw_smear_wave(Vector2Length(_p->velocity), _p->max_velocity, 2 * vp->viewport_scale(), 1, {9, 75, 101, 127});
 		}
 
-		if ( _p->marked )
-			BeginShaderMode(_p->outline_shader);
+		// Drop shadow (rendered before the ship so it appears beneath it)
+		auto* sun = gApp()->sunlight_shader();
+		{
+			Rectangle src = _p->animation_controller.get_source_rectangle(1).value_or(Rectangle{0});
+			_p->shadow_caster.render_shadow(
+					_p->sprite->m_s_texture, src, _p->pos, _p->rotation + 90, sun->direction, vp->viewport_origin(), vp->viewport_scale()
+			);
+		}
+
+		// Normal map lighting
+		float rot_radians = (_p->rotation + 90) * DEG2RAD;
+		SetShaderValue(sun->shader, GetShaderLocation(sun->shader, "sprite_rotation"), &rot_radians, SHADER_UNIFORM_FLOAT);
+		SetShaderValueTexture(sun->shader, _p->normal_map_location, _p->normal_map);
+
+		BeginShaderMode(_p->marked ? _p->outline_shader : sun->shader);
 
 		vp->draw_in_viewport(
 				_p->sprite->m_s_texture, _p->animation_controller.get_source_rectangle(1).value_or(Rectangle{0}), _p->pos, _p->rotation + 90, WHITE
 		);
 
-		if ( _p->marked )
-			EndShaderMode();
+		EndShaderMode();
 
 		for ( auto& cannon: _p->cannons ) {
 			cannon->render();
 		}
 
-		if ( _p->current_state == Patrolling )
+		if ( _p->current_state == Patrolling ) {
+			BeginShaderMode(sun->shader);
 			vp->draw_in_viewport(
 					_p->sprite->m_s_texture, _p->animation_controller.get_source_rectangle(2).value_or(Rectangle{0}), _p->pos, _p->rotation + 90,
 					WHITE
 			);
+			EndShaderMode();
+		}
 	}
 }
 

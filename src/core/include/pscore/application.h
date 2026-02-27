@@ -7,6 +7,7 @@
 #include <raylib.h>
 #include <type_traits>
 #include <vector>
+#include <pscore/illumination.h>
 
 namespace PSCore {
 
@@ -134,6 +135,9 @@ namespace PSCore {
 		std::string current_player_name();
 
 		float delta_time();
+
+		void set_sunlight_shader(const char* shader_path);
+		SunLight* sunlight_shader() const;
 
 	private:
 		std::unique_ptr<ApplicationPriv> _p;

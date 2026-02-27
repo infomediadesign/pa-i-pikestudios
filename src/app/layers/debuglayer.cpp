@@ -57,6 +57,14 @@ void DebugLayer::on_render()
 				ImGui::EndTabItem();
 		}
 
+		if ( m_draw_all || ImGui::BeginTabItem("Lighting") ) {
+			if ( auto* sun = gApp()->sunlight_shader() )
+				sun->draw_debug();
+
+			if ( !m_draw_all )
+				ImGui::EndTabItem();
+		}
+
 		if ( auto app_layer = gApp()->get_layer<AppLayer>() ) {
 			for ( auto entity: app_layer->entities() ) {
 				if ( auto locked_entity = entity.lock() ) {

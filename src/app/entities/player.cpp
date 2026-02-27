@@ -3,6 +3,7 @@
 #include <raylib.h>
 
 #include <pscore/application.h>
+#include <pscore/shadow.h>
 #include <pscore/sprite.h>
 #include <pscore/viewport.h>
 #include <raymath.h>
@@ -84,6 +85,11 @@ Player::Player() : PSInterfaces::IEntity("player")
 	m_loot_table.add_loot_table(2, 10, chances);
 
 	m_loot_table.loot_table_values(3);
+
+
+	// Normal Map
+	m_normal_map = PRELOAD_TEXTURE((ident_ + "_n"), "resources/normals/player.png", frame_grid)->m_s_texture;
+	m_normal_map_location = GetShaderLocation(gApp()->sunlight_shader()->shader, "texture1");
 }
 
 Player::~Player()
@@ -308,7 +314,6 @@ void Player::fire_cannons(float dt)
 			}
 		}
 	}
-	
 }
 
 void Player::render()
@@ -325,17 +330,37 @@ void Player::render()
 		}
 	}
 
+	// Draw Drop Shadow (rendered before the ship so it appears beneath it)
+	if ( auto* sun = gApp()->sunlight_shader() ) {
+		if ( auto& vp = gApp()->viewport() ) {
+			Rectangle src = m_animation_controller.get_source_rectangle(1).value_or(Rectangle{0});
+			m_shadow_caster.render_shadow(
+					m_texture, src, m_position, m_rotation + m_rotation_offset, sun->direction, vp->viewport_origin(), vp->viewport_scale()
+			);
+		}
+	}
+
 	// Draw Ship
 
-	BeginShaderMode(m_flash_shader);
+	float rot_radians = (m_rotation + m_rotation_offset) * DEG2RAD;
+	SetShaderValue(
+			gApp()->sunlight_shader()->shader, GetShaderLocation(gApp()->sunlight_shader()->shader, "sprite_rotation"), &rot_radians,
+			SHADER_UNIFORM_FLOAT
+	);
 
+	//BeginShaderMode(m_flash_shader);
+
+	SetShaderValueTexture(gApp()->sunlight_shader()->shader, m_normal_map_location, m_normal_map);
+	
+	BeginShaderMode(gApp()->sunlight_shader()->shader);
 	if ( auto& vp = gApp()->viewport() ) {
 		vp->draw_in_viewport(
 				m_texture, m_animation_controller.get_source_rectangle(1).value_or(Rectangle{0}), m_position, m_rotation + m_rotation_offset, WHITE
 		);
 	}
-
 	EndShaderMode();
+
+	//EndShaderMode();
 }
 
 void Player::reset_iframe(float dt)
@@ -647,7 +672,8 @@ void Sails::render()
 	BeginShaderMode(m_emissive_shader);
 
 	SetShaderValueTexture(m_emissive_shader, m_emissive_texture_location, m_sprite->m_s_texture);
-
+		
+	BeginShaderMode(gApp()->sunlight_shader()->shader);
 	if ( auto& vp = gApp()->viewport() ) {
 		auto texture = m_player->m_sprite;
 		vp->draw_in_viewport(
@@ -655,6 +681,7 @@ void Sails::render()
 				m_player->m_rotation + m_player->m_rotation_offset, WHITE
 		);
 	}
+	EndShaderMode();
 
 	EndShaderMode();
 }

@@ -8,10 +8,10 @@
 #include <stdexcept>
 
 #include <pscore/application.h>
+#include <pscore/settings.h>
 #include <pscore/time.h>
 #include <psinterfaces/entity.h>
 #include <raylib.h>
-#include "pscore/settings.h"
 
 using PSCore::Application;
 static Application* g_app = nullptr;
@@ -81,6 +81,8 @@ class PSCore::ApplicationPriv
 	std::unique_ptr<PSCore::DeltaTimeManager> m_time_manager	   = std::make_unique<PSCore::DeltaTimeManager>();
 	std::unique_ptr<PSCore::Viewport> m_viewport				   = std::make_unique<PSCore::Viewport>();
 	std::unique_ptr<PSCore::sprites::SpriteLoader> m_sprite_loader = std::make_unique<PSCore::sprites::SpriteLoader>();
+
+	std::unique_ptr<SunLight> m_sunlight_shader = std::make_unique<SunLight>();
 };
 
 Application::Application()
@@ -90,7 +92,8 @@ Application::Application()
 	g_app = this;
 }
 
-void PSCore::Application::init(const AppSpec& spec) {
+void PSCore::Application::init(const AppSpec& spec)
+{
 	SetConfigFlags(FLAG_WINDOW_RESIZABLE);
 	SetTraceLogCallback(_p->log_callback);
 
@@ -102,9 +105,9 @@ void PSCore::Application::init(const AppSpec& spec) {
 
 	if ( CFG_VALUE<bool>("default_fullscreeen", true) )
 		_p->toggle_fullscreen();
-	
+
 	InitWindow(spec.size.x, spec.size.y, spec.title);
-	
+
 	SetWindowIcon(LoadImage(spec.icon_path));
 
 	SetExitKey(KEY_NULL);
@@ -204,3 +207,14 @@ float PSCore::Application::delta_time()
 {
 	return _p->m_time_manager->delta_t().count();
 };
+
+void PSCore::Application::set_sunlight_shader(const char* shader_path)
+{
+	_p->m_sunlight_shader->shader = LoadShader(nullptr, shader_path);
+	_p->m_sunlight_shader->update_shader();
+}
+
+SunLight* PSCore::Application::sunlight_shader() const
+{
+	return _p->m_sunlight_shader.get();
+}
