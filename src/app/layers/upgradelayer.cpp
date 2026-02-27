@@ -295,7 +295,7 @@ std::string UpgradeLayer::upgrade_type_to_string(int index)
 		case 8:
 			return "Luck";
 		case 9:
-			return "Mulit Shot";
+			return "Multi Shot";
 		default:
 			return "Unknown";
 	}

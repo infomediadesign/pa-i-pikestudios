@@ -610,7 +610,7 @@ void FortunaDirector::increase_difficulty(int bounty)
 	}
 
 	if ( bounty >= _p->chonky_shark_takeover_threshold ) {
-		_p->shark_spawner->suspend();
+		//_p->shark_spawner->suspend();
 		_p->chonky_shark_spawner->resume();
 		_p->chonky_shark_spawner->set_interval(
 				std::max(
