@@ -20,7 +20,7 @@ int main(int argc, char* argv[])
 	}
 #endif
 
-	PSCore::Application::AppSpec spec{"Fortunas Echo", {1440, 780}};
+	PSCore::Application::AppSpec spec{"Fortunas Echo", "resources/appicon.png", {1440, 780}};
 
 	PSCore::Application app;
 	app.init(spec);

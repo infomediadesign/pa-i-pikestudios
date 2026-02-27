@@ -26,6 +26,7 @@ namespace PSCore {
 		struct AppSpec
 		{
 			const char* title;
+			const char* icon_path;
 			WindowSize size;
 		};
 
