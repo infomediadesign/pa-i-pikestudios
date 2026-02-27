@@ -43,8 +43,11 @@ class HunterPriv
 	// wreck movement
 	Vector2 forward_vec = {0, 0};
 
+	bool marked				  = false;
+	float drop_upgrade_chance = CFG_VALUE<float>("hunter_drop_upgrade_chance", 25.0f);
+
 	// shooting
-	float fire_intervall		  = 1.f;
+	float fire_intervall		  = CFG_VALUE<float>("hunter_fire_intervall", 1.f);
 	float time_since_last_shot	  = 0.f;
 	int last_fired_cannon_index	  = 0;
 	float cannon_projectile_range = CFG_VALUE<float>("hunter_cannon_projectile_range", 100.f);
@@ -57,6 +60,11 @@ class HunterPriv
 	// animation
 	bool to_wreck_anim_playing = false;
 	bool to_death_anim_playing = false;
+
+	Shader outline_shader = LoadShader(0, "resources/shader/2d_outline.fs");
+	Vector4 shader_color{251, 206, 39, 255};
+
+	bool dead = false; // Just for double checking
 
 	std::unique_ptr<PSCore::collision::EntityCollider> collider;
 
@@ -121,6 +129,11 @@ Hunter::Hunter() : PSInterfaces::IEntity("hunter")
 	_p->animation_controller.add_animation_at_index(1, 2);
 
 	propose_z_index(30);
+	determined_if_marked_();
+
+	auto texture_size = {(float) _p->sprite->m_s_texture.width, (float) _p->sprite->m_s_texture.height};
+	SetShaderValue(_p->outline_shader, GetShaderLocation(_p->outline_shader, "outline_color"), &_p->shader_color, SHADER_UNIFORM_VEC4);
+	SetShaderValue(_p->outline_shader, GetShaderLocation(_p->outline_shader, "texture_size"), &texture_size, SHADER_UNIFORM_VEC2);
 };
 
 void Hunter::update(float dt)
@@ -186,6 +199,9 @@ void Hunter::update(float dt)
 		set_is_active(false);
 	else if ( !misc::map::is_off_screen(this) && !_p->in_view )
 		_p->in_view = true;
+
+	if ( !_p->to_death_anim_playing && _p->dead )
+		set_is_active(false);
 }
 
 void Hunter::render()
@@ -199,9 +215,15 @@ void Hunter::render()
 			_p->smear.draw_smear_wave(Vector2Length(_p->velocity), _p->max_velocity, 2 * vp->viewport_scale(), 1, {9, 75, 101, 127});
 		}
 
+		if ( _p->marked )
+			BeginShaderMode(_p->outline_shader);
+
 		vp->draw_in_viewport(
 				_p->sprite->m_s_texture, _p->animation_controller.get_source_rectangle(1).value_or(Rectangle{0}), _p->pos, _p->rotation + 90, WHITE
 		);
+
+		if ( _p->marked )
+			EndShaderMode();
 
 		for ( auto& cannon: _p->cannons ) {
 			cannon->render();
@@ -356,11 +378,14 @@ std::vector<Vector2> Hunter::gen_patrol_path()
 	return path_points;
 };
 
-Hunter::~Hunter() {};
+Hunter::~Hunter()
+{
+	UnloadShader(_p->outline_shader);
+};
 
 std::optional<std::vector<Vector2>> Hunter::bounds() const
 {
-	if ( is_active_ )
+	if ( is_active_ ) {
 		if ( auto& vp = gApp()->viewport() ) {
 
 			Vector2 vp_pos = vp->position_viewport_to_global(_p->pos);
@@ -386,6 +411,7 @@ std::optional<std::vector<Vector2>> Hunter::bounds() const
 
 			return coordinatesystem::points_relative_to_globle_rightup(vp_pos, _p->rotation, hitbox_points);
 		}
+	}
 
 	return std::nullopt;
 }
@@ -402,16 +428,29 @@ void Hunter::set_is_active(bool active)
 		cannon->set_is_active(active);
 	}
 
-	_p->current_patrol_path.clear();
-	_p->current_state		  = State::Patrolling;
-	_p->current_point_index	  = 0;
-	_p->point_t				  = 0.0f;
-	_p->forward_vec			  = {0, 0};
-	_p->in_view				  = false;
-	_p->to_wreck_anim_playing = false;
-	_p->to_death_anim_playing = false;
+	if ( !active && _p->dead ) {
+		if ( _p->marked ) {
+			if ( auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director()) ) {
+				director->spawn_loot_chest(_p->pos);
+			}
+		}
+	}
 
-	_p->animation_controller.set_animation_at_index(0, 0, 1);
+	if ( active ) {
+		determined_if_marked_();
+
+		_p->current_patrol_path.clear();
+		_p->current_state		  = State::Patrolling;
+		_p->current_point_index	  = 0;
+		_p->point_t				  = 0.0f;
+		_p->forward_vec			  = {0, 0};
+		_p->in_view				  = false;
+		_p->to_wreck_anim_playing = false;
+		_p->to_death_anim_playing = false;
+		_p->dead				  = false;
+
+		_p->animation_controller.set_animation_at_index(0, 0, 1);
+	}
 }
 
 void Hunter::traverse_path_(float dt)
@@ -446,9 +485,6 @@ void Hunter::traverse_path_(float dt)
 	}
 };
 
-// void Hunter::avoid_other_hunters_(float dt)
-// {
-// }
 void Hunter::avoid_other_hunters_(float dt)
 {
 	if ( !_p->current_patrol_path.size() )
@@ -562,6 +598,9 @@ void Hunter::on_hit()
 		return;
 	_p->remaining_invulnerability_time = _p->invulnerability_time;
 
+	if ( _p->dead )
+		return;
+
 	switch ( _p->current_state ) {
 		case Patrolling: {
 			_p->current_state = State::Wreck;
@@ -575,8 +614,8 @@ void Hunter::on_hit()
 		}
 		case Wreck: {
 			_p->to_death_anim_playing = true;
+			_p->dead				  = true;
 			_p->animation_controller.set_animation_at_index(4, 0, 1);
-			// TODO: if has upgrade, drop it
 			break;
 		}
 	}
@@ -642,3 +681,9 @@ float Hunter::gen_phase_offset_()
 {
 	return PSUtils::gen_rand(0.f, 1.f);
 };
+
+void Hunter::determined_if_marked_()
+{
+	float drop_roll = static_cast<float>(PSUtils::gen_rand_float(0.0f, 100.0f));
+	_p->marked		= drop_roll <= _p->drop_upgrade_chance;
+}
