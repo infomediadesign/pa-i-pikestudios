@@ -428,7 +428,7 @@ void Hunter::set_is_active(bool active)
 		cannon->set_is_active(active);
 	}
 
-	if ( !is_active_ && _p->dead ) {
+	if ( !active && _p->dead ) {
 		if ( _p->marked ) {
 			if ( auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director()) ) {
 				director->spawn_loot_chest(_p->pos);
@@ -436,21 +436,21 @@ void Hunter::set_is_active(bool active)
 		}
 	}
 
-	if ( is_active_ ) {
+	if ( active ) {
 		determined_if_marked_();
+
+		_p->current_patrol_path.clear();
+		_p->current_state		  = State::Patrolling;
+		_p->current_point_index	  = 0;
+		_p->point_t				  = 0.0f;
+		_p->forward_vec			  = {0, 0};
+		_p->in_view				  = false;
+		_p->to_wreck_anim_playing = false;
+		_p->to_death_anim_playing = false;
+		_p->dead				  = false;
+
+		_p->animation_controller.set_animation_at_index(0, 0, 1);
 	}
-
-	_p->current_patrol_path.clear();
-	_p->current_state		  = State::Patrolling;
-	_p->current_point_index	  = 0;
-	_p->point_t				  = 0.0f;
-	_p->forward_vec			  = {0, 0};
-	_p->in_view				  = false;
-	_p->to_wreck_anim_playing = false;
-	_p->to_death_anim_playing = false;
-	_p->dead				  = false;
-
-	_p->animation_controller.set_animation_at_index(0, 0, 1);
 }
 
 void Hunter::traverse_path_(float dt)
