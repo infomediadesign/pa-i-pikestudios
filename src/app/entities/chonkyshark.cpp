@@ -15,7 +15,6 @@ void ChonkyShark::on_hit()
 		if ( !director ) {
 			return;
 		}
-		director->m_b_bounty.add_bounty(director->m_b_bounty_amounts.big_shark_bounty);
 		if ( m_marked ) {
 			director->spawn_loot_chest(m_pos);
 		}

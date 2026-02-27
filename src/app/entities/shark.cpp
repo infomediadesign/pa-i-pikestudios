@@ -288,7 +288,6 @@ void Shark::update(float dt)
 void Shark::on_hit()
 {
 	set_is_active(false);
-	m_director->m_b_bounty.add_bounty(m_director->m_b_bounty_amounts.shark_bounty);
 	if ( m_marked ) {
 		if ( auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director()) ) {
 			director->spawn_loot_chest(m_pos);
