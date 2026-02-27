@@ -16,15 +16,19 @@ UpgradeLayer::UpgradeLayer()
 	m_button		 = PRELOAD_TEXTURE("smallbutton", "resources/ui/button_small.png", frame_grid)->m_s_texture;
 
 	// Icons
-	m_fire_rate_icon = PRELOAD_TEXTURE("fire_rate_icon", "resources/icon/upgr_icon_firerate.png", frame_grid)->m_s_texture;
-	m_luck_icon		 = PRELOAD_TEXTURE("luck_icon", "resources/icon/upgr_icon_luck.png", frame_grid)->m_s_texture;
+	m_fire_rate_icon		= PRELOAD_TEXTURE("fire_rate_icon", "resources/icon/upgr_icon_firerate.png", frame_grid)->m_s_texture;
+	m_luck_icon				= PRELOAD_TEXTURE("luck_icon", "resources/icon/upgr_icon_luck.png", frame_grid)->m_s_texture;
 	m_projectile_speed_icon = PRELOAD_TEXTURE("projectile_speed_icon", "resources/icon/upgr_icon_projectile_speed.png", frame_grid)->m_s_texture;
 	m_fire_range_icon		= PRELOAD_TEXTURE("fire_range_icon", "resources/icon/upgr_icon_projectile_range.png", frame_grid)->m_s_texture;
 	m_add_cannon_icon		= PRELOAD_TEXTURE("add_cannon_icon", "resources/icon/upgr_icon_cannon_amount.png", frame_grid)->m_s_texture;
+	m_turn_speed_icon		= PRELOAD_TEXTURE("turn_speed_icon", "resources/icon/upgr_icon_turn_speed.png", frame_grid)->m_s_texture;
 
-	m_card_1_texture_emissive = PRELOAD_TEXTURE("card_emissive_1", "resources/emissive/upgrate_card_emissive_border_and_center_card_1.png", frame_grid)->m_s_texture;
-	m_card_2_texture_emissive = PRELOAD_TEXTURE("card_emissive_2", "resources/emissive/upgrate_card_emissive_border_and_center_card_2.png", frame_grid)->m_s_texture;
-	m_card_3_texture_emissive = PRELOAD_TEXTURE("card_emissive_3", "resources/emissive/upgrate_card_emissive_border_and_center_card_3.png", frame_grid)->m_s_texture;
+	m_card_1_texture_emissive =
+			PRELOAD_TEXTURE("card_emissive_1", "resources/emissive/upgrate_card_emissive_border_and_center_card_1.png", frame_grid)->m_s_texture;
+	m_card_2_texture_emissive =
+			PRELOAD_TEXTURE("card_emissive_2", "resources/emissive/upgrate_card_emissive_border_and_center_card_2.png", frame_grid)->m_s_texture;
+	m_card_3_texture_emissive =
+			PRELOAD_TEXTURE("card_emissive_3", "resources/emissive/upgrate_card_emissive_border_and_center_card_3.png", frame_grid)->m_s_texture;
 
 	m_emissive_texture_position = GetShaderLocation(m_card_emissive_shader, "texture_emissive");
 	m_emissive_color_position	= GetShaderLocation(m_card_emissive_shader, "emissive_color");
@@ -78,7 +82,7 @@ void UpgradeLayer::draw_upgrade_cards()
 
 	Texture2D card_textures[]		   = {m_card_texture_1, m_card_texture_2, m_card_texture_3};
 	Texture2D card_emissive_textures[] = {m_card_1_texture_emissive, m_card_2_texture_emissive, m_card_3_texture_emissive};
-	float card_offsets_x[]	  = {0.0f, static_cast<float>(m_card_texture_2.width + 16), static_cast<float>(-(m_card_texture_3.width + 16))};
+	float card_offsets_x[]			   = {0.0f, static_cast<float>(m_card_texture_2.width + 16), static_cast<float>(-(m_card_texture_3.width + 16))};
 
 	GuiSetStyle(DEFAULT, TEXT_SIZE, 14 * scale);
 	GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt(BLACK));
@@ -292,7 +296,7 @@ std::string UpgradeLayer::upgrade_type_to_string(int index)
 			return "Piercing Chance";
 		case 8:
 			return "Luck";
-		case 9 : 
+		case 9:
 			return "Mulit Shot";
 		default:
 			return "Unknown";
@@ -418,9 +422,8 @@ void UpgradeLayer::draw_upgrade_preview(Vector2 card_pos, LootTableValue upgrade
 			);
 			break;
 		case 9:
-							preview = std::format(
-					"{} -> {}", director->player_projectile_amount(),
-					director->player_projectile_amount() + m_base_upgrade_projectile_amount
+			preview = std::format(
+					"{} -> {}", director->player_projectile_amount(), director->player_projectile_amount() + m_base_upgrade_projectile_amount
 			);
 			break;
 		default:
@@ -477,22 +480,22 @@ void UpgradeLayer::draw_upgrade_icon(int index, Vector2 card_pos)
 			DrawTextureEx(m_fire_rate_icon, pos, 0, scale, WHITE);
 			break;
 		case 4:
-			//DrawTextureEx(m_fire_rate_icon, pos, 0, scale, WHITE);
+			// DrawTextureEx(m_fire_rate_icon, pos, 0, scale, WHITE);
 			break;
 		case 5:
-			//DrawTextureEx(m_fire_rate_icon, pos, 0, scale, WHITE);
+			// DrawTextureEx(m_fire_rate_icon, pos, 0, scale, WHITE);
 			break;
 		case 6:
-			//DrawTextureEx(m_fire_rate_icon, pos, 0, scale, WHITE);
+			DrawTextureEx(m_turn_speed_icon, pos, 0, scale, WHITE);
 			break;
 		case 7:
-			//DrawTextureEx(m_fire_rate_icon, pos, 0, scale, WHITE);
+			// DrawTextureEx(m_fire_rate_icon, pos, 0, scale, WHITE);
 			break;
 		case 8:
 			DrawTextureEx(m_luck_icon, pos, 0, scale, WHITE);
 			break;
 		case 9:
-			//DrawTextureEx(m_fire_rate_icon, pos, 0, scale, WHITE);
+			// DrawTextureEx(m_fire_rate_icon, pos, 0, scale, WHITE);
 			break;
 		default:
 			break;
