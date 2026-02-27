@@ -1,6 +1,6 @@
 #include "layers/upgradelayer.h"
 #include <entities/director.h>
-#include <iostream>
+#include <format>
 #include <raylib.h>
 #include <string>
 #include "pscore/sprite.h"
@@ -118,42 +118,42 @@ void UpgradeLayer::apply_upgrade(LootTableValue upgrade_info)
 		case 0:
 			director->upgrade_player_add_cannon(m_base_upgrade_add_cannon);
 			director->drop_chances.add_cannon = 0;
-			printf("Add Cannon Upgrade Applied\n");
+			PS_LOG(LOG_INFO, "Add Cannon Upgrade Applied");
 			break;
 		case 1:
 			upgrade_amount = director->player_current_projectile_speed() * (m_base_upgrade_projectile_speed * upgrade_multyplier);
 			director->upgrade_player_projectile_speed(upgrade_amount);
-			printf("Projectile Speed Upgrade Applied: %.2f\n", upgrade_amount);
+			PS_LOG(LOG_INFO, std::format("Projectile Speed Upgrade Applied: {:.2f}", upgrade_amount));
 			break;
 		case 2:
 			upgrade_amount = director->player_current_fire_range() * (m_base_upgrade_fire_range * upgrade_multyplier);
 			director->upgrade_player_fire_range(upgrade_amount);
-			printf("Fire Range Upgrade Applied: %.2f\n", upgrade_amount);
+			PS_LOG(LOG_INFO, std::format("Fire Range Upgrade Applied: {:.2f}", upgrade_amount));
 			break;
 		case 3:
 			upgrade_amount = director->player_current_fire_rate() * (m_base_upgrade_fire_rate * upgrade_multyplier);
 			director->upgrade_player_fire_rate(upgrade_amount);
-			printf("Fire Rate Upgrade Applied: %.2f\n", upgrade_amount);
+			PS_LOG(LOG_INFO, std::format("Fire Rate Upgrade Applied: {:.2f}", upgrade_amount));
 			break;
 		case 4:
 			director->upgrade_player_health(m_base_upgrade_health);
-			printf("Health Upgrade Applied: %d\n", m_base_upgrade_health);
+			PS_LOG(LOG_INFO, std::format("Health Upgrade Applied: {}", m_base_upgrade_health));
 			break;
 		case 5:
 			upgrade_amount = director->player_max_velocity() * (m_base_upgrade_player_speed * upgrade_multyplier);
 			director->upgrade_player_speed(upgrade_amount);
-			printf("Player Speed Upgrade Applied: %.2f\n", upgrade_amount);
+			PS_LOG(LOG_INFO, std::format("Player Speed Upgrade Applied: {:.2f}", upgrade_amount));
 			break;
 		case 6:
 			upgrade_amount = director->player_input_rotation_mult() * (m_base_upgrade_rotation_speed * upgrade_multyplier);
 			director->upgrade_player_rotation_speed(upgrade_amount);
-			printf("Rotation Speed Upgrade Applied: %.2f\n", upgrade_amount);
+			PS_LOG(LOG_INFO, std::format("Rotation Speed Upgrade Applied: {:.2f}", upgrade_amount));
 			break;
 		case 7:
 			upgrade_amount = director->player_piercing_chance() * (m_base_upgrade_piercing_chance * upgrade_multyplier);
 			director->upgrade_player_piercing_chance(upgrade_amount);
-			printf("Piercing Chance Upgrade Applied: %.2f\n", upgrade_amount);
-			printf("Player Piercing Chance: %.2f\n", director->player_piercing_chance());
+			PS_LOG(LOG_INFO, std::format("Piercing Chance Upgrade Applied: {:.2f}", upgrade_amount));
+			PS_LOG(LOG_INFO, std::format("Player Piercing Chance: {:.2f}", director->player_piercing_chance()));
 			break;
 		case 8:
 			upgrade_amount = director->player_luck() * (m_base_upgrade_luck * upgrade_multyplier);
@@ -162,25 +162,25 @@ void UpgradeLayer::apply_upgrade(LootTableValue upgrade_info)
 			if ( director->player_luck() >= 1.0 ) {
 				director->drop_chances.luck = 0;
 			}
-			printf("Luck Upgrade Applied: %.2f\n", upgrade_amount);
-			printf("Player Luck: %.2f\n", director->player_luck());
+			PS_LOG(LOG_INFO, std::format("Luck Upgrade Applied: {:.2f}", upgrade_amount));
+			PS_LOG(LOG_INFO, std::format("Player Luck: {:.2f}", director->player_luck()));
 			break;
 		case 9:
 			director->upgrade_player_projectile_amount(1);
 			if ( director->player_projectile_amount() == 3 ) {
 				director->drop_chances.projectile_amount = 0;
 			}
-			printf("Projectile Amount Upgrade Applied: +1 Projectile\n");
+			PS_LOG(LOG_INFO, "Projectile Amount Upgrade Applied: +1 Projectile");
 			break;
 		default:
-			std::cout << "Invalid upgrade index: " << upgrade_info.index << std::endl;
+			PS_LOG(LOG_WARNING, std::format("Invalid upgrade index: {}", upgrade_info.index));
 	}
 }
 
 void UpgradeLayer::print_loot_table_values(std::vector<LootTableValue> values)
 {
 	for ( const auto& value: values ) {
-		std::cout << "Index: " << value.index << " Value: " << value.value << " Rarity: " << value.rarity << std::endl;
+		PS_LOG(LOG_INFO, std::format("Index: {} Value: {:.2f} Rarity: {}", value.index, value.value, value.rarity));
 	}
 }
 
@@ -344,7 +344,7 @@ float UpgradeLayer::get_multiplier(int rarity)
 		case 5:
 			return m_multiplier_mythic;
 		default:
-			std::cout << "Invalid rarity index: " << rarity << std::endl;
+			PS_LOG(LOG_WARNING, std::format("Invalid rarity index: {}", rarity));
 			return 1.0f;
 	}
 }
