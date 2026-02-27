@@ -71,6 +71,10 @@ void UpgradeLayer::on_render()
 
 void UpgradeLayer::draw_upgrade_cards()
 {
+	if ( m_current_loot_table_values.size() < 3 ) {
+		return;
+	}
+
 	auto& vp			  = gApp()->viewport();
 	Vector2 origin		  = vp->viewport_origin();
 	float scale			  = vp->viewport_scale();
