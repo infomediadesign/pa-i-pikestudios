@@ -46,4 +46,5 @@ private:
 	void fire_available_cannon_(bool right_side, float dt);
 	void avoid_other_hunters_(float dt);
 	float gen_phase_offset_();
+	void determined_if_marked_();
 };
