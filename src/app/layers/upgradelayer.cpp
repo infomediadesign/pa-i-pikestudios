@@ -22,13 +22,11 @@ UpgradeLayer::UpgradeLayer()
 	m_fire_range_icon		= PRELOAD_TEXTURE("fire_range_icon", "resources/icon/upgr_icon_projectile_range.png", frame_grid)->m_s_texture;
 	m_add_cannon_icon		= PRELOAD_TEXTURE("add_cannon_icon", "resources/icon/upgr_icon_cannon_amount.png", frame_grid)->m_s_texture;
 	m_turn_speed_icon		= PRELOAD_TEXTURE("turn_speed_icon", "resources/icon/upgr_icon_turn_speed.png", frame_grid)->m_s_texture;
+	m_piercing_chance_icon	= PRELOAD_TEXTURE("piercing_chance_icon", "resources/icon/upgr_icon_piercing_chance.png", frame_grid)->m_s_texture;
 
-	m_card_1_texture_emissive =
-			PRELOAD_TEXTURE("card_emissive_1", "resources/emissive/upgrate_card_emissive_border_and_center_card_1.png", frame_grid)->m_s_texture;
-	m_card_2_texture_emissive =
-			PRELOAD_TEXTURE("card_emissive_2", "resources/emissive/upgrate_card_emissive_border_and_center_card_2.png", frame_grid)->m_s_texture;
-	m_card_3_texture_emissive =
-			PRELOAD_TEXTURE("card_emissive_3", "resources/emissive/upgrate_card_emissive_border_and_center_card_3.png", frame_grid)->m_s_texture;
+	m_card_1_texture_emissive = PRELOAD_TEXTURE("card_emissive_1", "resources/emissive/upgrate_card_emissive_border_and_center_card_1.png", frame_grid)->m_s_texture;
+	m_card_2_texture_emissive = PRELOAD_TEXTURE("card_emissive_2", "resources/emissive/upgrate_card_emissive_border_and_center_card_2.png", frame_grid)->m_s_texture;
+	m_card_3_texture_emissive = PRELOAD_TEXTURE("card_emissive_3", "resources/emissive/upgrate_card_emissive_border_and_center_card_3.png", frame_grid)->m_s_texture;
 
 	m_emissive_texture_position = GetShaderLocation(m_card_emissive_shader, "texture_emissive");
 	m_emissive_color_position	= GetShaderLocation(m_card_emissive_shader, "emissive_color");
@@ -489,7 +487,7 @@ void UpgradeLayer::draw_upgrade_icon(int index, Vector2 card_pos)
 			DrawTextureEx(m_turn_speed_icon, pos, 0, scale, WHITE);
 			break;
 		case 7:
-			// DrawTextureEx(m_fire_rate_icon, pos, 0, scale, WHITE);
+			DrawTextureEx(m_piercing_chance_icon, pos, 0, scale, WHITE);
 			break;
 		case 8:
 			DrawTextureEx(m_luck_icon, pos, 0, scale, WHITE);
