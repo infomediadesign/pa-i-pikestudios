@@ -57,8 +57,8 @@ void Cannon::render()
 void Cannon::fire(int projectile_amount)
 {
 	if ( m_c_time_since_last_shot >= m_c_fire_rate_in_s ) {
-
-		int fire_angled = std::clamp(projectile_amount, 0, 3);
+		projectile_amount = std::clamp(projectile_amount, 1, 3);
+		int fire_angled	  = projectile_amount;
 
 		if ( projectile_amount % 2 != 0 ) {
 			spawn_projectile();
