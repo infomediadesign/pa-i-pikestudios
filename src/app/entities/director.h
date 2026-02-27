@@ -57,7 +57,7 @@ public:
 		int rotation_speed	  = CFG_VALUE<int>("upgrade_rotation_speed_chance", 13);
 		int piercing_chance	  = CFG_VALUE<int>("upgrade_piercing_chance_chance", 13);
 		int luck			  = CFG_VALUE<int>("upgrade_luck_chance", 6);
-		int projectile_amount = 100; // CFG_VALUE<int>("upgrade_projectile_amount_chance", 1);
+		int projectile_amount = CFG_VALUE<int>("upgrade_projectile_amount_chance", 1);
 	};
 
 	DropChances drop_chances;
