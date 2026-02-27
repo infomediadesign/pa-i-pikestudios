@@ -255,6 +255,17 @@ void FortunaDirector::draw_debug()
 	if ( ImGui::Button("Add Health") ) {
 		upgrade_player_health(health_amount);
 	}
+
+	// Add Projectile amount
+	static int projectile_amount = 1;
+	ImGui::Text("Projectile Amount: %d", player_projectile_amount());
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(80);
+	ImGui::InputInt("##projectile_amount", &projectile_amount);
+	ImGui::SameLine();
+	if ( ImGui::Button("Upgrade##ProjectileAmount") ) {
+		upgrade_player_projectile_amount(projectile_amount);
+	}
 }
 
 std::shared_ptr<Player> FortunaDirector::spawn_player(const Vector2& position)
@@ -452,6 +463,11 @@ void FortunaDirector::upgrade_player_piercing_chance(float amount)
 	}
 }
 
+void FortunaDirector::upgrade_player_projectile_amount(int amount)
+{
+	_p->player_projectile_amount += amount;
+}
+
 float FortunaDirector::player_current_fire_rate() const
 {
 	return _p->player_current_fire_rate;
@@ -642,4 +658,14 @@ int FortunaDirector::reroll_amount() const
 void FortunaDirector::set_reroll_amount(const int amount)
 {
 	_p->upgrade_reroll_amount = amount;
+}
+
+int FortunaDirector::player_projectile_amount() const
+{
+	return _p->player_projectile_amount;
+}
+
+void FortunaDirector::set_player_projectile_amount(int amount)
+{
+	_p->player_projectile_amount = amount;
 }

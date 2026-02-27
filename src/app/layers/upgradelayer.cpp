@@ -38,6 +38,7 @@ UpgradeLayer::UpgradeLayer()
 	m_loot_table.add_loot_table(6, director->drop_chances.rotation_speed, m_chances); // Turn Speed
 	m_loot_table.add_loot_table(7, director->drop_chances.piercing_chance, m_chances); // Piercing Chance
 	m_loot_table.add_loot_table(8, director->drop_chances.luck, m_chances); // Luck
+	m_loot_table.add_loot_table(9, director->drop_chances.projectile_amount, m_only_mythic_chance); // Projectile Amount
 }
 
 UpgradeLayer::~UpgradeLayer()
@@ -160,6 +161,13 @@ void UpgradeLayer::apply_upgrade(LootTableValue upgrade_info)
 			printf("Luck Upgrade Applied: %.2f\n", upgrade_amount);
 			printf("Player Luck: %.2f\n", director->player_luck());
 			break;
+		case 9:
+			director->upgrade_player_projectile_amount(1);
+			if ( director->player_projectile_amount() == 3 ) {
+				director->drop_chances.projectile_amount = 0;
+			}
+			printf("Projectile Amount Upgrade Applied: +1 Projectile\n");
+			break;
 		default:
 			std::cout << "Invalid upgrade index: " << upgrade_info.index << std::endl;
 	}
@@ -279,6 +287,8 @@ std::string UpgradeLayer::upgrade_type_to_string(int index)
 			return "Piercing Chance";
 		case 8:
 			return "Luck";
+		case 9 : 
+			return "Mulit Shot";
 		default:
 			return "Unknown";
 	}
@@ -307,6 +317,8 @@ std::string UpgradeLayer::value_to_string(int index, int rarity)
 			return std::format("+{:.1f}%", m_base_upgrade_piercing_chance * multiplier * 100);
 		case 8:
 			return std::format("+{:.1f}%", m_base_upgrade_luck * multiplier * 100);
+		case 9:
+			return "+" + std::to_string(m_base_upgrade_projectile_amount);
 		default:
 			return "Unknown";
 	}
@@ -400,6 +412,12 @@ void UpgradeLayer::draw_upgrade_preview(Vector2 card_pos, LootTableValue upgrade
 					)
 			);
 			break;
+		case 9:
+							preview = std::format(
+					"{} -> {}", director->player_projectile_amount(),
+					director->player_projectile_amount() + m_base_upgrade_projectile_amount
+			);
+			break;
 		default:
 			break;
 	}
@@ -467,6 +485,9 @@ void UpgradeLayer::draw_upgrade_icon(int index, Vector2 card_pos)
 			break;
 		case 8:
 			DrawTextureEx(m_luck_icon, pos, 0, scale, WHITE);
+			break;
+		case 9:
+			DrawTextureEx(m_fire_rate_icon, pos, 0, scale, WHITE);
 			break;
 		default:
 			break;

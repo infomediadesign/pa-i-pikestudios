@@ -81,6 +81,7 @@ public:
 	float m_base_upgrade_luck			  = CFG_VALUE<float>("upgrade_luck_base_value", 0.075);
 	int m_base_upgrade_health			  = CFG_VALUE<int>("upgrade_health_base_value", 1);
 	int m_base_upgrade_add_cannon		  = CFG_VALUE<int>("upgrade_add_cannon_base_value", 1);
+	int m_base_upgrade_projectile_amount  = CFG_VALUE<int>("upgrade_projectile_amount_base_value", 1);
 
 
 	// multipliers for the different rarities
