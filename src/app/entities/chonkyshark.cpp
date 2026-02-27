@@ -11,7 +11,6 @@ void ChonkyShark::on_hit()
 {
 	if ( m_hurt && m_remaining_iframe_time <= 0.0f ) {
 		set_is_active(false);
-		printf("hit shark\n");
 		auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
 		if ( !director ) {
 			return;
