@@ -16,6 +16,7 @@ var hierarchy =
     [ "PSUtils::Grid2D< T >", "classPSUtils_1_1Grid2D.html", null ],
     [ "GuiStyleProp", "structGuiStyleProp.html", null ],
     [ "HighscoreEntries", "structHighscoreEntries.html", null ],
+    [ "HunterPriv", "classHunterPriv.html", null ],
     [ "PSInterfaces::IEntity", "classPSInterfaces_1_1IEntity.html", [
       [ "FortunaDirector", "classFortunaDirector.html", null ],
       [ "PSCore::Spawner< T, L >", "classPSCore_1_1Spawner.html", null ],
@@ -23,6 +24,7 @@ var hierarchy =
         [ "Body", "classBody.html", null ],
         [ "Cannon", "classCannon.html", null ],
         [ "Fin", "classFin.html", null ],
+        [ "Hunter", "classHunter.html", null ],
         [ "LootChest", "classLootChest.html", null ],
         [ "PSCore::Viewport", "classPSCore_1_1Viewport.html", null ],
         [ "Player", "classPlayer.html", null ],

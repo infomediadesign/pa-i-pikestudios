@@ -134,6 +134,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>destroy_player</b> (s
 <tr class="memitem:a03bd2f0791aefb8a9e834a252225f52c" id="r_a03bd2f0791aefb8a9e834a252225f52c"><td class="memItemLeft" align="right" valign="top"><a id="a03bd2f0791aefb8a9e834a252225f52c" name="a03bd2f0791aefb8a9e834a252225f52c"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>sync_player_entities</b> ()</td></tr>
 <tr class="separator:a03bd2f0791aefb8a9e834a252225f52c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa6ba5c7d9f355ddc51477dfefb969bd2" id="r_aa6ba5c7d9f355ddc51477dfefb969bd2"><td class="memItemLeft" align="right" valign="top"><a id="aa6ba5c7d9f355ddc51477dfefb969bd2" name="aa6ba5c7d9f355ddc51477dfefb969bd2"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>entity_died</b> (std::shared_ptr&lt; <a class="el" href="classPSInterfaces_1_1IEntity.html">PSInterfaces::IEntity</a> &gt; perpetrator, std::string_view died_type)</td></tr>
+<tr class="separator:aa6ba5c7d9f355ddc51477dfefb969bd2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adb7ae3f8d61886c0252e259045bd82ba" id="r_adb7ae3f8d61886c0252e259045bd82ba"><td class="memItemLeft" align="right" valign="top"><a id="adb7ae3f8d61886c0252e259045bd82ba" name="adb7ae3f8d61886c0252e259045bd82ba"></a>
 std::shared_ptr&lt; <a class="el" href="classCannon.html">Cannon</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>spawn_cannon</b> (const Vector2 &amp;position)</td></tr>
 <tr class="separator:adb7ae3f8d61886c0252e259045bd82ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -240,6 +243,10 @@ template&lt;&gt; </td></tr>
 template&lt;&gt; </td></tr>
 <tr class="memitem:a3947a310ceeb635133361a835a554a5f"><td class="memTemplItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classPSCore_1_1Spawner.html">PSCore::Spawner</a>&lt; <a class="el" href="classtentacle.html">tentacle</a>, <a class="el" href="classAppLayer.html">AppLayer</a> &gt; &gt; &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><b>spawner</b> ()</td></tr>
 <tr class="separator:a3947a310ceeb635133361a835a554a5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1245f8a9d7598edb6072f12d24827819" id="r_a1245f8a9d7598edb6072f12d24827819"><td class="memItemLeft" align="right" valign="top"><a id="a1245f8a9d7598edb6072f12d24827819" name="a1245f8a9d7598edb6072f12d24827819"></a>
+template&lt;&gt; </td></tr>
+<tr class="memitem:a1245f8a9d7598edb6072f12d24827819"><td class="memTemplItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classPSCore_1_1Spawner.html">PSCore::Spawner</a>&lt; <a class="el" href="classHunter.html">Hunter</a>, <a class="el" href="classAppLayer.html">AppLayer</a> &gt; &gt; &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><b>spawner</b> ()</td></tr>
+<tr class="separator:a1245f8a9d7598edb6072f12d24827819"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classPSInterfaces_1_1IEntity"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classPSInterfaces_1_1IEntity')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classPSInterfaces_1_1IEntity.html">PSInterfaces::IEntity</a></td></tr>
 <tr class="memitem:a817942d790f3a6178098cb99206bc125 inherit pub_methods_classPSInterfaces_1_1IEntity" id="r_a817942d790f3a6178098cb99206bc125"><td class="memItemLeft" align="right" valign="top">
 &#160;</td><td class="memItemRight" valign="bottom"><b>IEntity</b> (const std::string &amp;ident)</td></tr>
@@ -247,9 +254,18 @@ template&lt;&gt; </td></tr>
 <tr class="memitem:afd1f980e5bd9df303a2b2d61e0b25943 inherit pub_methods_classPSInterfaces_1_1IEntity" id="r_afd1f980e5bd9df303a2b2d61e0b25943"><td class="memItemLeft" align="right" valign="top">
 virtual std::optional&lt; std::vector&lt; Vector2 &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>bounds</b> () const</td></tr>
 <tr class="separator:afd1f980e5bd9df303a2b2d61e0b25943 inherit pub_methods_classPSInterfaces_1_1IEntity"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac53e1b8c051602e736f719120ebff124 inherit pub_methods_classPSInterfaces_1_1IEntity" id="r_ac53e1b8c051602e736f719120ebff124"><td class="memItemLeft" align="right" valign="top">
+virtual std::optional&lt; Vector2 &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>size</b> () const</td></tr>
+<tr class="separator:ac53e1b8c051602e736f719120ebff124 inherit pub_methods_classPSInterfaces_1_1IEntity"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a146c9bba10bdca31136f2d393efbcbdd inherit pub_methods_classPSInterfaces_1_1IEntity" id="r_a146c9bba10bdca31136f2d393efbcbdd"><td class="memItemLeft" align="right" valign="top">
 virtual std::optional&lt; Vector2 &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>position</b> () const</td></tr>
 <tr class="separator:a146c9bba10bdca31136f2d393efbcbdd inherit pub_methods_classPSInterfaces_1_1IEntity"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aad09b0fb46f02c5dd94ab620d00759ab inherit pub_methods_classPSInterfaces_1_1IEntity" id="r_aad09b0fb46f02c5dd94ab620d00759ab"><td class="memItemLeft" align="right" valign="top">
+virtual std::optional&lt; Vector2 &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>velocity</b> () const</td></tr>
+<tr class="separator:aad09b0fb46f02c5dd94ab620d00759ab inherit pub_methods_classPSInterfaces_1_1IEntity"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae8ddb2b97a3b65cadb5466dbf8c6457f inherit pub_methods_classPSInterfaces_1_1IEntity" id="r_ae8ddb2b97a3b65cadb5466dbf8c6457f"><td class="memItemLeft" align="right" valign="top">
+virtual std::optional&lt; float &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>rotation</b> () const</td></tr>
+<tr class="separator:ae8ddb2b97a3b65cadb5466dbf8c6457f inherit pub_methods_classPSInterfaces_1_1IEntity"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a375f4a4c61fdc39b9ea67fdbc48647be inherit pub_methods_classPSInterfaces_1_1IEntity" id="r_a375f4a4c61fdc39b9ea67fdbc48647be"><td class="memItemLeft" align="right" valign="top">
 virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>is_active</b> () const</td></tr>
 <tr class="separator:a375f4a4c61fdc39b9ea67fdbc48647be inherit pub_methods_classPSInterfaces_1_1IEntity"><td class="memSeparator" colspan="2">&#160;</td></tr>

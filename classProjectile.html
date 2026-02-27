@@ -185,12 +185,12 @@ std::shared_ptr&lt; <a class="el" href="classProjectile.html">Projectile</a> &gt
 <tr class="memitem:a58f2be050295033c8afe16519488adcf" id="r_a58f2be050295033c8afe16519488adcf"><td class="memItemLeft" align="right" valign="top"><a id="a58f2be050295033c8afe16519488adcf" name="a58f2be050295033c8afe16519488adcf"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>set_shared_ptr</b> (std::shared_ptr&lt; <a class="el" href="classProjectile.html">Projectile</a> &gt; &amp;ptr)</td></tr>
 <tr class="separator:a58f2be050295033c8afe16519488adcf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9eb089d6cb88434295dd0c2a61e217c3" id="r_a9eb089d6cb88434295dd0c2a61e217c3"><td class="memItemLeft" align="right" valign="top"><a id="a9eb089d6cb88434295dd0c2a61e217c3" name="a9eb089d6cb88434295dd0c2a61e217c3"></a>
-std::shared_ptr&lt; <a class="el" href="classPlayer.html">Player</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>owner</b> ()</td></tr>
-<tr class="separator:a9eb089d6cb88434295dd0c2a61e217c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7e3d0d178f8ee7bb79a5027f4ba5fd59" id="r_a7e3d0d178f8ee7bb79a5027f4ba5fd59"><td class="memItemLeft" align="right" valign="top"><a id="a7e3d0d178f8ee7bb79a5027f4ba5fd59" name="a7e3d0d178f8ee7bb79a5027f4ba5fd59"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>set_owner</b> (std::shared_ptr&lt; <a class="el" href="classPlayer.html">Player</a> &gt; &amp;owner)</td></tr>
-<tr class="separator:a7e3d0d178f8ee7bb79a5027f4ba5fd59"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a023a5c92d01fa84051e69add5e24c147" id="r_a023a5c92d01fa84051e69add5e24c147"><td class="memItemLeft" align="right" valign="top"><a id="a023a5c92d01fa84051e69add5e24c147" name="a023a5c92d01fa84051e69add5e24c147"></a>
+std::shared_ptr&lt; <a class="el" href="classPSInterfaces_1_1IEntity.html">PSInterfaces::IEntity</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>owner</b> ()</td></tr>
+<tr class="separator:a023a5c92d01fa84051e69add5e24c147"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a41fb7e060381af4dc961d03f995ea8f4" id="r_a41fb7e060381af4dc961d03f995ea8f4"><td class="memItemLeft" align="right" valign="top"><a id="a41fb7e060381af4dc961d03f995ea8f4" name="a41fb7e060381af4dc961d03f995ea8f4"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set_owner</b> (std::shared_ptr&lt; <a class="el" href="classPSInterfaces_1_1IEntity.html">PSInterfaces::IEntity</a> &gt; &amp;owner)</td></tr>
+<tr class="separator:a41fb7e060381af4dc961d03f995ea8f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4d2686b1b91dacb9878f231d87fa1670" id="r_a4d2686b1b91dacb9878f231d87fa1670"><td class="memItemLeft" align="right" valign="top"><a id="a4d2686b1b91dacb9878f231d87fa1670" name="a4d2686b1b91dacb9878f231d87fa1670"></a>
 Vector2&#160;</td><td class="memItemRight" valign="bottom"><b>owner_velocity</b> ()</td></tr>
 <tr class="separator:a4d2686b1b91dacb9878f231d87fa1670"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -243,6 +243,15 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>propose_z_index</b> (
 <tr class="memitem:a817942d790f3a6178098cb99206bc125 inherit pub_methods_classPSInterfaces_1_1IEntity" id="r_a817942d790f3a6178098cb99206bc125"><td class="memItemLeft" align="right" valign="top">
 &#160;</td><td class="memItemRight" valign="bottom"><b>IEntity</b> (const std::string &amp;ident)</td></tr>
 <tr class="separator:a817942d790f3a6178098cb99206bc125 inherit pub_methods_classPSInterfaces_1_1IEntity"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac53e1b8c051602e736f719120ebff124 inherit pub_methods_classPSInterfaces_1_1IEntity" id="r_ac53e1b8c051602e736f719120ebff124"><td class="memItemLeft" align="right" valign="top">
+virtual std::optional&lt; Vector2 &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>size</b> () const</td></tr>
+<tr class="separator:ac53e1b8c051602e736f719120ebff124 inherit pub_methods_classPSInterfaces_1_1IEntity"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aad09b0fb46f02c5dd94ab620d00759ab inherit pub_methods_classPSInterfaces_1_1IEntity" id="r_aad09b0fb46f02c5dd94ab620d00759ab"><td class="memItemLeft" align="right" valign="top">
+virtual std::optional&lt; Vector2 &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>velocity</b> () const</td></tr>
+<tr class="separator:aad09b0fb46f02c5dd94ab620d00759ab inherit pub_methods_classPSInterfaces_1_1IEntity"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae8ddb2b97a3b65cadb5466dbf8c6457f inherit pub_methods_classPSInterfaces_1_1IEntity" id="r_ae8ddb2b97a3b65cadb5466dbf8c6457f"><td class="memItemLeft" align="right" valign="top">
+virtual std::optional&lt; float &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>rotation</b> () const</td></tr>
+<tr class="separator:ae8ddb2b97a3b65cadb5466dbf8c6457f inherit pub_methods_classPSInterfaces_1_1IEntity"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a375f4a4c61fdc39b9ea67fdbc48647be inherit pub_methods_classPSInterfaces_1_1IEntity" id="r_a375f4a4c61fdc39b9ea67fdbc48647be"><td class="memItemLeft" align="right" valign="top">
 virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>is_active</b> () const</td></tr>
 <tr class="separator:a375f4a4c61fdc39b9ea67fdbc48647be inherit pub_methods_classPSInterfaces_1_1IEntity"><td class="memSeparator" colspan="2">&#160;</td></tr>

@@ -51,6 +51,8 @@ var annotated_dup =
     [ "FortunaDirectorPriv", "structFortunaDirectorPriv.html", null ],
     [ "GuiStyleProp", "structGuiStyleProp.html", null ],
     [ "HighscoreEntries", "structHighscoreEntries.html", null ],
+    [ "Hunter", "classHunter.html", null ],
+    [ "HunterPriv", "classHunterPriv.html", null ],
     [ "LootChest", "classLootChest.html", null ],
     [ "LootTable", "classLootTable.html", null ],
     [ "LootTableChances", "structLootTableChances.html", null ],

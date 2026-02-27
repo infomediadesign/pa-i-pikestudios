@@ -14,7 +14,7 @@ var namespacemisc_1_1map =
     [ "check_collision_horizontal", "namespacemisc_1_1map.html#a81207649060ca1284e5279749bd26156", null ],
     [ "check_collision_vertical", "namespacemisc_1_1map.html#a23e00bbb83661f4e958f56571c95a509", null ],
     [ "detect_map_border_collision", "namespacemisc_1_1map.html#a9e19b7bca76dcaba498faf0954e37698", null ],
-    [ "is_off_screen", "namespacemisc_1_1map.html#a3c5b541bddbbd015c395ed17b2564022", null ],
+    [ "is_off_screen", "namespacemisc_1_1map.html#aa5059099bb1dea8acc31ec5165f5779e", null ],
     [ "map_border_wrap_around", "namespacemisc_1_1map.html#ac6beb9d5e12a4a92e38a5efb5c86ff13", null ],
     [ "process_off_screen_entities", "namespacemisc_1_1map.html#a23c4771f11fd1972405b97c686b41060", null ],
     [ "request_spawn", "namespacemisc_1_1map.html#ad46555aa7e4dbc0ad0cd3e066ba87bbb", null ],

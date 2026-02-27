@@ -131,9 +131,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a9be0704e6416db02a479070dc8cec015" id="r_a9be0704e6416db02a479070dc8cec015"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacemisc_1_1map.html#a9be0704e6416db02a479070dc8cec015">set_player_position_to_opposite_border</a> (<a class="el" href="classPlayer.html">Player</a> &amp;p, <a class="el" href="namespacemisc_1_1map.html#a45f42e822d87c3849657a88f509ff14a">LastCollisionAxis</a> axis)</td></tr>
 <tr class="memdesc:a9be0704e6416db02a479070dc8cec015"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the player position to the opposite border.  <br /></td></tr>
 <tr class="separator:a9be0704e6416db02a479070dc8cec015"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3c5b541bddbbd015c395ed17b2564022" id="r_a3c5b541bddbbd015c395ed17b2564022"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacemisc_1_1map.html#a3c5b541bddbbd015c395ed17b2564022">is_off_screen</a> (<a class="el" href="classPlayer.html">Player</a> &amp;p)</td></tr>
-<tr class="memdesc:a3c5b541bddbbd015c395ed17b2564022"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if the player is completely off-screen.  <br /></td></tr>
-<tr class="separator:a3c5b541bddbbd015c395ed17b2564022"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa5059099bb1dea8acc31ec5165f5779e" id="r_aa5059099bb1dea8acc31ec5165f5779e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacemisc_1_1map.html#aa5059099bb1dea8acc31ec5165f5779e">is_off_screen</a> (const <a class="el" href="classPSInterfaces_1_1IEntity.html">PSInterfaces::IEntity</a> *p)</td></tr>
+<tr class="memdesc:aa5059099bb1dea8acc31ec5165f5779e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if the player is completely off-screen.  <br /></td></tr>
+<tr class="separator:aa5059099bb1dea8acc31ec5165f5779e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a81207649060ca1284e5279749bd26156" id="r_a81207649060ca1284e5279749bd26156"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacemisc_1_1map.html#a81207649060ca1284e5279749bd26156">check_collision_horizontal</a> (<a class="el" href="classPlayer.html">Player</a> &amp;p, Vector2 player_pos, int screenW)</td></tr>
 <tr class="memdesc:a81207649060ca1284e5279749bd26156"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks for horizontal collision (left/right).  <br /></td></tr>
 <tr class="separator:a81207649060ca1284e5279749bd26156"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -342,8 +342,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>set_wrap_around_mode<
 
 </div>
 </div>
-<a id="a3c5b541bddbbd015c395ed17b2564022" name="a3c5b541bddbbd015c395ed17b2564022"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3c5b541bddbbd015c395ed17b2564022">&#9670;&#160;</a></span>is_off_screen()</h2>
+<a id="aa5059099bb1dea8acc31ec5165f5779e" name="aa5059099bb1dea8acc31ec5165f5779e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa5059099bb1dea8acc31ec5165f5779e">&#9670;&#160;</a></span>is_off_screen()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -351,7 +351,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>set_wrap_around_mode<
         <tr>
           <td class="memname">bool misc::map::is_off_screen </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classPlayer.html">Player</a> &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classPSInterfaces_1_1IEntity.html">PSInterfaces::IEntity</a> *&#160;</td>
           <td class="paramname"><em>p</em></td><td>)</td>
           <td></td>
         </tr>
