@@ -27,4 +27,5 @@ private:
 	std::shared_ptr<PSCore::sprites::Sprite> m_sprite;
 
 	std::unique_ptr<PSCore::collision::EntityCollider> m_collider;
+	PSCore::sprites::SpriteSheetAnimation m_anim_controller;
 };

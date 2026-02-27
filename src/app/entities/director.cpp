@@ -693,7 +693,6 @@ void FortunaDirector::set_reroll_amount(const int amount)
 	_p->upgrade_reroll_amount = amount;
 }
 
-<<<<<<< MAGO-225
 int FortunaDirector::player_projectile_amount() const
 {
 	return _p->player_projectile_amount;
@@ -702,7 +701,7 @@ int FortunaDirector::player_projectile_amount() const
 void FortunaDirector::set_player_projectile_amount(int amount)
 {
 	_p->player_projectile_amount = amount;
-=======
+}
 void FortunaDirector::entity_died(std::shared_ptr<PSInterfaces::IEntity> perpetrator, std::string_view died_type)
 {
 	if ( auto player = std::dynamic_pointer_cast<Player>(perpetrator) ) {
@@ -713,5 +712,4 @@ void FortunaDirector::entity_died(std::shared_ptr<PSInterfaces::IEntity> perpetr
 		else if ( _p->hunter_spawner->entities().size() > 0 && died_type == _p->hunter_spawner->entities().at(0)->ident() )
 			m_b_bounty.add_bounty(m_b_bounty_amounts.ship_bounty);
 	};
->>>>>>> main
 }
