@@ -16,9 +16,14 @@ public:
 	void set_position(const Vector2& position);
 	void set_rotation(const float& rotation);
 
+	void play_spawn_anim(float dt);
+	void play_idle_anim(float dt);
+
 	void init(const Vector2& position, std::shared_ptr<LootChest> self);
 
 	void draw_debug() override;
+
+	void set_spawn_anim_playing(bool playing);
 
 private:
 	Texture2D m_texture;
@@ -28,4 +33,6 @@ private:
 
 	std::unique_ptr<PSCore::collision::EntityCollider> m_collider;
 	PSCore::sprites::SpriteSheetAnimation m_anim_controller;
+
+	bool m_spawn_anim_playing;
 };

@@ -9,8 +9,15 @@ LootChest::LootChest() : PSInterfaces::IEntity("loot_chest")
 {
 	IRenderable::propose_z_index(-3);
 	Vector2 frame_grid{1, 1};
-	m_sprite  = PRELOAD_TEXTURE(ident_, "resources/entity/test_loot.png", frame_grid);
+	m_sprite  = PRELOAD_TEXTURE(ident_, "resources/entity/loot_chest.png", frame_grid);
 	m_texture = m_sprite->m_s_texture;
+
+	int z_index		  = -3;
+	m_anim_controller = PSCore::sprites::SpriteSheetAnimation(m_texture, {{22, 0.05, PSCore::sprites::Backward, z_index}});
+	m_anim_controller.add_animation_at_index(0, z_index);
+	m_anim_controller.set_animation_at_index(0, 21, z_index);
+
+	m_spawn_anim_playing = true;
 }
 
 void LootChest::init(const Vector2& position, std::shared_ptr<LootChest> self)
@@ -38,13 +45,19 @@ void LootChest::update(float dt)
 			return false;
 		});
 	}
+
+	if ( m_spawn_anim_playing ) {
+		play_spawn_anim(dt);
+	} else {
+		play_idle_anim(dt);
+	}
 }
 
 void LootChest::render()
 {
 	if ( is_active_ ) {
 		if ( auto& vp = gApp()->viewport() ) {
-			vp->draw_in_viewport(m_texture, Rectangle{0, 0, (float) m_texture.width, (float) m_texture.height}, m_position, m_rotation, WHITE);
+			vp->draw_in_viewport(m_texture, m_anim_controller.get_source_rectangle(-3).value_or(Rectangle{0}), m_position, m_rotation, WHITE);
 		}
 	}
 }
@@ -125,5 +138,35 @@ void LootChest::draw_debug()
 				}
 			}
 		}
+	}
+}
+
+void LootChest::play_spawn_anim(float dt)
+{
+	if ( m_spawn_anim_playing ) {
+		m_anim_controller.update_animation(dt);
+		if ( m_anim_controller.get_sprite_sheet_frame_index(-3).value_or(-1) <= 8 ) {
+			m_spawn_anim_playing = false;
+			m_anim_controller.set_new_animation_framerate(0, 0.15f);
+			m_anim_controller.set_animation_at_index(0, 6, -3);
+		}
+	}
+}
+
+void LootChest::play_idle_anim(float dt)
+{
+	m_anim_controller.update_animation(dt);
+	int frame = m_anim_controller.get_sprite_sheet_frame_index(-3).value_or(0);
+	if ( frame > 7 ) {
+		m_anim_controller.set_animation_at_index(0, 6, -3);
+	}
+}
+
+void LootChest::set_spawn_anim_playing(bool playing)
+{
+	m_spawn_anim_playing = playing;
+	if ( playing ) {
+		m_anim_controller.set_new_animation_framerate(0, 0.05f);
+		m_anim_controller.set_animation_at_index(0, 21, -3);
 	}
 }
