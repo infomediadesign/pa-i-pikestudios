@@ -18,13 +18,16 @@ UpgradeLayer::UpgradeLayer()
 	// Icons
 	m_fire_rate_icon = PRELOAD_TEXTURE("fire_rate_icon", "resources/icon/upgr_icon_firerate.png", frame_grid)->m_s_texture;
 	m_luck_icon		 = PRELOAD_TEXTURE("luck_icon", "resources/icon/upgr_icon_luck.png", frame_grid)->m_s_texture;
+	m_projectile_speed_icon = PRELOAD_TEXTURE("projectile_speed_icon", "resources/icon/upgr_icon_projectile_speed.png", frame_grid)->m_s_texture;
 
 
-	m_card_texture_emissive =
-			PRELOAD_TEXTURE("card_emissive", "resources/emissive/upgrate_card_emissive_border_and_center_card_1.png", frame_grid)->m_s_texture;
+	m_card_1_texture_emissive = PRELOAD_TEXTURE("card_emissive_1", "resources/emissive/upgrate_card_emissive_border_and_center_card_1.png", frame_grid)->m_s_texture;
+	m_card_2_texture_emissive = PRELOAD_TEXTURE("card_emissive_2", "resources/emissive/upgrate_card_emissive_border_and_center_card_2.png", frame_grid)->m_s_texture;
+	m_card_3_texture_emissive = PRELOAD_TEXTURE("card_emissive_3", "resources/emissive/upgrate_card_emissive_border_and_center_card_3.png", frame_grid)->m_s_texture;
+
 	m_emissive_texture_position = GetShaderLocation(m_card_emissive_shader, "texture_emissive");
 	m_emissive_color_position	= GetShaderLocation(m_card_emissive_shader, "emissive_color");
-	SetShaderValue(m_card_emissive_shader, m_emissive_color_position, &m_card_texture_emissive, SHADER_UNIFORM_SAMPLER2D);
+	SetShaderValue(m_card_emissive_shader, m_emissive_color_position, &m_card_1_texture_emissive, SHADER_UNIFORM_SAMPLER2D);
 
 
 	auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
@@ -72,7 +75,8 @@ void UpgradeLayer::draw_upgrade_cards()
 			origin.x / vp->viewport_scale() + vp->viewport_base_size().x / 2, origin.y / vp->viewport_scale() + vp->viewport_base_size().y / 2
 	};
 
-	Texture2D card_textures[] = {m_card_texture_1, m_card_texture_2, m_card_texture_3};
+	Texture2D card_textures[]		   = {m_card_texture_1, m_card_texture_2, m_card_texture_3};
+	Texture2D card_emissive_textures[] = {m_card_1_texture_emissive, m_card_2_texture_emissive, m_card_3_texture_emissive};
 	float card_offsets_x[]	  = {0.0f, static_cast<float>(m_card_texture_2.width + 16), static_cast<float>(-(m_card_texture_3.width + 16))};
 
 	GuiSetStyle(DEFAULT, TEXT_SIZE, 14 * scale);
@@ -83,7 +87,7 @@ void UpgradeLayer::draw_upgrade_cards()
 
 		set_boarder_color(m_current_loot_table_values[i].rarity);
 		BeginShaderMode(m_card_emissive_shader);
-		SetShaderValueTexture(m_card_emissive_shader, m_emissive_texture_position, m_card_texture_emissive);
+		SetShaderValueTexture(m_card_emissive_shader, m_emissive_texture_position, card_emissive_textures[i]);
 		SetShaderValue(m_card_emissive_shader, m_emissive_color_position, &m_emissive_color, SHADER_UNIFORM_VEC3);
 
 		if ( GuiButtonTexture(card_textures[i], card_pos, 0, scale, WHITE, GRAY, "") && m_can_receive_input ) {
@@ -463,7 +467,7 @@ void UpgradeLayer::draw_upgrade_icon(int index, Vector2 card_pos)
 			DrawTextureEx(m_fire_rate_icon, pos, 0, scale, WHITE);
 			break;
 		case 1:
-			DrawTextureEx(m_fire_rate_icon, pos, 0, scale, WHITE);
+			DrawTextureEx(m_projectile_speed_icon, pos, 0, scale, WHITE);
 			break;
 		case 2:
 			DrawTextureEx(m_fire_rate_icon, pos, 0, scale, WHITE);
