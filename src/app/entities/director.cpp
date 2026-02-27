@@ -711,5 +711,7 @@ void FortunaDirector::entity_died(std::shared_ptr<PSInterfaces::IEntity> perpetr
 			m_b_bounty.add_bounty(m_b_bounty_amounts.tentacle_bounty);
 		else if ( _p->hunter_spawner->entities().size() > 0 && died_type == _p->hunter_spawner->entities().at(0)->ident() )
 			m_b_bounty.add_bounty(m_b_bounty_amounts.ship_bounty);
+		else if ( _p->chonky_shark_spawner->entities().size() > 0 && died_type == _p->chonky_shark_spawner->entities().at(0)->ident() )
+			m_b_bounty.add_bounty(m_b_bounty_amounts.big_shark_bounty);
 	};
 }
