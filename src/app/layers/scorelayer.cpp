@@ -175,7 +175,7 @@ void ScoreLayer::draw_score_board()
 		GuiLabel(score_field_rect, (" " + std::to_string(entry.score)).c_str());
 
 		GuiPanel(left_rank_rect, NULL);
-		GuiLabel(left_rank_rect, (" " + std::to_string(rank) + ".").c_str());
+		GuiLabel({left_rank_rect.x + 2, left_rank_rect.y, left_rank_rect.width +2, left_rank_rect.height}, ("" + std::to_string(rank) + ".").c_str());
 
 		
 		GuiPanel(right_color_rect, NULL);
