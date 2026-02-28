@@ -2,9 +2,11 @@
 #include <layers/applayer.h>
 #include <layers/mainmenulayer.h>
 #include <pscore/application.h>
+#include <pscore/settings.h>
 #include <pscore/sprite.h>
 #include <pscore/viewport.h>
 #include <raygui.h>
+#include <raylib.h>
 
 class SettingValues
 {
@@ -14,18 +16,20 @@ public:
 	bool fullscreen	   = false;
 	bool vsync		   = true;
 	bool msaa4x		   = true;
-	int fps_index	   = 1; // 0:30, 1:60, 2:120, 3:144, 4:240
+	int fps_index	   = 1; // 0:30, 1:60, 2:120, 3:144, 4:240, 5:Unlimited
 
 	int key_accelerate	= KEY_W;
 	int key_brake		= KEY_S;
 	int key_left_turn	= KEY_A;
 	int key_right_turn	= KEY_D;
-	int key_left_shoot	= KEY_Q;
-	int key_right_shoot = KEY_E;
+	int key_left_shoot	= KEY_LEFT;
+	int key_right_shoot = KEY_RIGHT;
 	int key_all_shoot	= KEY_SPACE;
+
+	bool has_conflicts = false;
 };
 
-static const char* FPS_OPTIONS_TEXT = "30;60;120;144;240";
+static const char* FPS_OPTIONS_TEXT = "30;60;120;144;240;Unlimited";
 
 static std::string key_to_label(int key)
 {
@@ -88,6 +92,23 @@ OptionsLayer::OptionsLayer()
 	m_panelContentRec = {0, 0, 340, 340};
 	m_panelView		  = {0};
 	m_panelScroll	  = {99, -20};
+
+	if ( PSCore::SettingsManager::inst()->settings.find("user_preferences") != PSCore::SettingsManager::inst()->settings.end() ) {
+		auto& settings				= PSCore::SettingsManager::inst()->settings["user_preferences"];
+		m_settings->music_volume	= std::get<float>(settings->value("music_volume").value_or(20.0f));
+		m_settings->sfx_volume		= std::get<float>(settings->value("sfx_volume").value_or(50.0f));
+		m_settings->fullscreen		= std::get<bool>(settings->value("fullscreen").value_or(true));
+		m_settings->vsync			= std::get<bool>(settings->value("vsync").value_or(false));
+		m_settings->msaa4x			= std::get<bool>(settings->value("msaa4x").value_or(false));
+		m_settings->fps_index		= std::get<int>(settings->value("fps_index").value_or(1));
+		m_settings->key_accelerate	= std::get<int>(settings->value("key_accelerate").value_or(KEY_W));
+		m_settings->key_brake		= std::get<int>(settings->value("key_brake").value_or(KEY_S));
+		m_settings->key_left_turn	= std::get<int>(settings->value("key_left_turn").value_or(KEY_A));
+		m_settings->key_right_turn	= std::get<int>(settings->value("key_right_turn").value_or(KEY_D));
+		m_settings->key_left_shoot	= std::get<int>(settings->value("key_left_shoot").value_or(KEY_LEFT));
+		m_settings->key_right_shoot = std::get<int>(settings->value("key_right_shoot").value_or(KEY_RIGHT));
+		m_settings->key_all_shoot	= std::get<int>(settings->value("key_all_shoot").value_or(KEY_SPACE));
+	}
 }
 
 void OptionsLayer::on_update(float dt)
@@ -130,6 +151,8 @@ void OptionsLayer::on_update(float dt)
 		}
 	}
 
+	check_for_conflicts_();
+
 	m_settings->fullscreen = IsWindowState(FLAG_BORDERLESS_WINDOWED_MODE);
 }
 
@@ -153,8 +176,11 @@ void OptionsLayer::on_render()
 
 		Vector2 mainmenu_pos = {anchor.x / scale + button_boarder_padding + btn_width / 2.0f, anchor.y / scale + button_pos_y};
 
-		if ( GuiButtonTexture(m_button, mainmenu_pos, 0, scale, WHITE, GRAY, "Mainmenu") ) {
-			gApp()->call_later([]() { gApp()->switch_layer<OptionsLayer, MainMenuLayer>(); });
+		if ( GuiButtonTexture(
+					 m_button, mainmenu_pos, 0, scale, m_settings->has_conflicts ? GRAY : WHITE, GRAY, "Mainmenu"
+			 ) ) {
+			if ( !m_settings->has_conflicts )
+				gApp()->call_later([]() { gApp()->switch_layer<OptionsLayer, MainMenuLayer>(); });
 		}
 
 		float textspacing = 24;
@@ -181,8 +207,17 @@ void OptionsLayer::on_render()
 		DrawTextureEx(m_paper, {anchor.x, anchor.y + m_panelScroll.y}, 0, vp->viewport_scale(), WHITE);
 
 
-		int prev_color = GuiGetStyle(SLIDER, BASE_COLOR_NORMAL);
-		GuiSetStyle(SLIDER, BASE_COLOR_NORMAL, 0x00000000);
+		int prev_color = GuiGetStyle(DEFAULT, BASE_COLOR_NORMAL);
+		GuiSetStyle(DEFAULT, BASE_COLOR_NORMAL, 0x00000000);
+
+		GuiSetStyle(DEFAULT, BASE_COLOR_NORMAL, 0x00000000);
+		GuiSetStyle(DEFAULT, BASE_COLOR_PRESSED, 0x000000FF);
+		GuiSetStyle(DEFAULT, BASE_COLOR_FOCUSED, 0x444444CC);
+		GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, 0x000000FF);
+		GuiSetStyle(DEFAULT, TEXT_COLOR_FOCUSED, 0x111111FF);
+		GuiSetStyle(DEFAULT, TEXT_COLOR_PRESSED, 0x444444FF);
+		GuiSetStyle(DEFAULT, BORDER_COLOR_FOCUSED, 0x111111FF);
+		GuiSetStyle(DEFAULT, BORDER_COLOR_PRESSED, 0x444444FF);
 
 		{
 			BeginScissorMode(m_panelView.x, m_panelView.y, m_panelView.width, m_panelView.height);
@@ -190,7 +225,27 @@ void OptionsLayer::on_render()
 			EndScissorMode();
 		}
 
-		GuiSetStyle(SLIDER, BASE_COLOR_NORMAL, prev_color);
+		GuiSetStyle(DEFAULT, BASE_COLOR_NORMAL, prev_color);
+
+		if ( m_settings->has_conflicts ) {
+			float box_w = btn_width * scale;
+			float box_h = 20 * scale;
+			float box_x = (mainmenu_pos.x - btn_width / 2.0f) * scale;
+			float box_y = (mainmenu_pos.y - btn_height / 2.0f) * scale - box_h - 4 * scale;
+			Rectangle bounds{box_x, box_y, box_w, box_h};
+			DrawRectangleRec(bounds, {255, 165, 0, 255});
+			DrawRectangleLinesEx(bounds, 1 * scale, {200, 120, 0, 255});
+			int prev_text_color		= GuiGetStyle(DEFAULT, TEXT_COLOR_NORMAL);
+			int prev_text_size		= GuiGetStyle(DEFAULT, TEXT_SIZE);
+			int prev_text_alignment = GuiGetStyle(LABEL, TEXT_ALIGNMENT);
+			GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt({140, 60, 0, 255}));
+			GuiSetStyle(DEFAULT, TEXT_SIZE, 10 * scale);
+			GuiSetStyle(LABEL, TEXT_ALIGNMENT, TEXT_ALIGN_CENTER);
+			GuiLabel(bounds, "Key conflicts!");
+			GuiSetStyle(LABEL, TEXT_ALIGNMENT, prev_text_alignment);
+			GuiSetStyle(DEFAULT, TEXT_SIZE, prev_text_size);
+			GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, prev_text_color);
+		}
 	}
 }
 
@@ -221,11 +276,17 @@ void OptionsLayer::draw_controls_(const Vector2& anchor, float scale, float text
 				break;
 			}
 			case SettingType::Music: {
-				GuiSlider({anchor.x + 300 * scale, y, control_width * scale, boxheight * scale}, NULL, " %", &m_settings->music_volume, 0, 100);
+				if ( GuiSlider(
+							 {anchor.x + 300 * scale, y, control_width * scale, boxheight * scale}, NULL, " %", &m_settings->music_volume, 0, 100
+					 ) ) {
+					gApp()->set_sound_volume(PSCore::Application::SoundType::Music, m_settings->music_volume);
+				}
 				break;
 			}
 			case SettingType::SFX: {
-				GuiSlider({anchor.x + 300 * scale, y, control_width * scale, boxheight * scale}, NULL, " %", &m_settings->sfx_volume, 0, 100);
+				if ( GuiSlider({anchor.x + 300 * scale, y, control_width * scale, boxheight * scale}, NULL, " %", &m_settings->sfx_volume, 0, 100) ) {
+					gApp()->set_sound_volume(PSCore::Application::SoundType::SFX, m_settings->sfx_volume);
+				}
 				break;
 			}
 			case SettingType::Fullscreen: {
@@ -243,7 +304,32 @@ void OptionsLayer::draw_controls_(const Vector2& anchor, float scale, float text
 				break;
 			}
 			case SettingType::FPS: {
+				int current_index = m_settings->fps_index;
 				GuiComboBox({anchor.x + 300 * scale, y, control_width * scale, boxheight * scale}, FPS_OPTIONS_TEXT, &m_settings->fps_index);
+				if ( current_index != m_settings->fps_index ) {
+					switch ( m_settings->fps_index ) {
+						case 0:
+							gApp()->set_target_fps(30);
+							break;
+						case 1:
+							gApp()->set_target_fps(60);
+							break;
+						case 2:
+							gApp()->set_target_fps(120);
+							break;
+						case 3:
+							gApp()->set_target_fps(144);
+							break;
+						case 4:
+							gApp()->set_target_fps(240);
+							break;
+						case 5:
+							gApp()->set_target_fps(0);
+							break;
+						default:
+							break;
+					}
+				}
 				break;
 			}
 			case SettingType::Accelerate: {
@@ -316,4 +402,42 @@ void OptionsLayer::draw_controls_(const Vector2& anchor, float scale, float text
 }
 
 
-OptionsLayer::~OptionsLayer() {};
+OptionsLayer::~OptionsLayer()
+{
+	auto& settings = PSCore::SettingsManager::inst()->settings.at("user_preferences");
+	settings->set_value("music_volume", m_settings->music_volume);
+	settings->set_value("sfx_volume", m_settings->sfx_volume);
+	settings->set_value("fullscreen", m_settings->fullscreen);
+	settings->set_value("vsync", m_settings->vsync);
+	settings->set_value("msaa4x", m_settings->msaa4x);
+	settings->set_value("fps_index", m_settings->fps_index);
+	settings->set_value("key_accelerate", m_settings->key_accelerate);
+	settings->set_value("key_brake", m_settings->key_brake);
+	settings->set_value("key_left_turn", m_settings->key_left_turn);
+	settings->set_value("key_right_turn", m_settings->key_right_turn);
+	settings->set_value("key_left_shoot", m_settings->key_left_shoot);
+	settings->set_value("key_right_shoot", m_settings->key_right_shoot);
+	settings->set_value("key_all_shoot", m_settings->key_all_shoot);
+	settings->safe();
+};
+
+void OptionsLayer::check_for_conflicts_()
+{
+	// Check for keybind conflicts
+	std::vector<std::pair<std::string, int>> keybinds = {
+			{"Accelerate", m_settings->key_accelerate}, {"Brake", m_settings->key_brake},			{"Left Turn", m_settings->key_left_turn},
+			{"Right Turn", m_settings->key_right_turn}, {"Left Shoot", m_settings->key_left_shoot}, {"Right Shoot", m_settings->key_right_shoot},
+			{"All Shoot", m_settings->key_all_shoot},
+	};
+
+	for ( size_t i = 0; i < keybinds.size(); ++i ) {
+		for ( size_t j = i + 1; j < keybinds.size(); ++j ) {
+			if ( keybinds[i].second == keybinds[j].second ) {
+				m_settings->has_conflicts = true;
+				return;
+			}
+		}
+	}
+
+	m_settings->has_conflicts = false;
+};

@@ -135,7 +135,15 @@ namespace PSCore {
 
 		float delta_time();
 
+		// settings
 		bool toggle_fullscreen();
+		void set_target_fps(int fps);
+		enum class SoundType
+		{
+			Music,
+			SFX
+		};
+		void set_sound_volume(SoundType type, float volume);
 
 	private:
 		std::unique_ptr<ApplicationPriv> _p;

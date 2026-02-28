@@ -54,4 +54,5 @@ private:
 	Vector2 m_panelScroll;
 	
 	void draw_controls_(const Vector2& anchor, float scale, float textspacing, float boxheight);
+	void check_for_conflicts_();
 };

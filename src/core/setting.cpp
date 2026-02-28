@@ -121,6 +121,9 @@ Settings::~Settings()
 
 void Settings::set_value(std::string_view key, const setting_val& value)
 {
+	if ( settings_.find(std::string{key}) != settings_.end() )
+		settings_.erase(std::string{key});
+
 	settings_.insert({std::string{key}, value});
 }
 

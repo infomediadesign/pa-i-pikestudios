@@ -27,6 +27,7 @@ FortunaDirector::FortunaDirector() : PSInterfaces::IEntity("fortuna_director")
 	_p->projectile_spawner = std::make_unique<PSCore::Spawner<Projectile, AppLayer>>(0.0f, 0, INT32_MAX);
 	_p->tentacle_spawner =
 			std::make_unique<PSCore::Spawner<tentacle, AppLayer>>(_p->tentacle_spawn_time, _p->tentacle_spawn_variation, _p->tentacle_limit);
+
 }
 
 void FortunaDirector::initialize_entities()

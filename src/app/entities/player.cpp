@@ -95,17 +95,17 @@ void Player::update(const float dt)
 {
 	if ( !m_is_clone ) {
 		// Input Functions to set Target Velocity and Target Rotation
-		if ( IsKeyDown(KEY_W) ) {
+		if ( IsKeyDown(std::get<int>(PSCore::SettingsManager::inst()->settings.at("user_preferences")->value("key_accelerate").value_or(KEY_W))) ) {
 			m_target_velocity += m_target_velocity < m_max_velocity ? m_input_velocity_multiplier * dt : 0;
 		}
-		if ( IsKeyDown(KEY_S) ) {
+		if ( IsKeyDown(std::get<int>(PSCore::SettingsManager::inst()->settings.at("user_preferences")->value("key_brake").value_or(KEY_S))) ) {
 			m_target_velocity -= m_target_velocity > 0 ? m_input_velocity_multiplier * dt : 0;
 		}
-		if ( IsKeyDown(KEY_D) &&
+		if ( IsKeyDown(std::get<int>(PSCore::SettingsManager::inst()->settings.at("user_preferences")->value("key_right_turn").value_or(KEY_D))) &&
 			 Vector2Length(m_velocity) - (m_velocity_rotation_downscale * fabsf(m_rotation_velocity)) > CALCULATION_VELOCITY_MIN ) {
 			m_target_rotation += m_input_rotation_multiplier * dt;
 		}
-		if ( IsKeyDown(KEY_A) &&
+		if ( IsKeyDown(std::get<int>(PSCore::SettingsManager::inst()->settings.at("user_preferences")->value("key_left_turn").value_or(KEY_A))) &&
 			 Vector2Length(m_velocity) - (m_velocity_rotation_downscale * fabsf(m_rotation_velocity)) > CALCULATION_VELOCITY_MIN ) {
 			m_target_rotation -= m_input_rotation_multiplier * dt;
 		}
@@ -238,18 +238,22 @@ void Player::set_is_invincible(bool invincible)
 
 void Player::fire_cannons(float dt)
 {
+	int shoot_left_key = std::get<int>(PSCore::SettingsManager::inst()->settings.at("user_preferences")->value("key_left_shoot").value_or(KEY_LEFT));
+	int shoot_right_key = std::get<int>(PSCore::SettingsManager::inst()->settings.at("user_preferences")->value("key_right_shoot").value_or(KEY_RIGHT));
+	int shoot_all_key   = std::get<int>(PSCore::SettingsManager::inst()->settings.at("user_preferences")->value("key_all_shoot").value_or(KEY_SPACE));
+	
 	switch ( m_fire_mode ) {
 
 		case FireMode::InSequence: {
 			m_time_since_last_shot_left += dt;
 			m_time_since_last_shot_right += dt;
-			if ( IsKeyDown(KEY_SPACE) && !m_fire_sequence_ongoing ) {
+			if ( IsKeyDown(shoot_all_key) && !m_fire_sequence_ongoing ) {
 				m_fire_sequence_ongoing		  = true;
 				m_fire_sequence_ongoing_right = true;
 				m_fire_sequence_ongoing_left  = true;
 			}
 
-			if ( IsMouseButtonDown(MOUSE_BUTTON_RIGHT) && !m_fire_sequence_ongoing && !m_fire_sequence_ongoing_right ) {
+			if ( ( IsMouseButtonDown(MOUSE_BUTTON_RIGHT) || IsKeyDown(shoot_right_key) ) && !m_fire_sequence_ongoing && !m_fire_sequence_ongoing_right ) {
 				m_fire_sequence_ongoing_right = true;
 			}
 			if ( m_time_since_last_shot_right > m_cannon_container.at(0)->fire_rate() / m_cannon_container.size() && m_fire_sequence_ongoing_right ) {
@@ -264,7 +268,7 @@ void Player::fire_cannons(float dt)
 					m_fire_sequence_ongoing		  = false;
 				}
 			}
-			if ( IsMouseButtonDown(MOUSE_BUTTON_LEFT) && !m_fire_sequence_ongoing && !m_fire_sequence_ongoing_left ) {
+			if ( (IsMouseButtonDown(MOUSE_BUTTON_LEFT) || IsKeyDown(shoot_left_key) )&& !m_fire_sequence_ongoing && !m_fire_sequence_ongoing_left ) {
 				m_fire_sequence_ongoing_left = true;
 			}
 
@@ -282,21 +286,21 @@ void Player::fire_cannons(float dt)
 		}
 
 		case FireMode::SameTime: {
-			if ( IsMouseButtonDown(MOUSE_BUTTON_LEFT) ) {
+			if ( IsMouseButtonDown(MOUSE_BUTTON_LEFT) || IsKeyDown(shoot_left_key) ) {
 				for ( auto cannon: m_cannon_container ) {
 					if ( cannon->positioning() == Cannon::CannonPositioning::Left ) {
 						cannon->fire();
 					}
 				}
 			}
-			if ( IsMouseButtonDown(MOUSE_BUTTON_RIGHT) ) {
+			if ( IsMouseButtonDown(MOUSE_BUTTON_RIGHT) || IsKeyDown(shoot_right_key) ) {
 				for ( auto cannon: m_cannon_container ) {
 					if ( cannon->positioning() == Cannon::CannonPositioning::Right ) {
 						cannon->fire();
 					}
 				}
 			}
-			if ( IsKeyDown(KEY_SPACE) ) {
+			if ( IsKeyDown(shoot_all_key) ) {
 				for ( auto cannon: m_cannon_container ) {
 					cannon->fire();
 				}
