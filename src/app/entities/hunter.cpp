@@ -131,7 +131,7 @@ Hunter::Hunter() : PSInterfaces::IEntity("hunter")
 	propose_z_index(30);
 	determined_if_marked_();
 
-	auto texture_size = {(float) _p->sprite->m_s_texture.width, (float) _p->sprite->m_s_texture.height};
+	Vector2 texture_size = {(float) _p->sprite->m_s_texture.width, (float) _p->sprite->m_s_texture.height};
 	SetShaderValue(_p->outline_shader, GetShaderLocation(_p->outline_shader, "outline_color"), &_p->shader_color, SHADER_UNIFORM_VEC4);
 	SetShaderValue(_p->outline_shader, GetShaderLocation(_p->outline_shader, "texture_size"), &texture_size, SHADER_UNIFORM_VEC2);
 };
@@ -215,15 +215,21 @@ void Hunter::render()
 			_p->smear.draw_smear_wave(Vector2Length(_p->velocity), _p->max_velocity, 2 * vp->viewport_scale(), 1, {9, 75, 101, 127});
 		}
 
-		if ( _p->marked )
+		if ( _p->marked ) {
 			BeginShaderMode(_p->outline_shader);
 
-		vp->draw_in_viewport(
-				_p->sprite->m_s_texture, _p->animation_controller.get_source_rectangle(1).value_or(Rectangle{0}), _p->pos, _p->rotation + 90, WHITE
-		);
+			vp->draw_in_viewport(
+					_p->sprite->m_s_texture, _p->animation_controller.get_source_rectangle(1).value_or(Rectangle{0}), _p->pos, _p->rotation + 90,
+					WHITE
+			);
 
-		if ( _p->marked )
 			EndShaderMode();
+		} else {
+			vp->draw_in_viewport(
+					_p->sprite->m_s_texture, _p->animation_controller.get_source_rectangle(1).value_or(Rectangle{0}), _p->pos, _p->rotation + 90,
+					WHITE
+			);
+		}
 
 		for ( auto& cannon: _p->cannons ) {
 			cannon->render();
