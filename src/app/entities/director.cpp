@@ -439,7 +439,7 @@ void FortunaDirector::upgrade_player_health(int amount)
 
 void FortunaDirector::upgrade_player_luck(float amount)
 {
-	_p->player_current_luck = std::clamp(_p->player_current_luck + amount, -1.0f, 1.0f);
+	_p->player_current_luck += amount;
 }
 
 void FortunaDirector::upgrade_player_invincibility(bool invincibility)
@@ -610,7 +610,7 @@ void FortunaDirector::increase_difficulty(int bounty)
 	}
 
 	if ( bounty >= _p->chonky_shark_takeover_threshold ) {
-		_p->shark_spawner->suspend();
+		//_p->shark_spawner->suspend();
 		_p->chonky_shark_spawner->resume();
 		_p->chonky_shark_spawner->set_interval(
 				std::max(

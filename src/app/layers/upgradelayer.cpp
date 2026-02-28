@@ -22,6 +22,7 @@ UpgradeLayer::UpgradeLayer()
 	m_fire_range_icon		= PRELOAD_TEXTURE("fire_range_icon", "resources/icon/upgr_icon_projectile_range.png", frame_grid)->m_s_texture;
 	m_add_cannon_icon		= PRELOAD_TEXTURE("add_cannon_icon", "resources/icon/upgr_icon_cannon_amount.png", frame_grid)->m_s_texture;
 	m_turn_speed_icon		= PRELOAD_TEXTURE("turn_speed_icon", "resources/icon/upgr_icon_turn_speed.png", frame_grid)->m_s_texture;
+	m_piercing_chance_icon	= PRELOAD_TEXTURE("piercing_chance_icon", "resources/icon/upgr_icon_piercing_chance.png", frame_grid)->m_s_texture;
 
 	m_card_1_texture_emissive = PRELOAD_TEXTURE("card_emissive_1", "resources/emissive/upgrate_card_emissive_border_and_center_card_1.png", frame_grid)->m_s_texture;
 	m_card_2_texture_emissive = PRELOAD_TEXTURE("card_emissive_2", "resources/emissive/upgrate_card_emissive_border_and_center_card_2.png", frame_grid)->m_s_texture;
@@ -70,6 +71,10 @@ void UpgradeLayer::on_render()
 
 void UpgradeLayer::draw_upgrade_cards()
 {
+	if ( m_current_loot_table_values.size() < 3 ) {
+		return;
+	}
+
 	auto& vp			  = gApp()->viewport();
 	Vector2 origin		  = vp->viewport_origin();
 	float scale			  = vp->viewport_scale();
@@ -161,9 +166,6 @@ void UpgradeLayer::apply_upgrade(LootTableValue upgrade_info)
 			upgrade_amount = director->player_luck() * (m_base_upgrade_luck * upgrade_multyplier);
 			director->upgrade_player_luck(upgrade_amount);
 			m_loot_table.set_expected_value(director->player_luck());
-			if ( director->player_luck() >= 1.0 ) {
-				director->drop_chances.luck = 0;
-			}
 			PS_LOG(LOG_INFO, std::format("Luck Upgrade Applied: {:.2f}", upgrade_amount));
 			PS_LOG(LOG_INFO, std::format("Player Luck: {:.2f}", director->player_luck()));
 			break;
@@ -294,7 +296,7 @@ std::string UpgradeLayer::upgrade_type_to_string(int index)
 		case 8:
 			return "Luck";
 		case 9:
-			return "Mulit Shot";
+			return "Multi Shot";
 		default:
 			return "Unknown";
 	}
@@ -413,9 +415,7 @@ void UpgradeLayer::draw_upgrade_preview(Vector2 card_pos, LootTableValue upgrade
 		case 8:
 			preview = std::format(
 					"{:.1f}% -> {:.1f}%", director->player_luck() * 100,
-					std::clamp(
-							(director->player_luck() + director->player_luck() * (m_base_upgrade_luck * upgrade_multyplier)) * 100, -100.0f, 100.0f
-					)
+					(director->player_luck() + director->player_luck() * (m_base_upgrade_luck * upgrade_multyplier)) * 100
 			);
 			break;
 		case 9:
@@ -486,7 +486,7 @@ void UpgradeLayer::draw_upgrade_icon(int index, Vector2 card_pos)
 			DrawTextureEx(m_turn_speed_icon, pos, 0, scale, WHITE);
 			break;
 		case 7:
-			// DrawTextureEx(m_fire_rate_icon, pos, 0, scale, WHITE);
+			DrawTextureEx(m_piercing_chance_icon, pos, 0, scale, WHITE);
 			break;
 		case 8:
 			DrawTextureEx(m_luck_icon, pos, 0, scale, WHITE);
