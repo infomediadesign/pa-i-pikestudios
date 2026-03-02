@@ -127,6 +127,7 @@ void DeathScreenLayer::on_render()
 			gApp()->call_later([]() { gApp()->pop_layer<AppLayer>(); });
 			gApp()->call_later([]() { gApp()->game_director_ref().reset(new FortunaDirector()); });
 			gApp()->call_later([]() { gApp()->push_layer<AppLayer>(); });
+			HideCursor();
 		}
 	}
 }

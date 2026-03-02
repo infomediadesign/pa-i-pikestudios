@@ -128,6 +128,7 @@ void AppLayer::on_update(const float dt)
 								app_layer->suspend();
 								director->set_is_active(false);
 							}
+							HideCursor();
 					}
 
 				} else {
@@ -140,6 +141,7 @@ void AppLayer::on_update(const float dt)
 						});
 						app_layer->suspend();
 						director->set_is_active(false);
+						ShowCursor();
 					}
 				}
 			}
