@@ -85,13 +85,16 @@ void PauseLayer::draw_statistics()
 	Vector2 origin = vp->viewport_origin();
 	float scale	   = vp->viewport_scale();
 
-	Rectangle stats_base_bounds{origin.x + 20 * scale, origin.y + 20 * scale, 200 * scale, 100 * scale};
+	m_stats_base_bounds = {origin.x + 20 * scale, origin.y + 20 * scale, 200 * scale, 100 * scale};
 
 	GuiSetStyle(DEFAULT, TEXT_SIZE, 10 * scale);
 	GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt({255, 255, 255, 255}));
-	draw_time(stats_base_bounds, origin, scale);
-	draw_kill_stats(stats_base_bounds, origin, scale);
+	draw_time(scale);
+	draw_kill_stats(scale);
+	draw_player_stats(scale);
 
+
+	m_stats_base_bounds = {origin.x + 20 * scale, origin.y + 20 * scale, 200 * scale, 100 * scale};
 }
 
 std::string PauseLayer::time_to_string(float time) const
@@ -102,42 +105,122 @@ std::string PauseLayer::time_to_string(float time) const
 	return std::format("{:02d}:{:02d}", min, sec);
 }
 
-void PauseLayer::draw_time(Rectangle bounds, Vector2 origin, float scale)
+void PauseLayer::draw_time(float scale)
 {
-	auto& vp				  = gApp()->viewport();
+	auto& vp = gApp()->viewport();
 	if ( !vp ) {
 		return;
 	}
 
+	Vector2 origin = vp->viewport_origin();
+	float center_x = origin.x + (vp->viewport_base_size().x / 2.0f) * scale;
+	float pos_x	   = center_x - m_stats_base_bounds.width / 2.0f;
+
 	std::string time_text = time_to_string(m_director->statistics().time_played);
-	GuiSetStyle(DEFAULT, TEXT_SIZE, 15 * scale);
+	GuiSetStyle(DEFAULT, TEXT_SIZE, 20 * scale);
 	GuiSetStyle(LABEL, TEXT_ALIGNMENT, TEXT_ALIGN_CENTER);
-	GuiLabel({vp->viewport_base_size().x, bounds.y, bounds.width, bounds.height}, time_text.c_str());
+	GuiLabel({pos_x, m_stats_base_bounds.y, m_stats_base_bounds.width, m_stats_base_bounds.height}, time_text.c_str());
 	GuiSetStyle(LABEL, TEXT_ALIGNMENT, TEXT_ALIGN_LEFT);
 	GuiSetStyle(DEFAULT, TEXT_SIZE, 10 * scale);
 }
 
-void PauseLayer::draw_kill_stats(Rectangle bounds, Vector2 origin, float scale)
+void PauseLayer::draw_kill_stats(float scale)
 {
-	bounds.y += 30 * scale;
+	float vertical_spacing	 = 10 * scale;
+	float horizontal_spacing = 75 * scale;
+	
 	GuiSetStyle(DEFAULT, TEXT_SIZE, 15 * scale);
-	GuiLabel(bounds, "Kills");
-	bounds.y += 20 * scale;
-	GuiSetStyle(DEFAULT, TEXT_SIZE, 10 * scale);
+	GuiLabel(m_stats_base_bounds, "Kills");
+	m_stats_base_bounds.y += 20 * scale;
+	GuiSetStyle(DEFAULT, TEXT_SIZE, 6 * scale);
 	if ( m_director->stats.sharks_killed > 0 ) {
-		GuiLabel(bounds, ("Sharks: " + std::to_string(m_director->statistics().sharks_killed)).c_str());
+		GuiLabel(m_stats_base_bounds, "Sharks:");
+		GuiLabel(
+				{m_stats_base_bounds.x + horizontal_spacing, m_stats_base_bounds.y, m_stats_base_bounds.width, m_stats_base_bounds.height},
+				std::to_string(m_director->statistics().sharks_killed).c_str()
+		);
 	}
-	bounds.y += 20 * scale;
+	m_stats_base_bounds.y += vertical_spacing;
 	if ( m_director->stats.tentacles_killed > 0 ) {
-		GuiLabel(bounds, ("Tentacles: " + std::to_string(m_director->statistics().tentacles_killed)).c_str());
+		GuiLabel(m_stats_base_bounds, "Tentacles:");
+		GuiLabel(
+				{m_stats_base_bounds.x + horizontal_spacing, m_stats_base_bounds.y, m_stats_base_bounds.width, m_stats_base_bounds.height},
+				std::to_string(m_director->statistics().tentacles_killed).c_str()
+		);
 	}
-	bounds.y += 20 * scale;
+	m_stats_base_bounds.y += vertical_spacing;
 	if ( m_director->stats.hunters_killed > 0 ) {
-		GuiLabel(bounds, ("Hunters: " + std::to_string(m_director->statistics().hunters_killed)).c_str());
+		GuiLabel(m_stats_base_bounds, "Hunters:");
+		GuiLabel(
+				{m_stats_base_bounds.x + horizontal_spacing, m_stats_base_bounds.y, m_stats_base_bounds.width, m_stats_base_bounds.height},
+				std::to_string(m_director->statistics().hunters_killed).c_str()
+		);
 	}
-	bounds.y += 20 * scale;
+	m_stats_base_bounds.y += vertical_spacing;
 	if ( m_director->stats.chonky_sharks_killed > 0 ) {
-		GuiLabel(bounds, ("Chonky sharks: " + std::to_string(m_director->statistics().chonky_sharks_killed)).c_str());
+		GuiLabel(m_stats_base_bounds, "Chonky sharks:");
+		GuiLabel(
+				{m_stats_base_bounds.x + horizontal_spacing, m_stats_base_bounds.y, m_stats_base_bounds.width, m_stats_base_bounds.height},
+				std::to_string(m_director->statistics().chonky_sharks_killed).c_str()
+		);
 	}
 }
 
+void PauseLayer::draw_player_stats(float scale)
+{
+	float vertical_spacing = 10 * scale;
+	float horizontal_spacing = 75 * scale;
+	m_stats_base_bounds.y += 30 * scale;
+	GuiSetStyle(DEFAULT, TEXT_SIZE, 15 * scale);
+	GuiLabel(m_stats_base_bounds, "Player Stats");
+	m_stats_base_bounds.y += 20 * scale;
+	GuiSetStyle(DEFAULT, TEXT_SIZE, 6 * scale);
+	GuiLabel(m_stats_base_bounds, "Speed:");
+	GuiLabel(
+			{m_stats_base_bounds.x + horizontal_spacing, m_stats_base_bounds.y, m_stats_base_bounds.width, m_stats_base_bounds.height},
+			std::format("{:.2f}", m_director->player_max_velocity()).c_str()
+	);
+	m_stats_base_bounds.y += vertical_spacing;
+	GuiLabel(m_stats_base_bounds, "Turn Speed:");
+	GuiLabel(
+			{m_stats_base_bounds.x + horizontal_spacing, m_stats_base_bounds.y, m_stats_base_bounds.width, m_stats_base_bounds.height},
+			std::format("{:.2f}", m_director->player_input_rotation_mult()).c_str()
+	);
+	m_stats_base_bounds.y += vertical_spacing;
+	GuiLabel(m_stats_base_bounds, "Fire Rate:");
+	GuiLabel(
+			{m_stats_base_bounds.x + horizontal_spacing, m_stats_base_bounds.y, m_stats_base_bounds.width, m_stats_base_bounds.height},
+			std::format("{:.2f}s", m_director->player_current_fire_rate()).c_str()
+	);
+	m_stats_base_bounds.y += vertical_spacing;
+	GuiLabel(m_stats_base_bounds, "Projectile Speed:");
+	GuiLabel(
+			{m_stats_base_bounds.x + horizontal_spacing, m_stats_base_bounds.y, m_stats_base_bounds.width, m_stats_base_bounds.height},
+			std::format("{:.2f}", m_director->player_current_projectile_speed()).c_str()
+	);
+	m_stats_base_bounds.y += vertical_spacing;
+	GuiLabel(m_stats_base_bounds, "Fire Range:");
+	GuiLabel(
+			{m_stats_base_bounds.x + horizontal_spacing, m_stats_base_bounds.y, m_stats_base_bounds.width, m_stats_base_bounds.height},
+			std::format("{:.2f}", m_director->player_current_fire_range()).c_str()
+	);
+	m_stats_base_bounds.y += vertical_spacing;
+	GuiLabel(m_stats_base_bounds, "Piercing Chance:");
+	GuiLabel(
+			{m_stats_base_bounds.x + horizontal_spacing, m_stats_base_bounds.y, m_stats_base_bounds.width, m_stats_base_bounds.height},
+			std::format("{:.2f}%", m_director->player_piercing_chance()).c_str()
+	);
+	m_stats_base_bounds.y += vertical_spacing;
+	GuiLabel(m_stats_base_bounds, "Luck:");
+	GuiLabel(
+			{m_stats_base_bounds.x + horizontal_spacing, m_stats_base_bounds.y, m_stats_base_bounds.width, m_stats_base_bounds.height},
+			std::format("{:.2f}%", m_director->player_luck() * 100).c_str()
+	);
+	m_stats_base_bounds.y += vertical_spacing;
+	GuiLabel(m_stats_base_bounds, "Multi Shot:");
+	GuiLabel(
+			{m_stats_base_bounds.x + horizontal_spacing, m_stats_base_bounds.y, m_stats_base_bounds.width, m_stats_base_bounds.height},
+			std::format("{}", m_director->player_projectile_amount()).c_str()
+	);
+	m_stats_base_bounds.y += vertical_spacing;
+}

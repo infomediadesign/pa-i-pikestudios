@@ -13,8 +13,9 @@ class PauseLayer: public PSInterfaces::Layer
 
 	void draw_statistics();
 	std::string time_to_string(float time) const;
-	void draw_time(Rectangle bounds, Vector2 origin, float scale);
-	void draw_kill_stats(Rectangle bounds, Vector2 origin, float scale);
+	void draw_time(float scale);
+	void draw_kill_stats(float scale);
+	void draw_player_stats(float scale);
 	
 	enum BtnState {
 		Idle = 0,
@@ -28,6 +29,7 @@ class PauseLayer: public PSInterfaces::Layer
 	Texture2D m_button;
 
 	FortunaDirector* m_director;
+	Rectangle m_stats_base_bounds;
 
 
 };
