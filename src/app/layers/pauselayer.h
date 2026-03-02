@@ -30,6 +30,4 @@ class PauseLayer: public PSInterfaces::Layer
 
 	FortunaDirector* m_director;
 	Rectangle m_stats_base_bounds;
-
-
 };

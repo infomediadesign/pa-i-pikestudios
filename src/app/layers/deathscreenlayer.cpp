@@ -130,6 +130,8 @@ void DeathScreenLayer::on_render()
 			HideCursor();
 		}
 	}
+
+	draw_kill_stats(sk);
 }
 
 void DeathScreenLayer::set_score_should_be_saved(bool should_be_saved)
@@ -153,4 +155,53 @@ void DeathScreenLayer::reset_state()
 	m_name_entered			= false;
 	m_score_layer_instance	= nullptr;
 	gApp()->get_layer<AppLayer>()->set_can_open_pause_menu(true);
+}
+
+void DeathScreenLayer::draw_kill_stats(float scale)
+{
+	auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
+	auto& vp	  = gApp()->viewport();
+	if ( !director && !vp ) {
+		return;
+	}
+	Vector2 origin = vp->viewport_origin();
+
+	Rectangle bounds		 = {origin.x + 20 * scale, origin.y + 60 * scale, 200 * scale, 100 * scale};
+	float vertical_spacing	 = 10 * scale;
+	float horizontal_spacing = 75 * scale;
+
+	GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt({255, 255, 255, 255}));
+	GuiSetStyle(DEFAULT, TEXT_SIZE, 15 * scale);
+	GuiLabel(bounds, "Kills");
+	bounds.y += 20 * scale;
+	GuiSetStyle(DEFAULT, TEXT_SIZE, 6 * scale);
+	if ( director->stats.sharks_killed > 0 ) {
+		GuiLabel(bounds, "Sharks:");
+		GuiLabel(
+				{bounds.x + horizontal_spacing, bounds.y, bounds.width, bounds.height}, std::to_string(director->statistics().sharks_killed).c_str()
+		);
+	}
+	bounds.y += vertical_spacing;
+	if ( director->stats.tentacles_killed > 0 ) {
+		GuiLabel(bounds, "Tentacles:");
+		GuiLabel(
+				{bounds.x + horizontal_spacing, bounds.y, bounds.width, bounds.height},
+				std::to_string(director->statistics().tentacles_killed).c_str()
+		);
+	}
+	bounds.y += vertical_spacing;
+	if ( director->stats.hunters_killed > 0 ) {
+		GuiLabel(bounds, "Hunters:");
+		GuiLabel(
+				{bounds.x + horizontal_spacing, bounds.y, bounds.width, bounds.height}, std::to_string(director->statistics().hunters_killed).c_str()
+		);
+	}
+	bounds.y += vertical_spacing;
+	if ( director->stats.chonky_sharks_killed > 0 ) {
+		GuiLabel(bounds, "Chonky sharks:");
+		GuiLabel(
+				{bounds.x + horizontal_spacing, bounds.y, bounds.width, bounds.height},
+				std::to_string(director->statistics().chonky_sharks_killed).c_str()
+		);
+	}
 }

@@ -18,6 +18,7 @@ class DeathScreenLayer : public PSInterfaces::Layer
 		bool score_should_be_saved() const;
 		void set_score_layer_instance(ScoreLayer* score_layer);
 		void reset_state();
+		void draw_kill_stats(float scale);
 
 	private:
 		bool m_score_should_be_saved = false;
