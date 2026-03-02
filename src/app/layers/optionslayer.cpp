@@ -171,7 +171,7 @@ void OptionsLayer::on_render()
 
 		float button_pos_y = screen_size.y - btn_height / 2.0f - button_boarder_padding;
 
-		GuiSetStyle(DEFAULT, TEXT_SIZE, 14 * scale);
+		GuiSetStyle(DEFAULT, TEXT_SIZE, 10 * scale);
 		GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt({0, 0, 0, 255}));
 
 		Vector2 mainmenu_pos = {anchor.x / scale + button_boarder_padding + btn_width / 2.0f, anchor.y / scale + button_pos_y};

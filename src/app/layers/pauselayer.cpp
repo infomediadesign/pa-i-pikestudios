@@ -50,6 +50,7 @@ void PauseLayer::on_render()
 				upgrade_layer->m_layer_is_visible = true;
 			}
 		});
+		HideCursor();
 	}
 
 	button_pos.y += button_height + 8.0f;

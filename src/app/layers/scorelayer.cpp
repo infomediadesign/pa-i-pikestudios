@@ -168,17 +168,16 @@ void ScoreLayer::draw_score_board()
 
 	for ( const auto& entry: highscore ) {
 
-		GuiPanel(name_field_rect, NULL);
+		//GuiPanel(name_field_rect, NULL);
 		GuiLabel(name_field_rect, (" " + entry.name).c_str());
 
-		GuiPanel(score_field_rect, NULL);
+		//GuiPanel(score_field_rect, NULL);
 		GuiLabel(score_field_rect, (" " + std::to_string(entry.score)).c_str());
 
-		GuiPanel(left_rank_rect, NULL);
+		//GuiPanel(left_rank_rect, NULL);
 		GuiLabel({left_rank_rect.x + 2, left_rank_rect.y, left_rank_rect.width +2, left_rank_rect.height}, ("" + std::to_string(rank) + ".").c_str());
-
 		
-		GuiPanel(right_color_rect, NULL);
+		//GuiPanel(right_color_rect, NULL);
 		GuiLabel(right_color_rect, "");
 		
 		name_field_rect.y += spacing;
@@ -223,6 +222,7 @@ void ScoreLayer::draw_score_board_buttons()
 			gApp()->call_later([]() { gApp()->pop_layer<AppLayer>(); });
 			gApp()->call_later([]() { gApp()->switch_layer<ScoreLayer, AppLayer>(); });
 			gApp()->call_later([]() { gApp()->game_director_ref().reset(new FortunaDirector()); });
+			HideCursor();
 		}
 	}
 }

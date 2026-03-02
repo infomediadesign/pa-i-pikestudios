@@ -77,6 +77,7 @@ public:
 	Texture2D m_add_cannon_icon;
 	Texture2D m_turn_speed_icon;
 	Texture2D m_piercing_chance_icon;
+	Texture2D m_player_speed_icon;
 
 	// base upgrade values for the different upgrades
 	float m_base_upgrade_player_speed	  = CFG_VALUE<float>("upgrade_player_speed_base_value", 0.075f);
