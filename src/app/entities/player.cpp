@@ -238,27 +238,30 @@ void Player::set_is_invincible(bool invincible)
 void Player::fire_cannons(float dt)
 {
 	int shoot_left_key = std::get<int>(PSCore::SettingsManager::inst()->settings.at("user_preferences")->value("key_left_shoot").value_or(KEY_LEFT));
-	int shoot_right_key = std::get<int>(PSCore::SettingsManager::inst()->settings.at("user_preferences")->value("key_right_shoot").value_or(KEY_RIGHT));
-	int shoot_all_key   = std::get<int>(PSCore::SettingsManager::inst()->settings.at("user_preferences")->value("key_all_shoot").value_or(KEY_SPACE));
-	
-  auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
+	int shoot_right_key =
+			std::get<int>(PSCore::SettingsManager::inst()->settings.at("user_preferences")->value("key_right_shoot").value_or(KEY_RIGHT));
+	int shoot_all_key = std::get<int>(PSCore::SettingsManager::inst()->settings.at("user_preferences")->value("key_all_shoot").value_or(KEY_SPACE));
+
+	auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
 	if ( director ) {
-	switch ( m_fire_mode ) {
+		switch ( m_fire_mode ) {
 
-		case FireMode::InSequence: {
-			m_time_since_last_shot_left += dt;
-			m_time_since_last_shot_right += dt;
-			if ( IsKeyDown(shoot_all_key) && !m_fire_sequence_ongoing ) {
-				m_fire_sequence_ongoing		  = true;
-				m_fire_sequence_ongoing_right = true;
-				m_fire_sequence_ongoing_left  = true;
-			}
+			case FireMode::InSequence: {
+				m_time_since_last_shot_left += dt;
+				m_time_since_last_shot_right += dt;
+				if ( IsKeyDown(shoot_all_key) && !m_fire_sequence_ongoing ) {
+					m_fire_sequence_ongoing		  = true;
+					m_fire_sequence_ongoing_right = true;
+					m_fire_sequence_ongoing_left  = true;
+				}
 
-			if ( ( IsMouseButtonDown(MOUSE_BUTTON_RIGHT) || IsKeyDown(shoot_right_key) ) && !m_fire_sequence_ongoing && !m_fire_sequence_ongoing_right ) {
-				m_fire_sequence_ongoing_right = true;
-			}
-			if ( m_time_since_last_shot_right > m_cannon_container.at(0)->fire_rate() / m_cannon_container.size() && m_fire_sequence_ongoing_right ) {
-				m_cannon_container.at(m_firing_cannon_index.right)->fire();
+				if ( (IsMouseButtonDown(MOUSE_BUTTON_RIGHT) || IsKeyDown(shoot_right_key)) && !m_fire_sequence_ongoing &&
+					 !m_fire_sequence_ongoing_right ) {
+					m_fire_sequence_ongoing_right = true;
+				}
+				if ( m_time_since_last_shot_right > m_cannon_container.at(0)->fire_rate() / m_cannon_container.size() &&
+					 m_fire_sequence_ongoing_right ) {
+					m_cannon_container.at(m_firing_cannon_index.right)->fire(director->player_projectile_amount());
 
 					m_firing_cannon_index.right += 2;
 					m_time_since_last_shot_right = 0;
@@ -269,7 +272,8 @@ void Player::fire_cannons(float dt)
 						m_fire_sequence_ongoing		  = false;
 					}
 				}
-				if ( (IsMouseButtonDown(MOUSE_BUTTON_LEFT) || IsKeyDown(shoot_left_key) ) && !m_fire_sequence_ongoing && !m_fire_sequence_ongoing_left ) {
+				if ( (IsMouseButtonDown(MOUSE_BUTTON_LEFT) || IsKeyDown(shoot_left_key)) && !m_fire_sequence_ongoing &&
+					 !m_fire_sequence_ongoing_left ) {
 					m_fire_sequence_ongoing_left = true;
 				}
 
@@ -287,30 +291,30 @@ void Player::fire_cannons(float dt)
 				break;
 			}
 
-		case FireMode::SameTime: {
-			if ( IsMouseButtonDown(MOUSE_BUTTON_LEFT) || IsKeyDown(shoot_left_key) ) {
-				for ( auto cannon: m_cannon_container ) {
-					if ( cannon->positioning() == Cannon::CannonPositioning::Left ) {
-						cannon->fire();
+			case FireMode::SameTime: {
+				if ( IsMouseButtonDown(MOUSE_BUTTON_LEFT) || IsKeyDown(shoot_left_key) ) {
+					for ( auto cannon: m_cannon_container ) {
+						if ( cannon->positioning() == Cannon::CannonPositioning::Left ) {
+							cannon->fire(director->player_projectile_amount());
+						}
 					}
 				}
-			}
-			if ( IsMouseButtonDown(MOUSE_BUTTON_RIGHT) || IsKeyDown(shoot_right_key) ) {
-				for ( auto cannon: m_cannon_container ) {
-					if ( cannon->positioning() == Cannon::CannonPositioning::Right ) {
-						cannon->fire();
+				if ( IsMouseButtonDown(MOUSE_BUTTON_RIGHT) || IsKeyDown(shoot_right_key) ) {
+					for ( auto cannon: m_cannon_container ) {
+						if ( cannon->positioning() == Cannon::CannonPositioning::Right ) {
+							cannon->fire(director->player_projectile_amount());
+						}
 					}
 				}
-			}
-			if ( IsKeyDown(shoot_all_key) ) {
-				for ( auto cannon: m_cannon_container ) {
-					cannon->fire();
+				if ( IsKeyDown(shoot_all_key) ) {
+					for ( auto cannon: m_cannon_container ) {
+						cannon->fire(director->player_projectile_amount());
+					}
+					break;
 				}
-				break;
 			}
 		}
 	}
-	
 }
 
 void Player::render()
