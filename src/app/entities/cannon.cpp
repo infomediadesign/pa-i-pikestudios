@@ -24,6 +24,14 @@ Cannon::Cannon() : PSInterfaces::IEntity("cannon")
 	m_c_animation_controller.add_animation_at_index(0, 2);
 	m_c_projectile_base_rotation_offset = 20;
 	m_c_projectile_rotation_offset = m_c_projectile_base_rotation_offset;
+
+	SetSoundVolume(m_shoot_sound, 0.4);
+	SetSoundPitch(m_shoot_sound, 1);
+}
+
+Cannon::~Cannon()
+{
+	UnloadSound(m_shoot_sound);
 }
 
 void Cannon::update(const float dt)
@@ -77,6 +85,13 @@ void Cannon::fire(int projectile_amount)
 		m_c_projectile_rotation_offset = m_c_projectile_base_rotation_offset;
 		m_c_time_since_last_shot	   = 0.0f;
 		m_c_animation_controller.set_animation_at_index(1, 1, 2);
+
+		int random = PSUtils::gen_rand(95,105);
+
+		SetSoundPitch(m_shoot_sound, (float)random / 100);
+		SetSoundVolume(m_shoot_sound, 0.4f * (float)random / 100);
+
+		PlaySound(m_shoot_sound);
 	}
 }
 

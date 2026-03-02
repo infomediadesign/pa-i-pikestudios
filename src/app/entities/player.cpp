@@ -75,20 +75,19 @@ Player::Player() : PSInterfaces::IEntity("player")
 	SetShaderValue(m_flash_shader, GetShaderLocation(m_flash_shader, "flash_color"), &m_flash_color, SHADER_UNIFORM_VEC4);
 	m_flash_alpha_location = GetShaderLocation(m_flash_shader, "flash_alpha");
 
-	// Upgrades
-	std::vector<float> chances = {50, 25, 25};
-	m_loot_table.add_loot_table(0, 20, chances);
-	chances = {30, 10, 40, 20};
-	m_loot_table.add_loot_table(1, 30, chances);
-	chances = {99, 1};
-	m_loot_table.add_loot_table(2, 10, chances);
-
-	m_loot_table.loot_table_values(3);
+	// Sound
+	SetSoundVolume(m_hurt_sound, 1);
+	SetSoundVolume(m_death_sound, 1);
+	SetSoundVolume(m_shoot_sound, 1);
 }
 
 Player::~Player()
 {
 	UnloadShader(m_flash_shader);
+
+	UnloadSound(m_hurt_sound);
+	UnloadSound(m_death_sound);
+	UnloadSound(m_shoot_sound);
 }
 
 void Player::update(const float dt)
@@ -183,6 +182,7 @@ void Player::on_hit()
 		m_can_be_hit = false;
 		if ( auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director()) ) {
 			director->set_player_health(director->player_health() - 1);
+			PlaySound(m_hurt_sound);
 			if ( director->player_health() <= 0 ) {
 				on_death();
 			}
@@ -218,6 +218,8 @@ void Player::on_death()
 
 	m_animation_controller.set_animation_at_index(0, 1, 1);
 	m_animation_controller.set_animation_at_index(4, 0, 3);
+
+	PlaySound(m_death_sound);
 
 	gApp()->get_layer<AppLayer>()->set_can_open_pause_menu(false);
 	gApp()->push_layer<DeathScreenLayer>();

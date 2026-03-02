@@ -16,6 +16,7 @@ class Cannon : public PSInterfaces::IRenderable
 {
 public:
 	Cannon();
+	~Cannon();
 	void update(const float dt) override;
 	void render() override;
 
@@ -94,4 +95,6 @@ private:
 	std::shared_ptr<Cannon> m_c_shared_ptr_this;
 
 	std::shared_ptr<PSInterfaces::IEntity> m_c_parent;
+
+	Sound m_shoot_sound = LoadSound("resources/sfx/cannon_shoot.mp3");
 };
