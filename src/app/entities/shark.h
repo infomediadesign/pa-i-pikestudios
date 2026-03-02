@@ -47,8 +47,7 @@ protected:
 
 	void determined_if_marked();
 
-
-	bool m_marked;
+	bool m_marked, m_was_in_playfield = false;
 
 	std::shared_ptr<Shark> m_self;
 	std::shared_ptr<Body> m_body;

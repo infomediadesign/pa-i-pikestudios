@@ -90,22 +90,38 @@ Application::Application()
 	g_app = this;
 }
 
-void PSCore::Application::init(const AppSpec& spec) {
+void PSCore::Application::init(const AppSpec& spec)
+{
 	SetConfigFlags(FLAG_WINDOW_RESIZABLE);
 	SetTraceLogCallback(_p->log_callback);
 
-	if ( CFG_VALUE<bool>("enable_vsync", false) )
+	bool msaa = false, vsync = false, fullscreen = true;
+
+	if ( PSCore::SettingsManager::inst()->settings.find("user_preferences") == PSCore::SettingsManager::inst()->settings.end() ) {
+		PSCore::SettingsManager::inst()->add_settings("user_preferences", std::make_unique<PSCore::Settings>("user_preferences.cfg", true));
+	}
+
+	if ( PSCore::SettingsManager::inst()->settings.find("user_preferences") != PSCore::SettingsManager::inst()->settings.end() ) {
+		auto& settings = PSCore::SettingsManager::inst()->settings["user_preferences"];
+		vsync		   = std::get<bool>(settings->value("vsync").value_or(false));
+		msaa		   = std::get<bool>(settings->value("msaa4x").value_or(false));
+		fullscreen	   = std::get<bool>(settings->value("fullscreen").value_or(true));
+	}
+
+	if ( msaa )
 		SetConfigFlags(FLAG_VSYNC_HINT);
 
-	if ( CFG_VALUE<bool>("enable_msaa", false) )
+	if ( vsync )
 		SetConfigFlags(FLAG_MSAA_4X_HINT);
 
-	if ( CFG_VALUE<bool>("default_fullscreeen", true) )
-		_p->toggle_fullscreen();
-	
 	InitWindow(spec.size.x, spec.size.y, spec.title);
 	
 	SetWindowIcon(LoadImage(spec.icon_path));
+
+	if ( fullscreen )
+		_p->toggle_fullscreen();
+
+	SetWindowIcon(LoadImage("resources/appicon.png"));
 
 	SetExitKey(KEY_NULL);
 };
@@ -204,3 +220,21 @@ float PSCore::Application::delta_time()
 {
 	return _p->m_time_manager->delta_t().count();
 };
+
+bool PSCore::Application::toggle_fullscreen()
+{
+	_p->toggle_fullscreen();
+#ifdef _WIN32
+	return IsWindowState(FLAG_BORDERLESS_WINDOWED_MODE);
+#else
+	return IsWindowFullscreen();
+#endif
+};
+
+void PSCore::Application::set_target_fps(int fps)
+{
+	_p->m_time_manager->set_target_fps(fps);
+	PS_LOG(LOG_INFO, TextFormat("Target FPS set to %d", fps));
+};
+
+void PSCore::Application::set_sound_volume(SoundType type, float volume) {};
