@@ -31,7 +31,8 @@ class HunterPriv
 	float speed					   = CFG_VALUE<float>("hunter_speed", 10);
 	bool in_view				   = false;
 	float avoidance_steer_strength = CFG_VALUE<float>("hunter_avoidance_steer_strength", 1000.f);
-	float offset_scale = CFG_VALUE<float>("offset_scale", 0.1f);
+	float offset_scale			   = CFG_VALUE<float>("offset_scale", 0.1f);
+	bool clamped_pathfinding	   = CFG_VALUE<bool>("clamped_pathfinding", false);
 
 	Vector2 velocity = {0, 0};
 
@@ -266,7 +267,7 @@ void Hunter::draw_debug()
 		Vector2* arr = new Vector2[debug_points.size()];
 		std::copy(debug_points.begin(), debug_points.end(), arr);
 		DrawSplineCatmullRom(arr, debug_points.size(), 3, RED);
-		operator delete [](arr);
+		operator delete[](arr);
 
 		if ( bounds().has_value() ) {
 			for ( int i = 0; i < bounds().value().size(); i++ ) {
@@ -340,8 +341,7 @@ std::pair<Vector2, Vector2> Hunter::gen_path_egde()
 	if ( Vector2Length(p2 - p1) < 200 ) {
 		if ( map_edge <= 1 ) {
 			p2.y = vp_size.y - p2.y;
-		}
-		else {
+		} else {
 			p2.x = vp_size.x - p2.x;
 		}
 	}
@@ -375,7 +375,7 @@ std::vector<Vector2> Hunter::gen_patrol_path()
 
 	// Generate 2 intermediate points
 	for ( int i = 1; i < 3; i++ ) {
-		float t		  = (float)i / 3.0f;
+		float t		  = (float) i / 3.0f;
 		Vector2 point = Vector2Add(start, Vector2Scale(diff, t));
 
 		// Add random perpendicular offset
@@ -385,8 +385,10 @@ std::vector<Vector2> Hunter::gen_patrol_path()
 		point			   = Vector2Add(point, Vector2Scale(perp, offset));
 
 		// Clamp point within viewport bounds with some margin
-		//point.x = std::clamp(point.x, 20.0f, vp_size.x - 20.0f);
-		//point.y = std::clamp(point.y, 20.0f, vp_size.y - 20.0f);
+		if ( _p->clamped_pathfinding ) {
+			point.x = std::clamp(point.x, 20.0f, vp_size.x - 20.0f);
+			point.y = std::clamp(point.y, 20.0f, vp_size.y - 20.0f);
+		}
 
 		path_points.push_back(point);
 	}
