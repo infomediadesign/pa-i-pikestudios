@@ -14,6 +14,7 @@
 #include <vector>
 #include "coordinatesystem.h"
 #include "layers/applayer.h"
+#include "misc/mapborderinteraction.h"
 #include "pscore/collision.h"
 
 //
@@ -250,7 +251,8 @@ void Shark::update(float dt)
 
 				if ( m_horde_sync_rotation )
 					m_shark_rotation = utilities::rotation_look_at(m_pos, Vector2Add(m_pos, combined));
-			} else {
+
+			} else if ( m_was_in_playfield ) {
 				m_state = State::Attacking;
 			}
 
@@ -283,6 +285,9 @@ void Shark::update(float dt)
 			break;
 		}
 	}
+
+	if ( !misc::map::is_off_screen(this) )
+		m_was_in_playfield = true;
 }
 
 void Shark::on_hit()
@@ -327,17 +332,6 @@ void Shark::draw_debug()
 	}
 
 	DrawText(m_state_string.c_str(), shark_rec.x + 20, shark_rec.y + 20, 12, RED);
-
-	// Shark Debug values
-	// ImGui::Text("Shark Speed: %.0f", m_speed);
-	// ImGui::SameLine();
-	// ImGui::SetNextItemWidth(60);
-	// static float buffer = 0;
-	// ImGui::InputFloat("##range_amount", &buffer, 0.0f, 0.0f, "%.0f");
-	// ImGui::SameLine();
-	// if ( ImGui::Button("Upgrade##Speed") ) {
-	// 	m_speed = buffer;
-	// }
 }
 
 void Shark::render()
@@ -375,6 +369,7 @@ void Shark::set_is_active(bool active)
 	is_active_ = active;
 	if ( is_active_ == true ) {
 		determined_if_marked();
+		m_was_in_playfield = false;
 	}
 	m_body->set_is_active(active);
 	m_fin->set_is_active(active);
