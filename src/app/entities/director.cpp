@@ -277,7 +277,20 @@ void FortunaDirector::draw_debug()
 	if ( ImGui::Button("Upgrade##ProjectileAmount") ) {
 		upgrade_player_projectile_amount(projectile_amount);
 	}
+
+	// Luck
+	static float luck_amount = 0.05f;
+	ImGui::Text("Luck: %.2f", player_luck());
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(60);
+	ImGui::InputFloat("##luck_amount", &luck_amount, 0.0f, 0.0f, "%.2f");
+	ImGui::SameLine();
+	if ( ImGui::Button("Upgrade##Luck") ) {
+		upgrade_player_luck(luck_amount);
+	}
 }
+
+
 
 std::shared_ptr<Player> FortunaDirector::spawn_player(const Vector2& position)
 {

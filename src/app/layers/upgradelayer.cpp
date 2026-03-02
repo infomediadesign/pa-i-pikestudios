@@ -23,6 +23,7 @@ UpgradeLayer::UpgradeLayer()
 	m_add_cannon_icon		= PRELOAD_TEXTURE("add_cannon_icon", "resources/icon/upgr_icon_cannon_amount.png", frame_grid)->m_s_texture;
 	m_turn_speed_icon		= PRELOAD_TEXTURE("turn_speed_icon", "resources/icon/upgr_icon_turn_speed.png", frame_grid)->m_s_texture;
 	m_piercing_chance_icon	= PRELOAD_TEXTURE("piercing_chance_icon", "resources/icon/upgr_icon_piercing_chance.png", frame_grid)->m_s_texture;
+	m_player_speed_icon		= PRELOAD_TEXTURE("player_speed_icon", "resources/icon/upgr_icon_movement_speed.png", frame_grid)->m_s_texture;
 
 	m_card_1_texture_emissive = PRELOAD_TEXTURE("card_emissive_1", "resources/emissive/upgrate_card_emissive_border_and_center_card_1.png", frame_grid)->m_s_texture;
 	m_card_2_texture_emissive = PRELOAD_TEXTURE("card_emissive_2", "resources/emissive/upgrate_card_emissive_border_and_center_card_2.png", frame_grid)->m_s_texture;
@@ -480,7 +481,7 @@ void UpgradeLayer::draw_upgrade_icon(int index, Vector2 card_pos)
 			// DrawTextureEx(m_fire_rate_icon, pos, 0, scale, WHITE);
 			break;
 		case 5:
-			// DrawTextureEx(m_fire_rate_icon, pos, 0, scale, WHITE);
+			DrawTextureEx(m_player_speed_icon, pos, 0, scale, WHITE);
 			break;
 		case 6:
 			DrawTextureEx(m_turn_speed_icon, pos, 0, scale, WHITE);
