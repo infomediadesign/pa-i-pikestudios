@@ -31,6 +31,7 @@ class HunterPriv
 	float speed					   = CFG_VALUE<float>("hunter_speed", 10);
 	bool in_view				   = false;
 	float avoidance_steer_strength = CFG_VALUE<float>("hunter_avoidance_steer_strength", 1000.f);
+	float offset_scale = CFG_VALUE<float>("offset_scale", 0.1f);
 
 	Vector2 velocity = {0, 0};
 
@@ -257,8 +258,7 @@ void Hunter::draw_debug()
 
 		std::vector<Vector2> debug_points = _p->current_patrol_path;
 		for ( auto& point: debug_points ) {
-			point.x *= scale;
-			point.y *= scale;
+			point = vp->position_viewport_to_global(point);
 
 			DrawRectanglePro({point.x, point.y, 10 * scale, 10 * scale}, {5 * scale, 5 * scale}, 0, GREEN);
 		}
@@ -266,6 +266,7 @@ void Hunter::draw_debug()
 		Vector2* arr = new Vector2[debug_points.size()];
 		std::copy(debug_points.begin(), debug_points.end(), arr);
 		DrawSplineCatmullRom(arr, debug_points.size(), 3, RED);
+		operator delete [](arr);
 
 		if ( bounds().has_value() ) {
 			for ( int i = 0; i < bounds().value().size(); i++ ) {
@@ -336,6 +337,15 @@ std::pair<Vector2, Vector2> Hunter::gen_path_egde()
 	p1 = gen_tip();
 	p2 = gen_tip();
 
+	if ( Vector2Length(p2 - p1) < 200 ) {
+		if ( map_edge <= 1 ) {
+			p2.y = vp_size.y - p2.y;
+		}
+		else {
+			p2.x = vp_size.x - p2.x;
+		}
+	}
+
 	return {p1, p2};
 };
 
@@ -364,23 +374,24 @@ std::vector<Vector2> Hunter::gen_patrol_path()
 	Vector2 perp  = {-dir.y, dir.x}; // Perpendicular vector
 
 	// Generate 2 intermediate points
-	for ( int i = 1; i <= 3; i++ ) {
-		float t		  = i / 3.0f;
+	for ( int i = 1; i < 3; i++ ) {
+		float t		  = (float)i / 3.0f;
 		Vector2 point = Vector2Add(start, Vector2Scale(diff, t));
 
 		// Add random perpendicular offset
 		// Scale offset based on distance to allow for nice arcs, but keep it within reasonable bounds
-		float offset_scale = dist * 0.3f;
+		float offset_scale = dist * _p->offset_scale;
 		float offset	   = PSUtils::gen_rand(-offset_scale, offset_scale);
 		point			   = Vector2Add(point, Vector2Scale(perp, offset));
 
 		// Clamp point within viewport bounds with some margin
-		point.x = std::clamp(point.x, 20.0f, vp_size.x - 20.0f);
-		point.y = std::clamp(point.y, 20.0f, vp_size.y - 20.0f);
+		//point.x = std::clamp(point.x, 20.0f, vp_size.x - 20.0f);
+		//point.y = std::clamp(point.y, 20.0f, vp_size.y - 20.0f);
 
 		path_points.push_back(point);
 	}
 
+	path_points.push_back(tips.second);
 	path_points.push_back(tips.second);
 	path_points.push_back(tips.second);
 
@@ -467,7 +478,7 @@ void Hunter::traverse_path_(float dt)
 	_p->point_t += dt * (_p->speed / 100);
 
 	if ( _p->point_t >= 1.0f ) {
-		_p->point_t -= 1.0f;
+		_p->point_t = 0.0f;
 		_p->current_point_index++;
 
 		// If we run out of segments (need 4 points for Catmull-Rom), reset
