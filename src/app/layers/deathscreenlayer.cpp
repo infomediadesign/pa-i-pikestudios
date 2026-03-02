@@ -166,42 +166,57 @@ void DeathScreenLayer::draw_kill_stats(float scale)
 	}
 	Vector2 origin = vp->viewport_origin();
 
-	Rectangle bounds		 = {origin.x + 20 * scale, origin.y + 60 * scale, 200 * scale, 100 * scale};
+	Rectangle bounds		 = {origin.x + 20 * scale, origin.y + 230 * scale, 100 * scale, 100 * scale};
 	float vertical_spacing	 = 10 * scale;
-	float horizontal_spacing = 75 * scale;
+	float horizontal_spacing = 0 * scale;
+
+	float center_x = origin.x + (vp->viewport_base_size().x / 2.0f) * scale;
+	float pos_x	   = center_x - bounds.width / 2.0f;
+
+	bounds = {pos_x, bounds.y, bounds.width, bounds.height};
 
 	GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt({255, 255, 255, 255}));
+	GuiSetStyle(LABEL, TEXT_ALIGNMENT, TEXT_ALIGN_CENTER);
 	GuiSetStyle(DEFAULT, TEXT_SIZE, 15 * scale);
 	GuiLabel(bounds, "Kills");
+	GuiSetStyle(LABEL, TEXT_ALIGNMENT, TEXT_ALIGN_LEFT);
 	bounds.y += 20 * scale;
 	GuiSetStyle(DEFAULT, TEXT_SIZE, 6 * scale);
 	if ( director->stats.sharks_killed > 0 ) {
 		GuiLabel(bounds, "Sharks:");
+		GuiSetStyle(LABEL, TEXT_ALIGNMENT, TEXT_ALIGN_RIGHT);
 		GuiLabel(
 				{bounds.x + horizontal_spacing, bounds.y, bounds.width, bounds.height}, std::to_string(director->statistics().sharks_killed).c_str()
 		);
 	}
 	bounds.y += vertical_spacing;
+	GuiSetStyle(LABEL, TEXT_ALIGNMENT, TEXT_ALIGN_LEFT);
 	if ( director->stats.tentacles_killed > 0 ) {
 		GuiLabel(bounds, "Tentacles:");
+		GuiSetStyle(LABEL, TEXT_ALIGNMENT, TEXT_ALIGN_RIGHT);
 		GuiLabel(
 				{bounds.x + horizontal_spacing, bounds.y, bounds.width, bounds.height},
 				std::to_string(director->statistics().tentacles_killed).c_str()
 		);
 	}
 	bounds.y += vertical_spacing;
+	GuiSetStyle(LABEL, TEXT_ALIGNMENT, TEXT_ALIGN_LEFT);
 	if ( director->stats.hunters_killed > 0 ) {
 		GuiLabel(bounds, "Hunters:");
+		GuiSetStyle(LABEL, TEXT_ALIGNMENT, TEXT_ALIGN_RIGHT);
 		GuiLabel(
 				{bounds.x + horizontal_spacing, bounds.y, bounds.width, bounds.height}, std::to_string(director->statistics().hunters_killed).c_str()
 		);
 	}
 	bounds.y += vertical_spacing;
+	GuiSetStyle(LABEL, TEXT_ALIGNMENT, TEXT_ALIGN_LEFT);
 	if ( director->stats.chonky_sharks_killed > 0 ) {
 		GuiLabel(bounds, "Chonky sharks:");
+		GuiSetStyle(LABEL, TEXT_ALIGNMENT, TEXT_ALIGN_RIGHT);
 		GuiLabel(
 				{bounds.x + horizontal_spacing, bounds.y, bounds.width, bounds.height},
 				std::to_string(director->statistics().chonky_sharks_killed).c_str()
 		);
 	}
+	GuiSetStyle(LABEL, TEXT_ALIGNMENT, TEXT_ALIGN_LEFT);
 }

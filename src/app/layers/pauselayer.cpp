@@ -111,7 +111,6 @@ void PauseLayer::draw_time(float scale)
 	if ( !vp ) {
 		return;
 	}
-
 	Vector2 origin = vp->viewport_origin();
 	float center_x = origin.x + (vp->viewport_base_size().x / 2.0f) * scale;
 	float pos_x	   = center_x - m_stats_base_bounds.width / 2.0f;
