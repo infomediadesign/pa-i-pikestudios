@@ -293,11 +293,11 @@ void Shark::update(float dt)
 void Shark::on_hit()
 {
 	set_is_active(false);
-	if ( m_marked ) {
-		if ( auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director()) ) {
-			director->spawn_loot_chest(m_pos);
-		}
+	auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
+	if ( m_marked && director ) {
+		director->spawn_loot_chest(m_pos);
 	}
+	director->stats.sharks_killed++;
 }
 
 void Shark::draw_debug()

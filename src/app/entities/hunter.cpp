@@ -622,6 +622,10 @@ void Hunter::on_hit()
 			_p->to_death_anim_playing = true;
 			_p->dead				  = true;
 			_p->animation_controller.set_animation_at_index(4, 0, 1);
+			auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
+			if ( director ) {
+				director->stats.hunters_killed++;
+			}
 			break;
 		}
 	}

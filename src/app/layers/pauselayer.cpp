@@ -13,6 +13,11 @@ PauseLayer::PauseLayer()
 {
 	Vector2 frame_grid{1, 1};
 	m_button = PRELOAD_TEXTURE("smallbutton", "resources/ui/button_small.png", frame_grid)->m_s_texture;
+
+	auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
+	if ( director ) {
+		m_director = director;
+	}
 }
 
 void PauseLayer::on_render()
@@ -64,8 +69,75 @@ void PauseLayer::on_render()
 
 		});
 	}
+
+	draw_statistics();
 }
 
 void PauseLayer::on_update(float dt)
 {
 }
+
+void PauseLayer::draw_statistics()
+{
+	if ( !m_director )
+		return;
+	auto& vp	   = gApp()->viewport();
+	Vector2 origin = vp->viewport_origin();
+	float scale	   = vp->viewport_scale();
+
+	Rectangle stats_base_bounds{origin.x + 20 * scale, origin.y + 20 * scale, 200 * scale, 100 * scale};
+
+	GuiSetStyle(DEFAULT, TEXT_SIZE, 10 * scale);
+	GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt({255, 255, 255, 255}));
+	draw_time(stats_base_bounds, origin, scale);
+	draw_kill_stats(stats_base_bounds, origin, scale);
+
+}
+
+std::string PauseLayer::time_to_string(float time) const
+{
+	int min = static_cast<int>(time) / 60;
+	int sec = static_cast<int>(time) % 60;
+
+	return std::format("{:02d}:{:02d}", min, sec);
+}
+
+void PauseLayer::draw_time(Rectangle bounds, Vector2 origin, float scale)
+{
+	auto& vp				  = gApp()->viewport();
+	if ( !vp ) {
+		return;
+	}
+
+	std::string time_text = time_to_string(m_director->statistics().time_played);
+	GuiSetStyle(DEFAULT, TEXT_SIZE, 15 * scale);
+	GuiSetStyle(LABEL, TEXT_ALIGNMENT, TEXT_ALIGN_CENTER);
+	GuiLabel({vp->viewport_base_size().x, bounds.y, bounds.width, bounds.height}, time_text.c_str());
+	GuiSetStyle(LABEL, TEXT_ALIGNMENT, TEXT_ALIGN_LEFT);
+	GuiSetStyle(DEFAULT, TEXT_SIZE, 10 * scale);
+}
+
+void PauseLayer::draw_kill_stats(Rectangle bounds, Vector2 origin, float scale)
+{
+	bounds.y += 30 * scale;
+	GuiSetStyle(DEFAULT, TEXT_SIZE, 15 * scale);
+	GuiLabel(bounds, "Kills");
+	bounds.y += 20 * scale;
+	GuiSetStyle(DEFAULT, TEXT_SIZE, 10 * scale);
+	if ( m_director->stats.sharks_killed > 0 ) {
+		GuiLabel(bounds, ("Sharks: " + std::to_string(m_director->statistics().sharks_killed)).c_str());
+	}
+	bounds.y += 20 * scale;
+	if ( m_director->stats.tentacles_killed > 0 ) {
+		GuiLabel(bounds, ("Tentacles: " + std::to_string(m_director->statistics().tentacles_killed)).c_str());
+	}
+	bounds.y += 20 * scale;
+	if ( m_director->stats.hunters_killed > 0 ) {
+		GuiLabel(bounds, ("Hunters: " + std::to_string(m_director->statistics().hunters_killed)).c_str());
+	}
+	bounds.y += 20 * scale;
+	if ( m_director->stats.chonky_sharks_killed > 0 ) {
+		GuiLabel(bounds, ("Chonky sharks: " + std::to_string(m_director->statistics().chonky_sharks_killed)).c_str());
+	}
+}
+
