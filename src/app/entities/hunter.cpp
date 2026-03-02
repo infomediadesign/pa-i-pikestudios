@@ -118,7 +118,7 @@ Hunter::Hunter() : PSInterfaces::IEntity("hunter")
 	std::vector<PSCore::sprites::SpriteSheetData> sp_data{
 			{1, 1, PSCore::sprites::KeyFrame, 1},
 			{1, 1, PSCore::sprites::KeyFrame, 2},
-			{7, 0.1, PSCore::sprites::Forward, 1},
+			{6, 0.1, PSCore::sprites::Forward, 1},
 			{1, 1, PSCore::sprites::KeyFrame, 1},
 			{7, 0.1, PSCore::sprites::Forward, 1}
 	};
@@ -173,12 +173,15 @@ void Hunter::update(float dt)
 
 			_p->pos = Vector2Add(_p->pos, _p->velocity * dt);
 
-			if ( _p->animation_controller.get_sprite_sheet_frame_index(1).value_or(0) == 6 ) {
+			if ( _p->animation_controller.get_sprite_sheet_frame_index(1).value_or(0) == 5 ) {
 				if ( _p->to_wreck_anim_playing ) {
 					_p->animation_controller.set_animation_at_index(3, 0, 1);
 					_p->to_wreck_anim_playing = false;
-				} else if ( _p->to_death_anim_playing ) {
-					_p->to_death_anim_playing = false;
+				}
+			}
+
+			if ( _p->animation_controller.get_sprite_sheet_frame_index(1).value_or(0) == 6 ) {
+				if ( _p->to_death_anim_playing ) {
 					set_is_active(false);
 				}
 			}
