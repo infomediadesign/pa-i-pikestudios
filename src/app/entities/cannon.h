@@ -4,9 +4,13 @@
 #include <pscore/sprite.h>
 #include <psinterfaces/renderable.h>
 #include <raylib.h>
+#include "entities/projectile.h"
 
 class FortunaDirector;
-class Player;
+
+namespace PSInterfaces {
+class IEntity;
+}
 
 class Cannon : public PSInterfaces::IRenderable
 {
@@ -19,14 +23,16 @@ public:
 
 	Vector2 calculate_projectile_target_position(); // Calculates the target position based on current position, rotation and range
 
-	void fire(); // Spawns a projectile if the fire rate allows it
+	void fire(int projectile_amount); // Spawns a projectile if the fire rate allows it
+
+	std::shared_ptr<Projectile> spawn_projectile(); // Spawns a projectile and returns a shared pointer to it
 
 	void set_position_to_parent(); // Sets the cannon's position relative to its parent player
 
 	void set_rotation_to_parent(); // Sets the cannon's rotation to match its parent player
 
-	std::shared_ptr<Player> parent(); // Returns the shared pointer to the parent
-	void set_parent(std::shared_ptr<Player> parent); // Sets the shared pointer to the parent
+	std::shared_ptr<PSInterfaces::IEntity> parent(); // Returns the shared pointer to the parent
+	void set_parent(std::shared_ptr<PSInterfaces::IEntity> parent); // Sets the shared pointer to the parent
 
 	std::optional<Vector2> position() const override; // Returns the cannon's position
 	void set_position(const Vector2& position); // Sets the cannon's position
@@ -63,6 +69,8 @@ public:
 
 	void set_shared_ptr_this(std::shared_ptr<Cannon> ptr); // Sets the shared pointer to this cannon
 
+	void set_projectile_piercing_chance(const float chance); // Sets the projectile's piercing chance
+
 private:
 	Vector2 m_c_position;
 	float m_c_rotation;
@@ -70,11 +78,14 @@ private:
 	float m_c_projectile_speed;
 	float m_c_fire_rate_in_s;
 	float m_c_time_since_last_shot;
+	float m_c_projectile_piercing_chance;
 	Vector2 m_c_projectile_target_position;
 	float m_c_parent_position_x_offset;
 	float m_c_parent_position_y_offset;
 	CannonPositioning m_c_positioning;
 	PSCore::sprites::SpriteSheetAnimation m_c_animation_controller;
+	float m_c_projectile_rotation_offset;
+	float m_c_projectile_base_rotation_offset;
 
 	Texture2D m_c_texture;
 	Rectangle m_c_source;
@@ -82,5 +93,5 @@ private:
 	std::shared_ptr<PSCore::sprites::Sprite> m_c_sprite;
 	std::shared_ptr<Cannon> m_c_shared_ptr_this;
 
-	std::shared_ptr<Player> m_c_parent;
+	std::shared_ptr<PSInterfaces::IEntity> m_c_parent;
 };

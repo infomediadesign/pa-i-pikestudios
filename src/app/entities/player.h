@@ -36,13 +36,13 @@ public:
 
 	std::optional<std::vector<Vector2>> bounds() const override;
 
-	Vector2 velocity();
+	virtual std::optional<Vector2> velocity() const override;
+
+	virtual std::optional<float> rotation() const override;
 
 	float target_velocity();
 
 	float max_velocity();
-
-	float rotation();
 
 	float target_rotation();
 
@@ -85,9 +85,7 @@ public:
 
 	bool is_clone() const;
 
-	float dest_width() const;
-
-	float dest_height() const;
+	std::optional<Vector2> size() const override;
 
 	// Cannons & Projectiles Variables and Methods
 	std::vector<std::shared_ptr<Cannon>>& cannon_container();
@@ -118,14 +116,14 @@ public:
 	void set_is_invincible(bool invincible);
 
 	void apply_repel_force(Vector2 repel_force);
-	
+
 private:
 	// Base Movement Variables
-	Vector2 m_position	 = {0};
-	Vector2 m_velocity	 = {0};
+	Vector2 m_position		 = {0};
+	Vector2 m_velocity		 = {0};
 	Vector2 m_repel_velocity = {0};
-	float m_max_velocity = 0;
-	float m_rotation	 = 0;
+	float m_max_velocity	 = 0;
+	float m_rotation		 = 0;
 
 	// Interpolation Values for the Movement Calculation
 	float m_target_velocity				= 0;
@@ -181,10 +179,10 @@ private:
 	LootTable m_loot_table;
 
 	// Shader
-	Shader m_flash_shader = LoadShader(NULL, "resources/shader/sprite_flash.fs");
-	Vector4 m_flash_color = {255, 0, 0, 255};
+	Shader m_flash_shader	 = LoadShader(NULL, "resources/shader/sprite_flash.fs");
+	Vector4 m_flash_color	 = {255, 0, 0, 255};
 	float m_flash_lerp_scale = 6;
-	float m_flash_alpha	  = 0;
+	float m_flash_alpha		 = 0;
 	int m_flash_alpha_location;
 };
 
@@ -204,6 +202,6 @@ private:
 
 	// Shader
 	Shader m_emissive_shader = LoadShader(NULL, "resources/shader/emissive_color.fs");
-	Vector3 m_emissive_color = {255,255,255};
+	Vector3 m_emissive_color = {255, 255, 255};
 	int m_emissive_texture_location;
 };

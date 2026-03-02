@@ -45,25 +45,25 @@ void DeathScreenLayer::on_render()
 	int oldSize	 = GuiGetStyle(DEFAULT, TEXT_SIZE);
 	int oldAlign = GuiGetStyle(LABEL, TEXT_ALIGNMENT);
 
-	GuiSetStyle(LABEL, TEXT_ALIGNMENT, TEXT_ALIGN_CENTER);
+
 	GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, 0xff0000ff);
 	GuiSetStyle(DEFAULT, TEXT_SIZE, 28 * sk);
 
-	GuiLabel(rect, "Du bist gesunken :(");
-
+	GuiLabel({np.x + x * sk, np.y + 48 * sk, 400 * sk, 40 * sk}, "You were shattered :(");
+	GuiSetStyle(LABEL, TEXT_ALIGNMENT, TEXT_ALIGN_CENTER);
 	GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, 0xffffffff);
-	GuiSetStyle(DEFAULT, TEXT_SIZE, 14 * sk);
+	GuiSetStyle(DEFAULT, TEXT_SIZE, 10 * sk);
 
-	GuiLabel(score, ("Kopfgeld: " + bounty_text).c_str());
+	GuiLabel(score, ("Bounty: " + bounty_text).c_str());
 	if ( m_score_should_be_saved ) {
-		GuiLabel(score_info_bounds, "Du hast es in die Top 10 geschafft!");
+		GuiLabel(score_info_bounds, "You made it into the top 10!");
 
 		float input_row_y  = 200;
 		float input_height = 30;
 		Rectangle name_prompt_rect{np.x + x * sk, np.y + input_row_y * sk, 200 * sk, input_height * sk};
 		Rectangle input_field_rect{np.x + (x + 170) * sk, np.y + input_row_y * sk, 120 * sk, input_height * sk};
 
-		GuiLabel(name_prompt_rect, "Gib deinen Namen ein:");
+		GuiLabel(name_prompt_rect, "Enter your name:");
 
 		if ( !m_name_entered ) {
 			GuiSetStyle(DEFAULT, BACKGROUND_COLOR, ColorToInt({0, 0, 0, 50}));
@@ -72,29 +72,25 @@ void DeathScreenLayer::on_render()
 			GuiSetStyle(DEFAULT, BACKGROUND_COLOR, ColorToInt(WHITE));
 			GuiSetStyle(DEFAULT, BORDER_COLOR_NORMAL, ColorToInt(WHITE));
 		}
-		if (m_score_layer_instance){
+		if ( m_score_layer_instance ) {
 			GuiLabel(input_field_rect, (m_score_layer_instance->player_name_input).c_str());
 		}
 
-	} 
-	else {
-		GuiLabel(score_info_bounds, "Du hast es nicht unter die Top 10 geschafft");
+	} else {
+		GuiLabel(score_info_bounds, "You didn't make it into the top 10");
 	}
 
 	GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, 0x00000ff);
-	GuiSetStyle(DEFAULT, TEXT_SIZE, 14 * sk);
+	GuiSetStyle(DEFAULT, TEXT_SIZE, 10 * sk);
 	GuiSetStyle(LABEL, TEXT_ALIGNMENT, oldAlign);
 
-	int margin = 20;
-	float btn_width = static_cast<float>(m_button.width);
+	int margin		 = 20;
+	float btn_width	 = static_cast<float>(m_button.width);
 	float btn_height = static_cast<float>(m_button.height);
-	float y = vp->viewport_base_size().y - btn_height / 2.0f - margin;
+	float y			 = vp->viewport_base_size().y - btn_height / 2.0f - margin;
 
-	Vector2 mainmenu_pos = {
-		np.x / sk + margin + btn_width / 2.0f,
-		np.y / sk + y
-	};
-	
+	Vector2 mainmenu_pos = {np.x / sk + margin + btn_width / 2.0f, np.y / sk + y};
+
 	if ( GuiButtonTexture(m_button, mainmenu_pos, 0, sk, WHITE, GRAY, "Mainmenu") ) {
 		reset_state();
 		gApp()->call_later([]() { gApp()->pop_layer<DeathScreenLayer>(); });
@@ -103,11 +99,8 @@ void DeathScreenLayer::on_render()
 	}
 
 	if ( !m_score_should_be_saved || m_name_entered ) {
-		Vector2 scoreboard_pos = {
-			np.x / sk + margin * 2 + btn_width + btn_width / 2.0f,
-			np.y / sk + y
-		};
-		
+		Vector2 scoreboard_pos = {np.x / sk + margin * 2 + btn_width + btn_width / 2.0f, np.y / sk + y};
+
 		if ( GuiButtonTexture(m_button, scoreboard_pos, 0, sk, WHITE, GRAY, "Scoreboard") ) {
 			reset_state();
 			gApp()->call_later([]() { gApp()->pop_layer<DeathScreenLayer>(); });
@@ -120,24 +113,19 @@ void DeathScreenLayer::on_render()
 			});
 		}
 
-		Vector2 retry_pos = {
-			np.x / sk + vp->viewport_base_size().x - margin - btn_width / 2.0f,
-			np.y / sk + y
-		};
-		
+		Vector2 retry_pos = {np.x / sk + vp->viewport_base_size().x - margin - btn_width / 2.0f, np.y / sk + y};
+
 		if ( GuiButtonTexture(m_button, retry_pos, 0, sk, WHITE, GRAY, "Retry") ) {
 			reset_state();
-			
+
 			if ( m_score_layer_instance && m_name_entered ) {
 				m_score_layer_instance->save_highscore(m_score_layer_instance->score_filename());
 			}
-			
+
 			gApp()->call_later([]() { gApp()->pop_layer<DeathScreenLayer>(); });
 			gApp()->call_later([]() { gApp()->pop_layer<ScoreLayer>(); });
 			gApp()->call_later([]() { gApp()->pop_layer<AppLayer>(); });
-			gApp()->call_later([]() { 
-				gApp()->game_director_ref().reset(new FortunaDirector()); 
-			});
+			gApp()->call_later([]() { gApp()->game_director_ref().reset(new FortunaDirector()); });
 			gApp()->call_later([]() { gApp()->push_layer<AppLayer>(); });
 		}
 	}
@@ -161,7 +149,7 @@ bool DeathScreenLayer::score_should_be_saved() const
 void DeathScreenLayer::reset_state()
 {
 	m_score_should_be_saved = false;
-	m_name_entered = false;
-	m_score_layer_instance = nullptr;
+	m_name_entered			= false;
+	m_score_layer_instance	= nullptr;
 	gApp()->get_layer<AppLayer>()->set_can_open_pause_menu(true);
 }

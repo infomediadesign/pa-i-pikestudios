@@ -7,6 +7,10 @@ class Player;
 class AppLayer;
 class FortunaDirector;
 
+namespace PSInterfaces {
+	class IEntity;
+}
+
 /*!
  * @details Namespace for miscellaneous funktions
  */
@@ -68,7 +72,7 @@ namespace misc {
 		 * @param p Reference to the player.
 		 * @return true if the player is completely off-screen, false otherwise.
 		 */
-		bool is_off_screen(Player& p);
+		bool is_off_screen(const PSInterfaces::IEntity* p);
 
 		/**
 		 * @brief Detects collisions with the map border and handles wrap-around.

@@ -2,13 +2,12 @@
 #include <entities/director.h>
 #include <layers/applayer.h>
 #include <layers/mainmenulayer.h>
-#include <layers/scorelayer.h>
 #include <layers/uilayer.h>
 #include <pscore/application.h>
-#include <pscore/utils.h>
 #include <pscore/viewport.h>
 #include <raygui.h>
 #include <raylib.h>
+#include <layers/upgradelayer.h>
 
 PauseLayer::PauseLayer()
 {
@@ -28,7 +27,7 @@ void PauseLayer::on_render()
 	Vector2 screen_size = vp->viewport_base_size();
 	Vector2 button_pos	= {origin.x / scale + screen_size.x / 2.0f, origin.y / scale + screen_size.y / 2.0f - button_height / 2.0f - 10.0f};
 
-	GuiSetStyle(DEFAULT, TEXT_SIZE, 14 * scale);
+	GuiSetStyle(DEFAULT, TEXT_SIZE, 10 * scale);
 	GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt({0, 0, 0, 255}));
 
 	DrawRectangle(origin.x, origin.y, GetScreenWidth() * scale, GetScreenHeight() * scale, Color{0, 0, 0, 150});
@@ -38,6 +37,18 @@ void PauseLayer::on_render()
 			gApp()->pop_layer<PauseLayer>();
 			if ( auto app_layer = gApp()->get_layer<AppLayer>() )
 				app_layer->resume();
+			auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
+			if ( director ) {
+				director->set_is_active(true);
+			}
+		});
+		gApp()->call_later([]() {
+			auto upgrade_layer = gApp()->get_layer<UpgradeLayer>();
+			if ( upgrade_layer ) {
+				if ( auto app_layer = gApp()->get_layer<AppLayer>() )
+					app_layer->suspend();
+				upgrade_layer->m_layer_is_visible = true;
+			}
 		});
 	}
 
@@ -47,7 +58,9 @@ void PauseLayer::on_render()
 		gApp()->call_later([]() {
 			gApp()->pop_layer<PauseLayer>();
 			gApp()->pop_layer<UILayer>();
+			gApp()->pop_layer<UpgradeLayer>();
 			gApp()->switch_layer<AppLayer, MainMenuLayer>();
+
 		});
 	}
 }

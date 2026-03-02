@@ -8,6 +8,7 @@
 #include <pscore/application.h>
 #include <pscore/viewport.h>
 #include <raylib.h>
+#include <layers/upgradelayer.h>
 
 #include <psinterfaces/renderable.h>
 
@@ -122,10 +123,21 @@ void AppLayer::on_update(const float dt)
 					if ( auto app_layer = app->get_layer<AppLayer>() ) {
 						app_layer->resume();
 						director->set_is_active(true);
+							if ( auto upgrade_layer = gApp()->get_layer<UpgradeLayer>() ) {
+								upgrade_layer->m_layer_is_visible = true;
+								app_layer->suspend();
+								director->set_is_active(false);
+							}
 					}
+
 				} else {
 					app->push_layer<PauseLayer>();
 					if ( auto app_layer = app->get_layer<AppLayer>() ) {
+						gApp()->call_later([]() {
+							if ( auto upgrade_layer = gApp()->get_layer<UpgradeLayer>() ) {
+								upgrade_layer->m_layer_is_visible = false;
+							}
+						});
 						app_layer->suspend();
 						director->set_is_active(false);
 					}

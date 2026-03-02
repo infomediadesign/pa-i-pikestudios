@@ -115,6 +115,8 @@ void PSCore::Application::init(const AppSpec& spec)
 		SetConfigFlags(FLAG_MSAA_4X_HINT);
 
 	InitWindow(spec.size.x, spec.size.y, spec.title);
+	
+	SetWindowIcon(LoadImage(spec.icon_path));
 
 	if ( fullscreen )
 		_p->toggle_fullscreen();

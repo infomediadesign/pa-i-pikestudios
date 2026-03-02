@@ -76,7 +76,7 @@ Player::Player() : PSInterfaces::IEntity("player")
 	m_flash_alpha_location = GetShaderLocation(m_flash_shader, "flash_alpha");
 
 	// Upgrades
-	std::vector<int> chances = {50, 25, 25};
+	std::vector<float> chances = {50, 25, 25};
 	m_loot_table.add_loot_table(0, 20, chances);
 	chances = {30, 10, 40, 20};
 	m_loot_table.add_loot_table(1, 30, chances);
@@ -171,7 +171,6 @@ void Player::update(const float dt)
 		m_smear.calculate_exponential_smear(
 				smear_forward_position, Vector2Length(m_velocity), m_rotation, 0.15f * scale, 0, -0.03f * scale, -0.05f * scale, 3
 		);
-
 		m_smear.add_smear_wave(0.1, 0.25, Vector2Length(m_velocity), m_max_velocity, dt, 0);
 
 		m_smear.update_smear_wave({0, 1}, Linear, 1, 10, Vector2Length(m_velocity), m_max_velocity, dt);
@@ -242,6 +241,8 @@ void Player::fire_cannons(float dt)
 	int shoot_right_key = std::get<int>(PSCore::SettingsManager::inst()->settings.at("user_preferences")->value("key_right_shoot").value_or(KEY_RIGHT));
 	int shoot_all_key   = std::get<int>(PSCore::SettingsManager::inst()->settings.at("user_preferences")->value("key_all_shoot").value_or(KEY_SPACE));
 	
+  auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
+	if ( director ) {
 	switch ( m_fire_mode ) {
 
 		case FireMode::InSequence: {
@@ -259,31 +260,32 @@ void Player::fire_cannons(float dt)
 			if ( m_time_since_last_shot_right > m_cannon_container.at(0)->fire_rate() / m_cannon_container.size() && m_fire_sequence_ongoing_right ) {
 				m_cannon_container.at(m_firing_cannon_index.right)->fire();
 
-				m_firing_cannon_index.right += 2;
-				m_time_since_last_shot_right = 0;
+					m_firing_cannon_index.right += 2;
+					m_time_since_last_shot_right = 0;
 
-				if ( m_firing_cannon_index.right >= m_cannon_container.size() ) {
-					m_firing_cannon_index.right	  = 1;
-					m_fire_sequence_ongoing_right = false;
-					m_fire_sequence_ongoing		  = false;
+					if ( m_firing_cannon_index.right >= m_cannon_container.size() ) {
+						m_firing_cannon_index.right	  = 1;
+						m_fire_sequence_ongoing_right = false;
+						m_fire_sequence_ongoing		  = false;
+					}
 				}
-			}
-			if ( (IsMouseButtonDown(MOUSE_BUTTON_LEFT) || IsKeyDown(shoot_left_key) )&& !m_fire_sequence_ongoing && !m_fire_sequence_ongoing_left ) {
-				m_fire_sequence_ongoing_left = true;
-			}
+				if ( (IsMouseButtonDown(MOUSE_BUTTON_LEFT) || IsKeyDown(shoot_left_key) ) && !m_fire_sequence_ongoing && !m_fire_sequence_ongoing_left ) {
+					m_fire_sequence_ongoing_left = true;
+				}
 
-			if ( m_time_since_last_shot_left > m_cannon_container.at(0)->fire_rate() / m_cannon_container.size() && m_fire_sequence_ongoing_left ) {
-				m_cannon_container.at(m_firing_cannon_index.left)->fire();
-				m_firing_cannon_index.left += 2;
-				m_time_since_last_shot_left = 0;
-				if ( m_firing_cannon_index.left >= m_cannon_container.size() ) {
-					m_firing_cannon_index.left	 = 0;
-					m_fire_sequence_ongoing_left = false;
-					m_fire_sequence_ongoing		 = false;
+				if ( m_time_since_last_shot_left > m_cannon_container.at(0)->fire_rate() / m_cannon_container.size() &&
+					 m_fire_sequence_ongoing_left ) {
+					m_cannon_container.at(m_firing_cannon_index.left)->fire(director->player_projectile_amount());
+					m_firing_cannon_index.left += 2;
+					m_time_since_last_shot_left = 0;
+					if ( m_firing_cannon_index.left >= m_cannon_container.size() ) {
+						m_firing_cannon_index.left	 = 0;
+						m_fire_sequence_ongoing_left = false;
+						m_fire_sequence_ongoing		 = false;
+					}
 				}
+				break;
 			}
-			break;
-		}
 
 		case FireMode::SameTime: {
 			if ( IsMouseButtonDown(MOUSE_BUTTON_LEFT) || IsKeyDown(shoot_left_key) ) {
@@ -304,10 +306,11 @@ void Player::fire_cannons(float dt)
 				for ( auto cannon: m_cannon_container ) {
 					cannon->fire();
 				}
+				break;
 			}
-			break;
 		}
 	}
+	
 }
 
 void Player::render()
@@ -375,11 +378,6 @@ std::optional<Vector2> Player::position() const
 	return m_position;
 }
 
-Vector2 Player::velocity()
-{
-	return m_velocity;
-}
-
 float Player::target_velocity()
 {
 	return m_target_velocity;
@@ -388,11 +386,6 @@ float Player::target_velocity()
 float Player::max_velocity()
 {
 	return m_max_velocity;
-}
-
-float Player::rotation()
-{
-	return m_rotation;
 }
 
 float Player::target_rotation()
@@ -575,16 +568,6 @@ bool Player::is_clone() const
 	return m_is_clone;
 }
 
-float Player::dest_width() const
-{
-	return m_animation_controller.get_source_rectangle(1).value_or(Rectangle{0}).width;
-}
-
-float Player::dest_height() const
-{
-	return m_animation_controller.get_source_rectangle(1).value_or(Rectangle{0}).height;
-}
-
 std::vector<std::shared_ptr<Cannon>>& Player::cannon_container()
 {
 	return m_cannon_container;
@@ -680,4 +663,20 @@ void Sails::render()
 
 void Sails::draw_debug()
 {
+}
+std::optional<float> Player::rotation() const
+{
+	return m_rotation;
+}
+
+std::optional<Vector2> Player::velocity() const
+{
+	return m_velocity;
+}
+
+std::optional<Vector2> Player::size() const
+{
+	auto h = m_animation_controller.get_source_rectangle(1).value_or(Rectangle{0}).height;
+	auto w = m_animation_controller.get_source_rectangle(1).value_or(Rectangle{0}).width;
+	return Vector2{w, h};
 }

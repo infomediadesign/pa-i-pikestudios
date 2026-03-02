@@ -57,7 +57,7 @@ void tentacle::init(std::shared_ptr<tentacle> self, const Vector2& pos)
 						const float repel_strenght = CFG_VALUE<int>("tentacle_repel_bounce_strenght", 50);
 						if ( auto& spawner = director->spawner<tentacle, AppLayer>() ) {
 							Vector2 repel_force =
-									PSCore::collision::entity_repel_force<Player, tentacle, AppLayer>(player, *spawner, 50, repel_strenght);
+									PSCore::collision::entity_repel_force<Player>(player, spawner->primitive_entities(), 50, repel_strenght);
 
 							repel_force.x = std::clamp(repel_force.x, (repel_strenght * 2) * -1, repel_strenght * 2);
 							repel_force.y = std::clamp(repel_force.y, (repel_strenght * 2) * -1, repel_strenght * 2);
@@ -194,9 +194,6 @@ void tentacle::SetNewPos()
 void tentacle::on_hit()
 {
 	set_is_active(false);
-	if ( const auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director()) ) {
-		director->m_b_bounty.add_bounty(225);
-	}
 }
 
 void tentacle::set_pos(const Vector2& pos)

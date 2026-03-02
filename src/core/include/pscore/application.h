@@ -3,7 +3,6 @@
 #include <deque>
 #include <functional>
 #include <memory>
-#include <optional>
 #include <psinterfaces/layer.h>
 #include <raylib.h>
 #include <type_traits>
@@ -27,6 +26,7 @@ namespace PSCore {
 		struct AppSpec
 		{
 			const char* title;
+			const char* icon_path;
 			WindowSize size;
 		};
 
