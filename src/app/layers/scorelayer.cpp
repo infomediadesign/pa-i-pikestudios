@@ -222,6 +222,7 @@ void ScoreLayer::draw_score_board_buttons()
 			gApp()->call_later([]() { gApp()->pop_layer<AppLayer>(); });
 			gApp()->call_later([]() { gApp()->switch_layer<ScoreLayer, AppLayer>(); });
 			gApp()->call_later([]() { gApp()->game_director_ref().reset(new FortunaDirector()); });
+			HideCursor();
 		}
 	}
 }

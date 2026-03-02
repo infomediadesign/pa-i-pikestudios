@@ -65,6 +65,7 @@ void MainMenuLayer::on_render()
 			}
 		});
 		gApp()->call_later([]() { gApp()->switch_layer<MainMenuLayer, AppLayer>(); });
+		HideCursor();
 	}
 
 	button_pos.y += spacing + m_button_1.height;
