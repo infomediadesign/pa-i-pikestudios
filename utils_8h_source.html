@@ -162,17 +162,21 @@ $(document).ready(function(){initNavTree('utils_8h_source.html',''); initResizab
 <div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>        <span class="keywordflow">return</span> val;</div>
 <div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>    };</div>
 <div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span> </div>
-<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>    <span class="comment">// Raylib specific</span></div>
-<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>    <span class="keywordtype">void</span> DrawTextBoxedSelectable(</div>
-<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>            Font font, <span class="keyword">const</span> <span class="keywordtype">char</span>* text, Rectangle rec, <span class="keywordtype">float</span> fontSize, <span class="keywordtype">float</span> spacing, <span class="keywordtype">bool</span> wordWrap, Color tint, <span class="keywordtype">int</span> selectStart, <span class="keywordtype">int</span> selectLength,</div>
-<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>            Color selectTint, Color selectBackTint</div>
-<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>    );</div>
-<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span> </div>
-<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>    <span class="keywordtype">void</span> DrawTextBoxed(Font font, <span class="keyword">const</span> <span class="keywordtype">char</span>* text, Rectangle rec, <span class="keywordtype">float</span> fontSize, <span class="keywordtype">float</span> spacing, <span class="keywordtype">bool</span> wordWrap, Color tint);</div>
-<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span> </div>
-<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>    <span class="keywordtype">void</span> DrawRectangleLinesRotated(Rectangle rec, <span class="keywordtype">float</span> rotation, Color color);</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>    <span class="keywordtype">int</span> vector3_to_color(<span class="keyword">const</span> Vector3&amp; color);</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span> </div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>    Vector3 color_to_vector3(<span class="keywordtype">int</span> hexColor);</div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span> </div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>    <span class="comment">// Raylib specific</span></div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>    <span class="keywordtype">void</span> DrawTextBoxedSelectable(</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>            Font font, <span class="keyword">const</span> <span class="keywordtype">char</span>* text, Rectangle rec, <span class="keywordtype">float</span> fontSize, <span class="keywordtype">float</span> spacing, <span class="keywordtype">bool</span> wordWrap, Color tint, <span class="keywordtype">int</span> selectStart, <span class="keywordtype">int</span> selectLength,</div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>            Color selectTint, Color selectBackTint</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>    );</div>
 <div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span> </div>
-<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>} <span class="comment">// namespace PSUtils</span></div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>    <span class="keywordtype">void</span> DrawTextBoxed(Font font, <span class="keyword">const</span> <span class="keywordtype">char</span>* text, Rectangle rec, <span class="keywordtype">float</span> fontSize, <span class="keywordtype">float</span> spacing, <span class="keywordtype">bool</span> wordWrap, Color tint);</div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span> </div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>    <span class="keywordtype">void</span> DrawRectangleLinesRotated(Rectangle rec, <span class="keywordtype">float</span> rotation, Color color);</div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span> </div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>} <span class="comment">// namespace PSUtils</span></div>
 <div class="ttc" id="aclassPSUtils_1_1Grid2D_html"><div class="ttname"><a href="classPSUtils_1_1Grid2D.html">PSUtils::Grid2D</a></div><div class="ttdef"><b>Definition</b> utils.h:24</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->

@@ -70,6 +70,7 @@ var annotated_dup =
     [ "ScoreLayer", "classScoreLayer.html", null ],
     [ "SettingValues", "classSettingValues.html", null ],
     [ "Shark", "classShark.html", null ],
+    [ "SkinMenu", "classSkinMenu.html", null ],
     [ "Smear", "classSmear.html", "classSmear" ],
     [ "SmearPoints", "structSmearPoints.html", null ],
     [ "tentacle", "classtentacle.html", null ],

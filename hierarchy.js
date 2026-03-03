@@ -60,6 +60,7 @@ var hierarchy =
     [ "PSCore::Settings", "classPSCore_1_1Settings.html", null ],
     [ "PSCore::SettingsManager", "classPSCore_1_1SettingsManager.html", null ],
     [ "SettingValues", "classSettingValues.html", null ],
+    [ "SkinMenu", "classSkinMenu.html", null ],
     [ "Smear", "classSmear.html", null ],
     [ "SmearPoints", "structSmearPoints.html", null ],
     [ "misc::map::SpawnRequest", "structmisc_1_1map_1_1SpawnRequest.html", null ],
