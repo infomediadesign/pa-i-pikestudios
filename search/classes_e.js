@@ -15,5 +15,6 @@ var searchData=
   ['spritesheetanimation_12',['SpriteSheetAnimation',['../classPSCore_1_1sprites_1_1SpriteSheetAnimation.html',1,'PSCore::sprites']]],
   ['spritesheetdata_13',['SpriteSheetData',['../structPSCore_1_1sprites_1_1SpriteSheetData.html',1,'PSCore::sprites']]],
   ['spritesourcerectangle_14',['SpriteSourceRectangle',['../structPSCore_1_1sprites_1_1SpriteSourceRectangle.html',1,'PSCore::sprites']]],
-  ['spritetimedirectiondata_15',['SpriteTimeDirectionData',['../structPSCore_1_1sprites_1_1SpriteTimeDirectionData.html',1,'PSCore::sprites']]]
+  ['spritetimedirectiondata_15',['SpriteTimeDirectionData',['../structPSCore_1_1sprites_1_1SpriteTimeDirectionData.html',1,'PSCore::sprites']]],
+  ['statistics_16',['Statistics',['../structFortunaDirector_1_1Statistics.html',1,'FortunaDirector']]]
 ];

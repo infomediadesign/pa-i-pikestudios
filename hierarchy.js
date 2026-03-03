@@ -66,5 +66,6 @@ var hierarchy =
     [ "PSCore::sprites::SpriteSheetData", "structPSCore_1_1sprites_1_1SpriteSheetData.html", null ],
     [ "PSCore::sprites::SpriteSourceRectangle", "structPSCore_1_1sprites_1_1SpriteSourceRectangle.html", null ],
     [ "PSCore::sprites::SpriteTimeDirectionData", "structPSCore_1_1sprites_1_1SpriteTimeDirectionData.html", null ],
+    [ "FortunaDirector::Statistics", "structFortunaDirector_1_1Statistics.html", null ],
     [ "UILayer::UIBountyContainer", "structUILayer_1_1UIBountyContainer.html", null ]
 ];
