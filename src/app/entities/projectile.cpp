@@ -125,7 +125,7 @@ void Projectile::render()
 			if ( auto& vp = gApp()->viewport() ) {
 				vp->draw_in_viewport(
 						tex, pierce.anim_controller.get_source_rectangle(m_p_z_index).value_or(Rectangle{0}), pierce.position,
-						pierce.rotation, WHITE
+						0, WHITE
 				);
 			}
 		}
@@ -154,7 +154,7 @@ void Projectile::render()
 		if ( auto& vp = gApp()->viewport() ) {
 			vp->draw_in_viewport(
 					tex, ctrl->get_source_rectangle(m_p_z_index).value_or(Rectangle{0}), m_p_hit_anim_pos,
-					m_p_rotation, WHITE
+					0, WHITE
 			);
 		}
 	}
