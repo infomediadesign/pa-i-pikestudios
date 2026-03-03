@@ -729,6 +729,11 @@ Sails::Sails(Player* player) : PSInterfaces::IEntity("player_sails"), m_player(p
 	Vector2 frame_grid{3, 4};
 	m_sprite = PRELOAD_TEXTURE(ident_, "resources/emissive/player_emissive.png", frame_grid);
 
+	if ( PSCore::SettingsManager::inst()->settings.find("user_preferences") != PSCore::SettingsManager::inst()->settings.end() ) {
+		auto& settings				= PSCore::SettingsManager::inst()->settings["user_preferences"];
+		m_emissive_color = PSUtils::color_to_vector3(std::get<int>(settings->value("player_color").value_or(0xFFFFFF)));
+	}
+	
 	m_emissive_texture_location = GetShaderLocation(m_emissive_shader, "texture_emissive");
 	SetShaderValue(m_emissive_shader, GetShaderLocation(m_emissive_shader, "emissive_color"), &m_emissive_color, SHADER_UNIFORM_VEC3);
 }

@@ -70,6 +70,8 @@ ChonkyShark::ChonkyShark() : Shark(), PSInterfaces::IEntity("chonky_shark")
 	m_animation_controller.set_animation_at_index(Fin, current_frame, 1);
 
 	m_smear_origin = {7, 0.5};
+	
+	m_drop_upgrade_chance = CFG_VALUE<float>("chonky_drop_upgrade_chance", 0.05);
 };
 
 ChonkyShark::~ChonkyShark() {};
