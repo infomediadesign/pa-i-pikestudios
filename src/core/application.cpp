@@ -108,8 +108,8 @@ void PSCore::Application::init(const AppSpec& spec)
 		fullscreen	   = std::get<bool>(settings->value("fullscreen").value_or(true));
 
 		if ( m_global_sound_volume.empty() ) {
-			m_global_sound_volume.push_back(std::get<float>(settings->value("music_volume").value_or(20)));
-			m_global_sound_volume.push_back(std::get<float>(settings->value("sfx_volume").value_or(50)));
+			m_global_sound_volume.push_back(std::get<float>(settings->value("music_volume").value_or(20.f)));
+			m_global_sound_volume.push_back(std::get<float>(settings->value("sfx_volume").value_or(50.f)));
 		}
 	}
 
