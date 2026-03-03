@@ -249,6 +249,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>enable_explosive_barr
 <tr class="memitem:a7af4b359eb57d78b005f3aa3b9e6b6dc" id="r_a7af4b359eb57d78b005f3aa3b9e6b6dc"><td class="memItemLeft" align="right" valign="top"><a id="a7af4b359eb57d78b005f3aa3b9e6b6dc" name="a7af4b359eb57d78b005f3aa3b9e6b6dc"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>set_barrel_intervall</b> (float intervall)</td></tr>
 <tr class="separator:a7af4b359eb57d78b005f3aa3b9e6b6dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3ff536f75e74c0f53b3d4c8db1097577" id="r_a3ff536f75e74c0f53b3d4c8db1097577"><td class="memItemLeft" align="right" valign="top"><a id="a3ff536f75e74c0f53b3d4c8db1097577" name="a3ff536f75e74c0f53b3d4c8db1097577"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>play_sound</b> (Sound &amp;sound, float volume, float pitch)</td></tr>
+<tr class="separator:a3ff536f75e74c0f53b3d4c8db1097577"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classPSInterfaces_1_1IRenderable"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classPSInterfaces_1_1IRenderable')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classPSInterfaces_1_1IRenderable.html">PSInterfaces::IRenderable</a></td></tr>
 <tr class="memitem:ab27dbdf6a0e7fda9f3d7da3cae80433d inherit pub_methods_classPSInterfaces_1_1IRenderable" id="r_ab27dbdf6a0e7fda9f3d7da3cae80433d"><td class="memItemLeft" align="right" valign="top">
 int&#160;</td><td class="memItemRight" valign="bottom"><b>z_index</b> ()</td></tr>
@@ -266,6 +269,12 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>is_active</b>
 <tr class="memitem:a18fea2dfcee0593fa39d83a55db16382 inherit pub_methods_classPSInterfaces_1_1IEntity" id="r_a18fea2dfcee0593fa39d83a55db16382"><td class="memItemLeft" align="right" valign="top">
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>set_is_active</b> (bool active)</td></tr>
 <tr class="separator:a18fea2dfcee0593fa39d83a55db16382 inherit pub_methods_classPSInterfaces_1_1IEntity"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a880df0954c51e12181a5c7e696112fbc inherit pub_methods_classPSInterfaces_1_1IEntity" id="r_a880df0954c51e12181a5c7e696112fbc"><td class="memItemLeft" align="right" valign="top">
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>is_dead_hitable</b> () const</td></tr>
+<tr class="separator:a880df0954c51e12181a5c7e696112fbc inherit pub_methods_classPSInterfaces_1_1IEntity"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a53833f9c544114d8a76913e2ff12b489 inherit pub_methods_classPSInterfaces_1_1IEntity" id="r_a53833f9c544114d8a76913e2ff12b489"><td class="memItemLeft" align="right" valign="top">
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>set_is_dead_hitable</b> (bool active)</td></tr>
+<tr class="separator:a53833f9c544114d8a76913e2ff12b489 inherit pub_methods_classPSInterfaces_1_1IEntity"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af981a0b96f5bd9936b229afe84b66165 inherit pub_methods_classPSInterfaces_1_1IEntity" id="r_af981a0b96f5bd9936b229afe84b66165"><td class="memItemLeft" align="right" valign="top">
 void&#160;</td><td class="memItemRight" valign="bottom"><b>add_event_manager</b> (const <a class="el" href="classPSInterfaces_1_1Events_1_1IEventManager.html">Events::IEventManager</a> *manager)</td></tr>
 <tr class="separator:af981a0b96f5bd9936b229afe84b66165 inherit pub_methods_classPSInterfaces_1_1IEntity"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -307,6 +316,9 @@ const std::string&#160;</td><td class="memItemRight" valign="bottom"><b>uid_</b>
 <tr class="memitem:aa625c34f31f54a7aeb6cff570e25acf5 inherit pro_attribs_classPSInterfaces_1_1IEntity" id="r_aa625c34f31f54a7aeb6cff570e25acf5"><td class="memItemLeft" align="right" valign="top">
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>is_active_</b> = true</td></tr>
 <tr class="separator:aa625c34f31f54a7aeb6cff570e25acf5 inherit pro_attribs_classPSInterfaces_1_1IEntity"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adb775e9b8f79ca8c3f5f620d9f5220b0 inherit pro_attribs_classPSInterfaces_1_1IEntity" id="r_adb775e9b8f79ca8c3f5f620d9f5220b0"><td class="memItemLeft" align="right" valign="top">
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>is_dead_hitable_</b> = false</td></tr>
+<tr class="separator:adb775e9b8f79ca8c3f5f620d9f5220b0 inherit pro_attribs_classPSInterfaces_1_1IEntity"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
 <a id="a5141dc0987fe7ea3bf5158d6aa175bc5" name="a5141dc0987fe7ea3bf5158d6aa175bc5"></a>

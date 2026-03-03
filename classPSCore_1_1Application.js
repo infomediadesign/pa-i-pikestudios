@@ -1,6 +1,7 @@
 var classPSCore_1_1Application =
 [
     [ "AppSpec", "structPSCore_1_1Application_1_1AppSpec.html", null ],
+    [ "ui_sound", "structPSCore_1_1Application_1_1ui__sound.html", null ],
     [ "get_layer", "classPSCore_1_1Application.html#aac5407db21de1f55fe73848447917fe9", null ],
     [ "log", "classPSCore_1_1Application.html#acd8087b11723daecdbd8248f4fee9f69", null ],
     [ "pop_layer", "classPSCore_1_1Application.html#a96dd5207a3997a0ea518e1365802d170", null ],
