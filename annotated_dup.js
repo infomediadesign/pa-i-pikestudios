@@ -50,6 +50,7 @@ var annotated_dup =
     [ "Fin", "classFin.html", null ],
     [ "FortunaDirector", "classFortunaDirector.html", "classFortunaDirector" ],
     [ "FortunaDirectorPriv", "structFortunaDirectorPriv.html", null ],
+    [ "Gemstone", "classGemstone.html", null ],
     [ "GuiStyleProp", "structGuiStyleProp.html", null ],
     [ "HighscoreEntries", "structHighscoreEntries.html", null ],
     [ "Hunter", "classHunter.html", null ],

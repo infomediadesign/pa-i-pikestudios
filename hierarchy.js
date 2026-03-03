@@ -25,6 +25,7 @@ var hierarchy =
         [ "Cannon", "classCannon.html", null ],
         [ "ExplosiveBarrel", "classExplosiveBarrel.html", null ],
         [ "Fin", "classFin.html", null ],
+        [ "Gemstone", "classGemstone.html", null ],
         [ "Hunter", "classHunter.html", null ],
         [ "LootChest", "classLootChest.html", null ],
         [ "PSCore::Viewport", "classPSCore_1_1Viewport.html", null ],

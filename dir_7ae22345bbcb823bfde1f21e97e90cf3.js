@@ -4,6 +4,7 @@ var dir_7ae22345bbcb823bfde1f21e97e90cf3 =
     [ "chonkyshark.h", "chonkyshark_8h_source.html", null ],
     [ "director.h", "director_8h_source.html", null ],
     [ "explosivebarrel.h", "explosivebarrel_8h_source.html", null ],
+    [ "gemstone.h", "gemstone_8h_source.html", null ],
     [ "hunter.h", "hunter_8h_source.html", null ],
     [ "lootchest.h", "lootchest_8h_source.html", null ],
     [ "player.h", "player_8h_source.html", null ],
