@@ -194,6 +194,10 @@ void tentacle::SetNewPos()
 void tentacle::on_hit()
 {
 	set_is_active(false);
+	auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
+	if ( director ) {
+		director->stats.tentacles_killed++;
+	}
 }
 
 void tentacle::set_pos(const Vector2& pos)

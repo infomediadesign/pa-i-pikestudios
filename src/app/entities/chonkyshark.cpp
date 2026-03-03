@@ -18,6 +18,7 @@ void ChonkyShark::on_hit()
 		if ( m_marked ) {
 			director->spawn_loot_chest(m_pos);
 		}
+		director->stats.chonky_sharks_killed++;
 		return;
 	}
 

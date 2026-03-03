@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <optional>
 #include <psinterfaces/renderable.h>
 
@@ -12,6 +13,8 @@
 #include <pscore/sprite.h>
 
 class Sails;
+
+class PlayerPriv;
 class Player : public PSInterfaces::IRenderable
 {
 	friend class Sails;
@@ -30,7 +33,6 @@ public:
 	void on_hit() override;
 
 	void on_death();
-
 
 	std::optional<Vector2> position() const override;
 
@@ -117,73 +119,14 @@ public:
 
 	void apply_repel_force(Vector2 repel_force);
 
+	void enable_explosive_barrels();
+	void set_barrel_intervall(float intervall);
+
 	// Sound
     void play_sound(Sound& sound, float volume, float pitch);
 
 private:
-	// Base Movement Variables
-	Vector2 m_position		 = {0};
-	Vector2 m_velocity		 = {0};
-	Vector2 m_repel_velocity = {0};
-	float m_max_velocity	 = 0;
-	float m_rotation		 = 0;
-
-	// Interpolation Values for the Movement Calculation
-	float m_target_velocity				= 0;
-	float m_target_rotation				= 0;
-	float m_acceleration_fade			= 0;
-	float m_deceleration_fade			= 0;
-	float m_rotation_fade				= 0;
-	float m_input_velocity_multiplier	= 0;
-	float m_input_rotation_multiplier	= 0;
-	float m_rotation_velocity			= 0;
-	float m_velocity_rotation_downscale = 0;
-
-	// Variables for Texture Rendering
-	Texture2D m_texture		= {0};
-	float m_rotation_offset = 0;
-	std::shared_ptr<PSCore::sprites::Sprite> m_sprite;
-
-	// Variables for Animation
-	PSCore::sprites::SpriteSheetAnimation m_animation_controller;
-	int m_sprite_sheet_animation_index = 2;
-	int m_sprite_sheet_frame_index;
-
-	// Variables for Borderinteration
-	bool m_border_collision_active_horizontal = false;
-	bool m_border_collision_active_vertical	  = false;
-	bool m_is_clone							  = false;
-
-	// Variabels and Methods for Cannons & Projectiles
-	std::vector<std::shared_ptr<Cannon>> m_cannon_container;
-	std::shared_ptr<Player> m_shared_ptr_this;
-	FireMode m_fire_mode			   = FireMode::InSequence;
-	bool m_fire_sequence_ongoing	   = false;
-	bool m_fire_sequence_ongoing_left  = false;
-	bool m_fire_sequence_ongoing_right = false;
-	float m_time_since_last_shot_left  = 0;
-	float m_time_since_last_shot_right = 0;
-	FiringCannonIndex m_firing_cannon_index{1, 0};
-
-	// Smear Variables
-	Smear m_smear;
-	Color m_smear_color = {9, 75, 101, 127};
-
-	// invincibleity Variables
-	bool m_can_be_hit		= true;
-	bool m_is_invincible	= false;
-	float m_iframe_timer	= 0;
-	float m_iframe_duration = 5;
-
-	// Sails
-	std::shared_ptr<Sails> m_sails;
-
-	// Shader
-	Shader m_flash_shader	 = LoadShader(NULL, "resources/shader/sprite_flash.fs");
-	Vector4 m_flash_color	 = {255, 0, 0, 255};
-	float m_flash_lerp_scale = 6;
-	float m_flash_alpha		 = 0;
-	int m_flash_alpha_location;
+	std::unique_ptr<PlayerPriv> _p;
 
 	// Sound
 	Sound m_hurt_sound	= LoadSound("resources/sfx/hurt.mp3");
