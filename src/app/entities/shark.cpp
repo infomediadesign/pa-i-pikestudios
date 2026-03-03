@@ -303,6 +303,7 @@ void Shark::on_hit()
 		director->spawn_loot_chest(m_pos);
 	}
 	director->stats.sharks_killed++;
+	determine_gem_drop();
 }
 
 void Shark::draw_debug()
@@ -403,4 +404,15 @@ float Shark::calculate_rotation_velocity(float frequency, float dt)
 	}
 
 	return rotation_velocity;
+}
+
+void Shark::determine_gem_drop()
+{
+	auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
+	if ( !director ) {
+		return;
+	}
+	if ( PSUtils::gen_rand_float(0, 100) <= director->gem_drop_chance() ) {
+		director->spawn_gemstone(m_pos);
+	}
 }

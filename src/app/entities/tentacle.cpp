@@ -197,6 +197,7 @@ void tentacle::on_hit()
 	auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
 	if ( director ) {
 		director->stats.tentacles_killed++;
+		determine_gem_drop();
 	}
 }
 
@@ -248,5 +249,16 @@ void tentacle::set_is_active(bool active)
 		time_until_attack	   = max_time_until_attack;
 		time_until_retreat	   = max_time_until_retreat;
 		until_reposition	   = max_until_reposition;
+	}
+}
+
+void tentacle::determine_gem_drop()
+{
+	auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
+	if ( !director ) {
+		return;
+	}
+	if ( PSUtils::gen_rand_float(0, 100) <= director->gem_drop_chance() ) {
+		director->spawn_gemstone(m_pos);
 	}
 }

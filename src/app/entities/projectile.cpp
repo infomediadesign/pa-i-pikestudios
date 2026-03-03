@@ -80,7 +80,8 @@ void Projectile::update(const float dt)
 					bool is_same   = l->ident() == ident_;
 					bool is_cannon = l->ident() == "cannon";
 					bool is_loot   = l->ident() == "loot_chest";
-					return !(is_owner || is_same || is_cannon || is_loot);
+					bool is_gem	   = l->ident() == "gemstone";
+					return !(is_owner || is_same || is_cannon || is_loot || is_gem);
 				}
 				return true;
 			});

@@ -46,6 +46,7 @@ protected:
 	std::shared_ptr<PSCore::sprites::Sprite> m_shark_sprite;
 
 	void determined_if_marked();
+	void determine_gem_drop();
 
 	bool m_marked, m_was_in_playfield = false;
 
