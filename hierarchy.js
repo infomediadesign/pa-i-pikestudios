@@ -23,6 +23,7 @@ var hierarchy =
       [ "PSInterfaces::IRenderable", "classPSInterfaces_1_1IRenderable.html", [
         [ "Body", "classBody.html", null ],
         [ "Cannon", "classCannon.html", null ],
+        [ "ExplosiveBarrel", "classExplosiveBarrel.html", null ],
         [ "Fin", "classFin.html", null ],
         [ "Hunter", "classHunter.html", null ],
         [ "LootChest", "classLootChest.html", null ],
@@ -53,6 +54,7 @@ var hierarchy =
     [ "LootTableChances", "structLootTableChances.html", null ],
     [ "LootTableIndices", "structLootTableIndices.html", null ],
     [ "LootTableValue", "structLootTableValue.html", null ],
+    [ "PlayerPriv", "classPlayerPriv.html", null ],
     [ "PSCore::Renderer", "classPSCore_1_1Renderer.html", null ],
     [ "PSCore::Settings", "classPSCore_1_1Settings.html", null ],
     [ "PSCore::SettingsManager", "classPSCore_1_1SettingsManager.html", null ],
