@@ -527,6 +527,13 @@ void FortunaDirector::upgrade_player_piercing_chance(float amount)
 	}
 }
 
+void FortunaDirector::upgrade_player_explosive_barrels()
+{
+	for ( auto player: _p->players ) {
+		player->enable_explosive_barrels();
+	}
+}
+
 void FortunaDirector::upgrade_player_projectile_amount(int amount)
 {
 	_p->player_projectile_amount += amount;

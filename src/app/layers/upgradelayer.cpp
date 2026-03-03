@@ -24,6 +24,7 @@ UpgradeLayer::UpgradeLayer()
 	m_turn_speed_icon		= PRELOAD_TEXTURE("turn_speed_icon", "resources/icon/upgr_icon_turn_speed.png", frame_grid)->m_s_texture;
 	m_piercing_chance_icon	= PRELOAD_TEXTURE("piercing_chance_icon", "resources/icon/upgr_icon_piercing_chance.png", frame_grid)->m_s_texture;
 	m_player_speed_icon		= PRELOAD_TEXTURE("player_speed_icon", "resources/icon/upgr_icon_movement_speed.png", frame_grid)->m_s_texture;
+	m_explisve_barrel_icon	= PRELOAD_TEXTURE("explosive_barrel_icon", "resources/icon/upgr_icon_explosive_barrels.png", frame_grid)->m_s_texture;
 
 	m_card_1_texture_emissive = PRELOAD_TEXTURE("card_emissive_1", "resources/emissive/upgrate_card_emissive_border_and_center_card_1.png", frame_grid)->m_s_texture;
 	m_card_2_texture_emissive = PRELOAD_TEXTURE("card_emissive_2", "resources/emissive/upgrate_card_emissive_border_and_center_card_2.png", frame_grid)->m_s_texture;
@@ -46,6 +47,7 @@ UpgradeLayer::UpgradeLayer()
 	m_loot_table.add_loot_table(7, director->drop_chances.piercing_chance, m_chances); // Piercing Chance
 	m_loot_table.add_loot_table(8, director->drop_chances.luck, m_chances); // Luck
 	m_loot_table.add_loot_table(9, director->drop_chances.projectile_amount, m_only_mythic_chance); // Projectile Amount
+	m_loot_table.add_loot_table(10, director->drop_chances.explosive_barrels, m_only_mythic_chance); // Explosive Barrels
 }
 
 UpgradeLayer::~UpgradeLayer()
@@ -185,6 +187,11 @@ void UpgradeLayer::apply_upgrade(LootTableValue upgrade_info)
 			}
 			PS_LOG(LOG_INFO, "Projectile Amount Upgrade Applied: +1 Projectile");
 			break;
+		case 10:
+			director->upgrade_player_explosive_barrels();
+			director->drop_chances.explosive_barrels = 0;
+			PS_LOG(LOG_INFO, "Explosive Barrels Upgrade Applied");
+			break;
 		default:
 			PS_LOG(LOG_WARNING, std::format("Invalid upgrade index: {}", upgrade_info.index));
 	}
@@ -306,6 +313,8 @@ std::string UpgradeLayer::upgrade_type_to_string(int index)
 			return "Luck";
 		case 9:
 			return "Multi Shot";
+		case 10:
+			return "Explosive Barrels";
 		default:
 			return "Unknown";
 	}
@@ -336,6 +345,8 @@ std::string UpgradeLayer::value_to_string(int index, int rarity)
 			return std::format("+{:.1f}%", m_base_upgrade_luck * multiplier * 100);
 		case 9:
 			return "+" + std::to_string(m_base_upgrade_projectile_amount);
+		case 10:
+			return "";
 		default:
 			return "Unknown";
 	}
@@ -432,6 +443,8 @@ void UpgradeLayer::draw_upgrade_preview(Vector2 card_pos, LootTableValue upgrade
 					"{} -> {}", director->player_projectile_amount(), director->player_projectile_amount() + m_base_upgrade_projectile_amount
 			);
 			break;
+		case 10:
+				break;
 		default:
 			break;
 	}
@@ -504,6 +517,7 @@ void UpgradeLayer::draw_upgrade_icon(int index, Vector2 card_pos)
 		case 9:
 			// DrawTextureEx(m_fire_rate_icon, pos, 0, scale, WHITE);
 			break;
+		case 10:
 		default:
 			break;
 	}
