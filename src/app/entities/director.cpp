@@ -434,6 +434,8 @@ std::shared_ptr<Gemstone> FortunaDirector::spawn_gemstone(const Vector2& positio
 		app_layer->register_entity(new_gem, true);
 
 	new_gem->init(position, new_gem);
+	new_gem->set_spawn_anim_playing(true);
+	new_gem->set_is_active(true);
 	return new_gem;
 }
 
@@ -641,7 +643,7 @@ void FortunaDirector::increase_difficulty(int bounty)
 
 		float peak_spawn_time = std::max(
 				_p->shark_min_spawn_time,
-				_p->shark_spawn_time - _p->shark_spawn_increase_base_value * (static_cast<float>(_p->shark_start_decrease_difficulty_bounty_amount) /
+				_p->shark_spawn_time - _p->shark_spawn_increase_base_value * (static_cast<float>(_p->shark_start_decrease_difficulty_bounty_amount) / 
 																			  _p->shark_spawn_increase_bounty_divider)
 		);
 		float decreased_spawn_time =
@@ -679,7 +681,7 @@ void FortunaDirector::increase_difficulty(int bounty)
 		_p->tentacle_spawner->set_interval(
 				std::max(
 						_p->tentacle_min_spawn_time,
-						_p->tentacle_spawn_time -
+						_p->tentacle_spawn_time - 
 								_p->tentacle_spawn_increase_base_value * (static_cast<float>(bounty) / _p->tentacle_spawn_increase_bounty_divider)
 				)
 		);
@@ -696,7 +698,7 @@ void FortunaDirector::increase_difficulty(int bounty)
 		_p->hunter_spawner->set_interval(
 				std::max(
 						_p->hunter_min_spawn_time,
-						_p->hunter_spawn_time -
+						_p->hunter_spawn_time - 
 								_p->hunter_spawn_increase_base_value * (static_cast<float>(bounty) / _p->hunter_spawn_increase_bounty_divider)
 				)
 		);

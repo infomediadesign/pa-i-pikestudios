@@ -15,9 +15,11 @@ Gemstone::Gemstone() : PSInterfaces::IEntity("gemstone")
 
 	m_anim_controller = PSCore::sprites::SpriteSheetAnimation(m_texture, {
 		{14, 0.1, PSCore::sprites::Forward, m_z_index},
-		{14, 0.1, PSCore::sprites::Forward, m_z_index}
+		{14, 0.1, PSCore::sprites::Forward, m_z_index},
+		{14, 0.1, PSCore::sprites::Backward, m_z_index},
 	});
-	m_anim_controller.add_animation_at_index(0, m_z_index);
+	m_anim_controller.add_animation_at_index(2, m_z_index);
+	m_anim_controller.set_animation_at_index(2, 13, m_z_index);
 
 	m_current_idle_anim  = 0;
 	m_spawn_anim_playing = false;
@@ -63,7 +65,12 @@ void Gemstone::update(float dt)
 			return false;
 		});
 	}
-	play_idle_anim(dt);
+	if ( m_spawn_anim_playing ) {
+		play_spawn_anim(dt);
+	} 
+	else {
+		play_idle_anim(dt);
+	}
 }
 
 void Gemstone::render()
@@ -86,10 +93,13 @@ void Gemstone::on_hit()
 
 void Gemstone::play_spawn_anim(float dt)
 {
-	m_anim_controller.update_animation(dt);
-	if ( m_anim_controller.get_sprite_sheet_animation_index(m_z_index).value_or(-1) == m_current_idle_anim &&
-		 m_anim_controller.get_sprite_sheet_frame_index(m_z_index).value_or(-1) == 21 ) {
-		m_spawn_anim_playing = false;
+	if ( m_spawn_anim_playing ) {
+		m_anim_controller.update_animation(dt);
+		if ( m_anim_controller.get_sprite_sheet_frame_index(m_z_index).value_or(-1) == 0 ) {
+			m_spawn_anim_playing = false;
+			m_current_idle_anim  = 0;
+			m_anim_controller.set_animation_at_index(m_current_idle_anim, 0, m_z_index);
+		}
 	}
 }
 
@@ -111,6 +121,7 @@ void Gemstone::play_idle_anim(float dt)
 void Gemstone::set_spawn_anim_playing(bool playing)
 {
 	m_spawn_anim_playing = playing;
+	m_anim_controller.set_animation_at_index(2, 13, m_z_index);
 }
 
 std::optional<std::vector<Vector2>> Gemstone::bounds() const
