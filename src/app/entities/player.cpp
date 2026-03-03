@@ -107,6 +107,19 @@ class PlayerPriv
 
 	// Upgrades
 	std::unique_ptr<PSCore::Spawner<ExplosiveBarrel, AppLayer>> m_explosive_barrel_spawner;
+
+	// Sound
+	Sound m_hurt_sound	= LoadSound("resources/sfx/hurt.mp3");
+	Sound m_death_sound = LoadSound("resources/sfx/death.mp3");
+
+	float m_global_sfx_volume = 0;
+	float m_hurt_volume = 1;
+	float m_hurt_pitch = 1;
+	float m_death_volume = 1;
+	float m_death_pitch = 1;
+
+	Vector2 m_volume_boundary = {-10,10};
+	Vector2 m_pitch_boundary = {-10,10};
 };
 
 Player::Player() : PSInterfaces::IEntity("player")
@@ -158,15 +171,15 @@ Player::Player() : PSInterfaces::IEntity("player")
 	_p->m_flash_alpha_location = GetShaderLocation(_p->m_flash_shader, "flash_alpha");
 
 	// Sound
-	m_global_sfx_volume = gApp()->sound_volume(PSCore::Application::SoundType::SFX).value_or(50);
+	_p->m_global_sfx_volume = gApp()->sound_volume(PSCore::Application::SoundType::SFX).value_or(50);
 }
 
 Player::~Player()
 {
 	UnloadShader(_p->m_flash_shader);
 
-	UnloadSound(m_hurt_sound);
-	UnloadSound(m_death_sound);
+	UnloadSound(_p->m_hurt_sound);
+	UnloadSound(_p->m_death_sound);
 }
 
 void Player::update(const float dt)
@@ -272,7 +285,7 @@ void Player::on_hit()
 		_p->m_can_be_hit = false;
 		if ( auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director()) ) {
 			director->set_player_health(director->player_health() - 1);
-			play_sound(m_hurt_sound, m_hurt_volume, m_hurt_pitch);
+			play_sound(_p->m_hurt_sound, _p->m_hurt_volume, _p->m_hurt_pitch);
 			if ( director->player_health() <= 0 ) {
 				on_death();
 			}
@@ -309,7 +322,7 @@ void Player::on_death()
 	_p->m_animation_controller.set_animation_at_index(0, 1, 1);
 	_p->m_animation_controller.set_animation_at_index(4, 0, 3);
 
-	play_sound(m_death_sound, m_death_volume, m_death_pitch);
+	play_sound(_p->m_death_sound, _p->m_death_volume, _p->m_death_pitch);
 
 	gApp()->get_layer<AppLayer>()->set_can_open_pause_menu(false);
 	gApp()->push_layer<DeathScreenLayer>();
@@ -796,10 +809,10 @@ void Player::set_barrel_intervall(float interval) {
 
 void Player::play_sound(Sound& sound, float volume, float pitch)
 {
-	int random_volume = PSUtils::gen_rand(m_volume_boundary.x, m_volume_boundary.y);
-	int random_pitch  = PSUtils::gen_rand(m_pitch_boundary.x, m_pitch_boundary.y);
+	int random_volume = PSUtils::gen_rand(_p->m_volume_boundary.x, _p->m_volume_boundary.y);
+	int random_pitch  = PSUtils::gen_rand(_p->m_pitch_boundary.x, _p->m_pitch_boundary.y);
 
-	SetSoundVolume(sound, std::min((m_global_sfx_volume / 100) * (volume + static_cast<float>(random_volume) / 100), 1.0f));
+	SetSoundVolume(sound, std::min((_p->m_global_sfx_volume / 100) * (volume + static_cast<float>(random_volume) / 100), 1.0f));
 	SetSoundPitch(sound, pitch + static_cast<float>(random_pitch) / 100);
 
 	PlaySound(sound);

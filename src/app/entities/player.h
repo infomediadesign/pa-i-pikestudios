@@ -127,19 +127,6 @@ public:
 
 private:
 	std::unique_ptr<PlayerPriv> _p;
-
-	// Sound
-	Sound m_hurt_sound	= LoadSound("resources/sfx/hurt.mp3");
-	Sound m_death_sound = LoadSound("resources/sfx/death.mp3");
-
-	float m_global_sfx_volume = 0;
-	float m_hurt_volume = 1;
-	float m_hurt_pitch = 1;
-	float m_death_volume = 1;
-	float m_death_pitch = 1;
-
-	Vector2 m_volume_boundary = {-10,10};
-	Vector2 m_pitch_boundary = {-10,10};
 };
 
 class Sails : public PSInterfaces::IRenderable
