@@ -16,6 +16,8 @@ public:
 
 	void set_is_active(bool active) override;
 
+	void determine_gem_drop();
+
 private:
 	bool m_hurt = false;
 	bool m_uwu	= false;

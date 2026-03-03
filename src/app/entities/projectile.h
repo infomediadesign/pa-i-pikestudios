@@ -6,6 +6,7 @@
 #include <pscore/sprite.h>
 #include <psinterfaces/renderable.h>
 #include <raylib.h>
+#include <string>
 #include <vector>
 #include "pscore/sprite.h"
 
@@ -86,6 +87,8 @@ public:
 	void apply_drag(const float dt);
 	void update_pierce_hit_anims(float dt);
 
+	enum class HitAnimType { Default, SmallBloodSplat, BigBloodSplat };
+
 private:
 	int m_p_z_index;
 	Vector2 m_p_position;
@@ -117,16 +120,28 @@ private:
 	Texture2D m_p_no_hit_anim_texture;
 	std::shared_ptr<PSCore::sprites::Sprite> m_p_no_hit_anim_sprite;
 
+	PSCore::sprites::SpriteSheetAnimation m_p_small_blood_splat_controller;
+	Texture2D m_p_small_blood_splat_texture;
+	std::shared_ptr<PSCore::sprites::Sprite> m_p_small_blood_splat_sprite;
+
+	PSCore::sprites::SpriteSheetAnimation m_p_big_blood_splat_controller;
+	Texture2D m_p_big_blood_splat_texture;
+	std::shared_ptr<PSCore::sprites::Sprite> m_p_big_blood_splat_sprite;
+
 	bool m_p_hit_aninm_playing	 = false;
 	bool m_p_no_hit_anim_playing = false;
 	Vector2 m_p_hit_anim_pos;
+
+	HitAnimType m_p_current_hit_anim_type = HitAnimType::Default;
+	std::string m_p_last_hit_ident;
 
 	struct PierceHitAnim
 	{
 		Vector2 position;
 		float rotation;
 		PSCore::sprites::SpriteSheetAnimation anim_controller;
-		bool finished = false;
+		bool finished		= false;
+		HitAnimType hit_type = HitAnimType::Default;
 	};
 	std::vector<PierceHitAnim> m_p_pierce_hit_anims;
 
