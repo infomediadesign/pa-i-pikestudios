@@ -12,6 +12,12 @@ DeathScreenLayer::DeathScreenLayer()
 {
 	Vector2 frame_grid{1, 1};
 	m_button = PRELOAD_TEXTURE("smallbutton", "resources/ui/button_small.png", frame_grid)->m_s_texture;
+
+	auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
+	if ( director ) {
+		m_director = director;
+		init_stat_strings();
+	}
 }
 
 void DeathScreenLayer::on_update(float dt)
@@ -130,6 +136,9 @@ void DeathScreenLayer::on_render()
 			HideCursor();
 		}
 	}
+
+	init_stat_strings();
+	draw_kill_stats(sk);
 }
 
 void DeathScreenLayer::set_score_should_be_saved(bool should_be_saved)
@@ -153,4 +162,64 @@ void DeathScreenLayer::reset_state()
 	m_name_entered			= false;
 	m_score_layer_instance	= nullptr;
 	gApp()->get_layer<AppLayer>()->set_can_open_pause_menu(true);
+}
+
+void DeathScreenLayer::init_stat_strings()
+{
+	m_kill_stat_lines.clear();
+
+	if ( !m_director )
+		return;
+
+	if ( m_director->statistics().sharks_killed > 0 ) {
+		m_kill_stat_lines.push_back("Sharks:");
+		m_kill_stat_lines.push_back(std::to_string(m_director->statistics().sharks_killed));
+	}
+	if ( m_director->statistics().tentacles_killed > 0 ) {
+		m_kill_stat_lines.push_back("Tentacles:");
+		m_kill_stat_lines.push_back(std::to_string(m_director->statistics().tentacles_killed));
+	}
+	if ( m_director->statistics().hunters_killed > 0 ) {
+		m_kill_stat_lines.push_back("Hunters:");
+		m_kill_stat_lines.push_back(std::to_string(m_director->statistics().hunters_killed));
+	}
+	if ( m_director->statistics().chonky_sharks_killed > 0 ) {
+		m_kill_stat_lines.push_back("Chonky sharks:");
+		m_kill_stat_lines.push_back(std::to_string(m_director->statistics().chonky_sharks_killed));
+	}
+}
+
+void DeathScreenLayer::draw_kill_stats(float scale)
+{
+	if ( !m_director )
+		return;
+	auto& vp = gApp()->viewport();
+	if ( !vp )
+		return;
+
+	Vector2 origin = vp->viewport_origin();
+
+	Rectangle bounds		 = {origin.x + 20 * scale, origin.y + 230 * scale, 100 * scale, 100 * scale};
+	float vertical_spacing	 = 10 * scale;
+
+	float center_x = origin.x + (vp->viewport_base_size().x / 2.0f) * scale;
+	float pos_x	   = center_x - bounds.width / 2.0f;
+
+	bounds = {pos_x, bounds.y, bounds.width, bounds.height};
+
+	GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt({255, 255, 255, 255}));
+	GuiSetStyle(LABEL, TEXT_ALIGNMENT, TEXT_ALIGN_CENTER);
+	GuiSetStyle(DEFAULT, TEXT_SIZE, 15 * scale);
+	GuiLabel(bounds, "Kills");
+	bounds.y += 20 * scale;
+
+	for ( int i = 0; i < m_kill_stat_lines.size(); i += 2 ) {
+		GuiSetStyle(DEFAULT, TEXT_SIZE, 6 * scale);
+		GuiSetStyle(LABEL, TEXT_ALIGNMENT, TEXT_ALIGN_LEFT);
+		GuiLabel(bounds, m_kill_stat_lines[i].c_str());
+		GuiSetStyle(LABEL, TEXT_ALIGNMENT, TEXT_ALIGN_RIGHT);
+		GuiLabel(bounds, m_kill_stat_lines[i + 1].c_str());
+		bounds.y += vertical_spacing;
+	}
+	GuiSetStyle(LABEL, TEXT_ALIGNMENT, TEXT_ALIGN_LEFT);
 }

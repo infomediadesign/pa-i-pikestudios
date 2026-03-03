@@ -14,8 +14,8 @@
 #include <layers/applayer.h>
 #include <pscore/spawner.h>
 #include <string_view>
-#include "entities/hunter.h"
 #include "entities/chonkyshark.h"
+#include "entities/hunter.h"
 
 class FortunaDirectorPriv;
 class FortunaDirector : public PSInterfaces::IEntity
@@ -116,11 +116,12 @@ public:
 
 	float player_iframe_duration() const;
 
+
 	struct BountyAmount
 	{
-		int shark_bounty	= 40;
-		int ship_bounty		= 150;
-		int tentacle_bounty = 225;
+		int shark_bounty	 = 40;
+		int ship_bounty		 = 150;
+		int tentacle_bounty	 = 225;
 		int big_shark_bounty = 120;
 	};
 	Bounty m_b_bounty;
@@ -130,6 +131,18 @@ public:
 	{
 		return _p;
 	}
+
+	struct Statistics
+	{
+		float time_played		 = 0.0f;
+		int sharks_killed		 = 0;
+		int tentacles_killed	 = 0;
+		int hunters_killed		 = 0;
+		int chonky_sharks_killed = 0;
+	};
+
+	Statistics& statistics();
+	Statistics stats;
 
 private:
 	std::unique_ptr<FortunaDirectorPriv> _p;
@@ -206,5 +219,7 @@ struct FortunaDirectorPriv
 	int hunter_max_limit					   = CFG_VALUE<int>("hunter_max_limit", 5);
 	float hunter_min_spawn_time				   = CFG_VALUE<float>("hunter_min_spawn_time", 3.f);
 	int hunter_start_spawn_bounty_amount	   = CFG_VALUE<int>("hunter_start_spawn_at_bounty", 400);
-	bool hunter_spawn_active				 = false;
+	bool hunter_spawn_active				   = false;
+
+	float m_time_played = 0.0f;
 };
