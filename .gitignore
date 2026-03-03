@@ -7,3 +7,5 @@ imgui.ini
 *doc/html
 /.vs
 fortunascore.txt
+balancing_settings.cfg
+user_preferences.cfg

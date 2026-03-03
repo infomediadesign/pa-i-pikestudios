@@ -1,6 +1,7 @@
 #pragma once
 
 #include <psinterfaces/layer.h>
+#include <raylib.h>
 
 class MainMenuLayer : public PSInterfaces::Layer
 {
@@ -23,4 +24,5 @@ private:
 		Texture2D m_main_menu_background;
 		Texture2D m_main_menu_title;
 		Texture2D m_button;
+		Texture2D m_itch_io;
 };

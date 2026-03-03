@@ -5,7 +5,7 @@
 #include <pscore/viewport.h>
 #include "entities/director.h"
 
-enum Type { UwUNormal = 0, UwUHurt, Normal, Hurt, Fin };
+enum Type { UwUNormal = 2, UwUHurt, Normal, Hurt, Fin };
 
 void ChonkyShark::on_hit()
 {
@@ -25,7 +25,13 @@ void ChonkyShark::on_hit()
 	m_hurt					= true;
 	m_remaining_iframe_time = m_iframe_duration;
 	int current_frame		= m_animation_controller.get_sprite_sheet_frame_index(-1).value_or(0);
-	m_animation_controller.set_animation_at_index(m_uwu ? UwUHurt : Hurt, current_frame, -1);
+
+	if ( m_uwu ) {
+		m_animation_controller.set_animation_at_index(UwUHurt, current_frame, -1);
+	}
+	else {
+		m_animation_controller.set_animation_at_index(Hurt, current_frame, -1);
+	}
 }
 
 std::optional<std::vector<Vector2>> ChonkyShark::bounds() const
@@ -49,20 +55,18 @@ std::optional<std::vector<Vector2>> ChonkyShark::bounds() const
 
 ChonkyShark::ChonkyShark() : Shark(), PSInterfaces::IEntity("chonky_shark")
 {
-	Vector2 frame_grid{9, 5};
-	auto tex = gApp()->sprite_loader()->preload(ident_, "resources/entity/chonky_shark.png", frame_grid, true);
-	m_shark_sprite.swap(tex);
-
-	std::vector<PSCore::sprites::SpriteSheetData> sp_data{
-			{9, 0.1, PSCore::sprites::Forward, -1}, {9, 0.1, PSCore::sprites::Forward, -1}, {9, 0.1, PSCore::sprites::Forward, -1},
-			{9, 0.1, PSCore::sprites::Forward, -1}, {9, 0.1, PSCore::sprites::Forward, 1},
-	};
-
-	m_animation_controller = PSCore::sprites::SpriteSheetAnimation(tex->m_s_texture, sp_data);
-
 	m_uwu = determine_uwu_();
-	m_animation_controller.add_animation_at_index(m_uwu ? UwUNormal : Normal, -1);
-	m_animation_controller.add_animation_at_index(Fin, 1);
+
+	int current_frame = m_animation_controller.get_sprite_sheet_frame_index(-1).value_or(0);
+
+	if ( m_uwu ) {
+		m_animation_controller.set_animation_at_index(UwUNormal, current_frame, -1);
+	}
+	else {
+		m_animation_controller.set_animation_at_index(Normal, current_frame, -1);
+	}
+
+	m_animation_controller.set_animation_at_index(Fin, current_frame, 1);
 
 	m_smear_origin = {7, 0.5};
 };
@@ -84,7 +88,14 @@ void ChonkyShark::set_is_active(bool active)
 	if ( active ) {
 		m_hurt = false;
 		m_uwu  = determine_uwu_();
-		m_animation_controller.set_animation_at_index(m_uwu ? UwUNormal : Normal, 0, -1);
+
+		if ( m_uwu ) {
+			m_animation_controller.set_animation_at_index(UwUNormal, 0, -1);
+		}
+		else {
+			m_animation_controller.set_animation_at_index(Normal, 0, -1);
+		}
+
 		m_animation_controller.set_animation_at_index(Fin, 0, 1);
 	}
 }
