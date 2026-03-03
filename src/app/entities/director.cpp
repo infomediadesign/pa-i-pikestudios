@@ -203,7 +203,12 @@ void FortunaDirector::draw_debug()
 
 	// Spawn Loot Chest
 	if ( ImGui::Button("Spawn Loot Chest") ) {
-		spawn_loot_chest({(float) PSUtils::gen_rand(10, 300), (float) PSUtils::gen_rand(10, 300)});
+		spawn_loot_chest({(float) PSUtils::gen_rand(10, 600), (float) PSUtils::gen_rand(10, 300)});
+	}
+
+	// Spawn Gemstone
+	if ( ImGui::Button("Spawn Gemstone") ) {
+		spawn_gemstone({(float) PSUtils::gen_rand(10, 600), (float) PSUtils::gen_rand(10, 300)});
 	}
 
 	ImGui::Separator();
@@ -410,6 +415,26 @@ std::shared_ptr<LootChest> FortunaDirector::spawn_loot_chest(const Vector2& posi
 
 	new_loot->init(position, new_loot);
 	return new_loot;
+}
+
+std::shared_ptr<Gemstone> FortunaDirector::spawn_gemstone(const Vector2& position)
+{
+	for ( auto gem: _p->gemstones ) {
+		if ( !gem->is_active() ) {
+			gem->init(position, gem);
+			gem->set_spawn_anim_playing(true);
+			gem->set_is_active(true);
+			return gem;
+		}
+	}
+	auto new_gem = std::make_shared<Gemstone>();
+	_p->gemstones.push_back(new_gem);
+
+	if ( auto app_layer = gApp()->get_layer<AppLayer>() )
+		app_layer->register_entity(new_gem, true);
+
+	new_gem->init(position, new_gem);
+	return new_gem;
 }
 
 void FortunaDirector::upgrade_player_fire_rate(float amount)
@@ -717,6 +742,11 @@ int FortunaDirector::reroll_amount() const
 void FortunaDirector::set_reroll_amount(const int amount)
 {
 	_p->upgrade_reroll_amount = amount;
+}
+
+float FortunaDirector::gem_drop_chance() const
+{
+	return _p->gem_drop_chance;
 }
 
 int FortunaDirector::player_projectile_amount() const
