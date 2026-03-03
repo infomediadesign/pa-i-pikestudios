@@ -456,6 +456,7 @@ void Hunter::set_is_active(bool active)
 				director->spawn_loot_chest(_p->pos);
 			}
 		}
+		determine_gem_drop();
 	}
 
 	if ( active ) {
@@ -712,4 +713,15 @@ void Hunter::determined_if_marked_()
 {
 	float drop_roll = static_cast<float>(PSUtils::gen_rand_float(0.0f, 100.0f));
 	_p->marked		= drop_roll <= _p->drop_upgrade_chance;
+}
+
+void Hunter::determine_gem_drop()
+{
+	auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
+	if ( !director ) {
+		return;
+	}
+	if ( PSUtils::gen_rand_float(0, 100) <= director->gem_drop_chance() ) {
+		director->spawn_gemstone(_p->pos);
+	}
 }

@@ -203,7 +203,12 @@ void FortunaDirector::draw_debug()
 
 	// Spawn Loot Chest
 	if ( ImGui::Button("Spawn Loot Chest") ) {
-		spawn_loot_chest({(float) PSUtils::gen_rand(10, 300), (float) PSUtils::gen_rand(10, 300)});
+		spawn_loot_chest({(float) PSUtils::gen_rand(10, 600), (float) PSUtils::gen_rand(10, 300)});
+	}
+
+	// Spawn Gemstone
+	if ( ImGui::Button("Spawn Gemstone") ) {
+		spawn_gemstone({(float) PSUtils::gen_rand(10, 600), (float) PSUtils::gen_rand(10, 300)});
 	}
 
 	ImGui::Separator();
@@ -412,6 +417,28 @@ std::shared_ptr<LootChest> FortunaDirector::spawn_loot_chest(const Vector2& posi
 	return new_loot;
 }
 
+std::shared_ptr<Gemstone> FortunaDirector::spawn_gemstone(const Vector2& position)
+{
+	for ( auto gem: _p->gemstones ) {
+		if ( !gem->is_active() ) {
+			gem->init(position, gem);
+			gem->set_spawn_anim_playing(true);
+			gem->set_is_active(true);
+			return gem;
+		}
+	}
+	auto new_gem = std::make_shared<Gemstone>();
+	_p->gemstones.push_back(new_gem);
+
+	if ( auto app_layer = gApp()->get_layer<AppLayer>() )
+		app_layer->register_entity(new_gem, true);
+
+	new_gem->init(position, new_gem);
+	new_gem->set_spawn_anim_playing(true);
+	new_gem->set_is_active(true);
+	return new_gem;
+}
+
 void FortunaDirector::upgrade_player_fire_rate(float amount)
 {
 	_p->player_current_fire_rate -= amount;
@@ -616,7 +643,7 @@ void FortunaDirector::increase_difficulty(int bounty)
 
 		float peak_spawn_time = std::max(
 				_p->shark_min_spawn_time,
-				_p->shark_spawn_time - _p->shark_spawn_increase_base_value * (static_cast<float>(_p->shark_start_decrease_difficulty_bounty_amount) /
+				_p->shark_spawn_time - _p->shark_spawn_increase_base_value * (static_cast<float>(_p->shark_start_decrease_difficulty_bounty_amount) / 
 																			  _p->shark_spawn_increase_bounty_divider)
 		);
 		float decreased_spawn_time =
@@ -654,7 +681,7 @@ void FortunaDirector::increase_difficulty(int bounty)
 		_p->tentacle_spawner->set_interval(
 				std::max(
 						_p->tentacle_min_spawn_time,
-						_p->tentacle_spawn_time -
+						_p->tentacle_spawn_time - 
 								_p->tentacle_spawn_increase_base_value * (static_cast<float>(bounty) / _p->tentacle_spawn_increase_bounty_divider)
 				)
 		);
@@ -671,7 +698,7 @@ void FortunaDirector::increase_difficulty(int bounty)
 		_p->hunter_spawner->set_interval(
 				std::max(
 						_p->hunter_min_spawn_time,
-						_p->hunter_spawn_time -
+						_p->hunter_spawn_time - 
 								_p->hunter_spawn_increase_base_value * (static_cast<float>(bounty) / _p->hunter_spawn_increase_bounty_divider)
 				)
 		);
@@ -717,6 +744,11 @@ int FortunaDirector::reroll_amount() const
 void FortunaDirector::set_reroll_amount(const int amount)
 {
 	_p->upgrade_reroll_amount = amount;
+}
+
+float FortunaDirector::gem_drop_chance() const
+{
+	return _p->gem_drop_chance;
 }
 
 int FortunaDirector::player_projectile_amount() const

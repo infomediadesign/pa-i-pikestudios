@@ -35,6 +35,8 @@ public:
 
 	enum State { Patrolling = 0, Wreck };
 
+	void determine_gem_drop();
+
 private:
 	std::unique_ptr<HunterPriv> _p;
 	

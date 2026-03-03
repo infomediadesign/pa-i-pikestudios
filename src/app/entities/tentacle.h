@@ -36,6 +36,8 @@ public:
 
 	enum State { Idle = 0, WaterBreak, Attacking, Retreat };
 
+	void determine_gem_drop();
+
 private:
 	std::shared_ptr<tentacle> m_self;
 

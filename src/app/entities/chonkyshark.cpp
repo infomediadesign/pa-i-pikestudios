@@ -18,6 +18,7 @@ void ChonkyShark::on_hit()
 		if ( m_marked ) {
 			director->spawn_loot_chest(m_pos);
 		}
+		determine_gem_drop();
 		director->stats.chonky_sharks_killed++;
 		return;
 	}
@@ -103,4 +104,15 @@ void ChonkyShark::set_is_active(bool active)
 bool ChonkyShark::determine_uwu_()
 {
 	return PSUtils::gen_rand(0, 100) <= CFG_VALUE("chonky_uwu_chance", 10);
+}
+
+void ChonkyShark::determine_gem_drop()
+{
+	auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
+	if (!director ) {
+		return;
+	}
+	if ( PSUtils::gen_rand_float(0, 100) <= director->gem_drop_chance() ) {
+		director->spawn_gemstone(m_pos);
+	}
 }
