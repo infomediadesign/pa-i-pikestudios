@@ -122,6 +122,9 @@ public:
 	void enable_explosive_barrels();
 	void set_barrel_intervall(float intervall);
 
+	// Sound
+    void play_sound(Sound& sound, float volume, float pitch);
+
 private:
 	std::unique_ptr<PlayerPriv> _p;
 };

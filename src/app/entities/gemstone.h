@@ -12,6 +12,7 @@ class Gemstone : public PSInterfaces::IRenderable
 {
 public:
 	Gemstone();
+	~Gemstone();
 	void update(float dt) override;
 	void render() override;
 	void on_hit() override;
@@ -41,6 +42,19 @@ private:
 
 	bool m_spawn_anim_playing;
 	int m_current_idle_anim = 0;
+	bool m_can_change_anim = true;
 
-	static constexpr int m_z_index = -2;
+	static constexpr int m_z_index = -5;
+
+	// Sound
+	Sound m_splash_sound = LoadSound("resources/sfx/gemstone_water_splash.mp3");
+
+	float m_global_sfx_volume = 0;
+	float m_splash_volume = 1;
+	float m_splash_pitch = 1;
+
+	Vector2 m_volume_boundary = {-10,10};
+	Vector2 m_pitch_boundary = {-10,10};
+
+	bool m_can_play_spawn_sound = true;
 };

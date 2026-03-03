@@ -68,11 +68,17 @@ void Projectile::init(const Vector2& position, std::shared_ptr<Projectile> self)
 				m_p_last_hit_ident = locked->ident();
 				on_hit();
 
-				if (locked->is_active())
-					return;
+				if (locked->is_active() ) {
+					if ( !locked->is_dead_hitable() ) {
+						return;
+					}
+				}
 
 				if (auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director())) {
 					director->entity_died(m_p_owner, locked->ident());
+					if ( locked->is_dead_hitable() ) {
+						locked->set_is_dead_hitable(false);
+					}
 				}
 			}
 	});
@@ -119,7 +125,7 @@ void Projectile::render()
 			if ( auto& vp = gApp()->viewport() ) {
 				vp->draw_in_viewport(
 						tex, pierce.anim_controller.get_source_rectangle(m_p_z_index).value_or(Rectangle{0}), pierce.position,
-						pierce.rotation, WHITE
+						0, WHITE
 				);
 			}
 		}
@@ -148,7 +154,7 @@ void Projectile::render()
 		if ( auto& vp = gApp()->viewport() ) {
 			vp->draw_in_viewport(
 					tex, ctrl->get_source_rectangle(m_p_z_index).value_or(Rectangle{0}), m_p_hit_anim_pos,
-					m_p_rotation, WHITE
+					0, WHITE
 			);
 		}
 	}

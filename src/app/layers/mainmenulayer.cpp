@@ -222,6 +222,7 @@ void MainMenuLayer::on_render()
 		});
 		gApp()->call_later([]() { gApp()->switch_layer<MainMenuLayer, AppLayer>(); });
 		HideCursor();
+		gApp()->play_ui_sound(0);
 	}
 
 	button_pos.y += spacing + m_button_1.height;
@@ -229,6 +230,7 @@ void MainMenuLayer::on_render()
 	if ( GuiButtonTexture(m_options_btn, {button_pos.x - 24, button_pos.y}, 0, scale, WHITE, GRAY, "Options") ) {
 		gApp()->call_later([]() { PS_LOG(LOG_INFO, "Clicked Settings"); });
 		gApp()->call_later([]() { gApp()->switch_layer<MainMenuLayer, OptionsLayer>(); });
+		gApp()->play_ui_sound(0);
 	}
 
 	if ( GuiButtonTexture(m_skin_btn, {button_pos.x + 44, button_pos.y}, 0, scale, WHITE, GRAY, "") ) {
@@ -245,6 +247,7 @@ void MainMenuLayer::on_render()
 			if ( score_layer )
 				score_layer->load_highscore(score_layer->score_filename());
 		});
+		gApp()->play_ui_sound(0);
 	}
 
 	button_pos.y += spacing + m_button_1.height;

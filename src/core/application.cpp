@@ -106,6 +106,11 @@ void PSCore::Application::init(const AppSpec& spec)
 		vsync		   = std::get<bool>(settings->value("vsync").value_or(false));
 		msaa		   = std::get<bool>(settings->value("msaa4x").value_or(false));
 		fullscreen	   = std::get<bool>(settings->value("fullscreen").value_or(true));
+
+		if ( m_global_sound_volume.empty() ) {
+			m_global_sound_volume.push_back(std::get<float>(settings->value("music_volume").value_or(20)));
+			m_global_sound_volume.push_back(std::get<float>(settings->value("sfx_volume").value_or(50)));
+		}
 	}
 
 	if ( msaa )
@@ -115,7 +120,16 @@ void PSCore::Application::init(const AppSpec& spec)
 		SetConfigFlags(FLAG_MSAA_4X_HINT);
 
 	InitWindow(spec.size.x, spec.size.y, spec.title);
-	
+
+	InitAudioDevice();
+
+	if ( m_ui_sounds.empty() ) {
+		m_ui_sounds.push_back({LoadSound("resources/sfx/button_pressed.mp3"), 1, 1});
+		m_ui_sounds.push_back({LoadSound("resources/sfx/button_hovered.mp3"), 1, 1});
+		m_ui_sounds.push_back({LoadSound("resources/sfx/upgrade_picked.mp3"), 1, 1});
+		m_ui_sounds.push_back({LoadSound("resources/sfx/mythic_upgrade_picked.mp3"), 1, 1});
+	}
+
 	SetWindowIcon(LoadImage(spec.icon_path));
 
 	if ( fullscreen )
@@ -128,6 +142,12 @@ void PSCore::Application::init(const AppSpec& spec)
 
 Application::~Application()
 {
+	for ( auto element: m_ui_sounds ) {
+		UnloadSound(element.sound);
+	}
+
+	CloseAudioDevice();
+
 	CloseWindow();
 }
 
@@ -237,4 +257,33 @@ void PSCore::Application::set_target_fps(int fps)
 	PS_LOG(LOG_INFO, TextFormat("Target FPS set to %d", fps));
 };
 
-void PSCore::Application::set_sound_volume(SoundType type, float volume) {};
+void PSCore::Application::set_sound_volume(SoundType type, float volume)
+{
+	if ( !m_global_sound_volume.empty() ) {
+		m_global_sound_volume.at(static_cast<int>(type)) = volume;
+	}
+};
+
+std::optional<float> Application::sound_volume(SoundType type)
+{
+	if ( !m_global_sound_volume.empty() ) {
+		return m_global_sound_volume.at(static_cast<int>(type));
+	}
+	return std::nullopt;
+};
+
+void Application::play_ui_sound(int index)
+{
+	ui_sound element = m_ui_sounds.at(index);
+
+	if ( m_global_sound_volume.empty() )
+		return;
+
+	int random_volume = PSUtils::gen_rand(m_volume_boundary.x, m_volume_boundary.y);
+	int random_pitch  = PSUtils::gen_rand(m_pitch_boundary.x, m_pitch_boundary.y);
+
+	SetSoundVolume(element.sound, std::min((m_global_sound_volume.at(1) / 100) * (element.volume + static_cast<float>(random_volume) / 100), 1.0f));
+	SetSoundPitch(element.sound, element.pitch + static_cast<float>(random_pitch) / 100);
+
+	PlaySound(element.sound);
+}

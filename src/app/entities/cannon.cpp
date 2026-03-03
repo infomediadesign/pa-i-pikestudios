@@ -23,7 +23,14 @@ Cannon::Cannon() : PSInterfaces::IEntity("cannon")
 	);
 	m_c_animation_controller.add_animation_at_index(0, 2);
 	m_c_projectile_base_rotation_offset = 20;
-	m_c_projectile_rotation_offset = m_c_projectile_base_rotation_offset;
+	m_c_projectile_rotation_offset		= m_c_projectile_base_rotation_offset;
+
+	m_global_sfx_volume = gApp()->sound_volume(PSCore::Application::SoundType::SFX).value_or(50);
+}
+
+Cannon::~Cannon()
+{
+	UnloadSound(m_shoot_sound);
 }
 
 void Cannon::update(const float dt)
@@ -77,6 +84,14 @@ void Cannon::fire(int projectile_amount)
 		m_c_projectile_rotation_offset = m_c_projectile_base_rotation_offset;
 		m_c_time_since_last_shot	   = 0.0f;
 		m_c_animation_controller.set_animation_at_index(1, 1, 2);
+
+		int random_volume = PSUtils::gen_rand(m_volume_boundary.x, m_volume_boundary.y);
+		int random_pitch  = PSUtils::gen_rand(m_pitch_boundary.x, m_pitch_boundary.y);
+
+		SetSoundVolume(m_shoot_sound, std::min((m_global_sfx_volume / 100) * (m_shoot_volume + static_cast<float>(random_volume) / 100), 1.0f));
+		SetSoundPitch(m_shoot_sound, m_shoot_pitch + static_cast<float>(random_pitch) / 100);
+
+		PlaySound(m_shoot_sound);
 	}
 }
 
@@ -87,9 +102,9 @@ std::shared_ptr<Projectile> Cannon::spawn_projectile()
 	if ( !director ) {
 		return nullptr;
 	}
-	
+
 	std::shared_ptr<Projectile> spawned_projectile = nullptr;
-	
+
 	if ( auto& spawner = director->spawner<Projectile, AppLayer>() ) {
 		spawner->register_spawn_callback([this, &spawned_projectile](std::shared_ptr<Projectile> projectile) {
 			projectile->init(m_c_position, projectile);
@@ -102,12 +117,12 @@ std::shared_ptr<Projectile> Cannon::spawn_projectile()
 				projectile->set_owner(m_c_parent);
 			}
 			projectile->launch();
-			
+
 			spawned_projectile = projectile;
 		});
 		spawner->spawn();
 	}
-	
+
 	return spawned_projectile;
 }
 

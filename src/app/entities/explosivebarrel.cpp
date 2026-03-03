@@ -17,11 +17,16 @@ ExplosiveBarrel::ExplosiveBarrel() : PSInterfaces::IEntity("explosive_barrel")
 	float frame_time	   = m_damage_time / 8;
 	m_animation_controller = PSCore::sprites::SpriteSheetAnimation(FETCH_SPRITE_TEXTURE(ident_), {{8, frame_time, PSCore::sprites::Forward, 1}});
 	m_animation_controller.add_animation_at_index(0, 1);
+	propose_z_index(-1);
+
+	m_global_sfx_volume = gApp()->sound_volume(PSCore::Application::SoundType::SFX).value_or(50);
 };
 
 ExplosiveBarrel::~ExplosiveBarrel()
 {
 	UnloadShader(m_flash_shader);
+
+	UnloadSound(m_explode_sound);
 }
 
 void ExplosiveBarrel::update(float dt)
@@ -34,6 +39,21 @@ void ExplosiveBarrel::update(float dt)
 		m_animation_controller.update_animation(dt);
 		if ( auto app_layer = gApp()->get_layer<AppLayer>() ) {
 			m_collider->check_collision(app_layer->entities());
+		}
+
+		if ( m_can_play_sound ) {
+			m_can_play_sound = false;
+
+			if ( IsSoundPlaying(m_explode_sound) )
+				StopSound(m_explode_sound);
+
+			int random_volume = PSUtils::gen_rand(static_cast<int>(m_volume_boundary.x), static_cast<int>(m_volume_boundary.y));
+			int random_pitch  = PSUtils::gen_rand(static_cast<int>(m_pitch_boundary.x), static_cast<int>(m_pitch_boundary.y));
+
+			SetSoundVolume(m_explode_sound, std::min((m_global_sfx_volume / 100) * (m_shoot_volume + static_cast<float>(random_volume) / 100), 1.0f));
+			SetSoundPitch(m_explode_sound, m_shoot_pitch + static_cast<float>(random_pitch) / 100);
+
+			PlaySound(m_explode_sound);
 		}
 
 		return;
@@ -55,11 +75,15 @@ void ExplosiveBarrel::render()
 			);
 		}
 
-		BeginShaderMode(m_flash_shader);
+		if ( !is_exploding() ) {
+			DrawCircleV(pos_global, Lerp(0,m_explosion_radius, m_timer / m_detonation_time), {200,0,0,75});
 
-		DrawCircleV(pos_global, 3 * vp->viewport_scale(), WHITE);
+			BeginShaderMode(m_flash_shader);
 
-		EndShaderMode();
+			DrawCircleV(pos_global, 3 * vp->viewport_scale(), WHITE);
+
+			EndShaderMode();
+		}
 	}
 };
 
@@ -71,6 +95,7 @@ void ExplosiveBarrel::set_is_active(bool active)
 		m_timer		  = 0;
 		m_flash_alpha = 0;
 		m_animation_controller.set_animation_at_index(0, 0, 1);
+		m_can_play_sound = true;
 	}
 };
 
