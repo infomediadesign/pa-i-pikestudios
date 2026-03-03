@@ -12,6 +12,12 @@ DeathScreenLayer::DeathScreenLayer()
 {
 	Vector2 frame_grid{1, 1};
 	m_button = PRELOAD_TEXTURE("smallbutton", "resources/ui/button_small.png", frame_grid)->m_s_texture;
+
+	auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
+	if ( director ) {
+		m_director = director;
+		init_stat_strings();
+	}
 }
 
 void DeathScreenLayer::on_update(float dt)
@@ -131,6 +137,7 @@ void DeathScreenLayer::on_render()
 		}
 	}
 
+	init_stat_strings();
 	draw_kill_stats(sk);
 }
 
@@ -157,18 +164,43 @@ void DeathScreenLayer::reset_state()
 	gApp()->get_layer<AppLayer>()->set_can_open_pause_menu(true);
 }
 
+void DeathScreenLayer::init_stat_strings()
+{
+	m_kill_stat_lines.clear();
+
+	if ( !m_director )
+		return;
+
+	if ( m_director->statistics().sharks_killed > 0 ) {
+		m_kill_stat_lines.push_back("Sharks:");
+		m_kill_stat_lines.push_back(std::to_string(m_director->statistics().sharks_killed));
+	}
+	if ( m_director->statistics().tentacles_killed > 0 ) {
+		m_kill_stat_lines.push_back("Tentacles:");
+		m_kill_stat_lines.push_back(std::to_string(m_director->statistics().tentacles_killed));
+	}
+	if ( m_director->statistics().hunters_killed > 0 ) {
+		m_kill_stat_lines.push_back("Hunters:");
+		m_kill_stat_lines.push_back(std::to_string(m_director->statistics().hunters_killed));
+	}
+	if ( m_director->statistics().chonky_sharks_killed > 0 ) {
+		m_kill_stat_lines.push_back("Chonky sharks:");
+		m_kill_stat_lines.push_back(std::to_string(m_director->statistics().chonky_sharks_killed));
+	}
+}
+
 void DeathScreenLayer::draw_kill_stats(float scale)
 {
-	auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
-	auto& vp	  = gApp()->viewport();
-	if ( !director && !vp ) {
+	if ( !m_director )
 		return;
-	}
+	auto& vp = gApp()->viewport();
+	if ( !vp )
+		return;
+
 	Vector2 origin = vp->viewport_origin();
 
 	Rectangle bounds		 = {origin.x + 20 * scale, origin.y + 230 * scale, 100 * scale, 100 * scale};
 	float vertical_spacing	 = 10 * scale;
-	float horizontal_spacing = 0 * scale;
 
 	float center_x = origin.x + (vp->viewport_base_size().x / 2.0f) * scale;
 	float pos_x	   = center_x - bounds.width / 2.0f;
@@ -179,44 +211,15 @@ void DeathScreenLayer::draw_kill_stats(float scale)
 	GuiSetStyle(LABEL, TEXT_ALIGNMENT, TEXT_ALIGN_CENTER);
 	GuiSetStyle(DEFAULT, TEXT_SIZE, 15 * scale);
 	GuiLabel(bounds, "Kills");
-	GuiSetStyle(LABEL, TEXT_ALIGNMENT, TEXT_ALIGN_LEFT);
 	bounds.y += 20 * scale;
-	GuiSetStyle(DEFAULT, TEXT_SIZE, 6 * scale);
-	if ( director->stats.sharks_killed > 0 ) {
-		GuiLabel(bounds, "Sharks:");
+
+	for ( int i = 0; i < m_kill_stat_lines.size(); i += 2 ) {
+		GuiSetStyle(DEFAULT, TEXT_SIZE, 6 * scale);
+		GuiSetStyle(LABEL, TEXT_ALIGNMENT, TEXT_ALIGN_LEFT);
+		GuiLabel(bounds, m_kill_stat_lines[i].c_str());
 		GuiSetStyle(LABEL, TEXT_ALIGNMENT, TEXT_ALIGN_RIGHT);
-		GuiLabel(
-				{bounds.x + horizontal_spacing, bounds.y, bounds.width, bounds.height}, std::to_string(director->statistics().sharks_killed).c_str()
-		);
-	}
-	bounds.y += vertical_spacing;
-	GuiSetStyle(LABEL, TEXT_ALIGNMENT, TEXT_ALIGN_LEFT);
-	if ( director->stats.tentacles_killed > 0 ) {
-		GuiLabel(bounds, "Tentacles:");
-		GuiSetStyle(LABEL, TEXT_ALIGNMENT, TEXT_ALIGN_RIGHT);
-		GuiLabel(
-				{bounds.x + horizontal_spacing, bounds.y, bounds.width, bounds.height},
-				std::to_string(director->statistics().tentacles_killed).c_str()
-		);
-	}
-	bounds.y += vertical_spacing;
-	GuiSetStyle(LABEL, TEXT_ALIGNMENT, TEXT_ALIGN_LEFT);
-	if ( director->stats.hunters_killed > 0 ) {
-		GuiLabel(bounds, "Hunters:");
-		GuiSetStyle(LABEL, TEXT_ALIGNMENT, TEXT_ALIGN_RIGHT);
-		GuiLabel(
-				{bounds.x + horizontal_spacing, bounds.y, bounds.width, bounds.height}, std::to_string(director->statistics().hunters_killed).c_str()
-		);
-	}
-	bounds.y += vertical_spacing;
-	GuiSetStyle(LABEL, TEXT_ALIGNMENT, TEXT_ALIGN_LEFT);
-	if ( director->stats.chonky_sharks_killed > 0 ) {
-		GuiLabel(bounds, "Chonky sharks:");
-		GuiSetStyle(LABEL, TEXT_ALIGNMENT, TEXT_ALIGN_RIGHT);
-		GuiLabel(
-				{bounds.x + horizontal_spacing, bounds.y, bounds.width, bounds.height},
-				std::to_string(director->statistics().chonky_sharks_killed).c_str()
-		);
+		GuiLabel(bounds, m_kill_stat_lines[i + 1].c_str());
+		bounds.y += vertical_spacing;
 	}
 	GuiSetStyle(LABEL, TEXT_ALIGNMENT, TEXT_ALIGN_LEFT);
 }

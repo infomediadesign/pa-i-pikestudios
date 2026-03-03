@@ -17,6 +17,7 @@ PauseLayer::PauseLayer()
 	auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
 	if ( director ) {
 		m_director = director;
+		init_stat_strings();
 	}
 }
 
@@ -131,95 +132,75 @@ void PauseLayer::draw_kill_stats(float scale)
 	GuiSetStyle(DEFAULT, TEXT_SIZE, 15 * scale);
 	GuiLabel(m_stats_base_bounds, "Kills");
 	m_stats_base_bounds.y += 20 * scale;
-	GuiSetStyle(DEFAULT, TEXT_SIZE, 6 * scale);
-	if ( m_director->stats.sharks_killed > 0 ) {
-		GuiLabel(m_stats_base_bounds, "Sharks:");
+
+	for ( int i = 0; i < m_kill_stat_lines.size(); i += 2 ) {
+		GuiSetStyle(DEFAULT, TEXT_SIZE, 6 * scale);
+		GuiLabel(m_stats_base_bounds, m_kill_stat_lines[i].c_str());
 		GuiLabel(
 				{m_stats_base_bounds.x + horizontal_spacing, m_stats_base_bounds.y, m_stats_base_bounds.width, m_stats_base_bounds.height},
-				std::to_string(m_director->statistics().sharks_killed).c_str()
-		);
-	}
-	m_stats_base_bounds.y += vertical_spacing;
-	if ( m_director->stats.tentacles_killed > 0 ) {
-		GuiLabel(m_stats_base_bounds, "Tentacles:");
-		GuiLabel(
-				{m_stats_base_bounds.x + horizontal_spacing, m_stats_base_bounds.y, m_stats_base_bounds.width, m_stats_base_bounds.height},
-				std::to_string(m_director->statistics().tentacles_killed).c_str()
-		);
-	}
-	m_stats_base_bounds.y += vertical_spacing;
-	if ( m_director->stats.hunters_killed > 0 ) {
-		GuiLabel(m_stats_base_bounds, "Hunters:");
-		GuiLabel(
-				{m_stats_base_bounds.x + horizontal_spacing, m_stats_base_bounds.y, m_stats_base_bounds.width, m_stats_base_bounds.height},
-				std::to_string(m_director->statistics().hunters_killed).c_str()
-		);
-	}
-	m_stats_base_bounds.y += vertical_spacing;
-	if ( m_director->stats.chonky_sharks_killed > 0 ) {
-		GuiLabel(m_stats_base_bounds, "Chonky sharks:");
-		GuiLabel(
-				{m_stats_base_bounds.x + horizontal_spacing, m_stats_base_bounds.y, m_stats_base_bounds.width, m_stats_base_bounds.height},
-				std::to_string(m_director->statistics().chonky_sharks_killed).c_str()
-		);
+				m_kill_stat_lines[i + 1].c_str());
+		m_stats_base_bounds.y += vertical_spacing;
 	}
 }
 
 void PauseLayer::draw_player_stats(float scale)
 {
-	float vertical_spacing = 10 * scale;
+	float vertical_spacing	 = 10 * scale;
 	float horizontal_spacing = 75 * scale;
 	m_stats_base_bounds.y += 30 * scale;
 	GuiSetStyle(DEFAULT, TEXT_SIZE, 15 * scale);
 	GuiLabel(m_stats_base_bounds, "Player Stats");
 	m_stats_base_bounds.y += 20 * scale;
-	GuiSetStyle(DEFAULT, TEXT_SIZE, 6 * scale);
-	GuiLabel(m_stats_base_bounds, "Speed:");
-	GuiLabel(
-			{m_stats_base_bounds.x + horizontal_spacing, m_stats_base_bounds.y, m_stats_base_bounds.width, m_stats_base_bounds.height},
-			std::format("{:.2f}", m_director->player_max_velocity()).c_str()
-	);
-	m_stats_base_bounds.y += vertical_spacing;
-	GuiLabel(m_stats_base_bounds, "Turn Speed:");
-	GuiLabel(
-			{m_stats_base_bounds.x + horizontal_spacing, m_stats_base_bounds.y, m_stats_base_bounds.width, m_stats_base_bounds.height},
-			std::format("{:.2f}", m_director->player_input_rotation_mult()).c_str()
-	);
-	m_stats_base_bounds.y += vertical_spacing;
-	GuiLabel(m_stats_base_bounds, "Fire Rate:");
-	GuiLabel(
-			{m_stats_base_bounds.x + horizontal_spacing, m_stats_base_bounds.y, m_stats_base_bounds.width, m_stats_base_bounds.height},
-			std::format("{:.2f}s", m_director->player_current_fire_rate()).c_str()
-	);
-	m_stats_base_bounds.y += vertical_spacing;
-	GuiLabel(m_stats_base_bounds, "Projectile Speed:");
-	GuiLabel(
-			{m_stats_base_bounds.x + horizontal_spacing, m_stats_base_bounds.y, m_stats_base_bounds.width, m_stats_base_bounds.height},
-			std::format("{:.2f}", m_director->player_current_projectile_speed()).c_str()
-	);
-	m_stats_base_bounds.y += vertical_spacing;
-	GuiLabel(m_stats_base_bounds, "Fire Range:");
-	GuiLabel(
-			{m_stats_base_bounds.x + horizontal_spacing, m_stats_base_bounds.y, m_stats_base_bounds.width, m_stats_base_bounds.height},
-			std::format("{:.2f}", m_director->player_current_fire_range()).c_str()
-	);
-	m_stats_base_bounds.y += vertical_spacing;
-	GuiLabel(m_stats_base_bounds, "Piercing Chance:");
-	GuiLabel(
-			{m_stats_base_bounds.x + horizontal_spacing, m_stats_base_bounds.y, m_stats_base_bounds.width, m_stats_base_bounds.height},
-			std::format("{:.2f}%", m_director->player_piercing_chance()).c_str()
-	);
-	m_stats_base_bounds.y += vertical_spacing;
-	GuiLabel(m_stats_base_bounds, "Luck:");
-	GuiLabel(
-			{m_stats_base_bounds.x + horizontal_spacing, m_stats_base_bounds.y, m_stats_base_bounds.width, m_stats_base_bounds.height},
-			std::format("{:.2f}%", m_director->player_luck() * 100).c_str()
-	);
-	m_stats_base_bounds.y += vertical_spacing;
-	GuiLabel(m_stats_base_bounds, "Multi Shot:");
-	GuiLabel(
-			{m_stats_base_bounds.x + horizontal_spacing, m_stats_base_bounds.y, m_stats_base_bounds.width, m_stats_base_bounds.height},
-			std::format("{}", m_director->player_projectile_amount()).c_str()
-	);
-	m_stats_base_bounds.y += vertical_spacing;
+
+	for ( int i = 0; i < m_player_stat_lines.size(); i += 2 ) {
+		GuiSetStyle(DEFAULT, TEXT_SIZE, 6 * scale);
+		GuiLabel(m_stats_base_bounds, m_player_stat_lines[i].c_str());
+		GuiLabel(
+				{m_stats_base_bounds.x + horizontal_spacing, m_stats_base_bounds.y, m_stats_base_bounds.width, m_stats_base_bounds.height},
+				m_player_stat_lines[i + 1].c_str()
+		);
+		m_stats_base_bounds.y += vertical_spacing;
+	}
+}
+
+void PauseLayer::init_stat_strings()
+{
+	m_player_stat_lines.clear();
+	m_kill_stat_lines.clear();
+
+	// init player stats
+	m_player_stat_lines.push_back("Speed:");
+	m_player_stat_lines.push_back(std::format("{:.2f}", m_director->player_max_velocity()));
+	m_player_stat_lines.push_back("Turn Speed:");
+	m_player_stat_lines.push_back(std::format("{:.2f}", m_director->player_input_rotation_mult()));
+	m_player_stat_lines.push_back("Fire Rate:");
+	m_player_stat_lines.push_back(std::format("{:.2f}s", m_director->player_current_fire_rate()));
+	m_player_stat_lines.push_back("Projectile Speed:");
+	m_player_stat_lines.push_back(std::format("{:.2f}", m_director->player_current_projectile_speed()));
+	m_player_stat_lines.push_back("Fire Range:");
+	m_player_stat_lines.push_back(std::format("{:.2f}", m_director->player_current_fire_range()));
+	m_player_stat_lines.push_back("Piercing Chance:");
+	m_player_stat_lines.push_back(std::format("{:.2f}%", m_director->player_piercing_chance()));
+	m_player_stat_lines.push_back("Luck:");
+	m_player_stat_lines.push_back(std::format("{:.2f}%", m_director->player_luck() * 100));
+	m_player_stat_lines.push_back("Multi Shot:");
+	m_player_stat_lines.push_back(std::format("{}", m_director->player_projectile_amount()));
+
+	// init kill stats
+	if ( m_director->statistics().sharks_killed > 0 ) {
+		m_kill_stat_lines.push_back("Sharks:");
+		m_kill_stat_lines.push_back(std::format("{}", m_director->statistics().sharks_killed));
+	}
+	if ( m_director->statistics().tentacles_killed > 0 ) {
+		m_kill_stat_lines.push_back("Tentacles:");
+		m_kill_stat_lines.push_back(std::format("{}", m_director->statistics().tentacles_killed));
+	}
+	if ( m_director->statistics().hunters_killed > 0 ) {
+		m_kill_stat_lines.push_back("Hunters:");
+		m_kill_stat_lines.push_back(std::format("{}", m_director->statistics().hunters_killed));
+	}
+	if ( m_director->statistics().chonky_sharks_killed > 0 ) {
+		m_kill_stat_lines.push_back("Chonky sharks:");
+		m_kill_stat_lines.push_back(std::format("{}", m_director->statistics().chonky_sharks_killed));
+	}
 }

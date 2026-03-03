@@ -16,6 +16,7 @@ class PauseLayer: public PSInterfaces::Layer
 	void draw_time(float scale);
 	void draw_kill_stats(float scale);
 	void draw_player_stats(float scale);
+	void init_stat_strings();
 	
 	enum BtnState {
 		Idle = 0,
@@ -30,4 +31,7 @@ class PauseLayer: public PSInterfaces::Layer
 
 	FortunaDirector* m_director;
 	Rectangle m_stats_base_bounds;
+
+	std::vector<std::string> m_player_stat_lines;
+	std::vector<std::string> m_kill_stat_lines;
 };
