@@ -115,6 +115,8 @@ void FortunaDirector::update(float dt)
 	_p->chonky_shark_spawner->update(dt);
 	_p->tentacle_spawner->update(dt);
 	_p->hunter_spawner->update(dt);
+
+	_p->m_time_played += dt;
 }
 
 void FortunaDirector::draw_debug()
@@ -295,7 +297,11 @@ void FortunaDirector::draw_debug()
 	}
 }
 
-
+FortunaDirector::Statistics& FortunaDirector::statistics()
+{
+	stats.time_played = _p->m_time_played;
+	return stats;
+}
 
 std::shared_ptr<Player> FortunaDirector::spawn_player(const Vector2& position)
 {

@@ -105,6 +105,7 @@ void UpgradeLayer::draw_upgrade_cards()
 				auto app_layer = gApp()->get_layer<AppLayer>();
 				if ( app_layer )
 					app_layer->resume();
+				HideCursor();
 			});
 		}
 		EndShaderMode();

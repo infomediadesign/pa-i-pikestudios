@@ -123,12 +123,17 @@ void Body::draw_debug()
 Shark::Shark() : PSInterfaces::IEntity("shark")
 {
 	Vector2 frame_grid{9, 2};
-	PRELOAD_TEXTURE(ident_, "resources/entity/shark.png", frame_grid);
+	PRELOAD_TEXTURE(ident_, "resources/entity/sharks.png", frame_grid);
 	m_shark_sprite = FETCH_SPRITE(ident_);
 
-	m_animation_controller = PSCore::sprites::SpriteSheetAnimation(
-			FETCH_SPRITE_TEXTURE(ident_), {{9, 0.1, PSCore::sprites::Forward, -1}, {9, 0.1, PSCore::sprites::Forward, 1}}
-	);
+	std::vector<PSCore::sprites::SpriteSheetData> sp_data{
+			{9, 0.1, PSCore::sprites::Forward, -1}, {9, 0.1, PSCore::sprites::Forward, 1}, {9, 0.1, PSCore::sprites::Forward, -1},
+			{9, 0.1, PSCore::sprites::Forward, -1}, {9, 0.1, PSCore::sprites::Forward, -1}, {9, 0.1, PSCore::sprites::Forward, -1},
+			{9, 0.1, PSCore::sprites::Forward, 1},
+
+	};
+
+	m_animation_controller = PSCore::sprites::SpriteSheetAnimation(m_shark_sprite->m_s_texture, sp_data);
 
 	m_animation_controller.add_animation_at_index(0, -1);
 	m_animation_controller.add_animation_at_index(1, 1);
@@ -293,11 +298,11 @@ void Shark::update(float dt)
 void Shark::on_hit()
 {
 	set_is_active(false);
-	if ( m_marked ) {
-		if ( auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director()) ) {
-			director->spawn_loot_chest(m_pos);
-		}
+	auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
+	if ( m_marked && director ) {
+		director->spawn_loot_chest(m_pos);
 	}
+	director->stats.sharks_killed++;
 }
 
 void Shark::draw_debug()
