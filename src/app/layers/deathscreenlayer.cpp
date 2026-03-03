@@ -103,6 +103,7 @@ void DeathScreenLayer::on_render()
 		gApp()->call_later([]() { gApp()->pop_layer<DeathScreenLayer>(); });
 		gApp()->call_later([]() { gApp()->pop_layer<ScoreLayer>(); });
 		gApp()->call_later([]() { gApp()->switch_layer<AppLayer, MainMenuLayer>(); });
+		gApp()->play_ui_sound(0);
 	}
 
 	if ( !m_score_should_be_saved || m_name_entered ) {
@@ -118,6 +119,7 @@ void DeathScreenLayer::on_render()
 					score_layer->load_highscore(score_layer->score_filename());
 				score_layer->set_retry_button_visible(true);
 			});
+			gApp()->play_ui_sound(0);
 		}
 
 		Vector2 retry_pos = {np.x / sk + vp->viewport_base_size().x - margin - btn_width / 2.0f, np.y / sk + y};
@@ -135,6 +137,7 @@ void DeathScreenLayer::on_render()
 			gApp()->call_later([]() { gApp()->game_director_ref().reset(new FortunaDirector()); });
 			gApp()->call_later([]() { gApp()->push_layer<AppLayer>(); });
 			HideCursor();
+			gApp()->play_ui_sound(0);
 		}
 	}
 

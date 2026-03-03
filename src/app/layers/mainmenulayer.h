@@ -3,16 +3,18 @@
 #include <psinterfaces/layer.h>
 #include <raylib.h>
 
+class SkinMenu;
 class MainMenuLayer : public PSInterfaces::Layer
 {
 public:
 	MainMenuLayer();
+	~MainMenuLayer();
 
-		void on_update(float dt) override;
-		
-		void on_render() override;
+	void on_update(float dt) override;
 
-		void draw_background();
+	void on_render() override;
+
+	void draw_background();
 
 private:
 		Font m_custom_font{};
@@ -25,4 +27,8 @@ private:
 		Texture2D m_main_menu_title;
 		Texture2D m_button;
 		Texture2D m_itch_io;
+		Texture2D m_skin_btn;
+		Texture2D m_options_btn;
+		
+		std::unique_ptr<SkinMenu> m_skin_menu;
 };

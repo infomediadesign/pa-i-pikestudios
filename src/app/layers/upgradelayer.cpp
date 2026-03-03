@@ -123,6 +123,13 @@ void UpgradeLayer::apply_upgrade(LootTableValue upgrade_info)
 	float upgrade_multyplier = get_multiplier(upgrade_info.rarity);
 	float upgrade_amount;
 
+	if ( upgrade_info.rarity == 5) {
+		gApp()->play_ui_sound(3);
+	}
+	else {
+		gApp()->play_ui_sound(2);
+	}
+
 	switch ( upgrade_info.index ) {
 		case 0:
 			director->upgrade_player_add_cannon(m_base_upgrade_add_cannon);
@@ -455,6 +462,7 @@ void UpgradeLayer::draw_reroll_button()
 			 m_can_receive_input ) {
 			m_current_loot_table_values = m_loot_table.loot_table_values(3);
 			director->set_reroll_amount(director->reroll_amount() - 1);
+			gApp()->play_ui_sound(0);
 		}
 	}
 }

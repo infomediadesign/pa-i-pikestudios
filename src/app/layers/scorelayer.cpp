@@ -210,6 +210,7 @@ void ScoreLayer::draw_score_board_buttons()
 	
 	if ( GuiButtonTexture(m_button, mainmenu_pos, 0, scale, WHITE, GRAY, "Mainmenu") ) {
 		gApp()->call_later([]() { gApp()->switch_layer<ScoreLayer, MainMenuLayer>(); });
+		gApp()->play_ui_sound(0);
 	}
 
 	if ( m_retry_button_visible ) {
@@ -223,6 +224,7 @@ void ScoreLayer::draw_score_board_buttons()
 			gApp()->call_later([]() { gApp()->switch_layer<ScoreLayer, AppLayer>(); });
 			gApp()->call_later([]() { gApp()->game_director_ref().reset(new FortunaDirector()); });
 			HideCursor();
+			gApp()->play_ui_sound(0);
 		}
 	}
 }

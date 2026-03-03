@@ -118,7 +118,7 @@ Hunter::Hunter() : PSInterfaces::IEntity("hunter")
 	_p->sprite = PRELOAD_TEXTURE(ident_, "resources/entity/enemy_ship.png", frame_grid);
 
 	std::vector<PSCore::sprites::SpriteSheetData> sp_data{
-			{1, 1, PSCore::sprites::KeyFrame, 1},
+			{2, 1, PSCore::sprites::KeyFrame, 1},
 			{1, 1, PSCore::sprites::KeyFrame, 2},
 			{6, 0.1, PSCore::sprites::Forward, 1},
 			{1, 1, PSCore::sprites::KeyFrame, 1},
@@ -175,15 +175,17 @@ void Hunter::update(float dt)
 
 			_p->pos = Vector2Add(_p->pos, _p->velocity * dt);
 
-			if ( _p->animation_controller.get_sprite_sheet_frame_index(1).value_or(0) == 5 ) {
+			if ( _p->animation_controller.get_sprite_sheet_frame_index(1).value_or(-1) == 5 && _p->animation_controller.get_sprite_sheet_animation_index(1).value_or(-1) == 2) {
 				if ( _p->to_wreck_anim_playing ) {
 					_p->animation_controller.set_animation_at_index(3, 0, 1);
+					set_is_dead_hitable(true);
 					_p->to_wreck_anim_playing = false;
 				}
 			}
 
-			if ( _p->animation_controller.get_sprite_sheet_frame_index(1).value_or(0) == 6 ) {
+			if ( _p->animation_controller.get_sprite_sheet_frame_index(1).value_or(-1) == 6 && _p->animation_controller.get_sprite_sheet_animation_index(1).value_or(-1) == 4) {
 				if ( _p->to_death_anim_playing ) {
+					_p->animation_controller.set_animation_at_index(0,1,1);
 					set_is_active(false);
 				}
 			}
@@ -204,9 +206,6 @@ void Hunter::update(float dt)
 		set_is_active(false);
 	else if ( !misc::map::is_off_screen(this) && !_p->in_view )
 		_p->in_view = true;
-
-	if ( !_p->to_death_anim_playing && _p->dead )
-		set_is_active(false);
 }
 
 void Hunter::render()
@@ -636,6 +635,7 @@ void Hunter::on_hit()
 			break;
 		}
 		case Wreck: {
+			set_is_dead_hitable(true);
 			_p->to_death_anim_playing = true;
 			_p->dead				  = true;
 			_p->animation_controller.set_animation_at_index(4, 0, 1);

@@ -295,6 +295,12 @@ void FortunaDirector::draw_debug()
 	if ( ImGui::Button("Upgrade##Luck") ) {
 		upgrade_player_luck(luck_amount);
 	}
+	
+	if (ImGui::Button("Enable explosive barrels") ) {
+		for ( auto player: _p->players ) {
+			player->enable_explosive_barrels();
+		}
+	}
 }
 
 FortunaDirector::Statistics& FortunaDirector::statistics()

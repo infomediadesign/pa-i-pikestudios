@@ -68,6 +68,10 @@ namespace PSUtils {
 		return val;
 	};
 
+	int vector3_to_color(const Vector3& color);
+
+	Vector3 color_to_vector3(int hexColor);
+
 	// Raylib specific
 	void DrawTextBoxedSelectable(
 			Font font, const char* text, Rectangle rec, float fontSize, float spacing, bool wordWrap, Color tint, int selectStart, int selectLength,

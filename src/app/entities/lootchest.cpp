@@ -7,7 +7,7 @@
 
 LootChest::LootChest() : PSInterfaces::IEntity("loot_chest")
 {
-	IRenderable::propose_z_index(-3);
+	IRenderable::propose_z_index(-5);
 	Vector2 frame_grid{1, 1};
 	m_sprite  = PRELOAD_TEXTURE(ident_, "resources/entity/loot_chest.png", frame_grid);
 	m_texture = m_sprite->m_s_texture;

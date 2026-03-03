@@ -2,9 +2,9 @@
 
 #include <optional>
 #include <psinterfaces/events.h>
+#include <raylib.h>
 #include <string>
 #include <vector>
-#include <raylib.h>
 #include "pscore/utils.h"
 
 namespace PSInterfaces {
@@ -28,7 +28,7 @@ namespace PSInterfaces {
 		{
 			return std::nullopt;
 		};
-		
+
 		virtual std::optional<Vector2> size() const
 		{
 			return std::nullopt;
@@ -43,22 +43,34 @@ namespace PSInterfaces {
 		{
 			return std::nullopt;
 		}
-		
+
 		virtual std::optional<float> rotation() const
 		{
 			return std::nullopt;
 		}
-		
+
 		virtual bool is_active() const
 		{
 			return is_active_;
 		}
-		
-		virtual void set_is_active(bool active) {
+
+		virtual void set_is_active(bool active)
+		{
 			is_active_ = active;
 		}
 
-		virtual void on_hit(){
+		virtual bool is_dead_hitable() const
+		{
+			return is_dead_hitable_;
+		}
+
+		virtual void set_is_dead_hitable(bool active)
+		{
+			is_dead_hitable_ = active;
+		}
+
+		virtual void on_hit()
+		{
 		}
 
 		void add_event_manager(const Events::IEventManager* manager)
@@ -83,8 +95,9 @@ namespace PSInterfaces {
 		{
 			return ident_;
 		}
-		
-		const std::string uid() const {
+
+		const std::string uid() const
+		{
 			return uid_;
 		}
 
@@ -92,7 +105,8 @@ namespace PSInterfaces {
 		std::vector<const Events::IEventManager*> event_managers_;
 		const std::string ident_;
 		const std::string uid_ = PSUtils::generate_uid();
-		
-		bool is_active_ = true;
+
+		bool is_active_		  = true;
+		bool is_dead_hitable_ = false;
 	};
 } // namespace PSInterfaces

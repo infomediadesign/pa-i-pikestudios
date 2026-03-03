@@ -179,8 +179,10 @@ void OptionsLayer::on_render()
 		if ( GuiButtonTexture(
 					 m_button, mainmenu_pos, 0, scale, m_settings->has_conflicts ? GRAY : WHITE, GRAY, "Mainmenu"
 			 ) ) {
-			if ( !m_settings->has_conflicts )
+			if ( !m_settings->has_conflicts ) {
 				gApp()->call_later([]() { gApp()->switch_layer<OptionsLayer, MainMenuLayer>(); });
+				gApp()->play_ui_sound(0);
+			}
 		}
 
 		float textspacing = 24;

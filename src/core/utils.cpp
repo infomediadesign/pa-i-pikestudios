@@ -217,3 +217,22 @@ void PSUtils::DrawRectangleLinesRotated(Rectangle rec, float rotation, Color col
 	DrawLineV(corners[2], corners[3], color);
 	DrawLineV(corners[3], corners[0], color);
 }
+int PSUtils::vector3_to_color(const Vector3& color)
+{
+	unsigned char r = static_cast<unsigned char>(std::clamp(color.x, 0.0f, 255.0f));
+	unsigned char g = static_cast<unsigned char>(std::clamp(color.y, 0.0f, 255.0f));
+	unsigned char b = static_cast<unsigned char>(std::clamp(color.z, 0.0f, 255.0f));
+
+	// Pack into 0xRRGGBB format
+	return (r << 16) | (g << 8) | b;
+}
+Vector3 PSUtils::color_to_vector3(int hexColor)
+{
+	Vector3 color;
+
+	color.x = ((hexColor >> 16) & 0xFF) / 255.0f;
+	color.y = ((hexColor >> 8) & 0xFF) / 255.0f;
+	color.z = (hexColor & 0xFF) / 255.0f;
+
+	return color;
+}
