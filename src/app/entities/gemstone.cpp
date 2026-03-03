@@ -4,18 +4,22 @@
 #include <layers/applayer.h>
 #include <entities/director.h>
 #include <coordinatesystem.h>
+#include "pscore/utils.h"
 
 Gemstone::Gemstone() : PSInterfaces::IEntity("gemstone")
 {
-	IRenderable::propose_z_index(-2);
+	IRenderable::propose_z_index(m_z_index);
 	Vector2 frame_grid{1, 1};
 	m_sprite  = PRELOAD_TEXTURE(ident_, "resources/entity/gemstone.png", frame_grid);
 	m_texture = m_sprite->m_s_texture;
 
-	int z_index = -2;
-	m_anim_controller = PSCore::sprites::SpriteSheetAnimation(m_texture, {{11, 0.1, PSCore::sprites::Forward, z_index}});
-	m_anim_controller.add_animation_at_index(0, z_index);
+	m_anim_controller = PSCore::sprites::SpriteSheetAnimation(m_texture, {
+		{14, 0.1, PSCore::sprites::Forward, m_z_index},
+		{14, 0.1, PSCore::sprites::Forward, m_z_index}
+	});
+	m_anim_controller.add_animation_at_index(0, m_z_index);
 
+	m_current_idle_anim  = 0;
 	m_spawn_anim_playing = false;
 }
 
@@ -51,7 +55,7 @@ void Gemstone::render()
 {
 	if ( is_active_ ) {
 		if ( auto& vp = gApp()->viewport() ) {
-			vp->draw_in_viewport(m_texture, m_anim_controller.get_source_rectangle(-2).value_or(Rectangle{0}), m_position, m_rotation, WHITE);
+			vp->draw_in_viewport(m_texture, m_anim_controller.get_source_rectangle(m_z_index).value_or(Rectangle{0}), m_position, m_rotation, WHITE);
 		}
 	}
 }
@@ -68,8 +72,8 @@ void Gemstone::on_hit()
 void Gemstone::play_spawn_anim(float dt)
 {
 	m_anim_controller.update_animation(dt);
-	if ( m_anim_controller.get_sprite_sheet_animation_index(-2).value_or(-1) == 0 &&
-		 m_anim_controller.get_sprite_sheet_frame_index(-2).value_or(-1) == 21 ) {
+	if ( m_anim_controller.get_sprite_sheet_animation_index(m_z_index).value_or(-1) == m_current_idle_anim &&
+		 m_anim_controller.get_sprite_sheet_frame_index(m_z_index).value_or(-1) == 21 ) {
 		m_spawn_anim_playing = false;
 	}
 }
@@ -77,6 +81,16 @@ void Gemstone::play_spawn_anim(float dt)
 void Gemstone::play_idle_anim(float dt)
 {
 	m_anim_controller.update_animation(dt);
+
+	if ( m_anim_controller.get_sprite_sheet_frame_index(m_z_index).value_or(-1) == 13 ) {
+		int rand = PSUtils::gen_rand(0, 3);
+		if ( rand > 0 ) {
+			m_current_idle_anim = 0;
+		} else {
+			m_current_idle_anim = 1;
+		}
+		m_anim_controller.set_animation_at_index(m_current_idle_anim, 0, m_z_index);
+	}
 }
 
 void Gemstone::set_spawn_anim_playing(bool playing)
@@ -91,7 +105,6 @@ std::optional<std::vector<Vector2>> Gemstone::bounds() const
 
 			Vector2 vp_pos = vp->position_viewport_to_global(m_position);
 			float scale	   = vp->viewport_scale();
-			//vp_pos.y += 2 * scale;
 			float half						   = 8.0f * scale;
 			std::vector<Vector2> hitbox_points = {{-half, -half}, {half, -half}, {half, half}, {-half, half}};
 
@@ -118,15 +131,4 @@ void Gemstone::set_rotation(const float& rotation)
 
 void Gemstone::draw_debug()
 {
-	if ( auto& vp = gApp()->viewport() ) {
-		if ( bounds().has_value() ) {
-			for ( int i = 0; i < bounds().value().size(); i++ ) {
-				if ( i < bounds().value().size() - 1 ) {
-					DrawLineV(bounds().value().at(i), bounds().value().at(i + 1), GREEN);
-				} else {
-					DrawLineV(bounds().value().at(i), bounds().value().at(0), GREEN);
-				}
-			}
-		}
-	}
 }

@@ -203,12 +203,12 @@ void FortunaDirector::draw_debug()
 
 	// Spawn Loot Chest
 	if ( ImGui::Button("Spawn Loot Chest") ) {
-		spawn_loot_chest({(float) PSUtils::gen_rand(10, 300), (float) PSUtils::gen_rand(10, 300)});
+		spawn_loot_chest({(float) PSUtils::gen_rand(10, 600), (float) PSUtils::gen_rand(10, 300)});
 	}
 
 	// Spawn Gemstone
 	if ( ImGui::Button("Spawn Gemstone") ) {
-		spawn_gemstone({(float) PSUtils::gen_rand(10, 300), (float) PSUtils::gen_rand(10, 300)});
+		spawn_gemstone({(float) PSUtils::gen_rand(10, 600), (float) PSUtils::gen_rand(10, 300)});
 	}
 
 	ImGui::Separator();
