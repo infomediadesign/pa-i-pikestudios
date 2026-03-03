@@ -16,7 +16,7 @@ Gemstone::Gemstone() : PSInterfaces::IEntity("gemstone")
 	m_anim_controller = PSCore::sprites::SpriteSheetAnimation(m_texture, {
 		{14, 0.1, PSCore::sprites::Forward, m_z_index},
 		{14, 0.1, PSCore::sprites::Forward, m_z_index},
-		{14, 0.1, PSCore::sprites::Backward, m_z_index},
+		{14, 0.05, PSCore::sprites::Backward, m_z_index},
 	});
 	m_anim_controller.add_animation_at_index(2, m_z_index);
 	m_anim_controller.set_animation_at_index(2, 13, m_z_index);
@@ -43,14 +43,6 @@ void Gemstone::init(const Vector2& position, std::shared_ptr<Gemstone> self)
 			}
 		}
 	});
-
-	int random_volume = PSUtils::gen_rand(m_volume_boundary.x, m_volume_boundary.y);
-	int random_pitch  = PSUtils::gen_rand(m_pitch_boundary.x, m_pitch_boundary.y);
-
-	SetSoundVolume(m_splash_sound, std::min((m_global_sfx_volume / 100) * (m_splash_volume + static_cast<float>(random_volume) / 100), 1.0f));
-	SetSoundPitch(m_splash_sound, m_splash_pitch + static_cast<float>(random_pitch) / 100);
-
-	PlaySound(m_splash_sound);
 }
 
 void Gemstone::update(float dt)
@@ -97,8 +89,20 @@ void Gemstone::play_spawn_anim(float dt)
 		m_anim_controller.update_animation(dt);
 		if ( m_anim_controller.get_sprite_sheet_frame_index(m_z_index).value_or(-1) == 0 ) {
 			m_spawn_anim_playing = false;
+			m_can_play_spawn_sound = true;
 			m_current_idle_anim  = 0;
 			m_anim_controller.set_animation_at_index(m_current_idle_anim, 0, m_z_index);
+		}
+		if ( m_anim_controller.get_sprite_sheet_frame_index(m_z_index).value_or(-1) == 7 && m_can_play_spawn_sound ) {
+			m_can_play_spawn_sound = false;
+
+			int random_volume = PSUtils::gen_rand(m_volume_boundary.x, m_volume_boundary.y);
+			int random_pitch  = PSUtils::gen_rand(m_pitch_boundary.x, m_pitch_boundary.y);
+
+			SetSoundVolume(m_splash_sound, std::min((m_global_sfx_volume / 100) * (m_splash_volume + static_cast<float>(random_volume) / 100), 1.0f));
+			SetSoundPitch(m_splash_sound, m_splash_pitch + static_cast<float>(random_pitch) / 100);
+
+			PlaySound(m_splash_sound);
 		}
 	}
 }
@@ -108,13 +112,20 @@ void Gemstone::play_idle_anim(float dt)
 	m_anim_controller.update_animation(dt);
 
 	if ( m_anim_controller.get_sprite_sheet_frame_index(m_z_index).value_or(-1) == 13 ) {
-		int rand = PSUtils::gen_rand(0, 3);
-		if ( rand > 0 ) {
-			m_current_idle_anim = 0;
-		} else {
-			m_current_idle_anim = 1;
+		if ( m_can_change_anim ) {
+			m_can_change_anim = false;
+
+			int rand = PSUtils::gen_rand(0, 3);
+			if ( rand > 0 ) {
+				m_current_idle_anim = 0;
+			} else {
+				m_current_idle_anim = 1;
+			}
+			m_anim_controller.set_animation_at_index(m_current_idle_anim, 0, m_z_index);
 		}
-		m_anim_controller.set_animation_at_index(m_current_idle_anim, 0, m_z_index);
+	}
+	else {
+		m_can_change_anim = true;
 	}
 }
 
