@@ -21,6 +21,13 @@ Gemstone::Gemstone() : PSInterfaces::IEntity("gemstone")
 
 	m_current_idle_anim  = 0;
 	m_spawn_anim_playing = false;
+
+	m_global_sfx_volume = gApp()->sound_volume(PSCore::Application::SoundType::SFX).value_or(50);
+}
+
+Gemstone::~Gemstone()
+{
+	UnloadSound(m_splash_sound);
 }
 
 void Gemstone::init(const Vector2& position, std::shared_ptr<Gemstone> self)
@@ -34,6 +41,14 @@ void Gemstone::init(const Vector2& position, std::shared_ptr<Gemstone> self)
 			}
 		}
 	});
+
+	int random_volume = PSUtils::gen_rand(m_volume_boundary.x, m_volume_boundary.y);
+	int random_pitch  = PSUtils::gen_rand(m_pitch_boundary.x, m_pitch_boundary.y);
+
+	SetSoundVolume(m_splash_sound, std::min((m_global_sfx_volume / 100) * (m_splash_volume + static_cast<float>(random_volume) / 100), 1.0f));
+	SetSoundPitch(m_splash_sound, m_splash_pitch + static_cast<float>(random_pitch) / 100);
+
+	PlaySound(m_splash_sound);
 }
 
 void Gemstone::update(float dt)
