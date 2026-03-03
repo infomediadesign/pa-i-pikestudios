@@ -68,6 +68,7 @@ void MainMenuLayer::on_render()
 		});
 		gApp()->call_later([]() { gApp()->switch_layer<MainMenuLayer, AppLayer>(); });
 		HideCursor();
+		gApp()->play_ui_sound(0);
 	}
 
 	button_pos.y += spacing + m_button_1.height;
@@ -75,6 +76,7 @@ void MainMenuLayer::on_render()
 	if ( GuiButtonTexture(m_button_2, button_pos, 0, scale, WHITE, GRAY, "Options") ) {
 		gApp()->call_later([]() { PS_LOG(LOG_INFO, "Clicked Settings"); });
 		gApp()->call_later([]() { gApp()->switch_layer<MainMenuLayer, OptionsLayer>(); });
+		gApp()->play_ui_sound(0);
 	}
 
 	button_pos.y += spacing + m_button_1.height;
@@ -87,6 +89,7 @@ void MainMenuLayer::on_render()
 			if ( score_layer )
 				score_layer->load_highscore(score_layer->score_filename());
 		});
+		gApp()->play_ui_sound(0);
 	}
 
 	button_pos.y += spacing + m_button_1.height;

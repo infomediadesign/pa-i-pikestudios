@@ -76,9 +76,7 @@ Player::Player() : PSInterfaces::IEntity("player")
 	m_flash_alpha_location = GetShaderLocation(m_flash_shader, "flash_alpha");
 
 	// Sound
-	SetSoundVolume(m_hurt_sound, 1);
-	SetSoundVolume(m_death_sound, 1);
-	SetSoundVolume(m_shoot_sound, 1);
+	m_global_sfx_volume = gApp()->sound_volume(PSCore::Application::SoundType::SFX).value_or(50);
 }
 
 Player::~Player()
@@ -87,7 +85,6 @@ Player::~Player()
 
 	UnloadSound(m_hurt_sound);
 	UnloadSound(m_death_sound);
-	UnloadSound(m_shoot_sound);
 }
 
 void Player::update(const float dt)
@@ -182,7 +179,7 @@ void Player::on_hit()
 		m_can_be_hit = false;
 		if ( auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director()) ) {
 			director->set_player_health(director->player_health() - 1);
-			PlaySound(m_hurt_sound);
+			play_sound(m_hurt_sound, m_hurt_volume, m_hurt_pitch);
 			if ( director->player_health() <= 0 ) {
 				on_death();
 			}
@@ -219,7 +216,7 @@ void Player::on_death()
 	m_animation_controller.set_animation_at_index(0, 1, 1);
 	m_animation_controller.set_animation_at_index(4, 0, 3);
 
-	PlaySound(m_death_sound);
+	play_sound(m_death_sound, m_death_volume, m_death_pitch);
 
 	gApp()->get_layer<AppLayer>()->set_can_open_pause_menu(false);
 	gApp()->push_layer<DeathScreenLayer>();
@@ -686,4 +683,15 @@ std::optional<Vector2> Player::size() const
 	auto h = m_animation_controller.get_source_rectangle(1).value_or(Rectangle{0}).height;
 	auto w = m_animation_controller.get_source_rectangle(1).value_or(Rectangle{0}).width;
 	return Vector2{w, h};
+}
+
+void Player::play_sound(Sound& sound, float volume, float pitch)
+{
+	int random_volume = PSUtils::gen_rand(m_volume_boundary.x, m_volume_boundary.y);
+	int random_pitch  = PSUtils::gen_rand(m_pitch_boundary.x, m_pitch_boundary.y);
+
+	SetSoundVolume(sound, std::min((m_global_sfx_volume / 100) * (volume + static_cast<float>(random_volume) / 100), 1.0f));
+	SetSoundPitch(sound, pitch + static_cast<float>(random_pitch) / 100);
+
+	PlaySound(sound);
 }

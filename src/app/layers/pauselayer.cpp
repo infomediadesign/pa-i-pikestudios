@@ -51,6 +51,7 @@ void PauseLayer::on_render()
 			}
 		});
 		HideCursor();
+		gApp()->play_ui_sound(0);
 	}
 
 	button_pos.y += button_height + 8.0f;
@@ -63,6 +64,7 @@ void PauseLayer::on_render()
 			gApp()->switch_layer<AppLayer, MainMenuLayer>();
 
 		});
+		gApp()->play_ui_sound(0);
 	}
 }
 

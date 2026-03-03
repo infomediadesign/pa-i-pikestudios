@@ -49,7 +49,7 @@ namespace PSCore {
 		template<ILayerDerived TL, ILayerDerived TO>
 		void switch_layer()
 		{
-			for ( auto itr = m_layer_stack.begin(); itr != m_layer_stack.end(); itr++) {
+			for ( auto itr = m_layer_stack.begin(); itr != m_layer_stack.end(); itr++ ) {
 				if ( auto casted = dynamic_cast<TL*>(itr->get()) ) {
 					itr->reset(new TO());
 					return;
@@ -138,12 +138,19 @@ namespace PSCore {
 		// settings
 		bool toggle_fullscreen();
 		void set_target_fps(int fps);
-		enum class SoundType
-		{
-			Music,
-			SFX
-		};
+
+		enum class SoundType { Music, SFX };
 		void set_sound_volume(SoundType type, float volume);
+		std::optional<float> sound_volume(SoundType type);
+
+		struct ui_sound
+		{
+			Sound sound;
+			float volume;
+			float pitch;
+		};
+
+		void play_ui_sound(int index);
 
 	private:
 		std::unique_ptr<ApplicationPriv> _p;
@@ -151,6 +158,12 @@ namespace PSCore {
 		std::unique_ptr<PSInterfaces::IEntity> m_game_director;
 		std::deque<std::function<void()>> m_call_stack;
 		std::string m_current_player_name;
+
+		std::vector<float> m_global_sound_volume;
+
+		std::vector<ui_sound> m_ui_sounds;
+		Vector2 m_volume_boundary = {-10,10};
+		Vector2 m_pitch_boundary = {-10,10};
 	};
 } // namespace PSCore
 
