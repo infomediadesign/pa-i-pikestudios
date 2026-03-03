@@ -9,6 +9,7 @@
 #include <psinterfaces/entity.h>
 
 #include <entities/lootchest.h>
+#include <entities/gemstone.h>
 #include <entities/shark.h>
 #include <entities/tentacle.h>
 #include <layers/applayer.h>
@@ -42,6 +43,7 @@ public:
 	void destroy_cannon(std::shared_ptr<Cannon> cannon);
 
 	std::shared_ptr<LootChest> spawn_loot_chest(const Vector2& position);
+	std::shared_ptr<Gemstone> spawn_gemstone(const Vector2& position);
 
 	template<class E, PSCore::ILayerDerived L>
 	std::unique_ptr<PSCore::Spawner<E, L>>& spawner();
@@ -97,6 +99,7 @@ public:
 
 	void set_reroll_amount(const int amount);
 	int reroll_amount() const;
+	float gem_drop_chance() const;
 
 
 	// Bounty
@@ -140,6 +143,8 @@ struct FortunaDirectorPriv
 	std::vector<std::shared_ptr<Player>> players;
 	std::vector<std::shared_ptr<Cannon>> cannons;
 	std::vector<std::shared_ptr<LootChest>> loot_chests;
+	std::vector<std::shared_ptr<Gemstone>> gemstones;
+
 	bool on_screen_warp_around = CFG_VALUE<bool>("on_screen_warp_around", true);
 
 	int upgrade_reroll_amount = CFG_VALUE<int>("upgrade_reroll_amount", 3);
@@ -150,6 +155,8 @@ struct FortunaDirectorPriv
 	float player_current_piercing_chance  = CFG_VALUE<float>("player_current_piercing_chance", 5.0f);
 	float player_current_luck			  = CFG_VALUE<float>("player_current_luck", 0.1f);
 	float player_projectile_amount		  = CFG_VALUE<float>("player_projectile_amount", 1);
+
+	float gem_drop_chance = CFG_VALUE<float>("gem_drop_chance", 1.0f);
 
 	std::unique_ptr<PSCore::Spawner<Shark, AppLayer>> shark_spawner;
 	float shark_spawn_time							  = CFG_VALUE<float>("shark_spawn_time", 1.0f);
