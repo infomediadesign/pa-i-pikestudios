@@ -68,11 +68,17 @@ void Projectile::init(const Vector2& position, std::shared_ptr<Projectile> self)
 				m_p_last_hit_ident = locked->ident();
 				on_hit();
 
-				if (locked->is_active())
-					return;
+				if (locked->is_active() ) {
+					if ( !locked->is_dead_hitable() ) {
+						return;
+					}
+				}
 
 				if (auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director())) {
 					director->entity_died(m_p_owner, locked->ident());
+					if ( locked->is_dead_hitable() ) {
+						locked->set_is_dead_hitable(false);
+					}
 				}
 			}
 	});
