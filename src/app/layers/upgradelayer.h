@@ -103,6 +103,19 @@ public:
 	float m_multiplier_legendary = CFG_VALUE<float>("upgrade_legendary_multiplier", 2.0f);
 	float m_multiplier_mythic	 = CFG_VALUE<float>("upgrade_mythical_multiplier", 3.0f);
 
+	// Card spawn animation
+	float m_card_anim_timers[3] = {0.0f, 0.0f, 0.0f};
+	float m_card_anim_duration = 1.0f;
+	float m_card_anim_start_offset_y = -300.0f;
+	float m_card_anim_delays[3] = {0.0f, 0.1f, 0.2f};
+
+	// Card hover animation
+	float m_card_hover_progress[3] = {0.0f, 0.0f, 0.0f};
+	float m_card_hover_lift = -12.0f;
+	float m_card_hover_speed = 8.0f;
+	int m_hovered_card_index = -1;
+	bool m_card_hovered = false;
+
 	//Reroll
 	PSCore::sprites::SpriteSheetAnimation m_gem_anim_controller;
 	std::shared_ptr<PSCore::sprites::Sprite> m_gem_sprite;

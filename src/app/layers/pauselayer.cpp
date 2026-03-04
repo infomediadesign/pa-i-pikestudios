@@ -3,11 +3,11 @@
 #include <layers/applayer.h>
 #include <layers/mainmenulayer.h>
 #include <layers/uilayer.h>
+#include <layers/upgradelayer.h>
 #include <pscore/application.h>
 #include <pscore/viewport.h>
 #include <raygui.h>
 #include <raylib.h>
-#include <layers/upgradelayer.h>
 #include "pscore/utils.h"
 
 PauseLayer::PauseLayer()
@@ -29,16 +29,16 @@ void PauseLayer::on_render()
 	float scale	   = vp->viewport_scale();
 	float spacing  = 8;
 
-	float button_width = static_cast<float>(m_button.width);
+	float button_width	= static_cast<float>(m_button.width);
 	float button_height = static_cast<float>(m_button.height);
 	Vector2 screen_size = vp->viewport_base_size();
-	Vector2 button_pos	= {origin.x / scale + screen_size.x / 2.0f, origin.y / scale + screen_size.y / 2.0f - button_height / 2.0f - 10.0f};
+	Vector2 button_pos	= {origin.x / scale + screen_size.x / 2.0f, origin.y / scale + screen_size.y / 2.0f - button_height / 2.0f - 20.0f};
 
 	GuiSetStyle(DEFAULT, TEXT_SIZE, 10 * scale);
 	GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt({0, 0, 0, 255}));
 
 	DrawRectangle(origin.x, origin.y, GetScreenWidth() * scale, GetScreenHeight() * scale, Color{0, 0, 0, 150});
-	
+
 	if ( GuiButtonTexture(m_button, button_pos, 0, scale, WHITE, GRAY, "Resume") ) {
 		gApp()->call_later([]() {
 			gApp()->pop_layer<PauseLayer>();
@@ -62,15 +62,27 @@ void PauseLayer::on_render()
 	}
 
 	button_pos.y += button_height + 8.0f;
-	
+
 	if ( GuiButtonTexture(m_button, button_pos, 0, scale, WHITE, GRAY, "Main Menu") ) {
 		gApp()->call_later([]() {
 			gApp()->pop_layer<PauseLayer>();
 			gApp()->pop_layer<UILayer>();
 			gApp()->pop_layer<UpgradeLayer>();
 			gApp()->switch_layer<AppLayer, MainMenuLayer>();
-
 		});
+		gApp()->play_ui_sound(0);
+	}
+
+	button_pos.y += button_height + 8.0f;
+
+	if ( GuiButtonTexture(m_button, button_pos, 0, scale, WHITE, GRAY, "Retry") ) {
+		gApp()->call_later([]() {
+			gApp()->pop_layer<AppLayer>();
+			gApp()->pop_layer<UILayer>();
+			gApp()->switch_layer<PauseLayer, AppLayer>();
+			gApp()->game_director_ref().reset(new FortunaDirector());
+		});
+		HideCursor();
 		gApp()->play_ui_sound(0);
 	}
 
@@ -123,7 +135,7 @@ void PauseLayer::draw_kill_stats(float scale)
 {
 	float vertical_spacing	 = 10 * scale;
 	float horizontal_spacing = 75 * scale;
-	
+
 	GuiSetStyle(DEFAULT, TEXT_SIZE, 15 * scale);
 	GuiLabel(m_stats_base_bounds, "Kills");
 	m_stats_base_bounds.y += 20 * scale;
@@ -133,7 +145,8 @@ void PauseLayer::draw_kill_stats(float scale)
 		GuiLabel(m_stats_base_bounds, m_kill_stat_lines[i].c_str());
 		GuiLabel(
 				{m_stats_base_bounds.x + horizontal_spacing, m_stats_base_bounds.y, m_stats_base_bounds.width, m_stats_base_bounds.height},
-				m_kill_stat_lines[i + 1].c_str());
+				m_kill_stat_lines[i + 1].c_str()
+		);
 		m_stats_base_bounds.y += vertical_spacing;
 	}
 }
