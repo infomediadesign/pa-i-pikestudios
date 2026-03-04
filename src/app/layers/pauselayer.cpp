@@ -8,6 +8,7 @@
 #include <pscore/viewport.h>
 #include <raygui.h>
 #include <raylib.h>
+#include "layers/optionslayer.h"
 #include "pscore/utils.h"
 
 PauseLayer::PauseLayer()
@@ -24,6 +25,9 @@ PauseLayer::PauseLayer()
 
 void PauseLayer::on_render()
 {
+	if (!active)
+		return;
+	
 	auto& vp	   = gApp()->viewport();
 	Vector2 origin = vp->viewport_origin();
 	float scale	   = vp->viewport_scale();
@@ -32,7 +36,7 @@ void PauseLayer::on_render()
 	float button_width	= static_cast<float>(m_button.width);
 	float button_height = static_cast<float>(m_button.height);
 	Vector2 screen_size = vp->viewport_base_size();
-	Vector2 button_pos	= {origin.x / scale + screen_size.x / 2.0f, origin.y / scale + screen_size.y / 2.0f - button_height / 2.0f - 20.0f};
+	Vector2 button_pos	= {origin.x / scale + screen_size.x / 2.0f, origin.y / scale + screen_size.y / 2.0f - button_height / 2.0f - 30.0f};
 
 	GuiSetStyle(DEFAULT, TEXT_SIZE, 10 * scale);
 	GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt({0, 0, 0, 255}));
@@ -71,6 +75,22 @@ void PauseLayer::on_render()
 			gApp()->switch_layer<AppLayer, MainMenuLayer>();
 		});
 		gApp()->play_ui_sound(0);
+	}
+
+	button_pos.y += button_height + 8.0f;
+
+	if ( GuiButtonTexture(m_button, button_pos, 0, scale, WHITE, GRAY, "Options") ) {
+		gApp()->call_later([this]() {
+			OptionsLayer* layer = gApp()->push_layer<OptionsLayer>();
+			layer->set_exit_btn_function("Save", [this] {
+				gApp()->call_later([this] {
+					gApp()->pop_layer<OptionsLayer>();
+					this->resume();
+				});
+			});
+		});
+		gApp()->play_ui_sound(0);
+		suspend();
 	}
 
 	button_pos.y += button_height + 8.0f;
