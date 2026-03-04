@@ -82,7 +82,7 @@ void PauseLayer::on_render()
 	if ( GuiButtonTexture(m_button, button_pos, 0, scale, WHITE, GRAY, "Options") ) {
 		gApp()->call_later([this]() {
 			OptionsLayer* layer = gApp()->push_layer<OptionsLayer>();
-			layer->set_exit_btn_function("Safe", [this] {
+			layer->set_exit_btn_function("Save", [this] {
 				gApp()->call_later([this] {
 					gApp()->pop_layer<OptionsLayer>();
 					this->resume();
