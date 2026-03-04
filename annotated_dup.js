@@ -62,7 +62,7 @@ var annotated_dup =
     [ "LootTableValue", "structLootTableValue.html", null ],
     [ "MainMenuLayer", "classMainMenuLayer.html", null ],
     [ "OptionsLayer", "classOptionsLayer.html", null ],
-    [ "PauseLayer", "classPauseLayer.html", null ],
+    [ "PauseLayer", "classPauseLayer.html", "classPauseLayer" ],
     [ "Player", "classPlayer.html", "classPlayer" ],
     [ "PlayerPriv", "classPlayerPriv.html", null ],
     [ "Projectile", "classProjectile.html", null ],

@@ -23,7 +23,8 @@ var searchData=
   ['spritesheetdata_20',['SpriteSheetData',['../structPSCore_1_1sprites_1_1SpriteSheetData.html',1,'PSCore::sprites']]],
   ['spritesourcerectangle_21',['SpriteSourceRectangle',['../structPSCore_1_1sprites_1_1SpriteSourceRectangle.html',1,'PSCore::sprites']]],
   ['spritetimedirectiondata_22',['SpriteTimeDirectionData',['../structPSCore_1_1sprites_1_1SpriteTimeDirectionData.html',1,'PSCore::sprites']]],
-  ['statistics_23',['Statistics',['../structFortunaDirector_1_1Statistics.html',1,'FortunaDirector']]],
-  ['stop_24',['stop',['../classPSCore_1_1Application.html#a2e5dee1fbe413783d3500fe8da567ad4',1,'PSCore::Application']]],
-  ['submit_5frenderable_25',['submit_renderable',['../classPSCore_1_1Renderer.html#a3bfa539d23da7eb4afbe0bc142938744',1,'PSCore::Renderer']]]
+  ['statinfo_23',['StatInfo',['../structPauseLayer_1_1StatInfo.html',1,'PauseLayer']]],
+  ['statistics_24',['Statistics',['../structFortunaDirector_1_1Statistics.html',1,'FortunaDirector']]],
+  ['stop_25',['stop',['../classPSCore_1_1Application.html#a2e5dee1fbe413783d3500fe8da567ad4',1,'PSCore::Application']]],
+  ['submit_5frenderable_26',['submit_renderable',['../classPSCore_1_1Renderer.html#a3bfa539d23da7eb4afbe0bc142938744',1,'PSCore::Renderer']]]
 ];

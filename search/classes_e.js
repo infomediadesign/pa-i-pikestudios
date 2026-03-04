@@ -17,5 +17,6 @@ var searchData=
   ['spritesheetdata_14',['SpriteSheetData',['../structPSCore_1_1sprites_1_1SpriteSheetData.html',1,'PSCore::sprites']]],
   ['spritesourcerectangle_15',['SpriteSourceRectangle',['../structPSCore_1_1sprites_1_1SpriteSourceRectangle.html',1,'PSCore::sprites']]],
   ['spritetimedirectiondata_16',['SpriteTimeDirectionData',['../structPSCore_1_1sprites_1_1SpriteTimeDirectionData.html',1,'PSCore::sprites']]],
-  ['statistics_17',['Statistics',['../structFortunaDirector_1_1Statistics.html',1,'FortunaDirector']]]
+  ['statinfo_17',['StatInfo',['../structPauseLayer_1_1StatInfo.html',1,'PauseLayer']]],
+  ['statistics_18',['Statistics',['../structFortunaDirector_1_1Statistics.html',1,'FortunaDirector']]]
 ];
