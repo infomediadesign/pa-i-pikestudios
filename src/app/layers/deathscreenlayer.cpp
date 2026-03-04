@@ -5,6 +5,7 @@
 #include <pscore/viewport.h>
 #include <raygui.h>
 #include "applayer.h"
+#include "pscore/utils.h"
 
 #include "scorelayer.h"
 
@@ -140,8 +141,8 @@ void DeathScreenLayer::on_render()
 		}
 	}
 
-	init_stat_strings();
 	draw_kill_stats(sk);
+	draw_time(sk);
 }
 
 void DeathScreenLayer::set_score_should_be_saved(bool should_be_saved)
@@ -190,6 +191,8 @@ void DeathScreenLayer::init_stat_strings()
 		m_kill_stat_lines.push_back("Chonky sharks:");
 		m_kill_stat_lines.push_back(std::to_string(m_director->statistics().chonky_sharks_killed));
 	}
+
+	m_time_played = m_director->statistics().time_played;
 }
 
 void DeathScreenLayer::draw_kill_stats(float scale)
@@ -225,4 +228,23 @@ void DeathScreenLayer::draw_kill_stats(float scale)
 		bounds.y += vertical_spacing;
 	}
 	GuiSetStyle(LABEL, TEXT_ALIGNMENT, TEXT_ALIGN_LEFT);
+}
+
+void DeathScreenLayer::draw_time(float scale)
+{
+	auto& vp = gApp()->viewport();
+	if ( !vp ) {
+		return;
+	}
+	Vector2 origin = vp->viewport_origin();
+	Rectangle bounds = {origin.x + 20 * scale, origin.y + 10 * scale, 100 * scale, 50 * scale};
+	float center_x = origin.x + (vp->viewport_base_size().x / 2.0f) * scale;
+	float pos_x		 = center_x - bounds.width / 2.0f;
+
+	std::string time_text = PSUtils::time_to_string(m_time_played);
+	GuiSetStyle(DEFAULT, TEXT_SIZE, 20 * scale);
+	GuiSetStyle(LABEL, TEXT_ALIGNMENT, TEXT_ALIGN_CENTER);
+	GuiLabel({pos_x, bounds.y, bounds.width, bounds.height}, time_text.c_str());
+	GuiSetStyle(LABEL, TEXT_ALIGNMENT, TEXT_ALIGN_LEFT);
+	GuiSetStyle(DEFAULT, TEXT_SIZE, 10 * scale);
 }

@@ -3,6 +3,7 @@
 #include <random>
 #include <raylib.h>
 #include <sstream>
+#include <format>
 
 int PSUtils::gen_rand(const int min, const int max)
 {
@@ -19,6 +20,13 @@ float PSUtils::gen_rand_float(const float min, const float max)
 	std::mt19937 gen(rd());
 	std::uniform_real_distribution<> distr(min, max);
 	return static_cast<float>(distr(gen));
+}
+
+std::string PSUtils::time_to_string(float time)
+{
+	int min = static_cast<int>(time) / 60;
+	int sec = static_cast<int>(time) % 60;
+	return std::format("{:02d}:{:02d}", min, sec);
 }
 
 std::string PSUtils::generate_uid()

@@ -8,6 +8,7 @@
 #include <raygui.h>
 #include <raylib.h>
 #include <layers/upgradelayer.h>
+#include "pscore/utils.h"
 
 PauseLayer::PauseLayer()
 {
@@ -100,14 +101,6 @@ void PauseLayer::draw_statistics()
 	m_stats_base_bounds = {origin.x + 20 * scale, origin.y + 20 * scale, 200 * scale, 100 * scale};
 }
 
-std::string PauseLayer::time_to_string(float time) const
-{
-	int min = static_cast<int>(time) / 60;
-	int sec = static_cast<int>(time) % 60;
-
-	return std::format("{:02d}:{:02d}", min, sec);
-}
-
 void PauseLayer::draw_time(float scale)
 {
 	auto& vp = gApp()->viewport();
@@ -118,7 +111,7 @@ void PauseLayer::draw_time(float scale)
 	float center_x = origin.x + (vp->viewport_base_size().x / 2.0f) * scale;
 	float pos_x	   = center_x - m_stats_base_bounds.width / 2.0f;
 
-	std::string time_text = time_to_string(m_director->statistics().time_played);
+	std::string time_text = PSUtils::time_to_string(m_director->statistics().time_played);
 	GuiSetStyle(DEFAULT, TEXT_SIZE, 20 * scale);
 	GuiSetStyle(LABEL, TEXT_ALIGNMENT, TEXT_ALIGN_CENTER);
 	GuiLabel({pos_x, m_stats_base_bounds.y, m_stats_base_bounds.width, m_stats_base_bounds.height}, time_text.c_str());

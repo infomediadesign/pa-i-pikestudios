@@ -19,6 +19,8 @@ namespace PSUtils {
 
 	std::string generate_uid();
 
+	std::string time_to_string(float time);
+
 	template<typename T>
 	class Grid2D
 	{

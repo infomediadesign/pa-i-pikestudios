@@ -60,6 +60,7 @@ public:
 		int piercing_chance	  = CFG_VALUE<int>("upgrade_piercing_chance_chance", 13);
 		int luck			  = CFG_VALUE<int>("upgrade_luck_chance", 6);
 		int projectile_amount = CFG_VALUE<int>("upgrade_projectile_amount_chance", 1);
+		int explosive_barrels = CFG_VALUE<int>("upgrade_explosive_barrels_chance", 1);
 	};
 
 	DropChances drop_chances;
@@ -76,6 +77,7 @@ public:
 	void upgrade_player_piercing_chance(float amount);
 	void upgrade_player_luck(float amount);
 	void upgrade_player_projectile_amount(int amount);
+	void upgrade_player_explosive_barrels();
 
 	float player_current_fire_rate() const;
 	float player_current_projectile_speed() const;

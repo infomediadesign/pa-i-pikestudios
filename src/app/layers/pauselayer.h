@@ -12,7 +12,6 @@ class PauseLayer: public PSInterfaces::Layer
 	void on_render() override;
 
 	void draw_statistics();
-	std::string time_to_string(float time) const;
 	void draw_time(float scale);
 	void draw_kill_stats(float scale);
 	void draw_player_stats(float scale);

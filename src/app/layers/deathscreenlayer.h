@@ -22,6 +22,7 @@ class DeathScreenLayer : public PSInterfaces::Layer
 		bool score_should_be_saved() const;
 		void set_score_layer_instance(ScoreLayer* score_layer);
 		void reset_state();
+		void draw_time(float scale);
 		void draw_kill_stats(float scale);
 		void init_stat_strings();
 
@@ -32,4 +33,5 @@ class DeathScreenLayer : public PSInterfaces::Layer
 		Texture2D m_button;
 		FortunaDirector* m_director = nullptr;
 		std::vector<std::string> m_kill_stat_lines;
+		float m_time_played;
 };
