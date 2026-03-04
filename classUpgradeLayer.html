@@ -148,6 +148,9 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><b>value_to_strin
 <tr class="memitem:af4116a97bec977414b02370dee1a1724" id="r_af4116a97bec977414b02370dee1a1724"><td class="memItemLeft" align="right" valign="top"><a id="af4116a97bec977414b02370dee1a1724" name="af4116a97bec977414b02370dee1a1724"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>draw_upgrade_icon</b> (int index, Vector2 pos)</td></tr>
 <tr class="separator:af4116a97bec977414b02370dee1a1724"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af4ab50cb4a122de019f30b495f50e451" id="r_af4ab50cb4a122de019f30b495f50e451"><td class="memItemLeft" align="right" valign="top"><a id="af4ab50cb4a122de019f30b495f50e451" name="af4ab50cb4a122de019f30b495f50e451"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>play_reroll_gem_animation</b> (float dt)</td></tr>
+<tr class="separator:af4ab50cb4a122de019f30b495f50e451"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classPSInterfaces_1_1Layer"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classPSInterfaces_1_1Layer')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classPSInterfaces_1_1Layer.html">PSInterfaces::Layer</a></td></tr>
 <tr class="memitem:af24293a5ef531b849cacc205f8a6390a inherit pub_methods_classPSInterfaces_1_1Layer" id="r_af24293a5ef531b849cacc205f8a6390a"><td class="memItemLeft" align="right" valign="top">
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>on_event</b> ()</td></tr>
@@ -278,6 +281,9 @@ Texture2D&#160;</td><td class="memItemRight" valign="bottom"><b>m_piercing_chanc
 <tr class="memitem:a8789092c74a4906156cb2b3bf01d13a4" id="r_a8789092c74a4906156cb2b3bf01d13a4"><td class="memItemLeft" align="right" valign="top"><a id="a8789092c74a4906156cb2b3bf01d13a4" name="a8789092c74a4906156cb2b3bf01d13a4"></a>
 Texture2D&#160;</td><td class="memItemRight" valign="bottom"><b>m_player_speed_icon</b></td></tr>
 <tr class="separator:a8789092c74a4906156cb2b3bf01d13a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2380f97f67320641c83ae6387d075d90" id="r_a2380f97f67320641c83ae6387d075d90"><td class="memItemLeft" align="right" valign="top"><a id="a2380f97f67320641c83ae6387d075d90" name="a2380f97f67320641c83ae6387d075d90"></a>
+Texture2D&#160;</td><td class="memItemRight" valign="bottom"><b>m_explisve_barrel_icon</b></td></tr>
+<tr class="separator:a2380f97f67320641c83ae6387d075d90"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a713a9b0a296d134998e5d772a26f932d" id="r_a713a9b0a296d134998e5d772a26f932d"><td class="memItemLeft" align="right" valign="top"><a id="a713a9b0a296d134998e5d772a26f932d" name="a713a9b0a296d134998e5d772a26f932d"></a>
 float&#160;</td><td class="memItemRight" valign="bottom"><b>m_base_upgrade_player_speed</b> = CFG_VALUE&lt;float&gt;(&quot;upgrade_player_speed_base_value&quot;, 0.075f)</td></tr>
 <tr class="separator:a713a9b0a296d134998e5d772a26f932d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -326,6 +332,21 @@ float&#160;</td><td class="memItemRight" valign="bottom"><b>m_multiplier_legenda
 <tr class="memitem:a49a28014457b3465aaaf419c2db3b984" id="r_a49a28014457b3465aaaf419c2db3b984"><td class="memItemLeft" align="right" valign="top"><a id="a49a28014457b3465aaaf419c2db3b984" name="a49a28014457b3465aaaf419c2db3b984"></a>
 float&#160;</td><td class="memItemRight" valign="bottom"><b>m_multiplier_mythic</b> = CFG_VALUE&lt;float&gt;(&quot;upgrade_mythical_multiplier&quot;, 3.0f)</td></tr>
 <tr class="separator:a49a28014457b3465aaaf419c2db3b984"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a94934a5a9da7d0c059f29ba0b1b6d939" id="r_a94934a5a9da7d0c059f29ba0b1b6d939"><td class="memItemLeft" align="right" valign="top"><a id="a94934a5a9da7d0c059f29ba0b1b6d939" name="a94934a5a9da7d0c059f29ba0b1b6d939"></a>
+<a class="el" href="classPSCore_1_1sprites_1_1SpriteSheetAnimation.html">PSCore::sprites::SpriteSheetAnimation</a>&#160;</td><td class="memItemRight" valign="bottom"><b>m_gem_anim_controller</b></td></tr>
+<tr class="separator:a94934a5a9da7d0c059f29ba0b1b6d939"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3960f5d3f2616b0215cd547629867b68" id="r_a3960f5d3f2616b0215cd547629867b68"><td class="memItemLeft" align="right" valign="top"><a id="a3960f5d3f2616b0215cd547629867b68" name="a3960f5d3f2616b0215cd547629867b68"></a>
+std::shared_ptr&lt; <a class="el" href="structPSCore_1_1sprites_1_1Sprite.html">PSCore::sprites::Sprite</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>m_gem_sprite</b></td></tr>
+<tr class="separator:a3960f5d3f2616b0215cd547629867b68"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad8bb710b981189ed5a6d8fd5fff94c0e" id="r_ad8bb710b981189ed5a6d8fd5fff94c0e"><td class="memItemLeft" align="right" valign="top"><a id="ad8bb710b981189ed5a6d8fd5fff94c0e" name="ad8bb710b981189ed5a6d8fd5fff94c0e"></a>
+Texture2D&#160;</td><td class="memItemRight" valign="bottom"><b>m_gem_texture</b></td></tr>
+<tr class="separator:ad8bb710b981189ed5a6d8fd5fff94c0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a43aa920297afb9662fbd1af00ff0786c" id="r_a43aa920297afb9662fbd1af00ff0786c"><td class="memItemLeft" align="right" valign="top"><a id="a43aa920297afb9662fbd1af00ff0786c" name="a43aa920297afb9662fbd1af00ff0786c"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>m_reroll_anim_playing</b> = false</td></tr>
+<tr class="separator:a43aa920297afb9662fbd1af00ff0786c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaab7d4de55095a8a74156055cb4e8ba7" id="r_aaab7d4de55095a8a74156055cb4e8ba7"><td class="memItemLeft" align="right" valign="top"><a id="aaab7d4de55095a8a74156055cb4e8ba7" name="aaab7d4de55095a8a74156055cb4e8ba7"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>m_z_index</b> = 0</td></tr>
+<tr class="separator:aaab7d4de55095a8a74156055cb4e8ba7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
