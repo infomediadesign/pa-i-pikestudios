@@ -1,10 +1,10 @@
 #include "entities/gemstone.h"
-#include "entities/player.h"
-#include "pscore/viewport.h"
-#include <layers/applayer.h>
-#include <entities/director.h>
 #include <coordinatesystem.h>
+#include <entities/director.h>
+#include <layers/applayer.h>
+#include "entities/player.h"
 #include "pscore/utils.h"
+#include "pscore/viewport.h"
 
 Gemstone::Gemstone() : PSInterfaces::IEntity("gemstone")
 {
@@ -13,15 +13,17 @@ Gemstone::Gemstone() : PSInterfaces::IEntity("gemstone")
 	m_sprite  = PRELOAD_TEXTURE(ident_, "resources/entity/gemstone.png", frame_grid);
 	m_texture = m_sprite->m_s_texture;
 
-	m_anim_controller = PSCore::sprites::SpriteSheetAnimation(m_texture, {
-		{14, 0.1, PSCore::sprites::Forward, m_z_index},
-		{14, 0.1, PSCore::sprites::Forward, m_z_index},
-		{14, 0.05, PSCore::sprites::Backward, m_z_index},
-	});
+	m_anim_controller = PSCore::sprites::SpriteSheetAnimation(
+			m_texture, {
+							   {14, 0.1, PSCore::sprites::Forward, m_z_index},
+							   {14, 0.1, PSCore::sprites::Forward, m_z_index},
+							   {14, 0.05, PSCore::sprites::Backward, m_z_index},
+					   }
+	);
 	m_anim_controller.add_animation_at_index(2, m_z_index);
 	m_anim_controller.set_animation_at_index(2, 13, m_z_index);
 
-	m_current_idle_anim  = 0;
+	m_current_idle_anim	 = 0;
 	m_spawn_anim_playing = false;
 
 	m_global_sfx_volume = gApp()->sound_volume(PSCore::Application::SoundType::SFX).value_or(50);
@@ -36,10 +38,12 @@ void Gemstone::init(const Vector2& position, std::shared_ptr<Gemstone> self)
 {
 	set_position(position);
 	m_collider = std::make_unique<PSCore::collision::EntityCollider>(self);
-	m_collider->register_collision_handler([this](std::weak_ptr<PSInterfaces::IEntity> other, const Vector2& pos) {
-		if ( auto locked = other.lock() ) {
-			if ( auto player = dynamic_cast<Player*>(locked.get()) ) {
-				on_hit();
+	m_collider->register_collision_handler([this](std::vector<std::weak_ptr<PSInterfaces::IEntity>> other, const Vector2& pos) {
+		for ( const auto& other: other ) {
+			if ( auto locked = other.lock() ) {
+				if ( auto player = dynamic_cast<Player*>(locked.get()) ) {
+					on_hit();
+				}
 			}
 		}
 	});
@@ -59,8 +63,7 @@ void Gemstone::update(float dt)
 	}
 	if ( m_spawn_anim_playing ) {
 		play_spawn_anim(dt);
-	} 
-	else {
+	} else {
 		play_idle_anim(dt);
 	}
 }
@@ -88,9 +91,9 @@ void Gemstone::play_spawn_anim(float dt)
 	if ( m_spawn_anim_playing ) {
 		m_anim_controller.update_animation(dt);
 		if ( m_anim_controller.get_sprite_sheet_frame_index(m_z_index).value_or(-1) == 0 ) {
-			m_spawn_anim_playing = false;
+			m_spawn_anim_playing   = false;
 			m_can_play_spawn_sound = true;
-			m_current_idle_anim  = 0;
+			m_current_idle_anim	   = 0;
 			m_anim_controller.set_animation_at_index(m_current_idle_anim, 0, m_z_index);
 		}
 		if ( m_anim_controller.get_sprite_sheet_frame_index(m_z_index).value_or(-1) == 7 && m_can_play_spawn_sound ) {
@@ -123,8 +126,7 @@ void Gemstone::play_idle_anim(float dt)
 			}
 			m_anim_controller.set_animation_at_index(m_current_idle_anim, 0, m_z_index);
 		}
-	}
-	else {
+	} else {
 		m_can_change_anim = true;
 	}
 }
@@ -140,8 +142,8 @@ std::optional<std::vector<Vector2>> Gemstone::bounds() const
 	if ( is_active() )
 		if ( auto& vp = gApp()->viewport() ) {
 
-			Vector2 vp_pos = vp->position_viewport_to_global(m_position);
-			float scale	   = vp->viewport_scale();
+			Vector2 vp_pos					   = vp->position_viewport_to_global(m_position);
+			float scale						   = vp->viewport_scale();
 			float half						   = 8.0f * scale;
 			std::vector<Vector2> hitbox_points = {{-half, -half}, {half, -half}, {half, half}, {-half, half}};
 

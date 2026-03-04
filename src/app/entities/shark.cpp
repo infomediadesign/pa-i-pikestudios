@@ -127,7 +127,7 @@ Shark::Shark() : PSInterfaces::IEntity("shark")
 	m_shark_sprite = FETCH_SPRITE(ident_);
 
 	std::vector<PSCore::sprites::SpriteSheetData> sp_data{
-			{9, 0.1, PSCore::sprites::Forward, -1}, {9, 0.1, PSCore::sprites::Forward, 1}, {9, 0.1, PSCore::sprites::Forward, -1},
+			{9, 0.1, PSCore::sprites::Forward, -1}, {9, 0.1, PSCore::sprites::Forward, 1},	{9, 0.1, PSCore::sprites::Forward, -1},
 			{9, 0.1, PSCore::sprites::Forward, -1}, {9, 0.1, PSCore::sprites::Forward, -1}, {9, 0.1, PSCore::sprites::Forward, -1},
 			{9, 0.1, PSCore::sprites::Forward, 1},
 
@@ -155,10 +155,12 @@ void Shark::init(std::shared_ptr<Shark> self, const Vector2& pos)
 	m_pos  = pos;
 
 	m_collider = std::make_unique<PSCore::collision::EntityCollider>(m_self);
-	m_collider->register_collision_handler([](std::weak_ptr<PSInterfaces::IEntity> other, const Vector2& pos) {
-		if ( auto locked = other.lock() ) {
-			if ( auto player = std::dynamic_pointer_cast<Player>(locked) ) {
-				player->on_hit();
+	m_collider->register_collision_handler([](std::vector<std::weak_ptr<PSInterfaces::IEntity>> others, const Vector2& pos) {
+		for ( const auto& other: others ) {
+			if ( auto locked = other.lock() ) {
+				if ( auto player = std::dynamic_pointer_cast<Player>(locked) ) {
+					player->on_hit();
+				}
 			}
 		}
 	});
