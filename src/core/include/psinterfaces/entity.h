@@ -69,6 +69,16 @@ namespace PSInterfaces {
 			is_dead_hitable_ = active;
 		}
 
+		virtual bool is_check_valid() const
+		{
+			return is_check_valid_;
+		}
+
+		virtual void set_is_check_valid(bool active)
+		{
+			is_check_valid_ = active;
+		}
+
 		virtual void on_hit()
 		{
 		}
@@ -108,5 +118,6 @@ namespace PSInterfaces {
 
 		bool is_active_		  = true;
 		bool is_dead_hitable_ = false;
+		bool is_check_valid_	  = true;
 	};
 } // namespace PSInterfaces

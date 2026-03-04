@@ -90,6 +90,7 @@ void tentacle::render()
 		switch ( m_state ) {
 			case Idle: {
 				m_animation_controller.set_animation_at_index(2, 1, 1);
+				propose_z_index(-40);
 				vp->draw_in_viewport(
 						m_tentacle_sprite->m_s_texture, m_animation_controller.get_source_rectangle(0).value_or(Rectangle{0}), m_pos, 0, WHITE
 				);
@@ -99,6 +100,7 @@ void tentacle::render()
 				if ( m_animation_controller.get_sprite_sheet_animation_index(1).value_or(-1) != 0 ) {
 					m_animation_controller.set_animation_at_index(0, 0, 1);
 				}
+				propose_z_index(-2);
 				vp->draw_in_viewport(
 						m_tentacle_sprite->m_s_texture, m_animation_controller.get_source_rectangle(1).value_or(Rectangle{0}), m_pos, 0, WHITE
 				);
@@ -108,6 +110,7 @@ void tentacle::render()
 				if ( m_animation_controller.get_sprite_sheet_animation_index(1).value_or(-1) != 2 ) {
 					m_animation_controller.set_animation_at_index(2, 0, 1);
 				}
+				propose_z_index(-2);
 				vp->draw_in_viewport(
 						m_tentacle_sprite->m_s_texture, m_animation_controller.get_source_rectangle(1).value_or(Rectangle{0}), m_pos, 0, WHITE
 				);
@@ -117,6 +120,7 @@ void tentacle::render()
 				if ( m_animation_controller.get_sprite_sheet_animation_index(1).value_or(-1) != 1 ) {
 					m_animation_controller.set_animation_at_index(1, 5, 1);
 				}
+				propose_z_index(-2);
 				vp->draw_in_viewport(
 						m_tentacle_sprite->m_s_texture, m_animation_controller.get_source_rectangle(1).value_or(Rectangle{0}), m_pos, 0, WHITE
 				);
@@ -163,8 +167,6 @@ void tentacle::IdleUpdate(float dt)
 	if ( time_until_water_break <= 0 ) {
 		time_until_water_break = static_cast<float>(PSUtils::gen_rand(4, 8));
 		m_state				   = State::WaterBreak;
-
-		propose_z_index(-2);
 	}
 }
 
@@ -181,23 +183,55 @@ void tentacle::AttackingUpdate(float dt)
 	if ( time_until_retreat <= 0 ) {
 		time_until_retreat = max_time_until_retreat;
 		m_state			   = State::Retreat;
+		is_check_valid_	   = false;
 	}
 }
 void tentacle::RetreatingUpdate(float dt)
 {
 	if ( m_animation_controller.get_sprite_sheet_frame_index(1).value_or(-1) == 0 ) {
-		m_state = State::Idle;
-
-		propose_z_index(-40);
+		m_state			= State::Idle;
+		is_check_valid_ = true;
 		SetNewPos();
 	}
 }
 void tentacle::SetNewPos()
 {
 	if ( auto& vp = gApp()->viewport() ) {
-		Vector2 coords;
-		coords.x = PSUtils::gen_rand(m_spawn_area_margin, vp->viewport_base_size().x - m_spawn_area_margin);
-		coords.y = PSUtils::gen_rand(m_spawn_area_margin, vp->viewport_base_size().y - m_spawn_area_margin);
+		Vector2 coords = {0, 0};
+		coords.x = static_cast<float>(PSUtils::gen_rand(m_spawn_area_margin, static_cast<int>(vp->viewport_base_size().x) - m_spawn_area_margin));
+		coords.y = static_cast<float>(PSUtils::gen_rand(m_spawn_area_margin, static_cast<int>(vp->viewport_base_size().y) - m_spawn_area_margin));
+
+		FortunaDirector* director;
+		if ( !(director = dynamic_cast<FortunaDirector*>(gApp()->game_director())) )
+			return;
+
+		std::vector<Vector2> other_positions;
+		if ( auto& spawner = director->spawner<tentacle, AppLayer>() ) {
+			for ( auto entity: spawner->primitive_entities() ) {
+				if ( !entity->position().has_value() || uid_ == entity->uid() || !entity->is_active() || !entity->is_check_valid() )
+					continue;
+
+				other_positions.push_back(entity->position().value());
+			}
+			for ( int i = 0; i < 3; i++ ) {
+				bool valid = true;
+				for ( int j = 0; auto position: other_positions ) {
+					if ( Vector2Length(coords - position) < m_spawn_distance ) {
+						coords = other_positions.at(j) + Vector2Scale(Vector2Normalize(coords - position), m_spawn_distance * 1.05f);
+						valid  = false;
+					}
+					j++;
+				}
+				if ( valid )
+					break;
+			}
+			coords.x = std::clamp(
+					coords.x, static_cast<float>(m_spawn_area_margin), vp->viewport_base_size().x - static_cast<float>(m_spawn_area_margin)
+			);
+			coords.y = std::clamp(
+					coords.y, static_cast<float>(m_spawn_area_margin), vp->viewport_base_size().y - static_cast<float>(m_spawn_area_margin)
+			);
+		}
 		set_pos(coords);
 	}
 }
@@ -256,7 +290,8 @@ void tentacle::set_is_active(bool active)
 		time_until_water_break = static_cast<float>(PSUtils::gen_rand(4, 8));
 		time_until_retreat	   = max_time_until_retreat;
 		m_animation_controller.set_animation_at_index(2, 1, 1);
-		m_state = State::Idle;
+		m_state			= State::Idle;
+		is_check_valid_ = true;
 		propose_z_index(-40);
 		SetNewPos();
 	}
@@ -272,4 +307,9 @@ void tentacle::determine_gem_drop()
 	if ( PSUtils::gen_rand_float(0, 100) <= director->gem_drop_chance() ) {
 		director->spawn_gemstone(m_pos);
 	}
+}
+
+tentacle::State tentacle::state()
+{
+	return m_state;
 }

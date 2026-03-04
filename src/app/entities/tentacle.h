@@ -43,7 +43,6 @@ private:
 
 	Vector2 m_pos{(float) 100, (float) 100};
 	State m_state	   = State::Idle;
-	State m_prev_state = m_state;
 	std::string m_state_string;
 
 	std::shared_ptr<PSCore::sprites::Sprite> m_tentacle_sprite;
@@ -58,10 +57,14 @@ private:
 
 	int m_spawn_area_margin = CFG_VALUE<int>("tentacle_spawn_area_margin", 80);
 
+	float m_spawn_distance = 80;
+
 	void IdleUpdate(float dt);
 	void WaterBreakUpdate(float dt);
 	void AttackingUpdate(float dt);
 	void RetreatingUpdate(float dt);
 
 	void SetNewPos();
+
+	State state();
 };
