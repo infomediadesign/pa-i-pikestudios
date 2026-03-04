@@ -39,6 +39,7 @@ UpgradeLayer::UpgradeLayer()
 	m_piercing_chance_icon	= PRELOAD_TEXTURE("piercing_chance_icon", "resources/icon/upgr_icon_piercing_chance.png", frame_grid)->m_s_texture;
 	m_player_speed_icon		= PRELOAD_TEXTURE("player_speed_icon", "resources/icon/upgr_icon_movement_speed.png", frame_grid)->m_s_texture;
 	m_explisve_barrel_icon	= PRELOAD_TEXTURE("explosive_barrel_icon", "resources/icon/upgr_icon_explosive_barrels.png", frame_grid)->m_s_texture;
+	m_health_icon			= PRELOAD_TEXTURE("health_icon", "resources/icon/upgr_icon_health.png", frame_grid)->m_s_texture;
 
 	m_card_1_texture_emissive =
 			PRELOAD_TEXTURE("card_emissive_1", "resources/emissive/upgrate_card_emissive_border_and_center_card_1.png", frame_grid)->m_s_texture;
@@ -596,10 +597,11 @@ void UpgradeLayer::draw_reroll_button()
 
 
 		Rectangle gem_socket_source = {0, 0, static_cast<float>(m_gem_socket_texture.width), static_cast<float>(m_gem_socket_texture.height)};
-		Rectangle gem_socket_dest	= {button_center_x - 70 * scale, button_center_y, gem_socket_source.width * scale, gem_socket_source.height * scale};
+		//Rectangle gem_socket_dest	= {button_center_x - 70 * scale, button_center_y, gem_socket_source.width * scale, gem_socket_source.height * scale};
+		Rectangle gem_socket_dest = {button_center_x, button_center_y + 27 * scale, gem_socket_source.width * scale, gem_socket_source.height * scale};
 		Vector2 gem_socket_origin	= {gem_socket_dest.width / 2.0f, gem_socket_dest.height / 2.0f};
 
-		Rectangle gem_dest = {gem_socket_dest.x - 15 * scale, button_center_y, gem_source.width * scale, gem_source.height * scale};
+		Rectangle gem_dest = {gem_socket_dest.x - 15 * scale, gem_socket_dest.y, gem_source.width * scale, gem_source.height * scale};
 		Vector2 gem_origin = {gem_dest.width / 2.0f, gem_dest.height / 2.0f};
 		DrawTexturePro(m_gem_socket_texture, gem_socket_source, gem_socket_dest, gem_socket_origin, 0, WHITE);
 		DrawTexturePro(m_gem_texture, gem_source, gem_dest, gem_origin, 0, WHITE);
@@ -631,7 +633,7 @@ void UpgradeLayer::draw_upgrade_icon(int index, Vector2 card_pos)
 			DrawTextureEx(m_fire_rate_icon, pos, 0, scale, WHITE);
 			break;
 		case 4:
-			// DrawTextureEx(m_fire_rate_icon, pos, 0, scale, WHITE);
+			DrawTextureEx(m_health_icon, pos, 0, scale, WHITE);
 			break;
 		case 5:
 			DrawTextureEx(m_player_speed_icon, pos, 0, scale, WHITE);
@@ -649,6 +651,7 @@ void UpgradeLayer::draw_upgrade_icon(int index, Vector2 card_pos)
 			// DrawTextureEx(m_fire_rate_icon, pos, 0, scale, WHITE);
 			break;
 		case 10:
+			break;
 		default:
 			break;
 	}
