@@ -22,20 +22,23 @@ tentacle::tentacle() : PSInterfaces::IEntity("tentacle")
 {
 	Vector2 frame_grid{9, 2};
 	PRELOAD_TEXTURE(ident_, "resources/entity/tentacle.png", frame_grid);
-	m_Tentacle_sprite = FETCH_SPRITE(ident_);
+	m_tentacle_sprite = FETCH_SPRITE(ident_);
 
 	std::vector<PSCore::sprites::SpriteSheetData> sp_data;
-	sp_data.push_back({8, 0.1, PSCore::sprites::Forward, 0});
-	sp_data.push_back({6, 0.1, PSCore::sprites::Backward, 1});
-	sp_data.push_back({1, 1, PSCore::sprites::Forward, 2});
-	sp_data.push_back({1, 1, PSCore::sprites::Forward, 3});
+	sp_data.push_back({9, 0.1, PSCore::sprites::Forward, 1});
+	sp_data.push_back({7, 0.1, PSCore::sprites::Backward, 1});
+	sp_data.push_back({2, 1, PSCore::sprites::KeyFrame, 1});
+	sp_data.push_back({1, 1, PSCore::sprites::KeyFrame, 0});
 
-	m_animation_controller = PSCore::sprites::SpriteSheetAnimation(FETCH_SPRITE_TEXTURE(ident_), sp_data);
+	m_animation_controller = PSCore::sprites::SpriteSheetAnimation(m_tentacle_sprite->m_s_texture, sp_data);
 
-	m_animation_controller.add_animation_at_index(0, 0);
-	m_animation_controller.add_animation_at_index(1, 1);
-	m_animation_controller.add_animation_at_index(2, 2);
-	m_animation_controller.add_animation_at_index(3, 3);
+	m_animation_controller.add_animation_at_index(3, 0);
+	m_animation_controller.add_animation_at_index(2, 1);
+
+	m_animation_controller.set_animation_at_index(2, 1, 1);
+
+	time_until_water_break = static_cast<float>(PSUtils::gen_rand(4, 8));
+	time_until_retreat	   = max_time_until_retreat;
 }
 
 void tentacle::init(std::shared_ptr<tentacle> self, const Vector2& pos)
@@ -86,23 +89,37 @@ void tentacle::render()
 	if ( const auto& vp = gApp()->viewport() ) {
 		switch ( m_state ) {
 			case Idle: {
-				auto tex = m_Tentacle_sprite;
-				vp->draw_in_viewport(tex->m_s_texture, m_animation_controller.get_source_rectangle(3).value_or(Rectangle{0}), m_pos, 0, WHITE);
+				m_animation_controller.set_animation_at_index(2, 1, 1);
+				vp->draw_in_viewport(
+						m_tentacle_sprite->m_s_texture, m_animation_controller.get_source_rectangle(0).value_or(Rectangle{0}), m_pos, 0, WHITE
+				);
 				break;
 			}
 			case WaterBreak: {
-				auto tex = m_Tentacle_sprite;
-				vp->draw_in_viewport(tex->m_s_texture, m_animation_controller.get_source_rectangle(0).value_or(Rectangle{0}), m_pos, 0, WHITE);
+				if ( m_animation_controller.get_sprite_sheet_animation_index(1).value_or(-1) != 0 ) {
+					m_animation_controller.set_animation_at_index(0, 0, 1);
+				}
+				vp->draw_in_viewport(
+						m_tentacle_sprite->m_s_texture, m_animation_controller.get_source_rectangle(1).value_or(Rectangle{0}), m_pos, 0, WHITE
+				);
 				break;
 			}
 			case Attacking: {
-				auto tex = m_Tentacle_sprite;
-				vp->draw_in_viewport(tex->m_s_texture, m_animation_controller.get_source_rectangle(2).value_or(Rectangle{0}), m_pos, 0, WHITE);
+				if ( m_animation_controller.get_sprite_sheet_animation_index(1).value_or(-1) != 2 ) {
+					m_animation_controller.set_animation_at_index(2, 0, 1);
+				}
+				vp->draw_in_viewport(
+						m_tentacle_sprite->m_s_texture, m_animation_controller.get_source_rectangle(1).value_or(Rectangle{0}), m_pos, 0, WHITE
+				);
 				break;
 			}
 			case Retreat: {
-				auto tex = m_Tentacle_sprite;
-				vp->draw_in_viewport(tex->m_s_texture, m_animation_controller.get_source_rectangle(1).value_or(Rectangle{0}), m_pos, 0, WHITE);
+				if ( m_animation_controller.get_sprite_sheet_animation_index(1).value_or(-1) != 1 ) {
+					m_animation_controller.set_animation_at_index(1, 5, 1);
+				}
+				vp->draw_in_viewport(
+						m_tentacle_sprite->m_s_texture, m_animation_controller.get_source_rectangle(1).value_or(Rectangle{0}), m_pos, 0, WHITE
+				);
 				break;
 			}
 		}
@@ -117,22 +134,24 @@ void tentacle::update(float dt)
 		m_collider->check_collision(app_layer->entities());
 	}
 
-	switch ( m_state ) {
-		case Idle: {
-			IdleUpdate(dt);
-			break;
-		}
-		case WaterBreak: {
-			WaterBreakUpdate(dt);
-			break;
-		}
-		case Attacking: {
-			AttackingUpdate(dt);
-			break;
-		}
-		case Retreat: {
-			RetreatingUpdate(dt);
-			break;
+	if ( is_active_ ) {
+		switch ( m_state ) {
+			case Idle: {
+				IdleUpdate(dt);
+				break;
+			}
+			case WaterBreak: {
+				WaterBreakUpdate(dt);
+				break;
+			}
+			case Attacking: {
+				AttackingUpdate(dt);
+				break;
+			}
+			case Retreat: {
+				RetreatingUpdate(dt);
+				break;
+			}
 		}
 	}
 }
@@ -142,43 +161,35 @@ void tentacle::IdleUpdate(float dt)
 {
 	time_until_water_break -= dt;
 	if ( time_until_water_break <= 0 ) {
-		m_state = State::WaterBreak;
-		m_animation_controller.set_animation_at_index(0, 0, 0);
+		time_until_water_break = static_cast<float>(PSUtils::gen_rand(4, 8));
+		m_state				   = State::WaterBreak;
+
 		propose_z_index(-2);
 	}
 }
 
 void tentacle::WaterBreakUpdate(float dt)
 {
-	time_until_attack -= dt;
-	if ( time_until_attack <= 0 ) {
+	if ( m_animation_controller.get_sprite_sheet_frame_index(1).value_or(-1) == 8 ) {
 		m_state = State::Attacking;
-		m_animation_controller.set_animation_at_index(2, 0, 2);
 	}
 }
 
 void tentacle::AttackingUpdate(float dt)
 {
 	time_until_retreat -= dt;
-
 	if ( time_until_retreat <= 0 ) {
-		m_animation_controller.set_animation_at_index(1, 5, 1);
-		m_state = State::Retreat;
+		time_until_retreat = max_time_until_retreat;
+		m_state			   = State::Retreat;
 	}
 }
 void tentacle::RetreatingUpdate(float dt)
 {
-	until_reposition -= dt;
-	if ( until_reposition <= 0 ) {
+	if ( m_animation_controller.get_sprite_sheet_frame_index(1).value_or(-1) == 0 ) {
 		m_state = State::Idle;
 
-		time_until_water_break = PSUtils::gen_rand(4, 8);
-		time_until_attack	   = max_time_until_attack;
-		time_until_retreat	   = max_time_until_retreat;
-		until_reposition	   = max_until_reposition;
-
-		SetNewPos();
 		propose_z_index(-40);
+		SetNewPos();
 	}
 }
 void tentacle::SetNewPos()
@@ -240,16 +251,16 @@ void tentacle::draw_debug()
 
 void tentacle::set_is_active(bool active)
 {
-	is_active_ = active;
-
 	if ( active ) {
 		// Reset all states
-		m_state				   = State::Idle;
-		time_until_water_break = PSUtils::gen_rand(4, 8);
-		time_until_attack	   = max_time_until_attack;
+		time_until_water_break = static_cast<float>(PSUtils::gen_rand(4, 8));
 		time_until_retreat	   = max_time_until_retreat;
-		until_reposition	   = max_until_reposition;
+		m_animation_controller.set_animation_at_index(2, 1, 1);
+		m_state = State::Idle;
+		propose_z_index(-40);
+		SetNewPos();
 	}
+	is_active_ = active;
 }
 
 void tentacle::determine_gem_drop()
