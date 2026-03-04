@@ -107,8 +107,8 @@ void PSCore::Application::init(const AppSpec& spec)
 		vsync		   = std::get<bool>(settings->value("vsync").value_or(false));
 		msaa		   = std::get<bool>(settings->value("msaa4x").value_or(false));
 		fullscreen	   = std::get<bool>(settings->value("fullscreen").value_or(true));
-		
-		_p->m_time_manager->set_target_fps(std::get<int>(settings->value("fps_index").value_or(5)));
+
+		_p->m_time_manager->set_target_fps(target_fps[std::get<int>(settings->value("fps_index").value_or(5))]);
 
 		if ( m_global_sound_volume.empty() ) {
 			m_global_sound_volume.push_back(std::get<float>(settings->value("music_volume").value_or(20.f)));
