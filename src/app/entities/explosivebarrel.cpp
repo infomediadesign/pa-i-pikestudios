@@ -70,12 +70,15 @@ void ExplosiveBarrel::render()
 	if ( auto& vp = gApp()->viewport() ) {
 		Vector2 pos_global = vp->position_viewport_to_global(m_position);
 		if ( is_exploding() ) {
+			propose_z_index(100);
+
 			vp->draw_in_viewport(
 					FETCH_SPRITE_TEXTURE(ident_), m_animation_controller.get_source_rectangle(1).value_or(Rectangle{0}), m_position, 0, WHITE
 			);
 		}
+		else {
+			propose_z_index(-1);
 
-		if ( !is_exploding() ) {
 			DrawCircleV(pos_global, Lerp(0,m_explosion_radius, m_timer / m_detonation_time), {200,0,0,75});
 
 			BeginShaderMode(m_flash_shader);
