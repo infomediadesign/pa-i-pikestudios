@@ -26,10 +26,13 @@ public:
 	std::optional<std::vector<Vector2>> bounds() const override;
 	
 	std::optional<Vector2> position() const override { return m_position; };
+	
+	void set_parent(std::shared_ptr<PSInterfaces::IEntity> parent) { m_parent = parent; }
 
 private:
 	std::unique_ptr<PSCore::collision::EntityCollider> m_collider;
 	PSCore::sprites::SpriteSheetAnimation m_animation_controller;
+	std::shared_ptr<PSInterfaces::IEntity> m_parent;
 
 	float m_explosion_radius = CFG_VALUE<float>("explosive_barrel_explosion_radius", 100.0f);
 

@@ -55,7 +55,7 @@ namespace PSCore {
 		public:
 			explicit EntityCollider(std::weak_ptr<PSInterfaces::IEntity> parent);
 
-			void register_collision_handler(std::function<void(std::weak_ptr<PSInterfaces::IEntity> other, const Vector2& point)> cb, float timeout = 0);
+			void register_collision_handler(std::function<void(std::vector<std::weak_ptr<PSInterfaces::IEntity>> others, const Vector2& point)> cb, float timeout = 0);
 
 			bool check_collision(
 					const std::vector<std::weak_ptr<PSInterfaces::IEntity>>& entity_pool,
@@ -63,12 +63,12 @@ namespace PSCore {
 							[](std::weak_ptr<PSInterfaces::IEntity> other, const Vector2& point) { return true; }
 			);
 
-			static std::optional<std::pair<const std::weak_ptr<PSInterfaces::IEntity>, Vector2>>
+			static std::optional<std::vector<std::pair<const std::weak_ptr<PSInterfaces::IEntity>, Vector2>>>
 			check_entity_collision(std::shared_ptr<PSInterfaces::IEntity> self, const std::vector<std::weak_ptr<PSInterfaces::IEntity>>& entities);
 
 		private:
 			std::weak_ptr<PSInterfaces::IEntity> m_parent;
-			std::function<void(std::weak_ptr<PSInterfaces::IEntity> other, const Vector2& point)> m_collion_cb;
+			std::function<void(std::vector<std::weak_ptr<PSInterfaces::IEntity>> other, const Vector2& point)> m_collion_cb;
 			std::chrono::steady_clock::time_point cb_last_called = std::chrono::steady_clock::now();
 			
 			float m_collision_cb_timeout = 0;

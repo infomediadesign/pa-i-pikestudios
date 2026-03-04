@@ -175,7 +175,8 @@ void Hunter::update(float dt)
 
 			_p->pos = Vector2Add(_p->pos, _p->velocity * dt);
 
-			if ( _p->animation_controller.get_sprite_sheet_frame_index(1).value_or(-1) == 5 && _p->animation_controller.get_sprite_sheet_animation_index(1).value_or(-1) == 2) {
+			if ( _p->animation_controller.get_sprite_sheet_frame_index(1).value_or(-1) == 5 &&
+				 _p->animation_controller.get_sprite_sheet_animation_index(1).value_or(-1) == 2 ) {
 				if ( _p->to_wreck_anim_playing ) {
 					_p->animation_controller.set_animation_at_index(3, 0, 1);
 					set_is_dead_hitable(true);
@@ -183,9 +184,10 @@ void Hunter::update(float dt)
 				}
 			}
 
-			if ( _p->animation_controller.get_sprite_sheet_frame_index(1).value_or(-1) == 6 && _p->animation_controller.get_sprite_sheet_animation_index(1).value_or(-1) == 4) {
+			if ( _p->animation_controller.get_sprite_sheet_frame_index(1).value_or(-1) == 6 &&
+				 _p->animation_controller.get_sprite_sheet_animation_index(1).value_or(-1) == 4 ) {
 				if ( _p->to_death_anim_playing ) {
-					_p->animation_controller.set_animation_at_index(0,1,1);
+					_p->animation_controller.set_animation_at_index(0, 1, 1);
 					set_is_active(false);
 				}
 			}
@@ -564,26 +566,28 @@ void Hunter::init(std::shared_ptr<Hunter> self)
 {
 	_p->collider = std::make_unique<PSCore::collision::EntityCollider>(self);
 	_p->collider->register_collision_handler(
-			[](std::weak_ptr<PSInterfaces::IEntity> other, const Vector2& pos) {
-				if ( auto locked = other.lock() ) {
+			[](std::vector<std::weak_ptr<PSInterfaces::IEntity>> others, const Vector2& pos) {
+				for ( const auto& other: others ) {
+					if ( auto locked = other.lock() ) {
 
-					FortunaDirector* director;
-					if ( !(director = dynamic_cast<FortunaDirector*>(gApp()->game_director())) )
-						return;
+						FortunaDirector* director;
+						if ( !(director = dynamic_cast<FortunaDirector*>(gApp()->game_director())) )
+							return;
 
-					if ( auto player = std::dynamic_pointer_cast<Player>(locked) ) {
+						if ( auto player = std::dynamic_pointer_cast<Player>(locked) ) {
 
-						player->on_hit();
+							player->on_hit();
 
-						const float repel_strenght = CFG_VALUE<int>("hunter_repel_bounce_strenght", 50);
-						if ( auto& spawner = director->spawner<Hunter, AppLayer>() ) {
-							Vector2 repel_force =
-									PSCore::collision::entity_repel_force<Player>(player, spawner->primitive_entities(), 50, repel_strenght);
+							const float repel_strenght = CFG_VALUE<int>("hunter_repel_bounce_strenght", 50);
+							if ( auto& spawner = director->spawner<Hunter, AppLayer>() ) {
+								Vector2 repel_force =
+										PSCore::collision::entity_repel_force<Player>(player, spawner->primitive_entities(), 50, repel_strenght);
 
-							repel_force.x = std::clamp(repel_force.x, (repel_strenght * 2) * -1, repel_strenght * 2);
-							repel_force.y = std::clamp(repel_force.y, (repel_strenght * 2) * -1, repel_strenght * 2);
+								repel_force.x = std::clamp(repel_force.x, (repel_strenght * 2) * -1, repel_strenght * 2);
+								repel_force.y = std::clamp(repel_force.y, (repel_strenght * 2) * -1, repel_strenght * 2);
 
-							player->apply_repel_force(repel_force);
+								player->apply_repel_force(repel_force);
+							}
 						}
 					}
 				}

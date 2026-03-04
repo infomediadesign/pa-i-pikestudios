@@ -45,24 +45,26 @@ void tentacle::init(std::shared_ptr<tentacle> self, const Vector2& pos)
 
 	m_collider = std::make_unique<PSCore::collision::EntityCollider>(m_self);
 	m_collider->register_collision_handler(
-			[](std::weak_ptr<PSInterfaces::IEntity> other, const Vector2& pos) {
-				if ( auto locked = other.lock() ) {
-					if ( auto player = std::dynamic_pointer_cast<Player>(locked) ) {
-						player->on_hit();
+			[](std::vector<std::weak_ptr<PSInterfaces::IEntity>> others, const Vector2& pos) {
+				for ( const auto& other: others ) {
+					if ( auto locked = other.lock() ) {
+						if ( auto player = std::dynamic_pointer_cast<Player>(locked) ) {
+							player->on_hit();
 
-						FortunaDirector* director;
-						if ( !(director = dynamic_cast<FortunaDirector*>(gApp()->game_director())) )
-							return;
+							FortunaDirector* director;
+							if ( !(director = dynamic_cast<FortunaDirector*>(gApp()->game_director())) )
+								return;
 
-						const float repel_strenght = CFG_VALUE<int>("tentacle_repel_bounce_strenght", 50);
-						if ( auto& spawner = director->spawner<tentacle, AppLayer>() ) {
-							Vector2 repel_force =
-									PSCore::collision::entity_repel_force<Player>(player, spawner->primitive_entities(), 50, repel_strenght);
+							const float repel_strenght = CFG_VALUE<int>("tentacle_repel_bounce_strenght", 50);
+							if ( auto& spawner = director->spawner<tentacle, AppLayer>() ) {
+								Vector2 repel_force =
+										PSCore::collision::entity_repel_force<Player>(player, spawner->primitive_entities(), 50, repel_strenght);
 
-							repel_force.x = std::clamp(repel_force.x, (repel_strenght * 2) * -1, repel_strenght * 2);
-							repel_force.y = std::clamp(repel_force.y, (repel_strenght * 2) * -1, repel_strenght * 2);
+								repel_force.x = std::clamp(repel_force.x, (repel_strenght * 2) * -1, repel_strenght * 2);
+								repel_force.y = std::clamp(repel_force.y, (repel_strenght * 2) * -1, repel_strenght * 2);
 
-							player->apply_repel_force(repel_force);
+								player->apply_repel_force(repel_force);
+							}
 						}
 					}
 				}
