@@ -224,15 +224,17 @@ int PSUtils::vector3_to_color(const Vector3& color)
 	unsigned char b = static_cast<unsigned char>(std::clamp(color.z, 0.0f, 255.0f));
 
 	// Pack into 0xRRGGBB format
-	return (r << 16) | (g << 8) | b;
+	int hex_color = (r << 16) | (g << 8) | b;
+
+	return hex_color;
 }
 Vector3 PSUtils::color_to_vector3(int hexColor)
 {
-	Vector3 color;
+	Vector3 color = {255,255,255};
 
-	color.x = ((hexColor >> 16) & 0xFF) / 255.0f;
-	color.y = ((hexColor >> 8) & 0xFF) / 255.0f;
-	color.z = (hexColor & 0xFF) / 255.0f;
+	color.x = static_cast<float>((hexColor >> 16) & 0xFF);
+	color.y = static_cast<float>((hexColor >> 8) & 0xFF);
+	color.z = static_cast<float>(hexColor & 0xFF);
 
 	return color;
 }
