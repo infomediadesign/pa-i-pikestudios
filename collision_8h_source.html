@@ -155,7 +155,7 @@ $(document).ready(function(){initNavTree('collision_8h_source.html',''); initRes
 <div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>        <span class="keyword">public</span>:</div>
 <div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>            <span class="keyword">explicit</span> <a class="code hl_class" href="classPSCore_1_1collision_1_1EntityCollider.html">EntityCollider</a>(std::weak_ptr&lt;PSInterfaces::IEntity&gt; parent);</div>
 <div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span> </div>
-<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>            <span class="keywordtype">void</span> register_collision_handler(std::function&lt;<span class="keywordtype">void</span>(std::weak_ptr&lt;PSInterfaces::IEntity&gt; other, <span class="keyword">const</span> Vector2&amp; point)&gt; cb, <span class="keywordtype">float</span> timeout = 0);</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>            <span class="keywordtype">void</span> register_collision_handler(std::function&lt;<span class="keywordtype">void</span>(std::vector&lt;std::weak_ptr&lt;PSInterfaces::IEntity&gt;&gt; others, <span class="keyword">const</span> Vector2&amp; point)&gt; cb, <span class="keywordtype">float</span> timeout = 0);</div>
 <div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span> </div>
 <div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>            <span class="keywordtype">bool</span> check_collision(</div>
 <div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>                    <span class="keyword">const</span> std::vector&lt;std::weak_ptr&lt;PSInterfaces::IEntity&gt;&gt;&amp; entity_pool,</div>
@@ -163,12 +163,12 @@ $(document).ready(function(){initNavTree('collision_8h_source.html',''); initRes
 <div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>                            [](std::weak_ptr&lt;PSInterfaces::IEntity&gt; other, <span class="keyword">const</span> Vector2&amp; point) { <span class="keywordflow">return</span> <span class="keyword">true</span>; }</div>
 <div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>            );</div>
 <div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span> </div>
-<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>            <span class="keyword">static</span> std::optional&lt;std::pair&lt;const std::weak_ptr&lt;PSInterfaces::IEntity&gt;, Vector2&gt;&gt;</div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>            <span class="keyword">static</span> std::optional&lt;std::vector&lt;std::pair&lt;const std::weak_ptr&lt;PSInterfaces::IEntity&gt;, Vector2&gt;&gt;&gt;</div>
 <div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>            check_entity_collision(std::shared_ptr&lt;PSInterfaces::IEntity&gt; self, <span class="keyword">const</span> std::vector&lt;std::weak_ptr&lt;PSInterfaces::IEntity&gt;&gt;&amp; entities);</div>
 <div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span> </div>
 <div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>        <span class="keyword">private</span>:</div>
 <div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>            std::weak_ptr&lt;PSInterfaces::IEntity&gt; m_parent;</div>
-<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>            std::function&lt;void(std::weak_ptr&lt;PSInterfaces::IEntity&gt; other, <span class="keyword">const</span> Vector2&amp; point)&gt; m_collion_cb;</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>            std::function&lt;void(std::vector&lt;std::weak_ptr&lt;PSInterfaces::IEntity&gt;&gt; other, <span class="keyword">const</span> Vector2&amp; point)&gt; m_collion_cb;</div>
 <div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>            std::chrono::steady_clock::time_point cb_last_called = std::chrono::steady_clock::now();</div>
 <div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>            </div>
 <div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>            <span class="keywordtype">float</span> m_collision_cb_timeout = 0;</div>

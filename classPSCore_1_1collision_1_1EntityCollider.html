@@ -102,18 +102,18 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ab7b323bb01b8c42382135496c57209a4" id="r_ab7b323bb01b8c42382135496c57209a4"><td class="memItemLeft" align="right" valign="top"><a id="ab7b323bb01b8c42382135496c57209a4" name="ab7b323bb01b8c42382135496c57209a4"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>EntityCollider</b> (std::weak_ptr&lt; <a class="el" href="classPSInterfaces_1_1IEntity.html">PSInterfaces::IEntity</a> &gt; parent)</td></tr>
 <tr class="separator:ab7b323bb01b8c42382135496c57209a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3bbe0313f2b329bf88a2134dba298e72" id="r_a3bbe0313f2b329bf88a2134dba298e72"><td class="memItemLeft" align="right" valign="top"><a id="a3bbe0313f2b329bf88a2134dba298e72" name="a3bbe0313f2b329bf88a2134dba298e72"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>register_collision_handler</b> (std::function&lt; void(std::weak_ptr&lt; <a class="el" href="classPSInterfaces_1_1IEntity.html">PSInterfaces::IEntity</a> &gt; other, const Vector2 &amp;point)&gt; cb, float timeout=0)</td></tr>
-<tr class="separator:a3bbe0313f2b329bf88a2134dba298e72"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5274acfef0e12425b1354e41071ac13b" id="r_a5274acfef0e12425b1354e41071ac13b"><td class="memItemLeft" align="right" valign="top"><a id="a5274acfef0e12425b1354e41071ac13b" name="a5274acfef0e12425b1354e41071ac13b"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>register_collision_handler</b> (std::function&lt; void(std::vector&lt; std::weak_ptr&lt; <a class="el" href="classPSInterfaces_1_1IEntity.html">PSInterfaces::IEntity</a> &gt; &gt; others, const Vector2 &amp;point)&gt; cb, float timeout=0)</td></tr>
+<tr class="separator:a5274acfef0e12425b1354e41071ac13b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a25e00bd1286664ab75be404136557ff8" id="r_a25e00bd1286664ab75be404136557ff8"><td class="memItemLeft" align="right" valign="top"><a id="a25e00bd1286664ab75be404136557ff8" name="a25e00bd1286664ab75be404136557ff8"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>check_collision</b> (const std::vector&lt; std::weak_ptr&lt; <a class="el" href="classPSInterfaces_1_1IEntity.html">PSInterfaces::IEntity</a> &gt; &gt; &amp;entity_pool, std::function&lt; bool(std::weak_ptr&lt; <a class="el" href="classPSInterfaces_1_1IEntity.html">PSInterfaces::IEntity</a> &gt; other, const Vector2 &amp;point)&gt; exclusion_criterion=[](std::weak_ptr&lt; <a class="el" href="classPSInterfaces_1_1IEntity.html">PSInterfaces::IEntity</a> &gt; other, const Vector2 &amp;point) { return true;})</td></tr>
 <tr class="separator:a25e00bd1286664ab75be404136557ff8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:aafcb576502ab6337b600e33ddb565481" id="r_aafcb576502ab6337b600e33ddb565481"><td class="memItemLeft" align="right" valign="top"><a id="aafcb576502ab6337b600e33ddb565481" name="aafcb576502ab6337b600e33ddb565481"></a>
-static std::optional&lt; std::pair&lt; const std::weak_ptr&lt; <a class="el" href="classPSInterfaces_1_1IEntity.html">PSInterfaces::IEntity</a> &gt;, Vector2 &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>check_entity_collision</b> (std::shared_ptr&lt; <a class="el" href="classPSInterfaces_1_1IEntity.html">PSInterfaces::IEntity</a> &gt; self, const std::vector&lt; std::weak_ptr&lt; <a class="el" href="classPSInterfaces_1_1IEntity.html">PSInterfaces::IEntity</a> &gt; &gt; &amp;entities)</td></tr>
-<tr class="separator:aafcb576502ab6337b600e33ddb565481"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a54fd37949af31f38ad3ee0d7829b1e44" id="r_a54fd37949af31f38ad3ee0d7829b1e44"><td class="memItemLeft" align="right" valign="top"><a id="a54fd37949af31f38ad3ee0d7829b1e44" name="a54fd37949af31f38ad3ee0d7829b1e44"></a>
+static std::optional&lt; std::vector&lt; std::pair&lt; const std::weak_ptr&lt; <a class="el" href="classPSInterfaces_1_1IEntity.html">PSInterfaces::IEntity</a> &gt;, Vector2 &gt; &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>check_entity_collision</b> (std::shared_ptr&lt; <a class="el" href="classPSInterfaces_1_1IEntity.html">PSInterfaces::IEntity</a> &gt; self, const std::vector&lt; std::weak_ptr&lt; <a class="el" href="classPSInterfaces_1_1IEntity.html">PSInterfaces::IEntity</a> &gt; &gt; &amp;entities)</td></tr>
+<tr class="separator:a54fd37949af31f38ad3ee0d7829b1e44"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>/github/workspace/src/core/include/pscore/<a class="el" href="collision_8h_source.html">collision.h</a></li>
