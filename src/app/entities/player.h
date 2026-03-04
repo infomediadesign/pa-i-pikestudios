@@ -72,8 +72,6 @@ public:
 
 	float calculate_rotation_velocity(float frequency, float dt);
 
-	void set_texture_values(const Texture2D& texture, float rotation_offset);
-
 	// Borderinteration Variables and Methods
 	void set_border_collision_active_horizontal(bool active);
 

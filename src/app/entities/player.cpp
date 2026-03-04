@@ -41,8 +41,8 @@ class PlayerPriv
 	// Base Movement Variables
 	Vector2 m_position		 = {0};
 	Vector2 m_velocity		 = {0};
-	Vector2 m_repel_velocity = {0};
-	float m_max_velocity	 = 0;
+	Vector2 m_repel_velocity = {0,0};
+	float m_max_velocity	 = 200;
 	float m_rotation		 = 0;
 
 	// Interpolation Values for the Movement Calculation
@@ -57,7 +57,6 @@ class PlayerPriv
 	float m_velocity_rotation_downscale = 0;
 
 	// Variables for Texture Rendering
-	Texture2D m_texture		= {0};
 	float m_rotation_offset = 0;
 	std::shared_ptr<PSCore::sprites::Sprite> m_sprite;
 
@@ -130,7 +129,7 @@ Player::Player() : PSInterfaces::IEntity("player")
 	_p->m_sprite = PRELOAD_TEXTURE(ident_, "resources/entity/player.png", frame_grid);
 
 	_p->m_animation_controller = PSCore::sprites::SpriteSheetAnimation(
-			FETCH_SPRITE_TEXTURE(ident_), {{2, 1, PSCore::sprites::KeyFrame, 1},
+			_p->m_sprite->m_s_texture, {{2, 1, PSCore::sprites::KeyFrame, 1},
 										   {3, 1, PSCore::sprites::KeyFrame, 3},
 										   {3, 1, PSCore::sprites::KeyFrame, 3},
 										   {3, 1, PSCore::sprites::KeyFrame, 3},
@@ -146,16 +145,14 @@ Player::Player() : PSInterfaces::IEntity("player")
 	if ( auto& vp = gApp()->viewport() ) {
 		_p->m_position = vp->viewport_base_size() / 2;
 	}
-	_p->m_max_velocity = 200;
-	_p->m_rotation	   = 0;
 
 	auto director	   = dynamic_cast<FortunaDirector*>(gApp()->game_director());
 	auto& direcor_vals = director->value_container_ref();
 	set_interpolation_values(6, 2, 4, direcor_vals->player_input_velocity_mult, direcor_vals->player_input_rotation_mult, 30);
-	set_texture_values(FETCH_SPRITE_TEXTURE(ident_), 90);
-	//
-	//
+
 	set_max_velocity(direcor_vals->player_max_velocity);
+	_p->m_rotation	   = 0;
+	_p->m_rotation_offset = 90;
 
 	_p->m_sails = std::make_shared<Sails>(this);
 
@@ -443,7 +440,7 @@ void Player::render()
 
 	if ( auto& vp = gApp()->viewport() ) {
 		vp->draw_in_viewport(
-				_p->m_texture, _p->m_animation_controller.get_source_rectangle(1).value_or(Rectangle{0}), _p->m_position,
+				_p->m_sprite->m_s_texture, _p->m_animation_controller.get_source_rectangle(1).value_or(Rectangle{0}), _p->m_position,
 				_p->m_rotation + _p->m_rotation_offset, WHITE
 		);
 	}
@@ -603,13 +600,6 @@ float Player::calculate_rotation_velocity(float frequency, float dt)
 	return rotation_velocity;
 }
 
-
-void Player::set_texture_values(const Texture2D& texture, const float rotation_offset)
-{
-	_p->m_texture		  = texture;
-	_p->m_rotation_offset = rotation_offset;
-}
-
 void Player::initialize_cannon()
 {
 	auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
@@ -745,6 +735,8 @@ Sails::Sails(Player* player) : PSInterfaces::IEntity("player_sails"), m_player(p
 		auto& settings				= PSCore::SettingsManager::inst()->settings["user_preferences"];
 		m_emissive_color = PSUtils::color_to_vector3(std::get<int>(settings->value("player_color").value_or(0xFFFFFF)));
 	}
+
+	//m_emissive_color = {255,0,255};
 	
 	m_emissive_texture_location = GetShaderLocation(m_emissive_shader, "texture_emissive");
 	SetShaderValue(m_emissive_shader, GetShaderLocation(m_emissive_shader, "emissive_color"), &m_emissive_color, SHADER_UNIFORM_VEC3);
@@ -779,6 +771,7 @@ void Sails::render()
 void Sails::draw_debug()
 {
 }
+
 std::optional<float> Player::rotation() const
 {
 	return _p->m_rotation;
