@@ -139,7 +139,10 @@ void UpgradeLayer::on_update(float dt)
 		}
 	}
 
-	// play_reroll_gem_animation(dt);
+	if ( m_reroll_anim_playing ) {
+		play_reroll_gem_animation(dt);
+	}
+	
 }
 
 void UpgradeLayer::on_render()
@@ -570,10 +573,30 @@ void UpgradeLayer::draw_reroll_button()
 			director->set_reroll_amount(director->reroll_amount() - 1);
 			gApp()->play_ui_sound(0);
 		}
-		vp->draw_in_viewport(
-				m_gem_texture, m_gem_anim_controller.get_source_rectangle(m_z_index).value_or(Rectangle{0}),
-				{screen_middel.x - 10 * scale, screen_middel.y + 130}, 0, WHITE
-		);
+		Vector2 mouse = GetMousePosition();
+
+		Rectangle button_rect = {
+				screen_middel.x * scale - (m_button.width * scale) / 2.0f, (screen_middel.y + 130) * scale - (m_button.height * scale) / 2.0f,
+				m_button.width * scale, m_button.height * scale};
+
+		bool hovered = CheckCollisionPointRec(mouse, button_rect);
+
+		if ( hovered ) {
+			m_reroll_anim_playing = true;
+		} 
+		else {
+			m_reroll_anim_playing = false;
+			m_gem_anim_controller.set_animation_at_index(0, 0, m_z_index);
+		}
+
+		Rectangle gem_source  = m_gem_anim_controller.get_source_rectangle(m_z_index).value_or(Rectangle{0});
+		float button_center_x = screen_middel.x * scale;
+		float button_center_y = (screen_middel.y + 130) * scale;
+		float gem_center_x	  = button_center_x - (m_button.width / 2.0f - gem_source.width / 2.0f - 4.0f) * scale;
+
+		Rectangle gem_dest = {gem_center_x, button_center_y, gem_source.width * scale, gem_source.height * scale};
+		Vector2 gem_origin = {gem_dest.width / 2.0f, gem_dest.height / 2.0f};
+		DrawTexturePro(m_gem_texture, gem_source, gem_dest, gem_origin, 0, WHITE);
 	}
 }
 
