@@ -3,6 +3,7 @@
 #include <psinterfaces/layer.h>
 #include "misc/loottable.h"
 #include "raylib.h"
+#include "pscore/sprite.h"
 
 class UpgradeLayer : public PSInterfaces::Layer
 {
@@ -34,6 +35,7 @@ public:
 	std::string upgrade_type_to_string(int index);
 	std::string value_to_string(int index, int rarity);
 	void draw_upgrade_icon(int index, Vector2 pos);
+	void play_reroll_gem_animation(float dt);
 
 	float common_pull_chance	= CFG_VALUE<float>("upgrade_common_chance", 50);
 	float uncommon_pull_chance	= CFG_VALUE<float>("upgrade_uncommon_chance", 30);
@@ -100,4 +102,12 @@ public:
 	float m_multiplier_epic		 = CFG_VALUE<float>("upgrade_epic_multiplier", 1.7f);
 	float m_multiplier_legendary = CFG_VALUE<float>("upgrade_legendary_multiplier", 2.0f);
 	float m_multiplier_mythic	 = CFG_VALUE<float>("upgrade_mythical_multiplier", 3.0f);
+
+	//Reroll
+	PSCore::sprites::SpriteSheetAnimation m_gem_anim_controller;
+	std::shared_ptr<PSCore::sprites::Sprite> m_gem_sprite;
+	Texture2D m_gem_texture;
+	bool m_reroll_anim_playing = false;
+	int m_z_index = 0;
+
 };

@@ -13,7 +13,7 @@ UpgradeLayer::UpgradeLayer()
 	m_card_texture_1 = PRELOAD_TEXTURE("card_1", "resources/ui/upgrade_card_1.png", frame_grid)->m_s_texture;
 	m_card_texture_2 = PRELOAD_TEXTURE("card_2", "resources/ui/upgrade_card_2.png", frame_grid)->m_s_texture;
 	m_card_texture_3 = PRELOAD_TEXTURE("card_3", "resources/ui/upgrade_card_3.png", frame_grid)->m_s_texture;
-	m_button		 = PRELOAD_TEXTURE("smallbutton", "resources/ui/button_small.png", frame_grid)->m_s_texture;
+	m_button		 = PRELOAD_TEXTURE("smallbutton_long", "resources/ui/button_small_long.png", frame_grid)->m_s_texture;
 
 	// Icons
 	m_fire_rate_icon		= PRELOAD_TEXTURE("fire_rate_icon", "resources/icon/upgr_icon_firerate.png", frame_grid)->m_s_texture;
@@ -48,6 +48,11 @@ UpgradeLayer::UpgradeLayer()
 	m_loot_table.add_loot_table(8, director->drop_chances.luck, m_chances); // Luck
 	m_loot_table.add_loot_table(9, director->drop_chances.projectile_amount, m_only_mythic_chance); // Projectile Amount
 	m_loot_table.add_loot_table(10, director->drop_chances.explosive_barrels, m_only_mythic_chance); // Explosive Barrels
+
+	m_gem_sprite = PRELOAD_TEXTURE("gem_sprite", "resources/icon/gem_icon.png", frame_grid);
+	m_gem_texture = m_gem_sprite->m_s_texture;
+	m_gem_anim_controller = PSCore::sprites::SpriteSheetAnimation(m_gem_texture, {{11, 0.1, PSCore::sprites::Forward, m_z_index},});
+	m_gem_anim_controller.add_animation_at_index(0, m_z_index);
 }
 
 UpgradeLayer::~UpgradeLayer()
@@ -61,6 +66,7 @@ void UpgradeLayer::on_update(float dt)
 	if ( m_time_since_opened > 0.5f ) {
 		m_can_receive_input = true;
 	}
+	//play_reroll_gem_animation(dt);
 }
 
 void UpgradeLayer::on_render()
@@ -470,13 +476,17 @@ void UpgradeLayer::draw_reroll_button()
 		float scale = vp->viewport_scale();
 		if ( GuiButtonTexture(
 					 m_button, {screen_middel.x, screen_middel.y + 130}, 0, scale, WHITE, GRAY,
-					 std::format("{}x Reroll", director->reroll_amount()).c_str()
+					 std::format("  {}x Reroll", director->reroll_amount()).c_str()
 			 ) &&
 			 m_can_receive_input ) {
 			m_current_loot_table_values = m_loot_table.loot_table_values(3);
 			director->set_reroll_amount(director->reroll_amount() - 1);
 			gApp()->play_ui_sound(0);
 		}
+		vp->draw_in_viewport(
+				m_gem_texture, m_gem_anim_controller.get_source_rectangle(m_z_index).value_or(Rectangle{0}), {screen_middel.x - 10 * scale, screen_middel.y + 130},
+				0, WHITE
+		);
 	}
 }
 
@@ -520,5 +530,14 @@ void UpgradeLayer::draw_upgrade_icon(int index, Vector2 card_pos)
 		case 10:
 		default:
 			break;
+	}
+}
+
+void UpgradeLayer::play_reroll_gem_animation(float dt)
+{
+	m_gem_anim_controller.update_animation(dt);
+	if ( m_gem_anim_controller.get_sprite_sheet_frame_index(m_z_index).value_or(-1) == 10 )
+		{
+		m_gem_anim_controller.set_animation_at_index(0, 0, m_z_index);
 	}
 }
