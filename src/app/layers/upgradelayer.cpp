@@ -597,7 +597,6 @@ void UpgradeLayer::draw_reroll_button()
 
 
 		Rectangle gem_socket_source = {0, 0, static_cast<float>(m_gem_socket_texture.width), static_cast<float>(m_gem_socket_texture.height)};
-		//Rectangle gem_socket_dest	= {button_center_x - 70 * scale, button_center_y, gem_socket_source.width * scale, gem_socket_source.height * scale};
 		Rectangle gem_socket_dest = {button_center_x, button_center_y + 27 * scale, gem_socket_source.width * scale, gem_socket_source.height * scale};
 		Vector2 gem_socket_origin	= {gem_socket_dest.width / 2.0f, gem_socket_dest.height / 2.0f};
 

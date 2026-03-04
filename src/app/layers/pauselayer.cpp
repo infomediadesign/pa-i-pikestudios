@@ -211,8 +211,22 @@ void PauseLayer::init_stat_strings()
 	m_player_stat_lines.push_back(std::format("{:.2f}%", m_director->player_piercing_chance()));
 	m_player_stat_lines.push_back("Luck:");
 	m_player_stat_lines.push_back(std::format("{:.2f}%", m_director->player_luck() * 100));
-	m_player_stat_lines.push_back("Multi Shot:");
-	m_player_stat_lines.push_back(std::format("{}", m_director->player_projectile_amount()));
+	if ( m_director->player_projectile_amount() > 1 ) {
+		m_player_stat_lines.push_back("Multi Shot:");
+		m_player_stat_lines.push_back(std::format("{}", m_director->player_projectile_amount()));
+	}
+	if ( m_director->players()[0]->cannon_container().size() > 4 ) {
+		m_player_stat_lines.push_back("Cannons:");
+		m_player_stat_lines.push_back(std::format("{}", m_director->players()[0]->cannon_container().size()));
+	}
+	if ( m_director->players()[0]->explosive_barrels_enabled() ) {
+		m_player_stat_lines.push_back("Explosive Barrels:");
+		m_player_stat_lines.push_back("enabled");
+	}
+
+
+
+
 
 	// init kill stats
 	if ( m_director->statistics().sharks_killed > 0 ) {

@@ -103,6 +103,8 @@ public:
 	FireMode fire_mode() const;
 	void set_fire_mode(FireMode mode);
 
+	bool explosive_barrels_enabled() const;
+
 	struct FiringCannonIndex
 	{
 		int right;
