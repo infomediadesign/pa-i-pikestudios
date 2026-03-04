@@ -32,3 +32,7 @@ std::vector<std::weak_ptr<PSInterfaces::IEntity>> PSInterfaces::Layer::entities(
 {
 	return entities_;
 }
+bool PSInterfaces::Layer::is_active() const
+{
+	return active;
+};

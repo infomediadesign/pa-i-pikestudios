@@ -109,6 +109,8 @@ OptionsLayer::OptionsLayer()
 		m_settings->key_right_shoot = std::get<int>(settings->value("key_right_shoot").value_or(KEY_RIGHT));
 		m_settings->key_all_shoot	= std::get<int>(settings->value("key_all_shoot").value_or(KEY_SPACE));
 	}
+	
+	m_exit_btn_function = []() { gApp()->switch_layer<OptionsLayer, MainMenuLayer>(); };
 }
 
 void OptionsLayer::on_update(float dt)
@@ -177,10 +179,10 @@ void OptionsLayer::on_render()
 		Vector2 mainmenu_pos = {anchor.x / scale + button_boarder_padding + btn_width / 2.0f, anchor.y / scale + button_pos_y};
 
 		if ( GuiButtonTexture(
-					 m_button, mainmenu_pos, 0, scale, m_settings->has_conflicts ? GRAY : WHITE, GRAY, "Mainmenu"
+					 m_button, mainmenu_pos, 0, scale, m_settings->has_conflicts ? GRAY : WHITE, GRAY, m_exit_btn_text.c_str()
 			 ) ) {
 			if ( !m_settings->has_conflicts ) {
-				gApp()->call_later([]() { gApp()->switch_layer<OptionsLayer, MainMenuLayer>(); });
+				gApp()->call_later(m_exit_btn_function);
 				gApp()->play_ui_sound(0);
 			}
 		}
@@ -443,3 +445,9 @@ void OptionsLayer::check_for_conflicts_()
 
 	m_settings->has_conflicts = false;
 };
+
+void OptionsLayer::set_exit_btn_function(std::string_view new_title, std::function<void()> fn)
+{
+	m_exit_btn_text = new_title;
+	m_exit_btn_function = fn;
+}
