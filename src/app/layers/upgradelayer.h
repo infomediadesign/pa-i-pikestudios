@@ -122,5 +122,6 @@ public:
 	Texture2D m_gem_texture;
 	bool m_reroll_anim_playing = false;
 	int m_z_index = 0;
+	Texture2D m_gem_socket_texture;
 
 };

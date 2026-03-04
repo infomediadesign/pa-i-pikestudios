@@ -26,7 +26,8 @@ UpgradeLayer::UpgradeLayer()
 	m_card_texture_1 = PRELOAD_TEXTURE("card_1", "resources/ui/upgrade_card_1.png", frame_grid)->m_s_texture;
 	m_card_texture_2 = PRELOAD_TEXTURE("card_2", "resources/ui/upgrade_card_2.png", frame_grid)->m_s_texture;
 	m_card_texture_3 = PRELOAD_TEXTURE("card_3", "resources/ui/upgrade_card_3.png", frame_grid)->m_s_texture;
-	m_button		 = PRELOAD_TEXTURE("smallbutton_long", "resources/ui/button_small_long.png", frame_grid)->m_s_texture;
+	m_button		 = PRELOAD_TEXTURE("smallbutton", "resources/ui/button_small.png", frame_grid)->m_s_texture;
+	m_gem_socket_texture = PRELOAD_TEXTURE("gem_socket", "resources/ui/gem_socket.png", frame_grid)->m_s_texture;
 
 	// Icons
 	m_fire_rate_icon		= PRELOAD_TEXTURE("fire_rate_icon", "resources/icon/upgr_icon_firerate.png", frame_grid)->m_s_texture;
@@ -82,6 +83,7 @@ UpgradeLayer::~UpgradeLayer()
 
 void UpgradeLayer::on_update(float dt)
 {
+	ShowCursor();
 	m_time_since_opened += dt;
 	if ( m_time_since_opened > 0.5f ) {
 		m_can_receive_input = true;
@@ -564,16 +566,14 @@ void UpgradeLayer::draw_reroll_button()
 				origin.x / vp->viewport_scale() + vp->viewport_base_size().x / 2, origin.y / vp->viewport_scale() + vp->viewport_base_size().y / 2
 		};
 		float scale = vp->viewport_scale();
-		if ( GuiButtonTexture(
-					 m_button, {screen_middel.x, screen_middel.y + 130}, 0, scale, WHITE, GRAY,
-					 std::format("  {}x Reroll", director->reroll_amount()).c_str()
-			 ) &&
+		if ( GuiButtonTexture(m_button, {screen_middel.x, screen_middel.y + 130}, 0, scale, WHITE, GRAY, "Reroll") &&
 			 m_can_receive_input ) {
 			m_current_loot_table_values = m_loot_table.loot_table_values(3);
 			director->set_reroll_amount(director->reroll_amount() - 1);
 			gApp()->play_ui_sound(0);
 		}
 		Vector2 mouse = GetMousePosition();
+		//std::format("Reroll", director->reroll_amount()).c_str()
 
 		Rectangle button_rect = {
 				screen_middel.x * scale - (m_button.width * scale) / 2.0f, (screen_middel.y + 130) * scale - (m_button.height * scale) / 2.0f,
@@ -594,9 +594,20 @@ void UpgradeLayer::draw_reroll_button()
 		float button_center_y = (screen_middel.y + 130) * scale;
 		float gem_center_x	  = button_center_x - (m_button.width / 2.0f - gem_source.width / 2.0f - 4.0f) * scale;
 
-		Rectangle gem_dest = {gem_center_x, button_center_y, gem_source.width * scale, gem_source.height * scale};
+
+		Rectangle gem_socket_source = {0, 0, static_cast<float>(m_gem_socket_texture.width), static_cast<float>(m_gem_socket_texture.height)};
+		Rectangle gem_socket_dest	= {button_center_x - 70 * scale, button_center_y, gem_socket_source.width * scale, gem_socket_source.height * scale};
+		Vector2 gem_socket_origin	= {gem_socket_dest.width / 2.0f, gem_socket_dest.height / 2.0f};
+
+		Rectangle gem_dest = {gem_socket_dest.x - 15 * scale, button_center_y, gem_source.width * scale, gem_source.height * scale};
 		Vector2 gem_origin = {gem_dest.width / 2.0f, gem_dest.height / 2.0f};
+		DrawTexturePro(m_gem_socket_texture, gem_socket_source, gem_socket_dest, gem_socket_origin, 0, WHITE);
 		DrawTexturePro(m_gem_texture, gem_source, gem_dest, gem_origin, 0, WHITE);
+
+		GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt({211, 177, 125, 255}));
+		GuiLabel({gem_socket_dest.x - 5 *scale , gem_socket_dest.y -10 * scale, 35 * scale, 20 * scale},
+				std::format("{}x", director->reroll_amount()).c_str());
+		GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt({0, 0, 0, 255}));
 	}
 }
 
