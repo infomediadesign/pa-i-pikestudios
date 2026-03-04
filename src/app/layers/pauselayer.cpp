@@ -10,6 +10,7 @@
 #include <raylib.h>
 #include "layers/optionslayer.h"
 #include "pscore/utils.h"
+#include "pscore/settings.h"
 
 PauseLayer::PauseLayer()
 {
@@ -180,48 +181,56 @@ void PauseLayer::draw_player_stats(float scale)
 	GuiLabel(m_stats_base_bounds, "Player Stats");
 	m_stats_base_bounds.y += 20 * scale;
 
-	for ( int i = 0; i < m_player_stat_lines.size(); i += 2 ) {
+	for ( int i = 0; i < m_player_stats.size(); i++ ) {
 		GuiSetStyle(DEFAULT, TEXT_SIZE, 6 * scale);
-		GuiLabel(m_stats_base_bounds, m_player_stat_lines[i].c_str());
-		GuiLabel(
+		GuiLabel(m_stats_base_bounds, m_player_stats[i].name.c_str());
+		if ( m_player_stats[i].is_upgraded ) {
+			GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt({0, 255, 0, 255}));
+			GuiLabel(
 				{m_stats_base_bounds.x + horizontal_spacing, m_stats_base_bounds.y, m_stats_base_bounds.width, m_stats_base_bounds.height},
-				m_player_stat_lines[i + 1].c_str()
-		);
+				m_player_stats[i].value.c_str());
+			GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt({255, 255, 255, 255}));
+		} 
+		else{
+			GuiLabel(
+					{m_stats_base_bounds.x + horizontal_spacing, m_stats_base_bounds.y, m_stats_base_bounds.width, m_stats_base_bounds.height},
+					m_player_stats[i].value.c_str()
+			);
+		}
+
 		m_stats_base_bounds.y += vertical_spacing;
 	}
+	m_stats_base_bounds.y += vertical_spacing;
+	GuiSetStyle(DEFAULT, TEXT_SIZE, 6 * scale);
+	GuiLabel(m_stats_base_bounds, "Rerolls available:");
+	GuiLabel(
+			{m_stats_base_bounds.x + horizontal_spacing, m_stats_base_bounds.y, m_stats_base_bounds.width, m_stats_base_bounds.height},
+			std::format("{}", m_director->reroll_amount()).c_str()
+	);
 }
 
 void PauseLayer::init_stat_strings()
 {
-	m_player_stat_lines.clear();
+	m_player_stats.clear();
 	m_kill_stat_lines.clear();
 
 	// init player stats
-	m_player_stat_lines.push_back("Speed:");
-	m_player_stat_lines.push_back(std::format("{:.2f}", m_director->player_max_velocity()));
-	m_player_stat_lines.push_back("Turn Speed:");
-	m_player_stat_lines.push_back(std::format("{:.2f}", m_director->player_input_rotation_mult()));
-	m_player_stat_lines.push_back("Fire Rate:");
-	m_player_stat_lines.push_back(std::format("{:.2f}s", m_director->player_current_fire_rate()));
-	m_player_stat_lines.push_back("Projectile Speed:");
-	m_player_stat_lines.push_back(std::format("{:.2f}", m_director->player_current_projectile_speed()));
-	m_player_stat_lines.push_back("Fire Range:");
-	m_player_stat_lines.push_back(std::format("{:.2f}", m_director->player_current_fire_range()));
-	m_player_stat_lines.push_back("Piercing Chance:");
-	m_player_stat_lines.push_back(std::format("{:.2f}%", m_director->player_piercing_chance()));
-	m_player_stat_lines.push_back("Luck:");
-	m_player_stat_lines.push_back(std::format("{:.2f}%", m_director->player_luck() * 100));
+	m_player_stats.push_back({"Speed:", std::format("{:.2f}", m_director->player_max_velocity()),m_director->player_max_velocity() > (CFG_VALUE<float>("player_max_velocity", 200.0f))});
+	m_player_stats.push_back({"Turn Speed:", std::format("{:.2f}", m_director->player_input_rotation_mult()),m_director->player_input_rotation_mult() > (CFG_VALUE<float>("player_input_rotation_mult", 200.0f))});
+	m_player_stats.push_back({"Fire Rate:", std::format("{:.2f}s", m_director->player_current_fire_rate()),m_director->player_current_fire_rate() < CFG_VALUE<float>("player_current_fire_rate", 0.5f)});
+	m_player_stats.push_back({"Projectile Speed:", std::format("{:.2f}", m_director->player_current_projectile_speed()),m_director->player_current_projectile_speed() > CFG_VALUE<float>("player_current_projectile_speed", 300.0f)});
+	m_player_stats.push_back({"Fire Range:", std::format("{:.2f}", m_director->player_current_fire_range()),m_director->player_current_fire_range() > CFG_VALUE<float>("player_current_fire_range", 100.0f)});
+	m_player_stats.push_back({"Piercing Chance:", std::format("{:.2f}%", m_director->player_piercing_chance()),m_director->player_piercing_chance() > CFG_VALUE<float>("player_current_piercing_chance", 5.0f)});
+	m_player_stats.push_back({"Luck:", std::format("{:.2f}%", m_director->player_luck() * 100), m_director->player_luck() > CFG_VALUE<float>("player_current_luck", 0.1f)});
+
 	if ( m_director->player_projectile_amount() > 1 ) {
-		m_player_stat_lines.push_back("Multi Shot:");
-		m_player_stat_lines.push_back(std::format("{}", m_director->player_projectile_amount()));
+		m_player_stats.push_back({"Multi Shot:", std::format("{}", m_director->player_projectile_amount()),m_director->player_projectile_amount() < static_cast<float>(CFG_VALUE<int>("player_projectile_amount", 1))});
 	}
 	if ( m_director->players()[0]->cannon_container().size() > 4 ) {
-		m_player_stat_lines.push_back("Cannons:");
-		m_player_stat_lines.push_back(std::format("{}", m_director->players()[0]->cannon_container().size()));
+		m_player_stats.push_back({"Cannons:", std::format("{}", m_director->players()[0]->cannon_container().size()), true});
 	}
 	if ( m_director->players()[0]->explosive_barrels_enabled() ) {
-		m_player_stat_lines.push_back("Explosive Barrels:");
-		m_player_stat_lines.push_back("enabled");
+		m_player_stats.push_back({"Explosive Barrels:", "enabled", true});
 	}
 
 

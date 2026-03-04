@@ -38,7 +38,7 @@ UpgradeLayer::UpgradeLayer()
 	m_turn_speed_icon		= PRELOAD_TEXTURE("turn_speed_icon", "resources/icon/upgr_icon_turn_speed.png", frame_grid)->m_s_texture;
 	m_piercing_chance_icon	= PRELOAD_TEXTURE("piercing_chance_icon", "resources/icon/upgr_icon_piercing_chance.png", frame_grid)->m_s_texture;
 	m_player_speed_icon		= PRELOAD_TEXTURE("player_speed_icon", "resources/icon/upgr_icon_movement_speed.png", frame_grid)->m_s_texture;
-	m_explisve_barrel_icon	= PRELOAD_TEXTURE("explosive_barrel_icon", "resources/icon/upgr_icon_explosive_barrels.png", frame_grid)->m_s_texture;
+	m_explisve_barrel_icon	= PRELOAD_TEXTURE("explosive_barrel_icon", "resources/icon/upgr_icon_explosives.png", frame_grid)->m_s_texture;
 	m_health_icon			= PRELOAD_TEXTURE("health_icon", "resources/icon/upgr_icon_health.png", frame_grid)->m_s_texture;
 
 	m_card_1_texture_emissive =
@@ -413,7 +413,7 @@ std::string UpgradeLayer::upgrade_type_to_string(int index)
 		case 9:
 			return "Multi Shot";
 		case 10:
-			return "Explosive Barrels";
+			return "BOOOM!";
 		default:
 			return "Unknown";
 	}
@@ -543,6 +543,7 @@ void UpgradeLayer::draw_upgrade_preview(Vector2 card_pos, LootTableValue upgrade
 			);
 			break;
 		case 10:
+			preview = "New Weapon Type";
 			break;
 		default:
 			break;
@@ -574,7 +575,6 @@ void UpgradeLayer::draw_reroll_button()
 			gApp()->play_ui_sound(0);
 		}
 		Vector2 mouse = GetMousePosition();
-		//std::format("Reroll", director->reroll_amount()).c_str()
 
 		Rectangle button_rect = {
 				screen_middel.x * scale - (m_button.width * scale) / 2.0f, (screen_middel.y + 130) * scale - (m_button.height * scale) / 2.0f,
@@ -650,6 +650,7 @@ void UpgradeLayer::draw_upgrade_icon(int index, Vector2 card_pos)
 			// DrawTextureEx(m_fire_rate_icon, pos, 0, scale, WHITE);
 			break;
 		case 10:
+			DrawTextureEx(m_explisve_barrel_icon, pos, 0, scale, WHITE);
 			break;
 		default:
 			break;

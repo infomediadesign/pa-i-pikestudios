@@ -22,6 +22,12 @@ class PauseLayer: public PSInterfaces::Layer
 		Hovered,
 		Down
 	};
+
+	struct StatInfo{
+		std::string name;
+		std::string value;
+		bool is_upgraded;
+	};
 	
 	private:
 	Rectangle m_quit_bounding_rect;
@@ -31,6 +37,7 @@ class PauseLayer: public PSInterfaces::Layer
 	FortunaDirector* m_director;
 	Rectangle m_stats_base_bounds;
 
+	std::vector<StatInfo> m_player_stats;
 	std::vector<std::string> m_player_stat_lines;
 	std::vector<std::string> m_kill_stat_lines;
 };
