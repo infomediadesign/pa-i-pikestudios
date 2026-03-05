@@ -26,7 +26,7 @@ private:
 		Texture2D m_main_menu_background;
 		Texture2D m_main_menu_title;
 		Texture2D m_button;
-		Texture2D m_itch_io;
+		Texture2D m_credits_btn;
 		Texture2D m_skin_btn;
 		Texture2D m_options_btn;
 		Texture2D m_skin_btn_ship_emissive;
