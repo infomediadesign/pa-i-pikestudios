@@ -81,6 +81,17 @@ void Gemstone::on_hit()
 	if ( director ) {
 		director->set_reroll_amount(director->reroll_amount() + 1);
 	}
+
+	int random_volume = PSUtils::gen_rand(m_volume_boundary.x, m_volume_boundary.y);
+	int random_pitch  = PSUtils::gen_rand(m_pitch_boundary.x, m_pitch_boundary.y);
+
+	float global_sfx_volume = gApp()->sound_volume(PSCore::Application::SoundType::SFX).value_or(50);
+
+	SetSoundVolume(m_splash_sound, std::min((global_sfx_volume / 100) * (m_splash_volume + static_cast<float>(random_volume) / 100), 1.0f));
+	SetSoundPitch(m_splash_sound, m_splash_pitch + static_cast<float>(random_pitch) / 100);
+
+	PlaySound(m_splash_sound);
+
 	set_is_active(false);
 }
 
@@ -90,22 +101,8 @@ void Gemstone::play_spawn_anim(float dt)
 		m_anim_controller.update_animation(dt);
 		if ( m_anim_controller.get_sprite_sheet_frame_index(m_z_index).value_or(-1) == 0 ) {
 			m_spawn_anim_playing   = false;
-			m_can_play_spawn_sound = true;
 			m_current_idle_anim	   = 0;
 			m_anim_controller.set_animation_at_index(m_current_idle_anim, 0, m_z_index);
-		}
-		if ( m_anim_controller.get_sprite_sheet_frame_index(m_z_index).value_or(-1) == 7 && m_can_play_spawn_sound ) {
-			m_can_play_spawn_sound = false;
-
-			int random_volume = PSUtils::gen_rand(m_volume_boundary.x, m_volume_boundary.y);
-			int random_pitch  = PSUtils::gen_rand(m_pitch_boundary.x, m_pitch_boundary.y);
-
-			float global_sfx_volume = gApp()->sound_volume(PSCore::Application::SoundType::SFX).value_or(50);
-
-			SetSoundVolume(m_splash_sound, std::min((global_sfx_volume / 100) * (m_splash_volume + static_cast<float>(random_volume) / 100), 1.0f));
-			SetSoundPitch(m_splash_sound, m_splash_pitch + static_cast<float>(random_pitch) / 100);
-
-			PlaySound(m_splash_sound);
 		}
 	}
 }

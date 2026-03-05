@@ -113,7 +113,7 @@ class PlayerPriv
 	Sound m_death_sound = LoadSound("resources/sfx/death.mp3");
 
 	float m_global_sfx_volume = 0;
-	float m_hurt_volume	 = 1;
+	float m_hurt_volume	 = 0.3;
 	float m_hurt_pitch = 0.5;
 	float m_death_volume = 1;
 	float m_death_pitch	 = 1;

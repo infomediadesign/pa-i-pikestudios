@@ -54,6 +54,4 @@ private:
 
 	Vector2 m_volume_boundary = {0,0};
 	Vector2 m_pitch_boundary = {-10,10};
-
-	bool m_can_play_spawn_sound = true;
 };

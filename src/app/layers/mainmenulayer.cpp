@@ -103,6 +103,7 @@ public:
 				DrawRectangleV(blob_pos, color_blob_size, blob); // red blobs for demonstration
 
 				if ( hovered && IsMouseButtonPressed(MOUSE_BUTTON_LEFT) ) {
+					gApp()->play_ui_sound(0);
 					m_selected_color = {i, j};
 					if ( PSCore::SettingsManager::inst()->settings.find("user_preferences") != PSCore::SettingsManager::inst()->settings.end() ) {
 						auto& settings = PSCore::SettingsManager::inst()->settings["user_preferences"];
@@ -249,6 +250,7 @@ void MainMenuLayer::on_render()
 
 	if ( skin_clicked ) {
 		m_skin_menu->toggle_active();
+		gApp()->play_ui_sound(0);
 	}
 
 	button_pos.y += spacing + m_button_1.height;
