@@ -98,7 +98,6 @@ private:
 
 	Sound m_shoot_sound = LoadSound("resources/sfx/cannon_shoot.mp3");
 
-	float m_global_sfx_volume = 0;
 	float m_shoot_volume = 0.25;
 	float m_shoot_pitch = 1;
 

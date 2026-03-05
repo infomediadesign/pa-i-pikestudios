@@ -143,8 +143,11 @@ void Hunter::update(float dt)
 	if ( !is_active_ )
 		return;
 
-	if ( _p->current_patrol_path.empty() )
+	if ( _p->current_patrol_path.empty() ) {
 		_p->current_patrol_path = gen_patrol_path();
+		_p->pos = _p->current_patrol_path.at(0);
+		_p->prev_pos = _p->current_patrol_path.at(0);
+	}
 
 	switch ( _p->current_state ) {
 		case Patrolling: {

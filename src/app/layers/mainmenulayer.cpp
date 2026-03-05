@@ -181,7 +181,6 @@ MainMenuLayer::MainMenuLayer()
 	m_itch_io = PRELOAD_TEXTURE("itchio", "resources/icon/itchio.png", frame_grid)->m_s_texture;
 
 	m_custom_font	 = LoadFontEx("resources/fonts/fax_font.ttf", 126, nullptr, 0);
-	m_main_menu_font = LoadFontEx("resources/fonts/pirate_font.ttf", 126, nullptr, 0);
 	SetTextureFilter(m_custom_font.texture, TEXTURE_FILTER_BILINEAR);
 
 	m_skin_menu = std::make_unique<SkinMenu>();

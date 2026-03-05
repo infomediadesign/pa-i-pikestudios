@@ -41,7 +41,7 @@ class PlayerPriv
 	// Base Movement Variables
 	Vector2 m_position		 = {0};
 	Vector2 m_velocity		 = {0};
-	Vector2 m_repel_velocity = {0,0};
+	Vector2 m_repel_velocity = {0, 0};
 	float m_max_velocity	 = 200;
 	float m_rotation		 = 0;
 
@@ -113,13 +113,13 @@ class PlayerPriv
 	Sound m_death_sound = LoadSound("resources/sfx/death.mp3");
 
 	float m_global_sfx_volume = 0;
-	float m_hurt_volume = 1;
+	float m_hurt_volume	 = 1;
 	float m_hurt_pitch = 0.5;
 	float m_death_volume = 1;
-	float m_death_pitch = 1;
+	float m_death_pitch	 = 1;
 
-	Vector2 m_volume_boundary = {-10,10};
-	Vector2 m_pitch_boundary = {-10,10};
+	Vector2 m_volume_boundary = {-15, 15};
+	Vector2 m_pitch_boundary  = {-15, 15};
 };
 
 Player::Player() : PSInterfaces::IEntity("player")
@@ -131,10 +131,10 @@ Player::Player() : PSInterfaces::IEntity("player")
 
 	_p->m_animation_controller = PSCore::sprites::SpriteSheetAnimation(
 			_p->m_sprite->m_s_texture, {{2, 1, PSCore::sprites::KeyFrame, 1},
-										   {3, 1, PSCore::sprites::KeyFrame, 3},
-										   {3, 1, PSCore::sprites::KeyFrame, 3},
-										   {3, 1, PSCore::sprites::KeyFrame, 3},
-										   {10, 0.1, PSCore::sprites::Forward, 3}}
+										{3, 1, PSCore::sprites::KeyFrame, 3},
+										{3, 1, PSCore::sprites::KeyFrame, 3},
+										{3, 1, PSCore::sprites::KeyFrame, 3},
+										{10, 0.1, PSCore::sprites::Forward, 3}}
 	);
 
 	_p->m_animation_controller.add_animation_at_index(0, 1);
@@ -152,7 +152,7 @@ Player::Player() : PSInterfaces::IEntity("player")
 	set_interpolation_values(6, 2, 4, direcor_vals->player_input_velocity_mult, direcor_vals->player_input_rotation_mult, 30);
 
 	set_max_velocity(direcor_vals->player_max_velocity);
-	_p->m_rotation	   = 0;
+	_p->m_rotation		  = 0;
 	_p->m_rotation_offset = 90;
 
 	_p->m_sails = std::make_shared<Sails>(this);
@@ -167,9 +167,6 @@ Player::Player() : PSInterfaces::IEntity("player")
 	// Hit Flash Shader
 	SetShaderValue(_p->m_flash_shader, GetShaderLocation(_p->m_flash_shader, "flash_color"), &_p->m_flash_color, SHADER_UNIFORM_VEC4);
 	_p->m_flash_alpha_location = GetShaderLocation(_p->m_flash_shader, "flash_alpha");
-
-	// Sound
-	_p->m_global_sfx_volume = gApp()->sound_volume(PSCore::Application::SoundType::SFX).value_or(50);
 }
 
 Player::~Player()
@@ -265,14 +262,14 @@ void Player::update(const float dt)
 
 		_p->m_smear.update_smear_wave({0, 1}, Linear, 1, 10, Vector2Length(_p->m_velocity), _p->m_max_velocity, dt);
 	}
-	
+
 	// Barrel
 	if ( _p->m_explosive_barrel_spawner ) {
-		if ( !CFG_VALUE<bool>("player_spawn_explosive_barrel_when_idle", false) && Vector2Length(_p->m_velocity) < CALCULATION_VELOCITY_MIN)
+		if ( !CFG_VALUE<bool>("player_spawn_explosive_barrel_when_idle", false) && Vector2Length(_p->m_velocity) < CALCULATION_VELOCITY_MIN )
 			_p->m_explosive_barrel_spawner->suspend();
 		else
 			_p->m_explosive_barrel_spawner->resume();
-		
+
 		_p->m_explosive_barrel_spawner->update(dt);
 	}
 }
@@ -283,9 +280,11 @@ void Player::on_hit()
 		_p->m_can_be_hit = false;
 		if ( auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director()) ) {
 			director->set_player_health(director->player_health() - 1);
-			play_sound(_p->m_hurt_sound, _p->m_hurt_volume, _p->m_hurt_pitch);
 			if ( director->player_health() <= 0 ) {
 				on_death();
+			}
+			else {
+				play_sound(_p->m_hurt_sound, _p->m_hurt_volume, _p->m_hurt_pitch);
 			}
 		}
 	}
@@ -559,17 +558,17 @@ void Player::calculate_movement(const float dt)
 {
 	// Linear Interpolation form Rotation to Target Rotation with a regression of Rotation and a static Alpha
 	// which ends in an exponential approximation to calculate the rotation
-	_p->m_rotation = _p->m_rotation + (_p->m_target_rotation - _p->m_rotation) * std::clamp(_p->m_rotation_fade * dt, 0.0f, 1.0f);
+	_p->m_rotation = _p->m_rotation + (_p->m_target_rotation - _p->m_rotation) * _p->m_rotation_fade * dt;
 
 	// Check if the Velocity should increase or decrease and uses right the Linear Interpolation form Velocity to Target Velocity with a regression of
 	// Velocity and a static Alpha which ends in an exponential approximation to calculate the Value of the Velocity
 	float velocity_value = (_p->m_target_velocity - Vector2Length(_p->m_velocity)) > 0
 								   ? Vector2Length(_p->m_velocity) + (_p->m_target_velocity - Vector2Length(_p->m_velocity) -
 																	  (_p->m_velocity_rotation_downscale * fabsf(_p->m_rotation_velocity))) *
-																			 std::clamp(_p->m_acceleration_fade * dt, 0.0f, 1.0f)
+																			 _p->m_acceleration_fade * dt
 								   : Vector2Length(_p->m_velocity) + (_p->m_target_velocity - Vector2Length(_p->m_velocity) -
 																	  (_p->m_velocity_rotation_downscale * fabsf(_p->m_rotation_velocity))) *
-																			 std::clamp(_p->m_deceleration_fade * dt, 0.0f, 1.0f);
+																			 _p->m_deceleration_fade * dt;
 
 	// Calculate with the Velocity Value and the Rotation the actual 2 Dimensional Velocity
 	_p->m_velocity.x = velocity_value * cos(_p->m_rotation * DEG2RAD);
@@ -733,10 +732,10 @@ Sails::Sails(Player* player) : PSInterfaces::IEntity("player_sails"), m_player(p
 	m_sprite = PRELOAD_TEXTURE(ident_, "resources/emissive/player_emissive.png", frame_grid);
 
 	if ( PSCore::SettingsManager::inst()->settings.find("user_preferences") != PSCore::SettingsManager::inst()->settings.end() ) {
-		auto& settings				= PSCore::SettingsManager::inst()->settings["user_preferences"];
+		auto& settings	 = PSCore::SettingsManager::inst()->settings["user_preferences"];
 		m_emissive_color = PSUtils::color_to_vector3(std::get<int>(settings->value("player_color").value_or(0xFFFFFF)));
 	}
-	
+
 	m_emissive_texture_location = GetShaderLocation(m_emissive_shader, "texture_emissive");
 	SetShaderValue(m_emissive_shader, GetShaderLocation(m_emissive_shader, "emissive_color"), &m_emissive_color, SHADER_UNIFORM_VEC3);
 }
@@ -793,7 +792,8 @@ void Player::enable_explosive_barrels()
 	if ( _p->m_explosive_barrel_spawner )
 		return;
 
-	_p->m_explosive_barrel_spawner = std::make_unique<PSCore::Spawner<ExplosiveBarrel, AppLayer>>(CFG_VALUE<float>("explosive_barrel_intervall", 5.f), 0, INT32_MAX, true);
+	_p->m_explosive_barrel_spawner =
+			std::make_unique<PSCore::Spawner<ExplosiveBarrel, AppLayer>>(CFG_VALUE<float>("explosive_barrel_intervall", 5.f), 0, INT32_MAX, true);
 	_p->m_explosive_barrel_spawner->register_spawn_callback([this](std::shared_ptr<ExplosiveBarrel> barrel) {
 		barrel->init(barrel, _p->m_position);
 		barrel->set_parent(shared_ptr_this());
@@ -802,7 +802,8 @@ void Player::enable_explosive_barrels()
 	_p->m_explosive_barrels_enabled = true;
 };
 
-void Player::set_barrel_intervall(float interval) {
+void Player::set_barrel_intervall(float interval)
+{
 	_p->m_explosive_barrel_spawner->set_interval(interval);
 };
 
@@ -811,7 +812,9 @@ void Player::play_sound(Sound& sound, float volume, float pitch)
 	int random_volume = PSUtils::gen_rand(_p->m_volume_boundary.x, _p->m_volume_boundary.y);
 	int random_pitch  = PSUtils::gen_rand(_p->m_pitch_boundary.x, _p->m_pitch_boundary.y);
 
-	SetSoundVolume(sound, std::min((_p->m_global_sfx_volume / 100) * (volume + static_cast<float>(random_volume) / 100), 1.0f));
+	float global_sfx_volume = gApp()->sound_volume(PSCore::Application::SoundType::SFX).value_or(50);
+
+	SetSoundVolume(sound, std::min((global_sfx_volume / 100) * (volume + static_cast<float>(random_volume) / 100), 1.0f));
 	SetSoundPitch(sound, pitch + static_cast<float>(random_pitch) / 100);
 
 	PlaySound(sound);

@@ -17,13 +17,16 @@ ExplosiveBarrel::ExplosiveBarrel() : PSInterfaces::IEntity("explosive_barrel")
 	m_flash_alpha_location = GetShaderLocation(m_flash_shader, "flash_alpha");
 
 	Vector2 frame_grid{1, 8};
-	PRELOAD_TEXTURE(ident_, "resources/vfx/explosion_barrel.png", frame_grid);
+	std::string explosive_ident = ident_ + "_explosion";
+	PRELOAD_TEXTURE(explosive_ident, "resources/vfx/explosion_barrel.png", frame_grid);
 	float frame_time	   = m_damage_time / 8;
-	m_animation_controller = PSCore::sprites::SpriteSheetAnimation(FETCH_SPRITE_TEXTURE(ident_), {{8, frame_time, PSCore::sprites::Forward, 1}});
-	m_animation_controller.add_animation_at_index(0, 1);
+	m_explosion_animation_controller = PSCore::sprites::SpriteSheetAnimation(FETCH_SPRITE_TEXTURE(explosive_ident), {{8, frame_time, PSCore::sprites::Forward, 1}});
+	m_explosion_animation_controller.add_animation_at_index(0, 1);
 	propose_z_index(-1);
-
-	m_global_sfx_volume = gApp()->sound_volume(PSCore::Application::SoundType::SFX).value_or(50);
+	
+	PRELOAD_TEXTURE(ident_, "resources/entity/explosive_barrel.png", frame_grid);
+	m_barrel_animation_controller = PSCore::sprites::SpriteSheetAnimation(FETCH_SPRITE_TEXTURE(ident_), {{8, 0.1, PSCore::sprites::Forward, 1}});
+	m_barrel_animation_controller.add_animation_at_index(0, 1);
 };
 
 ExplosiveBarrel::~ExplosiveBarrel()
@@ -36,11 +39,14 @@ ExplosiveBarrel::~ExplosiveBarrel()
 void ExplosiveBarrel::update(float dt)
 {
 	m_timer += dt;
+	
+	m_barrel_animation_controller.update_animation(dt);
+	
 	if ( is_exploding() ) {
 		if ( m_timer > m_detonation_time + m_damage_time )
 			set_is_active(false);
 
-		m_animation_controller.update_animation(dt);
+		m_explosion_animation_controller.update_animation(dt);
 		if ( auto app_layer = gApp()->get_layer<AppLayer>() ) {
 			m_collider->check_collision(app_layer->entities(), [](std::weak_ptr<PSInterfaces::IEntity> other, Vector2 pos) -> bool {
 				if ( std::shared_ptr<PSInterfaces::IEntity> locked = other.lock() ) {
@@ -62,7 +68,9 @@ void ExplosiveBarrel::update(float dt)
 			int random_volume = PSUtils::gen_rand(static_cast<int>(m_volume_boundary.x), static_cast<int>(m_volume_boundary.y));
 			int random_pitch  = PSUtils::gen_rand(static_cast<int>(m_pitch_boundary.x), static_cast<int>(m_pitch_boundary.y));
 
-			SetSoundVolume(m_explode_sound, std::min((m_global_sfx_volume / 100) * (m_shoot_volume + static_cast<float>(random_volume) / 100), 1.0f));
+			float global_sfx_volume = gApp()->sound_volume(PSCore::Application::SoundType::SFX).value_or(50);
+
+			SetSoundVolume(m_explode_sound, std::min((global_sfx_volume / 100) * (m_shoot_volume + static_cast<float>(random_volume) / 100), 1.0f));
 			SetSoundPitch(m_explode_sound, m_shoot_pitch + static_cast<float>(random_pitch) / 100);
 
 			PlaySound(m_explode_sound);
@@ -82,17 +90,22 @@ void ExplosiveBarrel::render()
 	if ( auto& vp = gApp()->viewport() ) {
 		Vector2 pos_global = vp->position_viewport_to_global(m_position);
 		if ( is_exploding() ) {
+			propose_z_index(100);
+
 			vp->draw_in_viewport(
-					FETCH_SPRITE_TEXTURE(ident_), m_animation_controller.get_source_rectangle(1).value_or(Rectangle{0}), m_position, 0, WHITE
+					FETCH_SPRITE_TEXTURE((ident_ + "_explosion")), m_explosion_animation_controller.get_source_rectangle(1).value_or(Rectangle{0}), m_position, 0, WHITE
 			);
 		}
+		else {
+			propose_z_index(-1);
 
-		if ( !is_exploding() ) {
-			DrawCircleV(pos_global, Lerp(0, m_explosion_radius, m_timer / m_detonation_time), {200, 0, 0, 75});
+			DrawCircleV(pos_global, Lerp(0, m_explosion_radius, m_timer / m_detonation_time), {200, 0, 0, 40});
 
 			BeginShaderMode(m_flash_shader);
 
-			DrawCircleV(pos_global, 3 * vp->viewport_scale(), WHITE);
+			vp->draw_in_viewport(
+					FETCH_SPRITE_TEXTURE(ident_), m_barrel_animation_controller.get_source_rectangle(1).value_or(Rectangle{0}), m_position, 0, WHITE
+			);
 
 			EndShaderMode();
 		}
@@ -106,7 +119,7 @@ void ExplosiveBarrel::set_is_active(bool active)
 	if ( is_active_ ) {
 		m_timer		  = 0;
 		m_flash_alpha = 0;
-		m_animation_controller.set_animation_at_index(0, 0, 1);
+		m_explosion_animation_controller.set_animation_at_index(0, 0, 1);
 		m_can_play_sound = true;
 	}
 };

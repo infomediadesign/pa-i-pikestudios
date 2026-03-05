@@ -28,6 +28,7 @@ UpgradeLayer::UpgradeLayer()
 	m_card_texture_3 = PRELOAD_TEXTURE("card_3", "resources/ui/upgrade_card_3.png", frame_grid)->m_s_texture;
 	m_button		 = PRELOAD_TEXTURE("smallbutton", "resources/ui/button_small.png", frame_grid)->m_s_texture;
 	m_gem_socket_texture = PRELOAD_TEXTURE("gem_socket", "resources/ui/gem_socket.png", frame_grid)->m_s_texture;
+	m_tooltip_card_texture = PRELOAD_TEXTURE("tooltip_card", "resources/ui/tooltip_card.png", frame_grid)->m_s_texture;
 
 	// Icons
 	m_fire_rate_icon		= PRELOAD_TEXTURE("fire_rate_icon", "resources/icon/upgr_icon_firerate.png", frame_grid)->m_s_texture;
@@ -40,6 +41,7 @@ UpgradeLayer::UpgradeLayer()
 	m_player_speed_icon		= PRELOAD_TEXTURE("player_speed_icon", "resources/icon/upgr_icon_movement_speed.png", frame_grid)->m_s_texture;
 	m_explisve_barrel_icon	= PRELOAD_TEXTURE("explosive_barrel_icon", "resources/icon/upgr_icon_explosives.png", frame_grid)->m_s_texture;
 	m_health_icon			= PRELOAD_TEXTURE("health_icon", "resources/icon/upgr_icon_health.png", frame_grid)->m_s_texture;
+	m_projectile_amount_icon = PRELOAD_TEXTURE("projectile_amount_icon", "resources/icon/upgr_icon_multishot.png", frame_grid)->m_s_texture;
 
 	m_card_1_texture_emissive =
 			PRELOAD_TEXTURE("card_emissive_1", "resources/emissive/upgrate_card_emissive_border_and_center_card_1.png", frame_grid)->m_s_texture;
@@ -188,6 +190,11 @@ void UpgradeLayer::draw_upgrade_cards()
 		SetShaderValueTexture(m_card_emissive_shader, m_emissive_texture_position, card_emissive_textures[i]);
 		SetShaderValue(m_card_emissive_shader, m_emissive_color_position, &m_emissive_color, SHADER_UNIFORM_VEC3);
 
+		if ( m_current_loot_table_values.at(i).rarity == 5 && m_can_play_mythic_sound ) {
+			m_can_play_mythic_sound = false;
+			gApp()->play_ui_sound(3);
+		}
+
 		float max_other_hover = 0.0f;
 		for ( int j = 0; j < 3; ++j ) {
 			if ( j != i ) max_other_hover = fmaxf(max_other_hover, m_card_hover_progress[j]);
@@ -215,6 +222,10 @@ void UpgradeLayer::draw_upgrade_cards()
 		Vector2 scaled_pos = {card_pos.x * scale, card_pos.y * scale};
 		draw_upgrade_icon(m_current_loot_table_values[i].index, scaled_pos);
 		draw_card_text(scaled_pos, m_current_loot_table_values[i]);
+		m_current_tooltip_text = get_tooltip_text(m_current_loot_table_values[i].index);
+		if ( m_hovered_card_index == i ) {
+			draw_card_tooltip(card_pos, scale);
+		}
 	}
 }
 
@@ -225,11 +236,7 @@ void UpgradeLayer::apply_upgrade(LootTableValue upgrade_info)
 	float upgrade_multyplier = get_multiplier(upgrade_info.rarity);
 	float upgrade_amount;
 
-	if ( upgrade_info.rarity == 5 ) {
-		gApp()->play_ui_sound(3);
-	} else {
-		gApp()->play_ui_sound(2);
-	}
+	gApp()->play_ui_sound(2);
 
 	switch ( upgrade_info.index ) {
 		case 0:
@@ -573,6 +580,7 @@ void UpgradeLayer::draw_reroll_button()
 			m_current_loot_table_values = m_loot_table.loot_table_values(3);
 			director->set_reroll_amount(director->reroll_amount() - 1);
 			gApp()->play_ui_sound(0);
+			m_can_play_mythic_sound = true;
 		}
 		Vector2 mouse = GetMousePosition();
 
@@ -606,8 +614,10 @@ void UpgradeLayer::draw_reroll_button()
 		DrawTexturePro(m_gem_texture, gem_source, gem_dest, gem_origin, 0, WHITE);
 
 		GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt({211, 177, 125, 255}));
+		GuiSetStyle(DEFAULT, TEXT_ALIGNMENT, TEXT_ALIGN_LEFT);
 		GuiLabel({gem_socket_dest.x - 5 *scale , gem_socket_dest.y -10 * scale, 35 * scale, 20 * scale},
 				std::format("{}x", director->reroll_amount()).c_str());
+		GuiSetStyle(DEFAULT, TEXT_ALIGNMENT, TEXT_ALIGN_CENTER);
 		GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt({0, 0, 0, 255}));
 	}
 }
@@ -647,7 +657,7 @@ void UpgradeLayer::draw_upgrade_icon(int index, Vector2 card_pos)
 			DrawTextureEx(m_luck_icon, pos, 0, scale, WHITE);
 			break;
 		case 9:
-			// DrawTextureEx(m_fire_rate_icon, pos, 0, scale, WHITE);
+			DrawTextureEx(m_projectile_amount_icon, pos, 0, scale, WHITE);
 			break;
 		case 10:
 			DrawTextureEx(m_explisve_barrel_icon, pos, 0, scale, WHITE);
@@ -662,5 +672,73 @@ void UpgradeLayer::play_reroll_gem_animation(float dt)
 	m_gem_anim_controller.update_animation(dt);
 	if ( m_gem_anim_controller.get_sprite_sheet_frame_index(m_z_index).value_or(-1) == 10 ) {
 		m_gem_anim_controller.set_animation_at_index(0, 0, m_z_index);
+	}
+}
+
+void UpgradeLayer::draw_card_tooltip(Vector2 card_pos, float scale)
+{
+	float card_half_height	  = m_card_texture_1.height / 2.0f;
+	float tooltip_half_height = m_tooltip_card_texture.height / 2.0f;
+
+	Vector2 tooltip_pos = {card_pos.x, card_pos.y - card_half_height - (tooltip_half_height + 5)};
+
+	Rectangle source = {0, 0, static_cast<float>(m_tooltip_card_texture.width), static_cast<float>(m_tooltip_card_texture.height)};
+
+	if ( auto& vp = gApp()->viewport() ) {
+		Vector2 origin = vp->viewport_origin();
+		float s		   = vp->viewport_scale();
+
+		Vector2 viewport_tooltip_pos = {tooltip_pos.x - origin.x / s, tooltip_pos.y - origin.y / s};
+
+		vp->draw_in_viewport(m_tooltip_card_texture, source, viewport_tooltip_pos, 0, WHITE);
+
+		float label_w = source.width * s;
+		float label_h = source.height * s;
+		float label_x = tooltip_pos.x * s - label_w / 2.0f;
+		float label_y = tooltip_pos.y * s - label_h / 2.0f;
+
+		float text_padding_x = 8.0f * s;
+		float text_offset_y	 = 10.0f * s;
+		float text_padding_y = 4.0f * s;
+		GuiSetStyle(DEFAULT, TEXT_SIZE, 6 * s);
+		GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt({0, 0, 0, 255}));
+		GuiSetStyle(DEFAULT, TEXT_ALIGNMENT, TEXT_ALIGN_CENTER);
+		GuiSetStyle(DEFAULT, TEXT_LINE_SPACING, 7 * s);
+		GuiLabel(
+				{label_x + text_padding_x, label_y + text_offset_y, label_w - 2 * text_padding_x, label_h - text_offset_y - text_padding_y},
+				m_current_tooltip_text.c_str()
+		);
+		GuiSetStyle(DEFAULT, TEXT_SIZE, 14 * s);
+		GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt(BLACK));
+	}
+}
+
+std::string UpgradeLayer::get_tooltip_text(int upgrade_index)
+{
+	switch ( upgrade_index ) {
+		case 0:
+			return "Obtain one more canon for \neach side of your ship.";
+		case 1:
+			return "Increases the speed of \nprojectiles you shoot.";
+		case 2:
+			return "Increases the maximum \ndistance your projectiles can \ntravel.";
+		case 3:
+			return "Upgrades your shooting \nfrequency.";
+		case 4:
+			return "Gain one more health.";
+		case 5:
+			return "Increases the maximum \nship speed.";
+		case 6:
+			return "Increases your ship`s \nmaximum turn speed.";
+		case 7:
+			return "Bullets get an increased \nchance of piercing through \nenemies.";
+		case 8:
+			return "Increases the chance for \nrolling higher rarities when \nobtaining upgrades.";
+		case 9:
+			return "Each cannon shoots one more \nbullet.";
+		case 10:
+			return "Periodically drop explosive \nbarrels behind you that deal \nAoE damage when detonating.";
+		default:
+			return "";
 	}
 }

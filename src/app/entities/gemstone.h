@@ -49,7 +49,6 @@ private:
 	// Sound
 	Sound m_splash_sound = LoadSound("resources/sfx/gemstone_water_splash.mp3");
 
-	float m_global_sfx_volume = 0;
 	float m_splash_volume = 0.4;
 	float m_splash_pitch = 2;
 

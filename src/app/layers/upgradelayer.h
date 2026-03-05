@@ -31,6 +31,9 @@ public:
 
 	float get_multiplier(int rarity);
 
+	void draw_card_tooltip(Vector2 card_pos, float scale);
+	std::string get_tooltip_text(int upgrade_index);
+
 	std::string rarity_to_string(int rarity);
 	std::string upgrade_type_to_string(int index);
 	std::string value_to_string(int index, int rarity);
@@ -54,6 +57,8 @@ public:
 	Texture2D m_card_texture_2;
 	Texture2D m_card_texture_3;
 
+	Texture2D m_tooltip_card_texture;
+
 	Texture2D m_card_1_texture_emissive;
 	Texture2D m_card_2_texture_emissive;
 	Texture2D m_card_3_texture_emissive;
@@ -65,6 +70,8 @@ public:
 
 	LootTable m_loot_table;
 	std::vector<LootTableValue> m_current_loot_table_values;
+
+	std::string m_current_tooltip_text;
 
 	bool m_layer_is_visible = true;
 	Texture2D m_button;
@@ -82,6 +89,7 @@ public:
 	Texture2D m_player_speed_icon;
 	Texture2D m_explisve_barrel_icon;
 	Texture2D m_health_icon;
+	Texture2D m_projectile_amount_icon;
 
 	// base upgrade values for the different upgrades
 	float m_base_upgrade_player_speed	  = CFG_VALUE<float>("upgrade_player_speed_base_value", 0.075f);
@@ -125,4 +133,5 @@ public:
 	int m_z_index = 0;
 	Texture2D m_gem_socket_texture;
 
+	bool m_can_play_mythic_sound = true;
 };
