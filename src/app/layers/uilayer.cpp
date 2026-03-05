@@ -76,10 +76,12 @@ void UILayer::draw_bounty_ui()
 
 	float text_size	 = 20;
 	Vector2 text_pos = vp->position_viewport_to_global({panel_padding_horizontal + texture_padding + texture_width + 3.0f, panel_padding_vertical + (panel_size.y - text_size) / 2}); 
+	GuiSetStyle(DEFAULT, TEXT_ALIGNMENT, TEXT_ALIGN_LEFT);
 	draw_text(
 			bounty_text, {text_pos.x, text_pos.y, (text_width + 36) * scale, text_size * scale}, static_cast<int>(text_size * scale),
 			{220, 173, 4, 255}
 	);
+	GuiSetStyle(DEFAULT, TEXT_ALIGNMENT, TEXT_ALIGN_CENTER);
 }
 
 void UILayer::draw_health_ui()
