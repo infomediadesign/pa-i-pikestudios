@@ -8,11 +8,11 @@
 #include <raygui.h>
 #include <raylib.h>
 
+#include "layers/contributorslayer.h"
 #include "optionslayer.h"
 #include "pscore/sprite.h"
 
 static const int STANDART_TEXT_SIZE = 10;
-
 
 class SkinMenu
 {
@@ -179,7 +179,7 @@ MainMenuLayer::MainMenuLayer()
 	m_skin_btn_ship_emissive = PRELOAD_TEXTURE("skin_btn_ship_emissive", "resources/emissive/skin_button_emissive.png", frame_grid)->m_s_texture;
 	m_options_btn			 = PRELOAD_TEXTURE("options_btn", "resources/ui/option_button.png", frame_grid)->m_s_texture;
 
-	m_itch_io = PRELOAD_TEXTURE("itchio", "resources/icon/itchio.png", frame_grid)->m_s_texture;
+	m_credits_btn = PRELOAD_TEXTURE("itchio", "resources/ui/credit_button.png", frame_grid)->m_s_texture;
 
 	m_custom_font	 = LoadFontEx("resources/fonts/fax_font.ttf", 126, nullptr, 0);
 	SetTextureFilter(m_custom_font.texture, TEXTURE_FILTER_BILINEAR);
@@ -274,13 +274,15 @@ void MainMenuLayer::on_render()
 
 	GuiSetStyle(DEFAULT, TEXT_SIZE, STANDART_TEXT_SIZE);
 
-	// Vector2 vp_max =vp->viewport_base_size();
+	Vector2 vp_max =vp->viewport_base_size();
 
-	// Vector2 mini_btn_size = {12 * scale, 12 * scale};
-	// int margin			  = 10 * scale;
-	// if ( GuiButtonTexture(m_itch_io, Vector2{vp_max.x - mini_btn_size.x - margin, vp_max.y - mini_btn_size.x - margin},0, scale, WHITE, GRAY, "") )
-	// {
-	// }
+	if ( GuiButtonTexture(m_credits_btn, Vector2{vp_max.x - m_credits_btn.width - 3 + vp->viewport_origin().x/scale, vp_max.y - m_credits_btn.height - 3 + vp->viewport_origin().y/scale},0, scale, WHITE, GRAY, "") )
+	{
+		gApp()->call_later([]() {
+			gApp()->switch_layer<MainMenuLayer, ContributorsLayer>();
+		});
+		gApp()->play_ui_sound(0);
+	}
 
 	m_skin_menu->draw();
 }

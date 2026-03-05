@@ -11,7 +11,7 @@
 #include <pscore/time.h>
 #include <psinterfaces/entity.h>
 #include <raylib.h>
-#include "pscore/settings.h"
+#include <pscore/settings.h>
 
 using PSCore::Application;
 static Application* g_app = nullptr;
@@ -25,6 +25,7 @@ class PSCore::ApplicationPriv
 	{
 #ifdef _WIN32 // on modern windows a "borderless" fullscreen is better
 		ToggleBorderlessWindowed();
+		ClearWindowState(FLAG_WINDOW_TOPMOST);
 #elif defined unix // on linux the default fullscreen behavior works just fine
 		int display = GetCurrentMonitor();
 		if ( IsWindowFullscreen() )

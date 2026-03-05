@@ -23,6 +23,9 @@ DeathScreenLayer::DeathScreenLayer()
 
 void DeathScreenLayer::on_update(float dt)
 {
+	
+	
+	
 	if ( m_score_layer_instance ) {
 		if ( IsKeyPressed(KEY_ENTER) && m_score_layer_instance->player_name_input.size() > 0 ) {
 			gApp()->set_current_player_name(m_score_layer_instance->player_name_input);
@@ -35,18 +38,18 @@ void DeathScreenLayer::on_render()
 {
 	auto& vp   = gApp()->viewport();
 	Vector2 np = vp->viewport_origin();
-	float sk   = vp->viewport_scale();
+	float scale   = vp->viewport_scale();
 
 	Color bg_clr{0, 0, 0, 150};
-	DrawRectangle(np.x, np.y, GetScreenWidth() * sk, GetScreenHeight() * sk, bg_clr);
+	DrawRectangle(np.x, np.y, GetScreenWidth() * scale, GetScreenHeight() * scale, bg_clr);
 
 	float w = 300;
 	float x = ((vp->viewport_base_size().x) / 2.0f) - (w / 2);
-	Rectangle rect{np.x + x * sk, np.y + 48 * sk, w * sk, 40 * sk};
+	Rectangle rect{np.x + x * scale, np.y + 48 * scale, w * scale, 40 * scale};
 
 	std::string bounty_text = std::to_string(dynamic_cast<FortunaDirector*>(gApp()->game_director())->m_b_bounty.bounty());
-	Rectangle score{np.x + x * sk, np.y + 100 * sk, w * sk, 40 * sk};
-	Rectangle score_info_bounds{np.x + x * sk, np.y + 125 * sk, w * sk, 40 * sk};
+	Rectangle score{np.x + x * scale, np.y + 100 * scale, w * scale, 40 * scale};
+	Rectangle score_info_bounds{np.x + x * scale, np.y + 125 * scale, w * scale, 40 * scale};
 
 	int oldColor = GuiGetStyle(DEFAULT, TEXT_COLOR_NORMAL);
 	int oldSize	 = GuiGetStyle(DEFAULT, TEXT_SIZE);
@@ -54,12 +57,14 @@ void DeathScreenLayer::on_render()
 
 
 	GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, 0xff0000ff);
-	GuiSetStyle(DEFAULT, TEXT_SIZE, 28 * sk);
+	GuiSetStyle(DEFAULT, TEXT_SIZE, 28 * scale);
 
-	GuiLabel({np.x + x * sk, np.y + 48 * sk, 400 * sk, 40 * sk}, "You were shattered :(");
 	GuiSetStyle(LABEL, TEXT_ALIGNMENT, TEXT_ALIGN_CENTER);
+
+	float text_width = GuiGetTextWidth("You were shattered :(");
+	GuiLabel({np.x, np.y + 48 * scale, vp->viewport_base_size().x * scale, 40 * scale}, "You were shattered :(");
 	GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, 0xffffffff);
-	GuiSetStyle(DEFAULT, TEXT_SIZE, 10 * sk);
+	GuiSetStyle(DEFAULT, TEXT_SIZE, 10 * scale);
 
 	GuiLabel(score, ("Bounty: " + bounty_text).c_str());
 	if ( m_score_should_be_saved ) {
@@ -67,8 +72,8 @@ void DeathScreenLayer::on_render()
 
 		float input_row_y  = 200;
 		float input_height = 30;
-		Rectangle name_prompt_rect{np.x + x * sk, np.y + input_row_y * sk, 200 * sk, input_height * sk};
-		Rectangle input_field_rect{np.x + (x + 170) * sk, np.y + input_row_y * sk, 120 * sk, input_height * sk};
+		Rectangle name_prompt_rect{np.x + x * scale, np.y + input_row_y * scale, 200 * scale, input_height * scale};
+		Rectangle input_field_rect{np.x + (x + 170) * scale, np.y + input_row_y * scale, 120 * scale, input_height * scale};
 
 		GuiLabel(name_prompt_rect, "Enter your name:");
 
@@ -88,7 +93,7 @@ void DeathScreenLayer::on_render()
 	}
 
 	GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, 0x00000ff);
-	GuiSetStyle(DEFAULT, TEXT_SIZE, 10 * sk);
+	GuiSetStyle(DEFAULT, TEXT_SIZE, 10 * scale);
 	GuiSetStyle(LABEL, TEXT_ALIGNMENT, oldAlign);
 
 	int margin		 = 20;
@@ -96,9 +101,9 @@ void DeathScreenLayer::on_render()
 	float btn_height = static_cast<float>(m_button.height);
 	float y			 = vp->viewport_base_size().y - btn_height / 2.0f - margin;
 
-	Vector2 mainmenu_pos = {np.x / sk + margin + btn_width / 2.0f, np.y / sk + y};
+	Vector2 mainmenu_pos = {np.x / scale + margin + btn_width / 2.0f, np.y / scale + y};
 
-	if ( GuiButtonTexture(m_button, mainmenu_pos, 0, sk, WHITE, GRAY, "Mainmenu") ) {
+	if ( GuiButtonTexture(m_button, mainmenu_pos, 0, scale, WHITE, GRAY, "Mainmenu") ) {
 		reset_state();
 		gApp()->call_later([]() { gApp()->pop_layer<DeathScreenLayer>(); });
 		gApp()->call_later([]() { gApp()->pop_layer<ScoreLayer>(); });
@@ -107,9 +112,9 @@ void DeathScreenLayer::on_render()
 	}
 
 	if ( !m_score_should_be_saved || m_name_entered ) {
-		Vector2 scoreboard_pos = {np.x / sk + margin * 2 + btn_width + btn_width / 2.0f, np.y / sk + y};
+		Vector2 scoreboard_pos = {np.x / scale + margin * 2 + btn_width + btn_width / 2.0f, np.y / scale + y};
 
-		if ( GuiButtonTexture(m_button, scoreboard_pos, 0, sk, WHITE, GRAY, "Scoreboard") ) {
+		if ( GuiButtonTexture(m_button, scoreboard_pos, 0, scale, WHITE, GRAY, "Scoreboard") ) {
 			reset_state();
 			gApp()->call_later([]() { gApp()->pop_layer<DeathScreenLayer>(); });
 			gApp()->call_later([]() { gApp()->switch_layer<AppLayer, ScoreLayer>(); });
@@ -122,9 +127,9 @@ void DeathScreenLayer::on_render()
 			gApp()->play_ui_sound(0);
 		}
 
-		Vector2 retry_pos = {np.x / sk + vp->viewport_base_size().x - margin - btn_width / 2.0f, np.y / sk + y};
+		Vector2 retry_pos = {np.x / scale + vp->viewport_base_size().x - margin - btn_width / 2.0f, np.y / scale + y};
 
-		if ( GuiButtonTexture(m_button, retry_pos, 0, sk, WHITE, GRAY, "Retry") ) {
+		if ( GuiButtonTexture(m_button, retry_pos, 0, scale, WHITE, GRAY, "Retry") ) {
 			reset_state();
 
 			if ( m_score_layer_instance && m_name_entered ) {
@@ -141,8 +146,8 @@ void DeathScreenLayer::on_render()
 		}
 	}
 
-	draw_kill_stats(sk);
-	draw_time(sk);
+	draw_kill_stats(scale);
+	draw_time(scale);
 }
 
 void DeathScreenLayer::set_score_should_be_saved(bool should_be_saved)

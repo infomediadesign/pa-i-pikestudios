@@ -18,6 +18,8 @@ public:
 
 	void determine_gem_drop();
 
+	bool is_uwu() const;
+
 private:
 	bool m_hurt = false;
 	bool m_uwu	= false;

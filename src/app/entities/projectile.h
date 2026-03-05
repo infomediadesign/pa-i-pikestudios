@@ -87,7 +87,7 @@ public:
 	void apply_drag(const float dt);
 	void update_pierce_hit_anims(float dt);
 
-	enum class HitAnimType { Default, SmallBloodSplat, BigBloodSplat };
+	enum class HitAnimType { Default, SmallBloodSplat, BigBloodSplat, Firework };
 
 private:
 	int m_p_z_index;
@@ -127,6 +127,10 @@ private:
 	PSCore::sprites::SpriteSheetAnimation m_p_big_blood_splat_controller;
 	Texture2D m_p_big_blood_splat_texture;
 	std::shared_ptr<PSCore::sprites::Sprite> m_p_big_blood_splat_sprite;
+
+	PSCore::sprites::SpriteSheetAnimation m_p_firework_controller;
+	Texture2D m_p_firework_texture;
+	std::shared_ptr<PSCore::sprites::Sprite> m_p_firework_sprite;
 
 	bool m_p_hit_aninm_playing	 = false;
 	bool m_p_no_hit_anim_playing = false;

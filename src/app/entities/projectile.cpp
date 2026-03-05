@@ -1,18 +1,18 @@
-#include <entities/projectile.h>
 #include <cmath>
 #include <coordinatesystem.h>
 #include <entities/director.h>
+#include <entities/projectile.h>
 #include <layers/applayer.h>
 #include <memory>
 #include <optional>
 #include <pscore/application.h>
 #include <pscore/collision.h>
 #include <pscore/sprite.h>
+#include <pscore/utils.h>
 #include <pscore/viewport.h>
 #include <psinterfaces/entity.h>
 #include <raylib.h>
 #include <raymath.h>
-#include <pscore/utils.h>
 
 Projectile::Projectile() : PSInterfaces::IEntity("projectile")
 {
@@ -52,6 +52,12 @@ Projectile::Projectile() : PSInterfaces::IEntity("projectile")
 	m_p_big_blood_splat_controller =
 			PSCore::sprites::SpriteSheetAnimation(m_p_big_blood_splat_texture, {{8, 0.1, PSCore::sprites::Forward, m_p_z_index}});
 	m_p_big_blood_splat_controller.add_animation_at_index(0, m_p_z_index);
+
+	// Hit Fireworks
+	m_p_firework_sprite = PRELOAD_TEXTURE("projectile_firework", "resources/vfx/firework.png", hit_anim_frame_grid);
+	m_p_firework_texture = m_p_firework_sprite->m_s_texture;
+	m_p_firework_controller = PSCore::sprites::SpriteSheetAnimation(m_p_firework_texture, {{21, 0.1, PSCore::sprites::Forward, m_p_z_index}});
+	m_p_firework_controller.add_animation_at_index(0, m_p_z_index);
 }
 
 void Projectile::init(const Vector2& position, std::shared_ptr<Projectile> self)
@@ -65,6 +71,11 @@ void Projectile::init(const Vector2& position, std::shared_ptr<Projectile> self)
 				if ( locked->is_active() ) {
 					locked->on_hit();
 					m_p_last_hit_ident = locked->ident();
+					if ( m_p_last_hit_ident == "chonky_shark" ) {
+						if ( dynamic_cast<ChonkyShark*>(locked.get())->is_uwu() ) {
+							m_p_last_hit_ident = "uwu";
+						}
+					}
 					on_hit();
 
 					if ( locked->is_active() ) {
@@ -95,8 +106,8 @@ void Projectile::update(const float dt)
 		if ( auto app_layer = gApp()->get_layer<AppLayer>() ) {
 			m_collider->check_collision(app_layer->entities(), [this](std::weak_ptr<PSInterfaces::IEntity> other, const Vector2& point) {
 				if ( auto l = other.lock() ) {
-					bool is_owner  = l->ident() == m_p_owner->ident();
-					bool is_same   = l->ident() == ident_;
+					bool is_owner  = l->uid() == m_p_owner->uid();
+					bool is_same   = l->uid() == uid_;
 					bool is_cannon = l->ident() == "cannon";
 					bool is_loot   = l->ident() == "loot_chest";
 					bool is_gem	   = l->ident() == "gemstone";
@@ -123,6 +134,9 @@ void Projectile::render()
 					break;
 				case HitAnimType::BigBloodSplat:
 					tex = m_p_big_blood_splat_texture;
+					break;
+				case HitAnimType::Firework:
+					tex = m_p_firework_texture;
 					break;
 				default:
 					break;
@@ -151,6 +165,10 @@ void Projectile::render()
 				tex	 = m_p_big_blood_splat_texture;
 				ctrl = &m_p_big_blood_splat_controller;
 				break;
+			case HitAnimType::Firework:
+				tex	 = m_p_firework_texture;
+				ctrl = &m_p_firework_controller;
+				break;
 			default:
 				break;
 		}
@@ -173,9 +191,15 @@ void Projectile::on_hit()
 	HitAnimType hit_type = HitAnimType::Default;
 	if ( m_p_last_hit_ident == "shark" || m_p_last_hit_ident == "chonky_shark" ) {
 		hit_type = HitAnimType::SmallBloodSplat;
-	} else if ( m_p_last_hit_ident == "tentacle" ) {
+	}
+	else if ( m_p_last_hit_ident == "uwu" ) {
+		hit_type = HitAnimType::Firework;
+	} 
+	else if ( m_p_last_hit_ident == "tentacle" ) {
 		hit_type = HitAnimType::BigBloodSplat;
 	}
+
+	//hit_type = HitAnimType::SmallBloodSplat;
 
 	if ( can_pierce() ) {
 		PierceHitAnim pierce;
@@ -191,6 +215,10 @@ void Projectile::on_hit()
 			case HitAnimType::BigBloodSplat:
 				pierce.anim_controller =
 						PSCore::sprites::SpriteSheetAnimation(m_p_big_blood_splat_texture, {{8, 0.1, PSCore::sprites::Forward, m_p_z_index}});
+				break;
+			case HitAnimType::Firework:
+				pierce.anim_controller =
+						PSCore::sprites::SpriteSheetAnimation(m_p_firework_texture, {{21, 0.1, PSCore::sprites::Forward, m_p_z_index}});
 				break;
 			default:
 				pierce.anim_controller =
@@ -213,6 +241,9 @@ void Projectile::on_hit()
 			break;
 		case HitAnimType::BigBloodSplat:
 			m_p_big_blood_splat_controller.set_animation_at_index(0, 0, m_p_z_index);
+			break;
+		case HitAnimType::Firework:
+			m_p_firework_controller.set_animation_at_index(0, 0, m_p_z_index);
 			break;
 		default:
 			m_p_animation_controller.set_animation_at_index(0, 0, m_p_z_index);
@@ -239,6 +270,15 @@ void Projectile::play_hit_anim(float dt)
 				m_p_big_blood_splat_controller.update_animation(dt);
 				if ( m_p_big_blood_splat_controller.get_sprite_sheet_frame_index(m_p_z_index) == 7 ) {
 					m_p_big_blood_splat_controller.set_animation_at_index(0, 0, m_p_z_index);
+					m_p_hit_aninm_playing = false;
+					m_p_pierce_hit_anims.clear();
+					set_is_active(false);
+				}
+				break;
+			case HitAnimType::Firework:
+				m_p_firework_controller.update_animation(dt);
+				if ( m_p_firework_controller.get_sprite_sheet_frame_index(m_p_z_index) == 20 ) {
+					m_p_firework_controller.set_animation_at_index(0, 0, m_p_z_index);
 					m_p_hit_aninm_playing = false;
 					m_p_pierce_hit_anims.clear();
 					set_is_active(false);
@@ -282,6 +322,9 @@ void Projectile::update_pierce_hit_anims(float dt)
 					break;
 				case HitAnimType::BigBloodSplat:
 					end_frame = 7;
+					break;
+				case HitAnimType::Firework:
+					end_frame = 20;
 					break;
 				default:
 					end_frame = 8;
