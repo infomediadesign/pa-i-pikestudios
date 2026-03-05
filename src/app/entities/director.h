@@ -60,7 +60,7 @@ public:
 		int piercing_chance	  = CFG_VALUE<int>("upgrade_piercing_chance_chance", 13);
 		int luck			  = CFG_VALUE<int>("upgrade_luck_chance", 6);
 		int projectile_amount = CFG_VALUE<int>("upgrade_projectile_amount_chance", 1);
-		int explosive_barrels = 100; //CFG_VALUE<int>("upgrade_explosive_barrels_chance", 1);
+		int explosive_barrels = CFG_VALUE<int>("upgrade_explosive_barrels_chance", 1);
 	};
 
 	DropChances drop_chances;
