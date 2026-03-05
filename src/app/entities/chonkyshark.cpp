@@ -119,3 +119,8 @@ void ChonkyShark::determine_gem_drop()
 		director->spawn_gemstone(m_pos);
 	}
 }
+
+bool ChonkyShark::is_uwu() const
+{
+	return m_uwu;
+}
