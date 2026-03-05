@@ -129,7 +129,7 @@ Shark::Shark() : PSInterfaces::IEntity("shark")
 	std::vector<PSCore::sprites::SpriteSheetData> sp_data{
 			{9, 0.1, PSCore::sprites::Forward, -1}, {9, 0.1, PSCore::sprites::Forward, 1},	{9, 0.1, PSCore::sprites::Forward, -1},
 			{9, 0.1, PSCore::sprites::Forward, -1}, {9, 0.1, PSCore::sprites::Forward, -1}, {9, 0.1, PSCore::sprites::Forward, -1},
-			{9, 0.1, PSCore::sprites::Forward, 1},
+			{9, 0.1, PSCore::sprites::Forward, 1}, {9, 0.1, PSCore::sprites::Forward, 1}
 
 	};
 

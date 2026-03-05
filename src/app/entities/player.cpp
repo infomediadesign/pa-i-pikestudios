@@ -279,9 +279,11 @@ void Player::on_hit()
 		_p->m_can_be_hit = false;
 		if ( auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director()) ) {
 			director->set_player_health(director->player_health() - 1);
-			play_sound(_p->m_hurt_sound, _p->m_hurt_volume, _p->m_hurt_pitch);
 			if ( director->player_health() <= 0 ) {
 				on_death();
+			}
+			else {
+				play_sound(_p->m_hurt_sound, _p->m_hurt_volume, _p->m_hurt_pitch);
 			}
 		}
 	}

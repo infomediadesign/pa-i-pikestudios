@@ -5,7 +5,7 @@
 #include <pscore/viewport.h>
 #include "entities/director.h"
 
-enum Type { UwUNormal = 2, UwUHurt, Normal, Hurt, Fin };
+enum Type { UwUNormal = 2, UwUHurt, Normal, Hurt, Fin, UwUFin };
 
 void ChonkyShark::on_hit()
 {
@@ -62,16 +62,17 @@ ChonkyShark::ChonkyShark() : Shark(), PSInterfaces::IEntity("chonky_shark")
 
 	if ( m_uwu ) {
 		m_animation_controller.set_animation_at_index(UwUNormal, current_frame, -1);
+		m_animation_controller.set_animation_at_index(UwUFin, current_frame, 1);
 	}
 	else {
 		m_animation_controller.set_animation_at_index(Normal, current_frame, -1);
+		m_animation_controller.set_animation_at_index(Fin, current_frame, 1);
 	}
-
-	m_animation_controller.set_animation_at_index(Fin, current_frame, 1);
 
 	m_smear_origin = {7, 0.5};
 	
 	m_drop_upgrade_chance = CFG_VALUE<float>("chonky_drop_upgrade_chance", 0.05);
+	determined_if_marked();
 };
 
 ChonkyShark::~ChonkyShark() {};
