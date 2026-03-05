@@ -1,6 +1,5 @@
 #include <coordinatesystem.h>
 #include <entities/explosivebarrel.h>
-#include <iostream>
 #include <layers/applayer.h>
 #include <memory>
 #include <pscore/application.h>

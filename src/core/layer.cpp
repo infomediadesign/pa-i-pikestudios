@@ -1,4 +1,3 @@
-#include <algorithm>
 #include <pscore/application.h>
 #include <pscore/viewport.h>
 #include <psinterfaces/layer.h>
