@@ -24,10 +24,12 @@ void LootChest::init(const Vector2& position, std::shared_ptr<LootChest> self)
 {
 	set_position(position);
 	m_collider = std::make_unique<PSCore::collision::EntityCollider>(self);
-	m_collider->register_collision_handler([this](std::weak_ptr<PSInterfaces::IEntity> other, const Vector2& pos) {
-		if ( auto locked = other.lock() ) {
-			if ( auto player = dynamic_cast<Player*>(locked.get()) ) {
-				on_hit();
+	m_collider->register_collision_handler([this](std::vector<std::weak_ptr<PSInterfaces::IEntity>> other, const Vector2& pos) {
+		for ( const auto& other: other ) {
+			if ( auto locked = other.lock() ) {
+				if ( auto player = dynamic_cast<Player*>(locked.get()) ) {
+					on_hit();
+				}
 			}
 		}
 	});

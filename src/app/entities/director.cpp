@@ -780,3 +780,8 @@ void FortunaDirector::entity_died(std::shared_ptr<PSInterfaces::IEntity> perpetr
 			m_b_bounty.add_bounty(m_b_bounty_amounts.big_shark_bounty);
 	};
 }
+
+std::vector<std::shared_ptr<Player>> FortunaDirector::players() const
+{
+	return _p->players;
+}

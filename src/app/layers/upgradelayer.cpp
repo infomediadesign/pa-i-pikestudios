@@ -7,13 +7,27 @@
 #include "pscore/viewport.h"
 #include "raygui.h"
 
+float easeInElastic(float x)
+{
+	const float c4 = (2 * PI) / CFG_VALUE<float>("upgrade_menu_frequency", 5.5f);
+
+	int stiffness = CFG_VALUE<int>("upgrade_menu_elastic_stiffness", 15);
+	return x == 0 ? 0 : x == 1 ? 1 : -pow(2, stiffness * x - stiffness) * sin((x * 10 - 10.75) * c4);
+}
+
+float easeOutElastic(float x)
+{
+	return 1.0f - easeInElastic(1.0f - x);
+}
+
 UpgradeLayer::UpgradeLayer()
 {
 	Vector2 frame_grid{1, 1};
 	m_card_texture_1 = PRELOAD_TEXTURE("card_1", "resources/ui/upgrade_card_1.png", frame_grid)->m_s_texture;
 	m_card_texture_2 = PRELOAD_TEXTURE("card_2", "resources/ui/upgrade_card_2.png", frame_grid)->m_s_texture;
 	m_card_texture_3 = PRELOAD_TEXTURE("card_3", "resources/ui/upgrade_card_3.png", frame_grid)->m_s_texture;
-	m_button		 = PRELOAD_TEXTURE("smallbutton_long", "resources/ui/button_small_long.png", frame_grid)->m_s_texture;
+	m_button		 = PRELOAD_TEXTURE("smallbutton", "resources/ui/button_small.png", frame_grid)->m_s_texture;
+	m_gem_socket_texture = PRELOAD_TEXTURE("gem_socket", "resources/ui/gem_socket.png", frame_grid)->m_s_texture;
 
 	// Icons
 	m_fire_rate_icon		= PRELOAD_TEXTURE("fire_rate_icon", "resources/icon/upgr_icon_firerate.png", frame_grid)->m_s_texture;
@@ -24,11 +38,15 @@ UpgradeLayer::UpgradeLayer()
 	m_turn_speed_icon		= PRELOAD_TEXTURE("turn_speed_icon", "resources/icon/upgr_icon_turn_speed.png", frame_grid)->m_s_texture;
 	m_piercing_chance_icon	= PRELOAD_TEXTURE("piercing_chance_icon", "resources/icon/upgr_icon_piercing_chance.png", frame_grid)->m_s_texture;
 	m_player_speed_icon		= PRELOAD_TEXTURE("player_speed_icon", "resources/icon/upgr_icon_movement_speed.png", frame_grid)->m_s_texture;
-	m_explisve_barrel_icon	= PRELOAD_TEXTURE("explosive_barrel_icon", "resources/icon/upgr_icon_explosive_barrels.png", frame_grid)->m_s_texture;
+	m_explisve_barrel_icon	= PRELOAD_TEXTURE("explosive_barrel_icon", "resources/icon/upgr_icon_explosives.png", frame_grid)->m_s_texture;
+	m_health_icon			= PRELOAD_TEXTURE("health_icon", "resources/icon/upgr_icon_health.png", frame_grid)->m_s_texture;
 
-	m_card_1_texture_emissive = PRELOAD_TEXTURE("card_emissive_1", "resources/emissive/upgrate_card_emissive_border_and_center_card_1.png", frame_grid)->m_s_texture;
-	m_card_2_texture_emissive = PRELOAD_TEXTURE("card_emissive_2", "resources/emissive/upgrate_card_emissive_border_and_center_card_2.png", frame_grid)->m_s_texture;
-	m_card_3_texture_emissive = PRELOAD_TEXTURE("card_emissive_3", "resources/emissive/upgrate_card_emissive_border_and_center_card_3.png", frame_grid)->m_s_texture;
+	m_card_1_texture_emissive =
+			PRELOAD_TEXTURE("card_emissive_1", "resources/emissive/upgrate_card_emissive_border_and_center_card_1.png", frame_grid)->m_s_texture;
+	m_card_2_texture_emissive =
+			PRELOAD_TEXTURE("card_emissive_2", "resources/emissive/upgrate_card_emissive_border_and_center_card_2.png", frame_grid)->m_s_texture;
+	m_card_3_texture_emissive =
+			PRELOAD_TEXTURE("card_emissive_3", "resources/emissive/upgrate_card_emissive_border_and_center_card_3.png", frame_grid)->m_s_texture;
 
 	m_emissive_texture_position = GetShaderLocation(m_card_emissive_shader, "texture_emissive");
 	m_emissive_color_position	= GetShaderLocation(m_card_emissive_shader, "emissive_color");
@@ -49,9 +67,13 @@ UpgradeLayer::UpgradeLayer()
 	m_loot_table.add_loot_table(9, director->drop_chances.projectile_amount, m_only_mythic_chance); // Projectile Amount
 	m_loot_table.add_loot_table(10, director->drop_chances.explosive_barrels, m_only_mythic_chance); // Explosive Barrels
 
-	m_gem_sprite = PRELOAD_TEXTURE("gem_sprite", "resources/icon/gem_icon.png", frame_grid);
-	m_gem_texture = m_gem_sprite->m_s_texture;
-	m_gem_anim_controller = PSCore::sprites::SpriteSheetAnimation(m_gem_texture, {{11, 0.1, PSCore::sprites::Forward, m_z_index},});
+	m_gem_sprite		  = PRELOAD_TEXTURE("gem_sprite", "resources/icon/gem_icon.png", frame_grid);
+	m_gem_texture		  = m_gem_sprite->m_s_texture;
+	m_gem_anim_controller = PSCore::sprites::SpriteSheetAnimation(
+			m_gem_texture, {
+								   {11, 0.1, PSCore::sprites::Forward, m_z_index},
+						   }
+	);
 	m_gem_anim_controller.add_animation_at_index(0, m_z_index);
 }
 
@@ -62,11 +84,68 @@ UpgradeLayer::~UpgradeLayer()
 
 void UpgradeLayer::on_update(float dt)
 {
+	ShowCursor();
 	m_time_since_opened += dt;
 	if ( m_time_since_opened > 0.5f ) {
 		m_can_receive_input = true;
 	}
-	//play_reroll_gem_animation(dt);
+
+	for ( int i = 0; i < 3; ++i ) {
+		if ( m_time_since_opened > m_card_anim_delays[i] ) {
+			m_card_anim_timers[i] += dt;
+			if ( m_card_anim_timers[i] > m_card_anim_duration ) {
+				m_card_anim_timers[i] = m_card_anim_duration;
+			}
+		}
+	}
+
+	if ( m_current_loot_table_values.size() >= 3 ) {
+		auto& vp			  = gApp()->viewport();
+		Vector2 origin		  = vp->viewport_origin();
+		float scale			  = vp->viewport_scale();
+		Vector2 screen_middel = {
+				origin.x / vp->viewport_scale() + vp->viewport_base_size().x / 2, origin.y / vp->viewport_scale() + vp->viewport_base_size().y / 2
+		};
+
+		float card_offsets_x[]	  = {0.0f, static_cast<float>(m_card_texture_2.width + 16), static_cast<float>(-(m_card_texture_3.width + 16))};
+		Texture2D card_textures[] = {m_card_texture_1, m_card_texture_2, m_card_texture_3};
+		Vector2 mouse			  = GetMousePosition();
+
+		bool card_hovered = false;
+		for ( int i = 0; i < 3; ++i ) {
+			float anim_t		= (m_card_anim_duration > 0.0f) ? (m_card_anim_timers[i] / m_card_anim_duration) : 1.0f;
+			float anim_y_offset = m_card_anim_start_offset_y * (1.0f - easeOutElastic(anim_t));
+			float cx			= (screen_middel.x + card_offsets_x[i]) * scale;
+			float cy			= (screen_middel.y + anim_y_offset + m_card_hover_lift * m_card_hover_progress[i]) * scale;
+			float hw			= card_textures[i].width / 2.0f * scale;
+			float hh			= card_textures[i].height / 2.0f * scale;
+
+			Rectangle card_rect = {cx - hw, cy - hh, hw * 2.0f, hh * 2.0f};
+			bool hovered		= CheckCollisionPointRec(mouse, card_rect);
+
+			float target = hovered ? 1.0f : 0.0f;
+			m_card_hover_progress[i] += (target - m_card_hover_progress[i]) * m_card_hover_speed * dt;
+			if ( m_card_hover_progress[i] < 0.001f )
+				m_card_hover_progress[i] = 0.0f;
+			if ( m_card_hover_progress[i] > 0.999f )
+				m_card_hover_progress[i] = 1.0f;
+
+			if ( hovered ) {
+				m_hovered_card_index = i;
+				m_card_hovered		 = true;
+				card_hovered		 = true;
+			}
+		}
+		if ( !card_hovered ) {
+			m_hovered_card_index = -1;
+			m_card_hovered		 = false;
+		}
+	}
+
+	if ( m_reroll_anim_playing ) {
+		play_reroll_gem_animation(dt);
+	}
+	
 }
 
 void UpgradeLayer::on_render()
@@ -99,14 +178,29 @@ void UpgradeLayer::draw_upgrade_cards()
 	GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt(BLACK));
 
 	for ( int i = 0; i < 3; ++i ) {
-		Vector2 card_pos = {screen_middel.x + card_offsets_x[i], screen_middel.y};
+		float anim_t		 = (m_card_anim_duration > 0.0f) ? (m_card_anim_timers[i] / m_card_anim_duration) : 1.0f;
+		float anim_y_offset	 = m_card_anim_start_offset_y * (1.0f - easeOutElastic(anim_t));
+		float hover_y_offset = m_card_hover_lift * m_card_hover_progress[i];
+		Vector2 card_pos	 = {screen_middel.x + card_offsets_x[i], screen_middel.y - anim_y_offset + hover_y_offset};
 
 		set_boarder_color(m_current_loot_table_values[i].rarity);
 		BeginShaderMode(m_card_emissive_shader);
 		SetShaderValueTexture(m_card_emissive_shader, m_emissive_texture_position, card_emissive_textures[i]);
 		SetShaderValue(m_card_emissive_shader, m_emissive_color_position, &m_emissive_color, SHADER_UNIFORM_VEC3);
 
-		if ( GuiButtonTexture(card_textures[i], card_pos, 0, scale, WHITE, GRAY, "") && m_can_receive_input ) {
+		float max_other_hover = 0.0f;
+		for ( int j = 0; j < 3; ++j ) {
+			if ( j != i ) max_other_hover = fmaxf(max_other_hover, m_card_hover_progress[j]);
+		}
+		float dim = 1.0f - max_other_hover * 0.5f;
+		Color card_color = {
+			(unsigned char)(255 * dim),
+			(unsigned char)(255 * dim),
+			(unsigned char)(255 * dim),
+			255
+		};
+
+		if ( GuiButtonTexture(card_textures[i], card_pos, 0, scale, card_color, WHITE, "") && m_can_receive_input ) {
 			apply_upgrade(m_current_loot_table_values[i]);
 			gApp()->call_later([]() { gApp()->pop_layer<UpgradeLayer>(); });
 			gApp()->call_later([]() {
@@ -131,10 +225,9 @@ void UpgradeLayer::apply_upgrade(LootTableValue upgrade_info)
 	float upgrade_multyplier = get_multiplier(upgrade_info.rarity);
 	float upgrade_amount;
 
-	if ( upgrade_info.rarity == 5) {
+	if ( upgrade_info.rarity == 5 ) {
 		gApp()->play_ui_sound(3);
-	}
-	else {
+	} else {
 		gApp()->play_ui_sound(2);
 	}
 
@@ -320,7 +413,7 @@ std::string UpgradeLayer::upgrade_type_to_string(int index)
 		case 9:
 			return "Multi Shot";
 		case 10:
-			return "Explosive Barrels";
+			return "BOOOM!";
 		default:
 			return "Unknown";
 	}
@@ -450,7 +543,8 @@ void UpgradeLayer::draw_upgrade_preview(Vector2 card_pos, LootTableValue upgrade
 			);
 			break;
 		case 10:
-				break;
+			preview = "New Weapon Type";
+			break;
 		default:
 			break;
 	}
@@ -474,19 +568,47 @@ void UpgradeLayer::draw_reroll_button()
 				origin.x / vp->viewport_scale() + vp->viewport_base_size().x / 2, origin.y / vp->viewport_scale() + vp->viewport_base_size().y / 2
 		};
 		float scale = vp->viewport_scale();
-		if ( GuiButtonTexture(
-					 m_button, {screen_middel.x, screen_middel.y + 130}, 0, scale, WHITE, GRAY,
-					 std::format("  {}x Reroll", director->reroll_amount()).c_str()
-			 ) &&
+		if ( GuiButtonTexture(m_button, {screen_middel.x, screen_middel.y + 130}, 0, scale, WHITE, GRAY, "Reroll") &&
 			 m_can_receive_input ) {
 			m_current_loot_table_values = m_loot_table.loot_table_values(3);
 			director->set_reroll_amount(director->reroll_amount() - 1);
 			gApp()->play_ui_sound(0);
 		}
-		vp->draw_in_viewport(
-				m_gem_texture, m_gem_anim_controller.get_source_rectangle(m_z_index).value_or(Rectangle{0}), {screen_middel.x - 10 * scale, screen_middel.y + 130},
-				0, WHITE
-		);
+		Vector2 mouse = GetMousePosition();
+
+		Rectangle button_rect = {
+				screen_middel.x * scale - (m_button.width * scale) / 2.0f, (screen_middel.y + 130) * scale - (m_button.height * scale) / 2.0f,
+				m_button.width * scale, m_button.height * scale};
+
+		bool hovered = CheckCollisionPointRec(mouse, button_rect);
+
+		if ( hovered ) {
+			m_reroll_anim_playing = true;
+		} 
+		else {
+			m_reroll_anim_playing = false;
+			m_gem_anim_controller.set_animation_at_index(0, 0, m_z_index);
+		}
+
+		Rectangle gem_source  = m_gem_anim_controller.get_source_rectangle(m_z_index).value_or(Rectangle{0});
+		float button_center_x = screen_middel.x * scale;
+		float button_center_y = (screen_middel.y + 130) * scale;
+		float gem_center_x	  = button_center_x - (m_button.width / 2.0f - gem_source.width / 2.0f - 4.0f) * scale;
+
+
+		Rectangle gem_socket_source = {0, 0, static_cast<float>(m_gem_socket_texture.width), static_cast<float>(m_gem_socket_texture.height)};
+		Rectangle gem_socket_dest = {button_center_x, button_center_y + 27 * scale, gem_socket_source.width * scale, gem_socket_source.height * scale};
+		Vector2 gem_socket_origin	= {gem_socket_dest.width / 2.0f, gem_socket_dest.height / 2.0f};
+
+		Rectangle gem_dest = {gem_socket_dest.x - 15 * scale, gem_socket_dest.y, gem_source.width * scale, gem_source.height * scale};
+		Vector2 gem_origin = {gem_dest.width / 2.0f, gem_dest.height / 2.0f};
+		DrawTexturePro(m_gem_socket_texture, gem_socket_source, gem_socket_dest, gem_socket_origin, 0, WHITE);
+		DrawTexturePro(m_gem_texture, gem_source, gem_dest, gem_origin, 0, WHITE);
+
+		GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt({211, 177, 125, 255}));
+		GuiLabel({gem_socket_dest.x - 5 *scale , gem_socket_dest.y -10 * scale, 35 * scale, 20 * scale},
+				std::format("{}x", director->reroll_amount()).c_str());
+		GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt({0, 0, 0, 255}));
 	}
 }
 
@@ -510,7 +632,7 @@ void UpgradeLayer::draw_upgrade_icon(int index, Vector2 card_pos)
 			DrawTextureEx(m_fire_rate_icon, pos, 0, scale, WHITE);
 			break;
 		case 4:
-			// DrawTextureEx(m_fire_rate_icon, pos, 0, scale, WHITE);
+			DrawTextureEx(m_health_icon, pos, 0, scale, WHITE);
 			break;
 		case 5:
 			DrawTextureEx(m_player_speed_icon, pos, 0, scale, WHITE);
@@ -528,6 +650,8 @@ void UpgradeLayer::draw_upgrade_icon(int index, Vector2 card_pos)
 			// DrawTextureEx(m_fire_rate_icon, pos, 0, scale, WHITE);
 			break;
 		case 10:
+			DrawTextureEx(m_explisve_barrel_icon, pos, 0, scale, WHITE);
+			break;
 		default:
 			break;
 	}
@@ -536,8 +660,7 @@ void UpgradeLayer::draw_upgrade_icon(int index, Vector2 card_pos)
 void UpgradeLayer::play_reroll_gem_animation(float dt)
 {
 	m_gem_anim_controller.update_animation(dt);
-	if ( m_gem_anim_controller.get_sprite_sheet_frame_index(m_z_index).value_or(-1) == 10 )
-		{
+	if ( m_gem_anim_controller.get_sprite_sheet_frame_index(m_z_index).value_or(-1) == 10 ) {
 		m_gem_anim_controller.set_animation_at_index(0, 0, m_z_index);
 	}
 }

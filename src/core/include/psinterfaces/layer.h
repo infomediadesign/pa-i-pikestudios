@@ -23,6 +23,8 @@ namespace PSInterfaces {
 
 		void resume();
 
+		bool is_active() const;
+
 		const std::unique_ptr<PSCore::Renderer>& renderer();
 
 		/*!

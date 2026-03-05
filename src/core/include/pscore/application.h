@@ -41,18 +41,20 @@ namespace PSCore {
 		 * @brief pushes a Layer of type T to the layer stack
 		 */
 		template<ILayerDerived TL>
-		void push_layer()
+		TL* push_layer()
 		{
 			m_layer_stack.push_back(std::make_unique<TL>());
+			return dynamic_cast<TL*>(m_layer_stack.back().get());
 		}
 
 		template<ILayerDerived TL, ILayerDerived TO>
-		void switch_layer()
+		TO* switch_layer()
 		{
 			for ( auto itr = m_layer_stack.begin(); itr != m_layer_stack.end(); itr++ ) {
 				if ( auto casted = dynamic_cast<TL*>(itr->get()) ) {
-					itr->reset(new TO());
-					return;
+					TO* new_layer = new TO();
+					itr->reset(new_layer);
+					return new_layer;
 				}
 			}
 		}

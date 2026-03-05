@@ -2,10 +2,15 @@
 #include <entities/explosivebarrel.h>
 #include <iostream>
 #include <layers/applayer.h>
+#include <memory>
 #include <pscore/application.h>
+#include <pscore/sprite.h>
 #include <pscore/viewport.h>
+#include <psinterfaces/entity.h>
 #include <raylib.h>
-#include "pscore/sprite.h"
+#include <string>
+#include <vector>
+#include <entities/director.h>
 
 ExplosiveBarrel::ExplosiveBarrel() : PSInterfaces::IEntity("explosive_barrel")
 {
@@ -38,7 +43,15 @@ void ExplosiveBarrel::update(float dt)
 
 		m_animation_controller.update_animation(dt);
 		if ( auto app_layer = gApp()->get_layer<AppLayer>() ) {
-			m_collider->check_collision(app_layer->entities());
+			m_collider->check_collision(app_layer->entities(), [](std::weak_ptr<PSInterfaces::IEntity> other, Vector2 pos) -> bool {
+				if ( std::shared_ptr<PSInterfaces::IEntity> locked = other.lock() ) {
+					std::string ident = locked->ident();
+					if ( ident == "player" || ident == "shark" || ident == "chonky_shark" || ident == "hunter" || ident == "tentacle" ) {
+						return true;
+					}
+				}
+				return false;
+			});
 		}
 
 		if ( m_can_play_sound ) {
@@ -79,7 +92,7 @@ void ExplosiveBarrel::render()
 		else {
 			propose_z_index(-1);
 
-			DrawCircleV(pos_global, Lerp(0,m_explosion_radius, m_timer / m_detonation_time), {200,0,0,75});
+			DrawCircleV(pos_global, Lerp(0, m_explosion_radius, m_timer / m_detonation_time), {200, 0, 0, 75});
 
 			BeginShaderMode(m_flash_shader);
 
@@ -107,9 +120,21 @@ void ExplosiveBarrel::init(std::shared_ptr<ExplosiveBarrel> self, const Vector2&
 	m_position = position;
 
 	m_collider = std::make_unique<PSCore::collision::EntityCollider>(self);
-	m_collider->register_collision_handler([this](std::weak_ptr<PSInterfaces::IEntity> other, const Vector2& pos) {
-		if ( auto locked = other.lock() ) {
-			locked->on_hit();
+	m_collider->register_collision_handler([this](std::vector<std::weak_ptr<PSInterfaces::IEntity>> others, const Vector2& pos) {
+		for ( const auto& other: others ) {
+			if ( auto locked = other.lock() ) {
+				locked->on_hit();
+				
+				if ( locked->is_active() && !locked->is_dead_hitable() )
+						return;
+
+				if ( auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director()) ) {
+					director->entity_died(m_parent, locked->ident());
+					if ( locked->is_dead_hitable() ) {
+						locked->set_is_dead_hitable(false);
+					}
+				}
+			}
 		}
 	});
 }

@@ -16,6 +16,8 @@ static const int STANDART_TEXT_SIZE = 10;
 
 class SkinMenu
 {
+	friend class MainMenuLayer;
+
 public:
 	SkinMenu()
 	{
@@ -24,10 +26,11 @@ public:
 
 		texture_emissive_pos = GetShaderLocation(sail_clr, "texture_emissive");
 		texture_color_pos	 = GetShaderLocation(sail_clr, "emissive_color");
-		
+
 		if ( PSCore::SettingsManager::inst()->settings.find("user_preferences") != PSCore::SettingsManager::inst()->settings.end() ) {
-			auto& settings				= PSCore::SettingsManager::inst()->settings["user_preferences"];
-			Vector3 clr = PSUtils::color_to_vector3(std::get<int>(settings->value("player_color").value_or(PSUtils::vector3_to_color(m_colors[1][2]))));
+			auto& settings = PSCore::SettingsManager::inst()->settings["user_preferences"];
+			Vector3 clr =
+					PSUtils::color_to_vector3(std::get<int>(settings->value("player_color").value_or(PSUtils::vector3_to_color(m_colors[1][2]))));
 			for ( int i = 0; i < 3; ++i ) {
 				for ( int j = 0; j < 3; ++j ) {
 					if ( m_colors[i][j] == clr ) {
@@ -102,7 +105,7 @@ public:
 				if ( hovered && IsMouseButtonPressed(MOUSE_BUTTON_LEFT) ) {
 					m_selected_color = {i, j};
 					if ( PSCore::SettingsManager::inst()->settings.find("user_preferences") != PSCore::SettingsManager::inst()->settings.end() ) {
-						auto& settings				= PSCore::SettingsManager::inst()->settings["user_preferences"];
+						auto& settings = PSCore::SettingsManager::inst()->settings["user_preferences"];
 						settings->set_value("player_color", PSUtils::vector3_to_color(m_colors[i][j]));
 						settings->safe();
 					}
@@ -164,15 +167,16 @@ private:
 MainMenuLayer::MainMenuLayer()
 {
 	Vector2 frame_grid{1, 1};
-	m_button_1			   = PRELOAD_TEXTURE("button1", "resources/ui/button_big_1.png", frame_grid)->m_s_texture;
-	m_button_2			   = PRELOAD_TEXTURE("button2", "resources/ui/button_big_2.png", frame_grid)->m_s_texture;
-	m_button_3			   = PRELOAD_TEXTURE("button3", "resources/ui/button_big_3.png", frame_grid)->m_s_texture;
-	m_button_4			   = PRELOAD_TEXTURE("button4", "resources/ui/button_big_4.png", frame_grid)->m_s_texture;
-	m_main_menu_background = PRELOAD_TEXTURE("main_menu_bg", "resources/ui/main_menu_background.png", frame_grid)->m_s_texture;
-	m_main_menu_title	   = PRELOAD_TEXTURE("main_menu_title", "resources/ui/fortunas_echo_title.png", frame_grid)->m_s_texture;
-	m_button			   = PRELOAD_TEXTURE("smallbutton", "resources/ui/button_small.png", frame_grid)->m_s_texture;
-	m_skin_btn			   = PRELOAD_TEXTURE("skin_btn", "resources/ui/skin_button.png", frame_grid)->m_s_texture;
-	m_options_btn		   = PRELOAD_TEXTURE("options_btn", "resources/ui/option_button.png", frame_grid)->m_s_texture;
+	m_button_1				 = PRELOAD_TEXTURE("button1", "resources/ui/button_big_1.png", frame_grid)->m_s_texture;
+	m_button_2				 = PRELOAD_TEXTURE("button2", "resources/ui/button_big_2.png", frame_grid)->m_s_texture;
+	m_button_3				 = PRELOAD_TEXTURE("button3", "resources/ui/button_big_3.png", frame_grid)->m_s_texture;
+	m_button_4				 = PRELOAD_TEXTURE("button4", "resources/ui/button_big_4.png", frame_grid)->m_s_texture;
+	m_main_menu_background	 = PRELOAD_TEXTURE("main_menu_bg", "resources/ui/main_menu_background.png", frame_grid)->m_s_texture;
+	m_main_menu_title		 = PRELOAD_TEXTURE("main_menu_title", "resources/ui/fortunas_echo_title.png", frame_grid)->m_s_texture;
+	m_button				 = PRELOAD_TEXTURE("smallbutton", "resources/ui/button_small.png", frame_grid)->m_s_texture;
+	m_skin_btn				 = PRELOAD_TEXTURE("skin_btn", "resources/ui/skin_button.png", frame_grid)->m_s_texture;
+	m_skin_btn_ship_emissive = PRELOAD_TEXTURE("skin_btn_ship_emissive", "resources/emissive/skin_button_emissive.png", frame_grid)->m_s_texture;
+	m_options_btn			 = PRELOAD_TEXTURE("options_btn", "resources/ui/option_button.png", frame_grid)->m_s_texture;
 
 	m_itch_io = PRELOAD_TEXTURE("itchio", "resources/icon/itchio.png", frame_grid)->m_s_texture;
 
@@ -233,7 +237,18 @@ void MainMenuLayer::on_render()
 		gApp()->play_ui_sound(0);
 	}
 
-	if ( GuiButtonTexture(m_skin_btn, {button_pos.x + 44, button_pos.y}, 0, scale, WHITE, GRAY, "") ) {
+	SetShaderValue(
+			m_skin_menu->sail_clr, m_skin_menu->texture_color_pos,
+			&m_skin_menu->m_colors[m_skin_menu->m_selected_color.first][m_skin_menu->m_selected_color.second], SHADER_UNIFORM_VEC3
+	);
+	BeginShaderMode(m_skin_menu->sail_clr);
+	SetShaderValueTexture(m_skin_menu->sail_clr, m_skin_menu->texture_emissive_pos, m_skin_btn_ship_emissive);
+
+	int skin_clicked = GuiButtonTexture(m_skin_btn, {button_pos.x + 44, button_pos.y}, 0, scale, WHITE, GRAY, "");
+
+	EndShaderMode();
+
+	if ( skin_clicked ) {
 		m_skin_menu->toggle_active();
 	}
 

@@ -106,6 +106,7 @@ class PlayerPriv
 
 	// Upgrades
 	std::unique_ptr<PSCore::Spawner<ExplosiveBarrel, AppLayer>> m_explosive_barrel_spawner;
+	bool m_explosive_barrels_enabled = false;
 
 	// Sound
 	Sound m_hurt_sound	= LoadSound("resources/sfx/hurt.mp3");
@@ -795,8 +796,10 @@ void Player::enable_explosive_barrels()
 	_p->m_explosive_barrel_spawner = std::make_unique<PSCore::Spawner<ExplosiveBarrel, AppLayer>>(CFG_VALUE<float>("explosive_barrel_intervall", 5.f), 0, INT32_MAX, true);
 	_p->m_explosive_barrel_spawner->register_spawn_callback([this](std::shared_ptr<ExplosiveBarrel> barrel) {
 		barrel->init(barrel, _p->m_position);
+		barrel->set_parent(shared_ptr_this());
 	});
 	_p->m_explosive_barrel_spawner->resume();
+	_p->m_explosive_barrels_enabled = true;
 };
 
 void Player::set_barrel_intervall(float interval) {
@@ -812,4 +815,9 @@ void Player::play_sound(Sound& sound, float volume, float pitch)
 	SetSoundPitch(sound, pitch + static_cast<float>(random_pitch) / 100);
 
 	PlaySound(sound);
+}
+
+bool Player::explosive_barrels_enabled() const
+{
+	return _p->m_explosive_barrels_enabled;
 }

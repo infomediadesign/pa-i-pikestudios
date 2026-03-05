@@ -3,12 +3,14 @@
 #include <layers/applayer.h>
 #include <layers/mainmenulayer.h>
 #include <layers/uilayer.h>
+#include <layers/upgradelayer.h>
 #include <pscore/application.h>
 #include <pscore/viewport.h>
 #include <raygui.h>
 #include <raylib.h>
-#include <layers/upgradelayer.h>
+#include "layers/optionslayer.h"
 #include "pscore/utils.h"
+#include "pscore/settings.h"
 
 PauseLayer::PauseLayer()
 {
@@ -24,21 +26,24 @@ PauseLayer::PauseLayer()
 
 void PauseLayer::on_render()
 {
+	if (!active)
+		return;
+	
 	auto& vp	   = gApp()->viewport();
 	Vector2 origin = vp->viewport_origin();
 	float scale	   = vp->viewport_scale();
 	float spacing  = 8;
 
-	float button_width = static_cast<float>(m_button.width);
+	float button_width	= static_cast<float>(m_button.width);
 	float button_height = static_cast<float>(m_button.height);
 	Vector2 screen_size = vp->viewport_base_size();
-	Vector2 button_pos	= {origin.x / scale + screen_size.x / 2.0f, origin.y / scale + screen_size.y / 2.0f - button_height / 2.0f - 10.0f};
+	Vector2 button_pos	= {origin.x / scale + screen_size.x / 2.0f, origin.y / scale + screen_size.y / 2.0f - button_height / 2.0f - 30.0f};
 
 	GuiSetStyle(DEFAULT, TEXT_SIZE, 10 * scale);
 	GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt({0, 0, 0, 255}));
 
 	DrawRectangle(origin.x, origin.y, GetScreenWidth() * scale, GetScreenHeight() * scale, Color{0, 0, 0, 150});
-	
+
 	if ( GuiButtonTexture(m_button, button_pos, 0, scale, WHITE, GRAY, "Resume") ) {
 		gApp()->call_later([]() {
 			gApp()->pop_layer<PauseLayer>();
@@ -62,15 +67,43 @@ void PauseLayer::on_render()
 	}
 
 	button_pos.y += button_height + 8.0f;
-	
+
 	if ( GuiButtonTexture(m_button, button_pos, 0, scale, WHITE, GRAY, "Main Menu") ) {
 		gApp()->call_later([]() {
 			gApp()->pop_layer<PauseLayer>();
 			gApp()->pop_layer<UILayer>();
 			gApp()->pop_layer<UpgradeLayer>();
 			gApp()->switch_layer<AppLayer, MainMenuLayer>();
-
 		});
+		gApp()->play_ui_sound(0);
+	}
+
+	button_pos.y += button_height + 8.0f;
+
+	if ( GuiButtonTexture(m_button, button_pos, 0, scale, WHITE, GRAY, "Options") ) {
+		gApp()->call_later([this]() {
+			OptionsLayer* layer = gApp()->push_layer<OptionsLayer>();
+			layer->set_exit_btn_function("Save", [this] {
+				gApp()->call_later([this] {
+					gApp()->pop_layer<OptionsLayer>();
+					this->resume();
+				});
+			});
+		});
+		gApp()->play_ui_sound(0);
+		suspend();
+	}
+
+	button_pos.y += button_height + 8.0f;
+
+	if ( GuiButtonTexture(m_button, button_pos, 0, scale, WHITE, GRAY, "Retry") ) {
+		gApp()->call_later([]() {
+			gApp()->pop_layer<AppLayer>();
+			gApp()->pop_layer<UILayer>();
+			gApp()->switch_layer<PauseLayer, AppLayer>();
+			gApp()->game_director_ref().reset(new FortunaDirector());
+		});
+		HideCursor();
 		gApp()->play_ui_sound(0);
 	}
 
@@ -123,7 +156,7 @@ void PauseLayer::draw_kill_stats(float scale)
 {
 	float vertical_spacing	 = 10 * scale;
 	float horizontal_spacing = 75 * scale;
-	
+
 	GuiSetStyle(DEFAULT, TEXT_SIZE, 15 * scale);
 	GuiLabel(m_stats_base_bounds, "Kills");
 	m_stats_base_bounds.y += 20 * scale;
@@ -133,7 +166,8 @@ void PauseLayer::draw_kill_stats(float scale)
 		GuiLabel(m_stats_base_bounds, m_kill_stat_lines[i].c_str());
 		GuiLabel(
 				{m_stats_base_bounds.x + horizontal_spacing, m_stats_base_bounds.y, m_stats_base_bounds.width, m_stats_base_bounds.height},
-				m_kill_stat_lines[i + 1].c_str());
+				m_kill_stat_lines[i + 1].c_str()
+		);
 		m_stats_base_bounds.y += vertical_spacing;
 	}
 }
@@ -147,39 +181,57 @@ void PauseLayer::draw_player_stats(float scale)
 	GuiLabel(m_stats_base_bounds, "Player Stats");
 	m_stats_base_bounds.y += 20 * scale;
 
-	for ( int i = 0; i < m_player_stat_lines.size(); i += 2 ) {
+	for ( int i = 0; i < m_player_stats.size(); i++ ) {
 		GuiSetStyle(DEFAULT, TEXT_SIZE, 6 * scale);
-		GuiLabel(m_stats_base_bounds, m_player_stat_lines[i].c_str());
-		GuiLabel(
+		GuiLabel(m_stats_base_bounds, m_player_stats[i].name.c_str());
+		if ( m_player_stats[i].is_upgraded ) {
+			GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt({0, 255, 0, 255}));
+			GuiLabel(
 				{m_stats_base_bounds.x + horizontal_spacing, m_stats_base_bounds.y, m_stats_base_bounds.width, m_stats_base_bounds.height},
-				m_player_stat_lines[i + 1].c_str()
-		);
+				m_player_stats[i].value.c_str());
+			GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt({255, 255, 255, 255}));
+		} 
+		else{
+			GuiLabel(
+					{m_stats_base_bounds.x + horizontal_spacing, m_stats_base_bounds.y, m_stats_base_bounds.width, m_stats_base_bounds.height},
+					m_player_stats[i].value.c_str()
+			);
+		}
+
 		m_stats_base_bounds.y += vertical_spacing;
 	}
+	m_stats_base_bounds.y += vertical_spacing;
+	GuiSetStyle(DEFAULT, TEXT_SIZE, 6 * scale);
+	GuiLabel(m_stats_base_bounds, "Rerolls available:");
+	GuiLabel(
+			{m_stats_base_bounds.x + horizontal_spacing, m_stats_base_bounds.y, m_stats_base_bounds.width, m_stats_base_bounds.height},
+			std::format("{}", m_director->reroll_amount()).c_str()
+	);
 }
 
 void PauseLayer::init_stat_strings()
 {
-	m_player_stat_lines.clear();
+	m_player_stats.clear();
 	m_kill_stat_lines.clear();
 
 	// init player stats
-	m_player_stat_lines.push_back("Speed:");
-	m_player_stat_lines.push_back(std::format("{:.2f}", m_director->player_max_velocity()));
-	m_player_stat_lines.push_back("Turn Speed:");
-	m_player_stat_lines.push_back(std::format("{:.2f}", m_director->player_input_rotation_mult()));
-	m_player_stat_lines.push_back("Fire Rate:");
-	m_player_stat_lines.push_back(std::format("{:.2f}s", m_director->player_current_fire_rate()));
-	m_player_stat_lines.push_back("Projectile Speed:");
-	m_player_stat_lines.push_back(std::format("{:.2f}", m_director->player_current_projectile_speed()));
-	m_player_stat_lines.push_back("Fire Range:");
-	m_player_stat_lines.push_back(std::format("{:.2f}", m_director->player_current_fire_range()));
-	m_player_stat_lines.push_back("Piercing Chance:");
-	m_player_stat_lines.push_back(std::format("{:.2f}%", m_director->player_piercing_chance()));
-	m_player_stat_lines.push_back("Luck:");
-	m_player_stat_lines.push_back(std::format("{:.2f}%", m_director->player_luck() * 100));
-	m_player_stat_lines.push_back("Multi Shot:");
-	m_player_stat_lines.push_back(std::format("{}", m_director->player_projectile_amount()));
+	m_player_stats.push_back({"Speed:", std::format("{:.2f}", m_director->player_max_velocity()),m_director->player_max_velocity() > (CFG_VALUE<float>("player_max_velocity", 200.0f))});
+	m_player_stats.push_back({"Turn Speed:", std::format("{:.2f}", m_director->player_input_rotation_mult()),m_director->player_input_rotation_mult() > (CFG_VALUE<float>("player_input_rotation_mult", 200.0f))});
+	m_player_stats.push_back({"Fire Rate:", std::format("{:.2f}s", m_director->player_current_fire_rate()),m_director->player_current_fire_rate() < CFG_VALUE<float>("player_current_fire_rate", 0.5f)});
+	m_player_stats.push_back({"Projectile Speed:", std::format("{:.2f}", m_director->player_current_projectile_speed()),m_director->player_current_projectile_speed() > CFG_VALUE<float>("player_current_projectile_speed", 300.0f)});
+	m_player_stats.push_back({"Fire Range:", std::format("{:.2f}", m_director->player_current_fire_range()),m_director->player_current_fire_range() > CFG_VALUE<float>("player_current_fire_range", 100.0f)});
+	m_player_stats.push_back({"Piercing Chance:", std::format("{:.2f}%", m_director->player_piercing_chance()),m_director->player_piercing_chance() > CFG_VALUE<float>("player_current_piercing_chance", 5.0f)});
+	m_player_stats.push_back({"Luck:", std::format("{:.2f}%", m_director->player_luck() * 100), m_director->player_luck() > CFG_VALUE<float>("player_current_luck", 0.1f)});
+
+	if ( m_director->player_projectile_amount() > 1 ) {
+		m_player_stats.push_back({"Multi Shot:", std::format("{}", m_director->player_projectile_amount()), true});
+	}
+	if ( m_director->players()[0]->cannon_container().size() > 4 ) {
+		m_player_stats.push_back({"Cannons:", std::format("{}", m_director->players()[0]->cannon_container().size()), true});
+	}
+	if ( m_director->players()[0]->explosive_barrels_enabled() ) {
+		m_player_stats.push_back({"Explosive Barrels:", "enabled", true});
+	}
 
 	// init kill stats
 	if ( m_director->statistics().sharks_killed > 0 ) {

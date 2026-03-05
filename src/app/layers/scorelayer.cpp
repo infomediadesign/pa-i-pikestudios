@@ -15,6 +15,7 @@ ScoreLayer::ScoreLayer() : m_filemanager(m_score_filename)
 	
 	Vector2 frame_grid{1, 1};
 	m_button = PRELOAD_TEXTURE("smallbutton", "resources/ui/button_small.png", frame_grid)->m_s_texture;
+	m_mark_texture = PRELOAD_TEXTURE("mark", "resources/ui/mark.png", frame_grid)->m_s_texture;
 }
 
 ScoreLayer::~ScoreLayer()
@@ -162,28 +163,39 @@ void ScoreLayer::draw_score_board()
 	Rectangle score_field_rect{name_field_rect.x + name_field_rect.width + 16 * scale, name_field_rect.y, name_field_rect.width, name_field_rect.height};
 	Rectangle left_rank_rect{name_field_rect.x - 32 * scale, name_field_rect.y, 16 * scale, name_field_rect.height};
 	Rectangle right_color_rect{score_field_rect.x + score_field_rect.width + 16 * scale, name_field_rect.y, 16 * scale, name_field_rect.height};
+	Rectangle mark_rect{left_rank_rect.x - 16 * scale, left_rank_rect.y, m_mark_texture.width, m_mark_texture.height};
 
 	int rank = 1;
 	int spacing = 24 * scale;
 
 	for ( const auto& entry: highscore ) {
 
-		//GuiPanel(name_field_rect, NULL);
+		// GuiPanel(name_field_rect, NULL);
 		GuiLabel(name_field_rect, (" " + entry.name).c_str());
 
-		//GuiPanel(score_field_rect, NULL);
+		// GuiPanel(score_field_rect, NULL);
 		GuiLabel(score_field_rect, (" " + std::to_string(entry.score)).c_str());
 
-		//GuiPanel(left_rank_rect, NULL);
-		GuiLabel({left_rank_rect.x + 2, left_rank_rect.y, left_rank_rect.width +2, left_rank_rect.height}, ("" + std::to_string(rank) + ".").c_str());
-		
-		//GuiPanel(right_color_rect, NULL);
+		// GuiPanel(left_rank_rect, NULL);
+		GuiLabel(
+				{left_rank_rect.x + 2, left_rank_rect.y, left_rank_rect.width + 2, left_rank_rect.height}, ("" + std::to_string(rank) + ".").c_str()
+		);
+
+		// GuiPanel(right_color_rect, NULL);
 		GuiLabel(right_color_rect, "");
-		
+
+		if ( entry.name == gApp()->current_player_name() ){
+		DrawTexturePro(
+				m_mark_texture, {0, 0, static_cast<float>(m_mark_texture.width), static_cast<float>(m_mark_texture.height)},
+				{left_rank_rect.x - m_mark_texture.width * scale, left_rank_rect.y, m_mark_texture.width * scale, m_mark_texture.height * scale},
+				{0, 0}, 0, WHITE);
+		}
+
 		name_field_rect.y += spacing;
 		score_field_rect.y += spacing;
 		left_rank_rect.y += spacing;
 		right_color_rect.y += spacing;
+		mark_rect.y += spacing;
 		rank++;
 	}
 }

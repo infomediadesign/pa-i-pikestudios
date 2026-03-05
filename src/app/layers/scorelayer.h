@@ -50,5 +50,6 @@ public:
 	bool m_retry_button_visible					= false;
 	Texture2D m_scoreboard_background;
 	Texture2D m_button;
+	Texture2D m_mark_texture;
 
 };

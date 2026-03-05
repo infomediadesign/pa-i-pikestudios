@@ -46,13 +46,15 @@ Projectile::Projectile() : PSInterfaces::IEntity("projectile")
 	// Small Blood Splat (shark, chonky_shark)
 	m_p_small_blood_splat_sprite  = PRELOAD_TEXTURE("projectile_small_blood_splat", "resources/vfx/8x8_blood_splatter.png", hit_anim_frame_grid);
 	m_p_small_blood_splat_texture = m_p_small_blood_splat_sprite->m_s_texture;
-	m_p_small_blood_splat_controller = PSCore::sprites::SpriteSheetAnimation(m_p_small_blood_splat_texture, {{6, 0.05, PSCore::sprites::Forward, m_p_z_index}});
+	m_p_small_blood_splat_controller =
+			PSCore::sprites::SpriteSheetAnimation(m_p_small_blood_splat_texture, {{6, 0.05, PSCore::sprites::Forward, m_p_z_index}});
 	m_p_small_blood_splat_controller.add_animation_at_index(0, m_p_z_index);
 
 	// Big Blood Splat (tentacle)
 	m_p_big_blood_splat_sprite	= PRELOAD_TEXTURE("projectile_big_blood_splat", "resources/vfx/16x16_blood_splatter.png", hit_anim_frame_grid);
 	m_p_big_blood_splat_texture = m_p_big_blood_splat_sprite->m_s_texture;
-	m_p_big_blood_splat_controller = PSCore::sprites::SpriteSheetAnimation(m_p_big_blood_splat_texture, {{8, 0.1, PSCore::sprites::Forward, m_p_z_index}});
+	m_p_big_blood_splat_controller =
+			PSCore::sprites::SpriteSheetAnimation(m_p_big_blood_splat_texture, {{8, 0.1, PSCore::sprites::Forward, m_p_z_index}});
 	m_p_big_blood_splat_controller.add_animation_at_index(0, m_p_z_index);
 }
 
@@ -61,26 +63,28 @@ void Projectile::init(const Vector2& position, std::shared_ptr<Projectile> self)
 	set_position(position);
 	m_p_shared_ptr = self;
 	m_collider	   = std::make_unique<PSCore::collision::EntityCollider>(m_p_shared_ptr);
-	m_collider->register_collision_handler([this](std::weak_ptr<PSInterfaces::IEntity> other, const Vector2& pos) {
-		if ( auto locked = other.lock() )
-			if ( locked->is_active() ) {
-				locked->on_hit();
-				m_p_last_hit_ident = locked->ident();
-				on_hit();
+	m_collider->register_collision_handler([this](std::vector<std::weak_ptr<PSInterfaces::IEntity>> others, const Vector2& pos) {
+		for ( const auto& other: others ) {
+			if ( auto locked = other.lock() )
+				if ( locked->is_active() ) {
+					locked->on_hit();
+					m_p_last_hit_ident = locked->ident();
+					on_hit();
 
-				if (locked->is_active() ) {
-					if ( !locked->is_dead_hitable() ) {
-						return;
+					if ( locked->is_active() ) {
+						if ( !locked->is_dead_hitable() ) {
+							return;
+						}
+					}
+
+					if ( auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director()) ) {
+						director->entity_died(m_p_owner, locked->ident());
+						if ( locked->is_dead_hitable() ) {
+							locked->set_is_dead_hitable(false);
+						}
 					}
 				}
-
-				if (auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director())) {
-					director->entity_died(m_p_owner, locked->ident());
-					if ( locked->is_dead_hitable() ) {
-						locked->set_is_dead_hitable(false);
-					}
-				}
-			}
+		}
 	});
 }
 
@@ -95,7 +99,7 @@ void Projectile::update(const float dt)
 		if ( auto app_layer = gApp()->get_layer<AppLayer>() ) {
 			m_collider->check_collision(app_layer->entities(), [this](std::weak_ptr<PSInterfaces::IEntity> other, const Vector2& point) {
 				if ( auto l = other.lock() ) {
-					bool is_owner = l->ident() == m_p_owner->ident();
+					bool is_owner  = l->ident() == m_p_owner->ident();
 					bool is_same   = l->ident() == ident_;
 					bool is_cannon = l->ident() == "cannon";
 					bool is_loot   = l->ident() == "loot_chest";
@@ -118,15 +122,17 @@ void Projectile::render()
 		if ( !pierce.finished ) {
 			Texture2D tex = m_p_hit_anim_texture;
 			switch ( pierce.hit_type ) {
-				case HitAnimType::SmallBloodSplat: tex = m_p_small_blood_splat_texture; break;
-				case HitAnimType::BigBloodSplat:   tex = m_p_big_blood_splat_texture; break;
-				default: break;
+				case HitAnimType::SmallBloodSplat:
+					tex = m_p_small_blood_splat_texture;
+					break;
+				case HitAnimType::BigBloodSplat:
+					tex = m_p_big_blood_splat_texture;
+					break;
+				default:
+					break;
 			}
 			if ( auto& vp = gApp()->viewport() ) {
-				vp->draw_in_viewport(
-						tex, pierce.anim_controller.get_source_rectangle(m_p_z_index).value_or(Rectangle{0}), pierce.position,
-						0, WHITE
-				);
+				vp->draw_in_viewport(tex, pierce.anim_controller.get_source_rectangle(m_p_z_index).value_or(Rectangle{0}), pierce.position, 0, WHITE);
 			}
 		}
 	}
@@ -138,24 +144,22 @@ void Projectile::render()
 		}
 	}
 	if ( m_p_hit_aninm_playing ) {
-		Texture2D tex = m_p_hit_anim_texture;
+		Texture2D tex								= m_p_hit_anim_texture;
 		PSCore::sprites::SpriteSheetAnimation* ctrl = &m_p_animation_controller;
 		switch ( m_p_current_hit_anim_type ) {
 			case HitAnimType::SmallBloodSplat:
-				tex  = m_p_small_blood_splat_texture;
+				tex	 = m_p_small_blood_splat_texture;
 				ctrl = &m_p_small_blood_splat_controller;
 				break;
 			case HitAnimType::BigBloodSplat:
-				tex  = m_p_big_blood_splat_texture;
+				tex	 = m_p_big_blood_splat_texture;
 				ctrl = &m_p_big_blood_splat_controller;
 				break;
-			default: break;
+			default:
+				break;
 		}
 		if ( auto& vp = gApp()->viewport() ) {
-			vp->draw_in_viewport(
-					tex, ctrl->get_source_rectangle(m_p_z_index).value_or(Rectangle{0}), m_p_hit_anim_pos,
-					0, WHITE
-			);
+			vp->draw_in_viewport(tex, ctrl->get_source_rectangle(m_p_z_index).value_or(Rectangle{0}), m_p_hit_anim_pos, 0, WHITE);
 		}
 	}
 	if ( m_p_no_hit_anim_playing ) {
@@ -185,13 +189,16 @@ void Projectile::on_hit()
 
 		switch ( hit_type ) {
 			case HitAnimType::SmallBloodSplat:
-				pierce.anim_controller = PSCore::sprites::SpriteSheetAnimation(m_p_small_blood_splat_texture, {{6, 0.1, PSCore::sprites::Forward, m_p_z_index}});
+				pierce.anim_controller =
+						PSCore::sprites::SpriteSheetAnimation(m_p_small_blood_splat_texture, {{6, 0.1, PSCore::sprites::Forward, m_p_z_index}});
 				break;
 			case HitAnimType::BigBloodSplat:
-				pierce.anim_controller = PSCore::sprites::SpriteSheetAnimation(m_p_big_blood_splat_texture, {{8, 0.1, PSCore::sprites::Forward, m_p_z_index}});
+				pierce.anim_controller =
+						PSCore::sprites::SpriteSheetAnimation(m_p_big_blood_splat_texture, {{8, 0.1, PSCore::sprites::Forward, m_p_z_index}});
 				break;
 			default:
-				pierce.anim_controller = PSCore::sprites::SpriteSheetAnimation(m_p_hit_anim_texture, {{9, 0.1, PSCore::sprites::Forward, m_p_z_index}});
+				pierce.anim_controller =
+						PSCore::sprites::SpriteSheetAnimation(m_p_hit_anim_texture, {{9, 0.1, PSCore::sprites::Forward, m_p_z_index}});
 				break;
 		}
 
@@ -274,9 +281,15 @@ void Projectile::update_pierce_hit_anims(float dt)
 			pierce.anim_controller.update_animation(dt);
 			int end_frame = 8;
 			switch ( pierce.hit_type ) {
-				case HitAnimType::SmallBloodSplat: end_frame = 5; break;
-				case HitAnimType::BigBloodSplat:   end_frame = 7; break;
-				default: end_frame = 8; break;
+				case HitAnimType::SmallBloodSplat:
+					end_frame = 5;
+					break;
+				case HitAnimType::BigBloodSplat:
+					end_frame = 7;
+					break;
+				default:
+					end_frame = 8;
+					break;
 			}
 			if ( pierce.anim_controller.get_sprite_sheet_frame_index(m_p_z_index) == end_frame ) {
 				pierce.finished = true;

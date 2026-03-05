@@ -103,6 +103,7 @@ public:
 	int reroll_amount() const;
 	float gem_drop_chance() const;
 
+	std::vector<std::shared_ptr<Player>> players() const;
 
 	// Bounty
 	struct Bounty

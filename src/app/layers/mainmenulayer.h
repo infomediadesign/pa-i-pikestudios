@@ -29,6 +29,7 @@ private:
 		Texture2D m_itch_io;
 		Texture2D m_skin_btn;
 		Texture2D m_options_btn;
+		Texture2D m_skin_btn_ship_emissive;
 		
 		std::unique_ptr<SkinMenu> m_skin_menu;
 };

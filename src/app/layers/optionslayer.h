@@ -1,8 +1,10 @@
 #pragma once
+#include <functional>
 #include <psinterfaces/layer.h>
 #include <raylib.h>
 #include <memory>
 #include <string>
+#include <string_view>
 #include <vector>
 
 class SettingValues;
@@ -36,6 +38,8 @@ public:
 		AllShoot
 	};
 
+	void set_exit_btn_function(std::string_view new_title, std::function<void()> fn);
+
 private:
 	std::unique_ptr<SettingValues> m_settings;
 
@@ -55,4 +59,7 @@ private:
 	
 	void draw_controls_(const Vector2& anchor, float scale, float textspacing, float boxheight);
 	void check_for_conflicts_();
+	
+	std::function<void()> m_exit_btn_function;
+	std::string m_exit_btn_text = "Main Menu";
 };

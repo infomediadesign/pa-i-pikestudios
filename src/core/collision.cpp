@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <cerrno>
 #include <memory>
 #include <pscore/application.h>
@@ -18,7 +19,7 @@ namespace PSCore {
 		}
 
 		void EntityCollider::register_collision_handler(
-				std::function<void(std::weak_ptr<PSInterfaces::IEntity> other, const Vector2& point)> cb, float timeout
+				std::function<void(std::vector<std::weak_ptr<PSInterfaces::IEntity>> others, const Vector2& point)> cb, float timeout
 		)
 		{
 			m_collision_cb_timeout = timeout;
@@ -32,30 +33,41 @@ namespace PSCore {
 		{
 			std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
 
+			std::vector<std::weak_ptr<PSInterfaces::IEntity>> collided_entities;
+			collided_entities.reserve(entity_pool.size());
+			
+			Vector2 point;
 			if ( auto locked = m_parent.lock() ) {
-				if ( auto val = check_entity_collision(locked, entity_pool) ) {
-					auto other = val.value().first;
-					auto point = val.value().second;
-					if ( m_collion_cb && exclusion_criterion(other, point) ) {
+				auto vals = check_entity_collision(locked, entity_pool);
 
-						std::chrono::duration<float> elapsed = now - cb_last_called;
-						if ( elapsed.count() >= m_collision_cb_timeout ) {
-							m_collion_cb(other, point);
-							cb_last_called = now;
-						}
-
-						return true;
+				for ( const auto& val: vals.value_or({}) ) {
+					auto other = val.first;
+					point	   = val.second;
+					if ( exclusion_criterion(other, point) ) {
+						collided_entities.push_back(other);
 					}
 				}
 			}
 
-			return false;
+			std::chrono::duration<float> elapsed = now - cb_last_called;
+			if ( elapsed.count() >= m_collision_cb_timeout ) {
+				if ( m_collion_cb ) {
+					collided_entities.shrink_to_fit();
+					m_collion_cb(collided_entities, point);
+					cb_last_called = now;
+				}
+			}
+
+			return collided_entities.size() > 0;
 		}
 
-		std::optional<std::pair<const std::weak_ptr<PSInterfaces::IEntity>, Vector2>> EntityCollider::check_entity_collision(
+		std::optional<std::vector<std::pair<const std::weak_ptr<PSInterfaces::IEntity>, Vector2>>> EntityCollider::check_entity_collision(
 				std::shared_ptr<PSInterfaces::IEntity> self, const std::vector<std::weak_ptr<PSInterfaces::IEntity>>& entities
 		)
 		{
+			std::vector<std::pair<const std::weak_ptr<PSInterfaces::IEntity>, Vector2>> collided_entities;
+			collided_entities.reserve(entities.size());
+			
 			for ( const auto& entity: entities ) {
 				auto locked_entity = entity.lock();
 				if ( !locked_entity || locked_entity->uid() == self->uid() || !locked_entity->position().has_value() ||
@@ -80,10 +92,14 @@ namespace PSCore {
 				};
 
 				if ( auto pair = check_col(locked_entity, self) )
-					return pair;
+					collided_entities.push_back(pair.value());
 				if ( auto pair = check_col(self, locked_entity, true) )
-					return pair;
+					collided_entities.push_back(pair.value());
 			}
+
+			collided_entities.shrink_to_fit();
+			if ( collided_entities.size() > 0 )
+				return collided_entities;
 
 			return std::nullopt;
 		}

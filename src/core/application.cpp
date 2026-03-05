@@ -108,7 +108,11 @@ void PSCore::Application::init(const AppSpec& spec)
 		msaa		   = std::get<bool>(settings->value("msaa4x").value_or(false));
 		fullscreen	   = std::get<bool>(settings->value("fullscreen").value_or(true));
 
-		_p->m_time_manager->set_target_fps(target_fps[std::get<int>(settings->value("fps_index").value_or(5))]);
+		int fps_index = std::get<int>(settings->value("fps_index").value_or(5));
+		settings->set_value("fps_index", fps_index);
+		settings->safe();
+
+		_p->m_time_manager->set_target_fps(target_fps[fps_index]);
 
 		if ( m_global_sound_volume.empty() ) {
 			m_global_sound_volume.push_back(std::get<float>(settings->value("music_volume").value_or(20.f)));
@@ -181,8 +185,11 @@ void Application::run()
 
 			_p->m_viewport->update(dt);
 
-			for ( int i = 0; i < m_layer_stack.size(); ++i )
-				m_layer_stack.at(i)->on_update(dt);
+			for ( int i = 0; i < m_layer_stack.size(); ++i ) {
+				auto& layer = m_layer_stack.at(i);
+				if ( layer->is_active() )
+					layer->on_update(dt);
+			}
 		} catch ( std::out_of_range e ) {
 			PS_LOG(LOG_WARNING, "Tried calling update on invalid layer.");
 		}
