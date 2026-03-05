@@ -103,18 +103,20 @@ void Projectile::update(const float dt)
 		if ( position()->x == 0 || position()->y == 0 )
 			return;
 
-		if ( auto app_layer = gApp()->get_layer<AppLayer>() ) {
-			m_collider->check_collision(app_layer->entities(), [this](std::weak_ptr<PSInterfaces::IEntity> other, const Vector2& point) {
-				if ( auto l = other.lock() ) {
-					bool is_owner  = l->uid() == m_p_owner->uid();
-					bool is_same   = l->uid() == uid_;
-					bool is_cannon = l->ident() == "cannon";
-					bool is_loot   = l->ident() == "loot_chest";
-					bool is_gem	   = l->ident() == "gemstone";
-					return !(is_owner || is_same || is_cannon || is_loot || is_gem);
-				}
-				return true;
-			});
+		if ( !m_p_no_hit_anim_playing ) {
+			if ( auto app_layer = gApp()->get_layer<AppLayer>() ) {
+				m_collider->check_collision(app_layer->entities(), [this](std::weak_ptr<PSInterfaces::IEntity> other, const Vector2& point) {
+					if ( auto l = other.lock() ) {
+						bool is_owner  = l.get() == m_p_owner.get();
+						bool is_same   = l->ident() == ident();
+						bool is_cannon = l->ident() == "cannon";
+						bool is_loot   = l->ident() == "loot_chest";
+						bool is_gem	   = l->ident() == "gemstone";
+						return !(is_owner || is_same || is_cannon || is_loot || is_gem);
+					}
+					return true;
+				});
+			}
 		}
 	}
 
@@ -188,6 +190,10 @@ void Projectile::render()
 
 void Projectile::on_hit()
 {
+	if ( m_p_no_hit_anim_playing || m_p_hit_aninm_playing ) {
+		return;
+	}
+
 	HitAnimType hit_type = HitAnimType::Default;
 	if ( m_p_last_hit_ident == "shark" || m_p_last_hit_ident == "chonky_shark" ) {
 		hit_type = HitAnimType::SmallBloodSplat;
@@ -372,6 +378,8 @@ void Projectile::calculate_movment(const float dt)
 	if ( m_p_travel_distance >= m_p_max_range ) {
 		m_p_no_hit_anim_playing = true;
 		m_p_no_hit_anim_controller.set_animation_at_index(0, 0, m_p_z_index);
+		m_p_pierce_hit_anims.clear();
+		return;
 	}
 }
 
@@ -380,6 +388,9 @@ void Projectile::launch()
 	if ( !m_p_fiering_cannon ) {
 		return;
 	}
+
+	m_p_hit_aninm_playing	= false;
+	m_p_no_hit_anim_playing = false;
 
 	m_p_position = m_p_fiering_cannon->position().value_or(Vector2{0, 0});
 
