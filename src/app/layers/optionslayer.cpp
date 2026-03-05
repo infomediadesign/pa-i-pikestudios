@@ -115,6 +115,12 @@ OptionsLayer::OptionsLayer()
 
 void OptionsLayer::on_update(float dt)
 {
+	if ( IsKeyPressed(KEY_ESCAPE) ) {
+		gApp()->call_later(m_exit_btn_function);
+		gApp()->play_ui_sound(0);
+		return;
+	}
+	
 	if ( m_captureKey ) {
 		int key = GetKeyPressed();
 		if ( key != 0 ) {

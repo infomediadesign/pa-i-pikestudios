@@ -4,11 +4,11 @@
 #include "psinterfaces/entity.h"
 
 #include <algorithm>
+#include <layers/upgradelayer.h>
 #include <memory>
 #include <pscore/application.h>
 #include <pscore/viewport.h>
 #include <raylib.h>
-#include <layers/upgradelayer.h>
 
 #include <psinterfaces/renderable.h>
 
@@ -117,33 +117,19 @@ void AppLayer::on_update(const float dt)
 #endif
 		if ( m_can_open_pause_menu ) {
 			if ( IsKeyPressed(KEY_ESCAPE) ) {
-				auto& director = gApp()->game_director_ref();
-				if ( app->get_layer<PauseLayer>() ) {
-					app->pop_layer<PauseLayer>();
-					if ( auto app_layer = app->get_layer<AppLayer>() ) {
-						app_layer->resume();
-						director->set_is_active(true);
-							if ( auto upgrade_layer = gApp()->get_layer<UpgradeLayer>() ) {
-								upgrade_layer->m_layer_is_visible = true;
-								app_layer->suspend();
-								director->set_is_active(false);
-							}
-							HideCursor();
-					}
+				gApp()->call_later([]() {
+					auto& director = gApp()->game_director_ref();
 
-				} else {
-					app->push_layer<PauseLayer>();
-					if ( auto app_layer = app->get_layer<AppLayer>() ) {
-						gApp()->call_later([]() {
-							if ( auto upgrade_layer = gApp()->get_layer<UpgradeLayer>() ) {
-								upgrade_layer->m_layer_is_visible = false;
-							}
-						});
+					PSCore::Application::get()->push_layer<PauseLayer>();
+					if ( auto app_layer = PSCore::Application::get()->get_layer<AppLayer>() ) {
+						if ( auto upgrade_layer = gApp()->get_layer<UpgradeLayer>() ) {
+							upgrade_layer->m_layer_is_visible = false;
+						}
 						app_layer->suspend();
 						director->set_is_active(false);
 						ShowCursor();
 					}
-				}
+				});
 			}
 		}
 	}
