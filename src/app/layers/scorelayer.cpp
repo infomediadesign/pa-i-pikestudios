@@ -163,7 +163,7 @@ void ScoreLayer::draw_score_board()
 	Rectangle score_field_rect{name_field_rect.x + name_field_rect.width + 16 * scale, name_field_rect.y, name_field_rect.width, name_field_rect.height};
 	Rectangle left_rank_rect{name_field_rect.x - 32 * scale, name_field_rect.y, 16 * scale, name_field_rect.height};
 	Rectangle right_color_rect{score_field_rect.x + score_field_rect.width + 16 * scale, name_field_rect.y, 16 * scale, name_field_rect.height};
-	Rectangle mark_rect{left_rank_rect.x - 16 * scale, left_rank_rect.y, m_mark_texture.width, m_mark_texture.height};
+	Rectangle mark_rect{left_rank_rect.x - 16 * scale, left_rank_rect.y, (float)m_mark_texture.width, (float)m_mark_texture.height};
 
 	int rank = 1;
 	int spacing = 24 * scale;
