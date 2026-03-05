@@ -187,7 +187,7 @@ $(document).ready(function(){initNavTree('projectile_8h_source.html',''); initRe
 <div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>    <span class="keywordtype">void</span> apply_drag(<span class="keyword">const</span> <span class="keywordtype">float</span> dt);</div>
 <div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>    <span class="keywordtype">void</span> update_pierce_hit_anims(<span class="keywordtype">float</span> dt);</div>
 <div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span> </div>
-<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>    <span class="keyword">enum class</span> HitAnimType { Default, SmallBloodSplat, BigBloodSplat };</div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>    <span class="keyword">enum class</span> HitAnimType { Default, SmallBloodSplat, BigBloodSplat, Firework };</div>
 <div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span> </div>
 <div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span><span class="keyword">private</span>:</div>
 <div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>    <span class="keywordtype">int</span> m_p_z_index;</div>
@@ -228,29 +228,33 @@ $(document).ready(function(){initNavTree('projectile_8h_source.html',''); initRe
 <div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span>    Texture2D m_p_big_blood_splat_texture;</div>
 <div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span>    std::shared_ptr&lt;PSCore::sprites::Sprite&gt; m_p_big_blood_splat_sprite;</div>
 <div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span> </div>
-<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span>    <span class="keywordtype">bool</span> m_p_hit_aninm_playing   = <span class="keyword">false</span>;</div>
-<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span>    <span class="keywordtype">bool</span> m_p_no_hit_anim_playing = <span class="keyword">false</span>;</div>
-<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span>    Vector2 m_p_hit_anim_pos;</div>
+<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span>    <a class="code hl_class" href="classPSCore_1_1sprites_1_1SpriteSheetAnimation.html">PSCore::sprites::SpriteSheetAnimation</a> m_p_firework_controller;</div>
+<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span>    Texture2D m_p_firework_texture;</div>
+<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span>    std::shared_ptr&lt;PSCore::sprites::Sprite&gt; m_p_firework_sprite;</div>
 <div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span> </div>
-<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span>    HitAnimType m_p_current_hit_anim_type = HitAnimType::Default;</div>
-<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span>    std::string m_p_last_hit_ident;</div>
-<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span> </div>
-<div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span>    <span class="keyword">struct </span>PierceHitAnim</div>
-<div class="line"><a id="l00139" name="l00139"></a><span class="lineno">  139</span>    {</div>
-<div class="line"><a id="l00140" name="l00140"></a><span class="lineno">  140</span>        Vector2 position;</div>
-<div class="line"><a id="l00141" name="l00141"></a><span class="lineno">  141</span>        <span class="keywordtype">float</span> rotation;</div>
-<div class="line"><a id="l00142" name="l00142"></a><span class="lineno">  142</span>        <a class="code hl_class" href="classPSCore_1_1sprites_1_1SpriteSheetAnimation.html">PSCore::sprites::SpriteSheetAnimation</a> anim_controller;</div>
-<div class="line"><a id="l00143" name="l00143"></a><span class="lineno">  143</span>        <span class="keywordtype">bool</span> finished       = <span class="keyword">false</span>;</div>
-<div class="line"><a id="l00144" name="l00144"></a><span class="lineno">  144</span>        HitAnimType hit_type = HitAnimType::Default;</div>
-<div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span>    };</div>
-<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span>    std::vector&lt;PierceHitAnim&gt; m_p_pierce_hit_anims;</div>
-<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span> </div>
-<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span>    std::unique_ptr&lt;PSCore::collision::EntityCollider&gt; m_collider;</div>
-<div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span> </div>
-<div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span>    Vector2 m_p_local_direction;</div>
-<div class="line"><a id="l00151" name="l00151"></a><span class="lineno">  151</span>    <span class="keywordtype">float</span> m_p_max_range       = 500.0f;</div>
-<div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span>    <span class="keywordtype">float</span> m_p_drag_per_second = 0.92f;</div>
-<div class="line"><a id="l00153" name="l00153"></a><span class="lineno">  153</span>};</div>
+<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span>    <span class="keywordtype">bool</span> m_p_hit_aninm_playing   = <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span>    <span class="keywordtype">bool</span> m_p_no_hit_anim_playing = <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span>    Vector2 m_p_hit_anim_pos;</div>
+<div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span> </div>
+<div class="line"><a id="l00139" name="l00139"></a><span class="lineno">  139</span>    HitAnimType m_p_current_hit_anim_type = HitAnimType::Default;</div>
+<div class="line"><a id="l00140" name="l00140"></a><span class="lineno">  140</span>    std::string m_p_last_hit_ident;</div>
+<div class="line"><a id="l00141" name="l00141"></a><span class="lineno">  141</span> </div>
+<div class="line"><a id="l00142" name="l00142"></a><span class="lineno">  142</span>    <span class="keyword">struct </span>PierceHitAnim</div>
+<div class="line"><a id="l00143" name="l00143"></a><span class="lineno">  143</span>    {</div>
+<div class="line"><a id="l00144" name="l00144"></a><span class="lineno">  144</span>        Vector2 position;</div>
+<div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span>        <span class="keywordtype">float</span> rotation;</div>
+<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span>        <a class="code hl_class" href="classPSCore_1_1sprites_1_1SpriteSheetAnimation.html">PSCore::sprites::SpriteSheetAnimation</a> anim_controller;</div>
+<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span>        <span class="keywordtype">bool</span> finished       = <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span>        HitAnimType hit_type = HitAnimType::Default;</div>
+<div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span>    };</div>
+<div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span>    std::vector&lt;PierceHitAnim&gt; m_p_pierce_hit_anims;</div>
+<div class="line"><a id="l00151" name="l00151"></a><span class="lineno">  151</span> </div>
+<div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span>    std::unique_ptr&lt;PSCore::collision::EntityCollider&gt; m_collider;</div>
+<div class="line"><a id="l00153" name="l00153"></a><span class="lineno">  153</span> </div>
+<div class="line"><a id="l00154" name="l00154"></a><span class="lineno">  154</span>    Vector2 m_p_local_direction;</div>
+<div class="line"><a id="l00155" name="l00155"></a><span class="lineno">  155</span>    <span class="keywordtype">float</span> m_p_max_range       = 500.0f;</div>
+<div class="line"><a id="l00156" name="l00156"></a><span class="lineno">  156</span>    <span class="keywordtype">float</span> m_p_drag_per_second = 0.92f;</div>
+<div class="line"><a id="l00157" name="l00157"></a><span class="lineno">  157</span>};</div>
 </div>
 <div class="ttc" id="aclassCannon_html"><div class="ttname"><a href="classCannon.html">Cannon</a></div><div class="ttdef"><b>Definition</b> cannon.h:16</div></div>
 <div class="ttc" id="aclassFortunaDirector_html"><div class="ttname"><a href="classFortunaDirector.html">FortunaDirector</a></div><div class="ttdef"><b>Definition</b> director.h:23</div></div>

@@ -6,6 +6,7 @@ var hierarchy =
     [ "PSCore::Application::AppSpec", "structPSCore_1_1Application_1_1AppSpec.html", null ],
     [ "FortunaDirector::Bounty", "structFortunaDirector_1_1Bounty.html", null ],
     [ "FortunaDirector::BountyAmount", "structFortunaDirector_1_1BountyAmount.html", null ],
+    [ "Contributor", "structContributor.html", null ],
     [ "PSCore::DeltaTimeManager", "classPSCore_1_1DeltaTimeManager.html", null ],
     [ "FortunaDirector::DropChances", "structFortunaDirector_1_1DropChances.html", null ],
     [ "PSCore::collision::EntityCollider", "classPSCore_1_1collision_1_1EntityCollider.html", null ],
@@ -42,6 +43,7 @@ var hierarchy =
     [ "PSInterfaces::Events::IEventManager", "classPSInterfaces_1_1Events_1_1IEventManager.html", null ],
     [ "PSInterfaces::Layer", "classPSInterfaces_1_1Layer.html", [
       [ "AppLayer", "classAppLayer.html", null ],
+      [ "ContributorsLayer", "classContributorsLayer.html", null ],
       [ "DeathScreenLayer", "classDeathScreenLayer.html", null ],
       [ "DebugLayer", "classDebugLayer.html", null ],
       [ "MainMenuLayer", "classMainMenuLayer.html", null ],
@@ -72,6 +74,7 @@ var hierarchy =
     [ "PSCore::sprites::SpriteTimeDirectionData", "structPSCore_1_1sprites_1_1SpriteTimeDirectionData.html", null ],
     [ "PauseLayer::StatInfo", "structPauseLayer_1_1StatInfo.html", null ],
     [ "FortunaDirector::Statistics", "structFortunaDirector_1_1Statistics.html", null ],
+    [ "TeamSection", "structTeamSection.html", null ],
     [ "PSCore::Application::ui_sound", "structPSCore_1_1Application_1_1ui__sound.html", null ],
     [ "UILayer::UIBountyContainer", "structUILayer_1_1UIBountyContainer.html", null ]
 ];

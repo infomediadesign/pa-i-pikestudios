@@ -1,5 +1,6 @@
 var searchData=
 [
   ['target_5ffps_0',['target_fps',['../classPSCore_1_1DeltaTimeManager.html#a68f4363cd2c1b7f42ad29ae6d7071b68',1,'PSCore::DeltaTimeManager']]],
-  ['tentacle_1',['tentacle',['../classtentacle.html',1,'']]]
+  ['teamsection_1',['TeamSection',['../structTeamSection.html',1,'']]],
+  ['tentacle_2',['tentacle',['../classtentacle.html',1,'']]]
 ];
