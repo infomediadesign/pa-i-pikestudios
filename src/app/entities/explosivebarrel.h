@@ -31,7 +31,8 @@ public:
 
 private:
 	std::unique_ptr<PSCore::collision::EntityCollider> m_collider;
-	PSCore::sprites::SpriteSheetAnimation m_animation_controller;
+	PSCore::sprites::SpriteSheetAnimation m_explosion_animation_controller;
+	PSCore::sprites::SpriteSheetAnimation m_barrel_animation_controller;
 	std::shared_ptr<PSInterfaces::IEntity> m_parent;
 
 	float m_explosion_radius = CFG_VALUE<float>("explosive_barrel_explosion_radius", 100.0f);
@@ -45,7 +46,7 @@ private:
 	// Blinking, Creeper awww man
 	Shader m_flash_shader	 = LoadShader(NULL, "resources/shader/sprite_flash.fs");
 	Vector4 m_flash_color	 = {255, 0, 0, 255};
-	float m_flash_lerp_scale = 18;
+	float m_flash_lerp_scale = 5;
 	float m_flash_alpha		 = 0;
 	int m_flash_alpha_location;
 
