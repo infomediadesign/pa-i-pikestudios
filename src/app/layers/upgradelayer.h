@@ -125,4 +125,5 @@ public:
 	int m_z_index = 0;
 	Texture2D m_gem_socket_texture;
 
+	bool m_can_play_mythic_sound = true;
 };

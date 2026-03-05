@@ -22,8 +22,6 @@ ExplosiveBarrel::ExplosiveBarrel() : PSInterfaces::IEntity("explosive_barrel")
 	m_animation_controller = PSCore::sprites::SpriteSheetAnimation(FETCH_SPRITE_TEXTURE(ident_), {{8, frame_time, PSCore::sprites::Forward, 1}});
 	m_animation_controller.add_animation_at_index(0, 1);
 	propose_z_index(-1);
-
-	m_global_sfx_volume = gApp()->sound_volume(PSCore::Application::SoundType::SFX).value_or(50);
 };
 
 ExplosiveBarrel::~ExplosiveBarrel()
@@ -62,7 +60,9 @@ void ExplosiveBarrel::update(float dt)
 			int random_volume = PSUtils::gen_rand(static_cast<int>(m_volume_boundary.x), static_cast<int>(m_volume_boundary.y));
 			int random_pitch  = PSUtils::gen_rand(static_cast<int>(m_pitch_boundary.x), static_cast<int>(m_pitch_boundary.y));
 
-			SetSoundVolume(m_explode_sound, std::min((m_global_sfx_volume / 100) * (m_shoot_volume + static_cast<float>(random_volume) / 100), 1.0f));
+			float global_sfx_volume = gApp()->sound_volume(PSCore::Application::SoundType::SFX).value_or(50);
+
+			SetSoundVolume(m_explode_sound, std::min((global_sfx_volume / 100) * (m_shoot_volume + static_cast<float>(random_volume) / 100), 1.0f));
 			SetSoundPitch(m_explode_sound, m_shoot_pitch + static_cast<float>(random_pitch) / 100);
 
 			PlaySound(m_explode_sound);
@@ -82,12 +82,15 @@ void ExplosiveBarrel::render()
 	if ( auto& vp = gApp()->viewport() ) {
 		Vector2 pos_global = vp->position_viewport_to_global(m_position);
 		if ( is_exploding() ) {
+			propose_z_index(100);
+
 			vp->draw_in_viewport(
 					FETCH_SPRITE_TEXTURE(ident_), m_animation_controller.get_source_rectangle(1).value_or(Rectangle{0}), m_position, 0, WHITE
 			);
 		}
+		else {
+			propose_z_index(-1);
 
-		if ( !is_exploding() ) {
 			DrawCircleV(pos_global, Lerp(0, m_explosion_radius, m_timer / m_detonation_time), {200, 0, 0, 75});
 
 			BeginShaderMode(m_flash_shader);
