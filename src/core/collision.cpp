@@ -33,7 +33,7 @@ namespace PSCore {
 
 			std::vector<std::weak_ptr<PSInterfaces::IEntity>> collided_entities;
 			collided_entities.reserve(entity_pool.size());
-			
+
 			Vector2 point;
 			if ( auto locked = m_parent.lock() ) {
 				auto vals = check_entity_collision(locked, entity_pool);
@@ -49,8 +49,7 @@ namespace PSCore {
 
 			std::chrono::duration<float> elapsed = now - cb_last_called;
 			if ( elapsed.count() >= m_collision_cb_timeout ) {
-				if ( m_collion_cb ) {
-					collided_entities.shrink_to_fit();
+				if ( m_collion_cb && !collided_entities.empty() ) {
 					m_collion_cb(collided_entities, point);
 					cb_last_called = now;
 				}
@@ -65,29 +64,38 @@ namespace PSCore {
 		{
 			std::vector<std::pair<const std::weak_ptr<PSInterfaces::IEntity>, Vector2>> collided_entities;
 			collided_entities.reserve(entities.size());
-			
+
+			auto self_pos	 = self->position();
+			auto self_bounds = self->bounds();
+			if ( !self_pos || !self_bounds )
+				return std::nullopt;
+
+			const auto check_col = [](std::shared_ptr<PSInterfaces::IEntity> en1, std::shared_ptr<PSInterfaces::IEntity> en2,
+									  bool inverted = false) -> std::optional<std::pair<std::weak_ptr<PSInterfaces::IEntity>, Vector2>> {
+				auto bounds = en2->bounds().value_or({});
+
+				for ( const Vector2& point: en1->bounds().value_or({}) ) {
+					if ( CheckCollisionPointPoly(point, bounds.data(), bounds.size()) )
+						return std::make_pair(inverted ? en2 : en1, point);
+				}
+
+				return std::nullopt;
+			};
+
 			for ( const auto& entity: entities ) {
 				auto locked_entity = entity.lock();
 				if ( !locked_entity || locked_entity->uid() == self->uid() || !locked_entity->position().has_value() ||
-					 !self->position().has_value() || !locked_entity->bounds().has_value() || !self->bounds().has_value() )
+					 !locked_entity->bounds().has_value() )
 					continue;
 
-				auto pos1	  = locked_entity->position().value();
-				auto pos2	  = self->position().value();
-				auto distance = Vector2Length(Vector2Subtract(pos1, pos2));
-				if ( distance > 50 )
+				int threshold = 50; // Only check entities within a certain distance to optimize performance
+
+				auto pos1	 = locked_entity->position().value();
+				auto pos2	 = self->position().value();
+				auto diff	 = Vector2Subtract(pos1, pos2);
+				auto dist_sq = diff.x * diff.x + diff.y * diff.y;
+				if ( dist_sq > threshold * threshold )
 					continue;
-
-				const auto check_col = [](std::shared_ptr<PSInterfaces::IEntity> en1, std::shared_ptr<PSInterfaces::IEntity> en2,
-										  bool inverted = false) -> std::optional<std::pair<std::weak_ptr<PSInterfaces::IEntity>, Vector2>> {
-					for ( const Vector2& point: en1->bounds().value_or({}) ) {
-						auto bounds = en2->bounds().value_or({});
-						if ( CheckCollisionPointPoly(point, bounds.data(), bounds.size()) )
-							return std::make_pair(inverted ? en2 : en1, point);
-					}
-
-					return std::nullopt;
-				};
 
 				if ( auto pair = check_col(locked_entity, self) )
 					collided_entities.push_back(pair.value());
@@ -95,7 +103,6 @@ namespace PSCore {
 					collided_entities.push_back(pair.value());
 			}
 
-			collided_entities.shrink_to_fit();
 			if ( collided_entities.size() > 0 )
 				return collided_entities;
 
