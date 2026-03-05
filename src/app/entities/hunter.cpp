@@ -174,8 +174,6 @@ void Hunter::update(float dt)
 			break;
 		}
 		case Wreck: {
-			_p->current_patrol_path.clear();
-
 			_p->pos = Vector2Add(_p->pos, _p->velocity * dt);
 
 			if ( _p->animation_controller.get_sprite_sheet_frame_index(1).value_or(-1) == 5 &&

@@ -1,18 +1,18 @@
-#include <entities/projectile.h>
 #include <cmath>
 #include <coordinatesystem.h>
 #include <entities/director.h>
+#include <entities/projectile.h>
 #include <layers/applayer.h>
 #include <memory>
 #include <optional>
 #include <pscore/application.h>
 #include <pscore/collision.h>
 #include <pscore/sprite.h>
+#include <pscore/utils.h>
 #include <pscore/viewport.h>
 #include <psinterfaces/entity.h>
 #include <raylib.h>
 #include <raymath.h>
-#include <pscore/utils.h>
 
 Projectile::Projectile() : PSInterfaces::IEntity("projectile")
 {
@@ -95,8 +95,8 @@ void Projectile::update(const float dt)
 		if ( auto app_layer = gApp()->get_layer<AppLayer>() ) {
 			m_collider->check_collision(app_layer->entities(), [this](std::weak_ptr<PSInterfaces::IEntity> other, const Vector2& point) {
 				if ( auto l = other.lock() ) {
-					bool is_owner  = l->ident() == m_p_owner->ident();
-					bool is_same   = l->ident() == ident_;
+					bool is_owner  = l->uid() == m_p_owner->uid();
+					bool is_same   = l->uid() == uid_;
 					bool is_cannon = l->ident() == "cannon";
 					bool is_loot   = l->ident() == "loot_chest";
 					bool is_gem	   = l->ident() == "gemstone";
