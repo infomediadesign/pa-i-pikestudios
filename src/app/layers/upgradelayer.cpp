@@ -28,6 +28,7 @@ UpgradeLayer::UpgradeLayer()
 	m_card_texture_3 = PRELOAD_TEXTURE("card_3", "resources/ui/upgrade_card_3.png", frame_grid)->m_s_texture;
 	m_button		 = PRELOAD_TEXTURE("smallbutton", "resources/ui/button_small.png", frame_grid)->m_s_texture;
 	m_gem_socket_texture = PRELOAD_TEXTURE("gem_socket", "resources/ui/gem_socket.png", frame_grid)->m_s_texture;
+	m_tooltip_card_texture = PRELOAD_TEXTURE("tooltip_card", "resources/ui/tooltip_card.png", frame_grid)->m_s_texture;
 
 	// Icons
 	m_fire_rate_icon		= PRELOAD_TEXTURE("fire_rate_icon", "resources/icon/upgr_icon_firerate.png", frame_grid)->m_s_texture;
@@ -140,6 +141,13 @@ void UpgradeLayer::on_update(float dt)
 			m_hovered_card_index = -1;
 			m_card_hovered		 = false;
 		}
+
+		float first_card_anim_t = (m_card_anim_duration > 0.0f) ? (m_card_anim_timers[0] / m_card_anim_duration) : 1.0f;
+		float first_card_y = (screen_middel.y + m_card_anim_start_offset_y * (1.0f - easeOutElastic(first_card_anim_t))
+		                      + m_card_hover_lift * m_card_hover_progress[0]) * scale;
+		float first_card_top = first_card_y - (m_card_texture_1.height / 2.0f * scale);
+		float spacebetween_top_screen_boarder_and_cards = first_card_top - origin.y;
+		PS_LOG(LOG_INFO, std::format("Space top-screen to card-top: {:.2f}px", spacebetween_top_screen_boarder_and_cards));
 	}
 
 	if ( m_reroll_anim_playing ) {
@@ -215,6 +223,10 @@ void UpgradeLayer::draw_upgrade_cards()
 		Vector2 scaled_pos = {card_pos.x * scale, card_pos.y * scale};
 		draw_upgrade_icon(m_current_loot_table_values[i].index, scaled_pos);
 		draw_card_text(scaled_pos, m_current_loot_table_values[i]);
+		m_current_tooltip_text = get_tooltip_text(m_current_loot_table_values[i].index);
+		if ( m_hovered_card_index == i ) {
+			draw_card_tooltip(card_pos, scale);
+		}
 	}
 }
 
@@ -606,8 +618,10 @@ void UpgradeLayer::draw_reroll_button()
 		DrawTexturePro(m_gem_texture, gem_source, gem_dest, gem_origin, 0, WHITE);
 
 		GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt({211, 177, 125, 255}));
+		GuiSetStyle(DEFAULT, TEXT_ALIGNMENT, TEXT_ALIGN_LEFT);
 		GuiLabel({gem_socket_dest.x - 5 *scale , gem_socket_dest.y -10 * scale, 35 * scale, 20 * scale},
 				std::format("{}x", director->reroll_amount()).c_str());
+		GuiSetStyle(DEFAULT, TEXT_ALIGNMENT, TEXT_ALIGN_CENTER);
 		GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt({0, 0, 0, 255}));
 	}
 }
@@ -662,5 +676,68 @@ void UpgradeLayer::play_reroll_gem_animation(float dt)
 	m_gem_anim_controller.update_animation(dt);
 	if ( m_gem_anim_controller.get_sprite_sheet_frame_index(m_z_index).value_or(-1) == 10 ) {
 		m_gem_anim_controller.set_animation_at_index(0, 0, m_z_index);
+	}
+}
+
+void UpgradeLayer::draw_card_tooltip(Vector2 card_pos, float scale)
+{
+	float card_half_height	  = m_card_texture_1.height / 2.0f;
+	float tooltip_half_height = m_tooltip_card_texture.height / 2.0f;
+
+	Vector2 tooltip_pos = {card_pos.x, card_pos.y - card_half_height - (tooltip_half_height + 25)};
+
+	Rectangle source = {0, 0, static_cast<float>(m_tooltip_card_texture.width), static_cast<float>(m_tooltip_card_texture.height)};
+
+	if ( auto& vp = gApp()->viewport() ) {
+		vp->draw_in_viewport(m_tooltip_card_texture, source, tooltip_pos, 0, WHITE);
+
+		Vector2 origin = vp->viewport_origin();
+		float s		   = vp->viewport_scale();
+		float label_w  = source.width * s;
+		float label_h  = source.height * s;
+		float label_x  = origin.x + tooltip_pos.x * s - label_w / 2.0f;
+		float label_y  = origin.y + tooltip_pos.y * s - label_h / 2.0f;
+
+		float text_padding_x = 8.0f * s;
+		float text_padding_y = 20.0f * s;
+		GuiSetStyle(DEFAULT, TEXT_SIZE, 6 * s);
+		GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt({0, 0, 0, 255}));
+		GuiSetStyle(DEFAULT, TEXT_ALIGNMENT, TEXT_ALIGN_CENTER);
+		GuiLabel(
+				{label_x + text_padding_x, label_y + text_padding_y, label_w - 2 * text_padding_x, label_h - 2 * text_padding_y},
+				m_current_tooltip_text.c_str()
+		);
+		GuiSetStyle(DEFAULT, TEXT_SIZE, 14 * s);
+		GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt(BLACK));
+	}
+}
+
+std::string UpgradeLayer::get_tooltip_text(int upgrade_index)
+{
+	switch ( upgrade_index ) {
+		case 0:
+			return "Increase the amount of \ncannons on each side.";
+		case 1:
+			return "Improves the maximum \nvelocity of the bullets.";
+		case 2:
+			return "Improves shooting distance.";
+		case 3:
+			return "Improves shooting frequency.";
+		case 4:
+			return "Gain 1 life.";
+		case 5:
+			return "Improves the maximum \nship velocity.";
+		case 6:
+			return "Improves the ships maximum \nturn velocity.";
+		case 7:
+			return "Bullets have the given chance \nto fly through enemies.";
+		case 8:
+			return "Increases the chance of \nhigher rarities.";
+		case 9:
+			return "Each cannon shoots another \nbullet.";
+		case 10:
+			return "Explosive barrels spawn behind \nthe ship";
+		default:
+			return "";
 	}
 }

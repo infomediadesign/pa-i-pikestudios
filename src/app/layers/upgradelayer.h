@@ -31,6 +31,9 @@ public:
 
 	float get_multiplier(int rarity);
 
+	void draw_card_tooltip(Vector2 card_pos, float scale);
+	std::string get_tooltip_text(int upgrade_index);
+
 	std::string rarity_to_string(int rarity);
 	std::string upgrade_type_to_string(int index);
 	std::string value_to_string(int index, int rarity);
@@ -54,6 +57,8 @@ public:
 	Texture2D m_card_texture_2;
 	Texture2D m_card_texture_3;
 
+	Texture2D m_tooltip_card_texture;
+
 	Texture2D m_card_1_texture_emissive;
 	Texture2D m_card_2_texture_emissive;
 	Texture2D m_card_3_texture_emissive;
@@ -65,6 +70,8 @@ public:
 
 	LootTable m_loot_table;
 	std::vector<LootTableValue> m_current_loot_table_values;
+
+	std::string m_current_tooltip_text;
 
 	bool m_layer_is_visible = true;
 	Texture2D m_button;
