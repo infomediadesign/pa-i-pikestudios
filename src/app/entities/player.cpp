@@ -112,14 +112,13 @@ class PlayerPriv
 	Sound m_hurt_sound	= LoadSound("resources/sfx/hurt.mp3");
 	Sound m_death_sound = LoadSound("resources/sfx/death.mp3");
 
-	float m_global_sfx_volume = 0;
 	float m_hurt_volume = 1;
 	float m_hurt_pitch = 1;
 	float m_death_volume = 1;
 	float m_death_pitch = 1;
 
-	Vector2 m_volume_boundary = {-10,10};
-	Vector2 m_pitch_boundary = {-10,10};
+	Vector2 m_volume_boundary = {-15,15};
+	Vector2 m_pitch_boundary = {-15,15};
 };
 
 Player::Player() : PSInterfaces::IEntity("player")
@@ -167,9 +166,6 @@ Player::Player() : PSInterfaces::IEntity("player")
 	// Hit Flash Shader
 	SetShaderValue(_p->m_flash_shader, GetShaderLocation(_p->m_flash_shader, "flash_color"), &_p->m_flash_color, SHADER_UNIFORM_VEC4);
 	_p->m_flash_alpha_location = GetShaderLocation(_p->m_flash_shader, "flash_alpha");
-
-	// Sound
-	_p->m_global_sfx_volume = gApp()->sound_volume(PSCore::Application::SoundType::SFX).value_or(50);
 }
 
 Player::~Player()
@@ -811,7 +807,9 @@ void Player::play_sound(Sound& sound, float volume, float pitch)
 	int random_volume = PSUtils::gen_rand(_p->m_volume_boundary.x, _p->m_volume_boundary.y);
 	int random_pitch  = PSUtils::gen_rand(_p->m_pitch_boundary.x, _p->m_pitch_boundary.y);
 
-	SetSoundVolume(sound, std::min((_p->m_global_sfx_volume / 100) * (volume + static_cast<float>(random_volume) / 100), 1.0f));
+	float global_sfx_volume = gApp()->sound_volume(PSCore::Application::SoundType::SFX).value_or(50);
+
+	SetSoundVolume(sound, std::min((global_sfx_volume / 100) * (volume + static_cast<float>(random_volume) / 100), 1.0f));
 	SetSoundPitch(sound, pitch + static_cast<float>(random_pitch) / 100);
 
 	PlaySound(sound);
