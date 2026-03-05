@@ -28,7 +28,7 @@ tentacle::tentacle() : PSInterfaces::IEntity("tentacle")
 	sp_data.push_back({9, 0.1, PSCore::sprites::Forward, 1});
 	sp_data.push_back({7, 0.1, PSCore::sprites::Backward, 1});
 	sp_data.push_back({2, 1, PSCore::sprites::KeyFrame, 1});
-	sp_data.push_back({1, 1, PSCore::sprites::KeyFrame, 0});
+	sp_data.push_back({4, 0.15, PSCore::sprites::Forward, 0});
 
 	m_animation_controller = PSCore::sprites::SpriteSheetAnimation(m_tentacle_sprite->m_s_texture, sp_data);
 
