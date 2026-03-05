@@ -136,6 +136,12 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>set_boarder_color</b>
 <tr class="memitem:a63bc6cd28b259f3f9ea3e3263b95b64c" id="r_a63bc6cd28b259f3f9ea3e3263b95b64c"><td class="memItemLeft" align="right" valign="top"><a id="a63bc6cd28b259f3f9ea3e3263b95b64c" name="a63bc6cd28b259f3f9ea3e3263b95b64c"></a>
 float&#160;</td><td class="memItemRight" valign="bottom"><b>get_multiplier</b> (int rarity)</td></tr>
 <tr class="separator:a63bc6cd28b259f3f9ea3e3263b95b64c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abb746755ebd2cc11df666e64895ceeaa" id="r_abb746755ebd2cc11df666e64895ceeaa"><td class="memItemLeft" align="right" valign="top"><a id="abb746755ebd2cc11df666e64895ceeaa" name="abb746755ebd2cc11df666e64895ceeaa"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>draw_card_tooltip</b> (Vector2 card_pos, float scale)</td></tr>
+<tr class="separator:abb746755ebd2cc11df666e64895ceeaa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a42877ae271182168e2fc5b228794f2b9" id="r_a42877ae271182168e2fc5b228794f2b9"><td class="memItemLeft" align="right" valign="top"><a id="a42877ae271182168e2fc5b228794f2b9" name="a42877ae271182168e2fc5b228794f2b9"></a>
+std::string&#160;</td><td class="memItemRight" valign="bottom"><b>get_tooltip_text</b> (int upgrade_index)</td></tr>
+<tr class="separator:a42877ae271182168e2fc5b228794f2b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a600c5b6ceeda4501adba8a99e9ebf612" id="r_a600c5b6ceeda4501adba8a99e9ebf612"><td class="memItemLeft" align="right" valign="top"><a id="a600c5b6ceeda4501adba8a99e9ebf612" name="a600c5b6ceeda4501adba8a99e9ebf612"></a>
 std::string&#160;</td><td class="memItemRight" valign="bottom"><b>rarity_to_string</b> (int rarity)</td></tr>
 <tr class="separator:a600c5b6ceeda4501adba8a99e9ebf612"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -221,6 +227,9 @@ Texture2D&#160;</td><td class="memItemRight" valign="bottom"><b>m_card_texture_2
 <tr class="memitem:a7bc6ff61e48cff1e54562d98d9f271d1" id="r_a7bc6ff61e48cff1e54562d98d9f271d1"><td class="memItemLeft" align="right" valign="top"><a id="a7bc6ff61e48cff1e54562d98d9f271d1" name="a7bc6ff61e48cff1e54562d98d9f271d1"></a>
 Texture2D&#160;</td><td class="memItemRight" valign="bottom"><b>m_card_texture_3</b></td></tr>
 <tr class="separator:a7bc6ff61e48cff1e54562d98d9f271d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad32a334e4d206ceea40de0ac470c34ec" id="r_ad32a334e4d206ceea40de0ac470c34ec"><td class="memItemLeft" align="right" valign="top"><a id="ad32a334e4d206ceea40de0ac470c34ec" name="ad32a334e4d206ceea40de0ac470c34ec"></a>
+Texture2D&#160;</td><td class="memItemRight" valign="bottom"><b>m_tooltip_card_texture</b></td></tr>
+<tr class="separator:ad32a334e4d206ceea40de0ac470c34ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab99b935999320f3cba7b6c1440f8565e" id="r_ab99b935999320f3cba7b6c1440f8565e"><td class="memItemLeft" align="right" valign="top"><a id="ab99b935999320f3cba7b6c1440f8565e" name="ab99b935999320f3cba7b6c1440f8565e"></a>
 Texture2D&#160;</td><td class="memItemRight" valign="bottom"><b>m_card_1_texture_emissive</b></td></tr>
 <tr class="separator:ab99b935999320f3cba7b6c1440f8565e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -248,6 +257,9 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>m_emissive_color_posit
 <tr class="memitem:a07791d31208139ab6af847cf7450d7c2" id="r_a07791d31208139ab6af847cf7450d7c2"><td class="memItemLeft" align="right" valign="top"><a id="a07791d31208139ab6af847cf7450d7c2" name="a07791d31208139ab6af847cf7450d7c2"></a>
 std::vector&lt; <a class="el" href="structLootTableValue.html">LootTableValue</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>m_current_loot_table_values</b></td></tr>
 <tr class="separator:a07791d31208139ab6af847cf7450d7c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a888a7df2c5a5f978dee3b33e4dd167b3" id="r_a888a7df2c5a5f978dee3b33e4dd167b3"><td class="memItemLeft" align="right" valign="top"><a id="a888a7df2c5a5f978dee3b33e4dd167b3" name="a888a7df2c5a5f978dee3b33e4dd167b3"></a>
+std::string&#160;</td><td class="memItemRight" valign="bottom"><b>m_current_tooltip_text</b></td></tr>
+<tr class="separator:a888a7df2c5a5f978dee3b33e4dd167b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9a9fe30b90046348bf238fce40e9876a" id="r_a9a9fe30b90046348bf238fce40e9876a"><td class="memItemLeft" align="right" valign="top"><a id="a9a9fe30b90046348bf238fce40e9876a" name="a9a9fe30b90046348bf238fce40e9876a"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>m_layer_is_visible</b> = true</td></tr>
 <tr class="separator:a9a9fe30b90046348bf238fce40e9876a"><td class="memSeparator" colspan="2">&#160;</td></tr>
