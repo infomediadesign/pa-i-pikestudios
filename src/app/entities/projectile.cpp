@@ -1,13 +1,10 @@
-#include "projectile.h"
+#include <entities/projectile.h>
 #include <cmath>
 #include <coordinatesystem.h>
-#include <cstdlib>
 #include <entities/director.h>
-#include <iostream>
 #include <layers/applayer.h>
 #include <memory>
 #include <optional>
-#include <ostream>
 #include <pscore/application.h>
 #include <pscore/collision.h>
 #include <pscore/sprite.h>
@@ -15,8 +12,7 @@
 #include <psinterfaces/entity.h>
 #include <raylib.h>
 #include <raymath.h>
-#include <vector>
-#include "pscore/utils.h"
+#include <pscore/utils.h>
 
 Projectile::Projectile() : PSInterfaces::IEntity("projectile")
 {

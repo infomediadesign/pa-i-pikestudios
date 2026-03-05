@@ -1,5 +1,3 @@
-#include <algorithm>
-#include <cerrno>
 #include <memory>
 #include <pscore/application.h>
 #include <pscore/collision.h>

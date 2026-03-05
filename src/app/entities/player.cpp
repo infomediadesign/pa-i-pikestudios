@@ -608,7 +608,7 @@ void Player::initialize_cannon()
 
 	float x_offset = 0;
 	if ( !_p->m_cannon_container.empty() ) {
-		cannon_width = static_cast<float>(_p->m_cannon_container[0]->texture().width / 7);
+		cannon_width = static_cast<float>((float)_p->m_cannon_container[0]->texture().width / 7);
 	}
 	x_offset = -(((cannon_width / 4)) * _p->m_cannon_container.size()) / 2;
 
@@ -617,7 +617,7 @@ void Player::initialize_cannon()
 		_p->m_cannon_container.push_back(new_cannon);
 		new_cannon->set_parent(_p->m_shared_ptr_this);
 		new_cannon->set_parent_position_x_offset(x_offset);
-		new_cannon->set_parent_position_y_offset(new_cannon->texture().height / 3);
+		new_cannon->set_parent_position_y_offset((float)new_cannon->texture().height / 3);
 		new_cannon->set_shared_ptr_this(new_cannon);
 		if ( i == 0 ) {
 			new_cannon->set_positioning(Cannon::CannonPositioning::Left);

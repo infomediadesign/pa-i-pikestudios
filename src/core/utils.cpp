@@ -1,9 +1,12 @@
+#include <cstdint>
 #include <pscore/utils.h>
 
+#include <atomic>
+#include <chrono>
+#include <format>
 #include <random>
 #include <raylib.h>
 #include <sstream>
-#include <format>
 
 int PSUtils::gen_rand(const int min, const int max)
 {
@@ -29,38 +32,26 @@ std::string PSUtils::time_to_string(float time)
 	return std::format("{:02d}:{:02d}", min, sec);
 }
 
-std::string PSUtils::generate_uid()
+uint64_t PSUtils::generate_uid()
 {
+	static std::atomic<uint32_t> counter{0};
 	static std::random_device rd;
-	static std::mt19937 gen(rd());
-	static std::uniform_int_distribution<> dis(0, 15);
-	static std::uniform_int_distribution<> dis2(8, 11);
+	static std::mt19937_64 gen(rd());
+	static std::uniform_int_distribution<uint64_t> dis;
 
-	std::stringstream ss;
-	int i;
-	ss << std::hex;
-	for ( i = 0; i < 8; i++ ) {
-		ss << dis(gen);
-	}
-	ss << "-";
-	for ( i = 0; i < 4; i++ ) {
-		ss << dis(gen);
-	}
-	ss << "-4";
-	for ( i = 0; i < 3; i++ ) {
-		ss << dis(gen);
-	}
-	ss << "-";
-	ss << dis2(gen);
-	for ( i = 0; i < 3; i++ ) {
-		ss << dis(gen);
-	}
-	ss << "-";
-	for ( i = 0; i < 12; i++ ) {
-		ss << dis(gen);
-	};
-	return ss.str();
-};
+	// 22 bits from a monotonic counter (~4 million before wrapping)
+	uint64_t count = counter.fetch_add(1, std::memory_order_relaxed) & 0x3FFFFF;
+
+	// 22 bits from high-resolution timestamp
+	auto now = std::chrono::steady_clock::now().time_since_epoch();
+	uint64_t time_bits = static_cast<uint64_t>(
+		std::chrono::duration_cast<std::chrono::nanoseconds>(now).count()) & 0x3FFFFF;
+
+	// 20 bits of randomness
+	uint64_t rand_bits = dis(gen) & 0xFFFFF;
+
+	return (count << 42) | (time_bits << 20) | rand_bits;
+}
 
 /*!
  * From https://www.raylib.com/examples/text/loader.html?name=text_rectangle_bounds
@@ -230,7 +221,7 @@ int PSUtils::vector3_to_color(const Vector3& color)
 }
 Vector3 PSUtils::color_to_vector3(int hexColor)
 {
-	Vector3 color = {255,255,255};
+	Vector3 color = {255, 255, 255};
 
 	color.x = static_cast<float>((hexColor >> 16) & 0xFF);
 	color.y = static_cast<float>((hexColor >> 8) & 0xFF);
