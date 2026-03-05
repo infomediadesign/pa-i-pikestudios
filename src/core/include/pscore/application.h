@@ -164,8 +164,8 @@ namespace PSCore {
 		std::vector<float> m_global_sound_volume;
 
 		std::vector<ui_sound> m_ui_sounds;
-		Vector2 m_volume_boundary = {-10,10};
-		Vector2 m_pitch_boundary = {-10,10};
+		Vector2 m_volume_boundary = {-15,15};
+		Vector2 m_pitch_boundary = {-15,15};
 	};
 } // namespace PSCore
 

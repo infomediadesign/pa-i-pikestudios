@@ -24,8 +24,6 @@ Cannon::Cannon() : PSInterfaces::IEntity("cannon")
 	m_c_animation_controller.add_animation_at_index(0, 2);
 	m_c_projectile_base_rotation_offset = 20;
 	m_c_projectile_rotation_offset		= m_c_projectile_base_rotation_offset;
-
-	m_global_sfx_volume = gApp()->sound_volume(PSCore::Application::SoundType::SFX).value_or(50);
 }
 
 Cannon::~Cannon()
@@ -88,7 +86,9 @@ void Cannon::fire(int projectile_amount)
 		int random_volume = PSUtils::gen_rand(m_volume_boundary.x, m_volume_boundary.y);
 		int random_pitch  = PSUtils::gen_rand(m_pitch_boundary.x, m_pitch_boundary.y);
 
-		SetSoundVolume(m_shoot_sound, std::min((m_global_sfx_volume / 100) * (m_shoot_volume + static_cast<float>(random_volume) / 100), 1.0f));
+		float global_sfx_volume = gApp()->sound_volume(PSCore::Application::SoundType::SFX).value_or(50);
+
+		SetSoundVolume(m_shoot_sound, std::min((global_sfx_volume / 100) * (m_shoot_volume + static_cast<float>(random_volume) / 100), 1.0f));
 		SetSoundPitch(m_shoot_sound, m_shoot_pitch + static_cast<float>(random_pitch) / 100);
 
 		PlaySound(m_shoot_sound);

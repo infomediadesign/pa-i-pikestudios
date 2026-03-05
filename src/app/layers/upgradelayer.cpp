@@ -196,6 +196,11 @@ void UpgradeLayer::draw_upgrade_cards()
 		SetShaderValueTexture(m_card_emissive_shader, m_emissive_texture_position, card_emissive_textures[i]);
 		SetShaderValue(m_card_emissive_shader, m_emissive_color_position, &m_emissive_color, SHADER_UNIFORM_VEC3);
 
+		if ( m_current_loot_table_values.at(i).rarity == 5 && m_can_play_mythic_sound ) {
+			m_can_play_mythic_sound = false;
+			gApp()->play_ui_sound(3);
+		}
+
 		float max_other_hover = 0.0f;
 		for ( int j = 0; j < 3; ++j ) {
 			if ( j != i ) max_other_hover = fmaxf(max_other_hover, m_card_hover_progress[j]);
@@ -237,11 +242,7 @@ void UpgradeLayer::apply_upgrade(LootTableValue upgrade_info)
 	float upgrade_multyplier = get_multiplier(upgrade_info.rarity);
 	float upgrade_amount;
 
-	if ( upgrade_info.rarity == 5 ) {
-		gApp()->play_ui_sound(3);
-	} else {
-		gApp()->play_ui_sound(2);
-	}
+	gApp()->play_ui_sound(2);
 
 	switch ( upgrade_info.index ) {
 		case 0:
@@ -585,6 +586,7 @@ void UpgradeLayer::draw_reroll_button()
 			m_current_loot_table_values = m_loot_table.loot_table_values(3);
 			director->set_reroll_amount(director->reroll_amount() - 1);
 			gApp()->play_ui_sound(0);
+			m_can_play_mythic_sound = true;
 		}
 		Vector2 mouse = GetMousePosition();
 

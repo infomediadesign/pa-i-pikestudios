@@ -55,12 +55,11 @@ private:
 	// Sound
 	Sound m_explode_sound = LoadSound("resources/sfx/bomb_explode.mp3");
 
-	float m_global_sfx_volume = 0;
 	float m_shoot_volume = 1;
 	float m_shoot_pitch = 0.75;
 
-	Vector2 m_volume_boundary = {-20,20};
-	Vector2 m_pitch_boundary = {-40,40};
+	Vector2 m_volume_boundary = {-15,15};
+	Vector2 m_pitch_boundary = {-30,30};
 
 	bool m_can_play_sound = true;
 };

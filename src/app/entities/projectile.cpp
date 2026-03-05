@@ -43,7 +43,7 @@ Projectile::Projectile() : PSInterfaces::IEntity("projectile")
 	m_p_small_blood_splat_sprite  = PRELOAD_TEXTURE("projectile_small_blood_splat", "resources/vfx/8x8_blood_splatter.png", hit_anim_frame_grid);
 	m_p_small_blood_splat_texture = m_p_small_blood_splat_sprite->m_s_texture;
 	m_p_small_blood_splat_controller =
-			PSCore::sprites::SpriteSheetAnimation(m_p_small_blood_splat_texture, {{6, 0.05, PSCore::sprites::Forward, m_p_z_index}});
+			PSCore::sprites::SpriteSheetAnimation(m_p_small_blood_splat_texture, {{6, 0.1, PSCore::sprites::Forward, m_p_z_index}});
 	m_p_small_blood_splat_controller.add_animation_at_index(0, m_p_z_index);
 
 	// Big Blood Splat (tentacle)

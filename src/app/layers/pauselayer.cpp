@@ -9,8 +9,8 @@
 #include <raygui.h>
 #include <raylib.h>
 #include "layers/optionslayer.h"
-#include "pscore/utils.h"
 #include "pscore/settings.h"
+#include "pscore/utils.h"
 
 PauseLayer::PauseLayer()
 {
@@ -26,9 +26,9 @@ PauseLayer::PauseLayer()
 
 void PauseLayer::on_render()
 {
-	if (!active)
+	if ( !active )
 		return;
-	
+
 	auto& vp	   = gApp()->viewport();
 	Vector2 origin = vp->viewport_origin();
 	float scale	   = vp->viewport_scale();
@@ -68,13 +68,14 @@ void PauseLayer::on_render()
 
 	button_pos.y += button_height + 8.0f;
 
-	if ( GuiButtonTexture(m_button, button_pos, 0, scale, WHITE, GRAY, "Main Menu") ) {
+	if ( GuiButtonTexture(m_button, button_pos, 0, scale, WHITE, GRAY, "Retry") ) {
 		gApp()->call_later([]() {
-			gApp()->pop_layer<PauseLayer>();
+			gApp()->pop_layer<AppLayer>();
 			gApp()->pop_layer<UILayer>();
-			gApp()->pop_layer<UpgradeLayer>();
-			gApp()->switch_layer<AppLayer, MainMenuLayer>();
+			gApp()->switch_layer<PauseLayer, AppLayer>();
+			gApp()->game_director_ref().reset(new FortunaDirector());
 		});
+		HideCursor();
 		gApp()->play_ui_sound(0);
 	}
 
@@ -96,14 +97,13 @@ void PauseLayer::on_render()
 
 	button_pos.y += button_height + 8.0f;
 
-	if ( GuiButtonTexture(m_button, button_pos, 0, scale, WHITE, GRAY, "Retry") ) {
+	if ( GuiButtonTexture(m_button, button_pos, 0, scale, WHITE, GRAY, "Main Menu") ) {
 		gApp()->call_later([]() {
-			gApp()->pop_layer<AppLayer>();
+			gApp()->pop_layer<PauseLayer>();
 			gApp()->pop_layer<UILayer>();
-			gApp()->switch_layer<PauseLayer, AppLayer>();
-			gApp()->game_director_ref().reset(new FortunaDirector());
+			gApp()->pop_layer<UpgradeLayer>();
+			gApp()->switch_layer<AppLayer, MainMenuLayer>();
 		});
-		HideCursor();
 		gApp()->play_ui_sound(0);
 	}
 
@@ -112,6 +112,26 @@ void PauseLayer::on_render()
 
 void PauseLayer::on_update(float dt)
 {
+	if ( IsKeyPressed(KEY_ESCAPE) ) {
+		gApp()->call_later([]() {
+			gApp()->pop_layer<PauseLayer>();
+			if ( auto app_layer = gApp()->get_layer<AppLayer>() )
+				app_layer->resume();
+			auto director = dynamic_cast<FortunaDirector*>(gApp()->game_director());
+			if ( director ) {
+				director->set_is_active(true);
+			}
+		});
+		gApp()->call_later([]() {
+			auto upgrade_layer = gApp()->get_layer<UpgradeLayer>();
+			if ( upgrade_layer ) {
+				if ( auto app_layer = gApp()->get_layer<AppLayer>() )
+					app_layer->suspend();
+				upgrade_layer->m_layer_is_visible = true;
+			}
+		});
+		HideCursor();
+	}
 }
 
 void PauseLayer::draw_statistics()
@@ -187,11 +207,11 @@ void PauseLayer::draw_player_stats(float scale)
 		if ( m_player_stats[i].is_upgraded ) {
 			GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt({0, 255, 0, 255}));
 			GuiLabel(
-				{m_stats_base_bounds.x + horizontal_spacing, m_stats_base_bounds.y, m_stats_base_bounds.width, m_stats_base_bounds.height},
-				m_player_stats[i].value.c_str());
+					{m_stats_base_bounds.x + horizontal_spacing, m_stats_base_bounds.y, m_stats_base_bounds.width, m_stats_base_bounds.height},
+					m_player_stats[i].value.c_str()
+			);
 			GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt({255, 255, 255, 255}));
-		} 
-		else{
+		} else {
 			GuiLabel(
 					{m_stats_base_bounds.x + horizontal_spacing, m_stats_base_bounds.y, m_stats_base_bounds.width, m_stats_base_bounds.height},
 					m_player_stats[i].value.c_str()
@@ -215,13 +235,34 @@ void PauseLayer::init_stat_strings()
 	m_kill_stat_lines.clear();
 
 	// init player stats
-	m_player_stats.push_back({"Speed:", std::format("{:.2f}", m_director->player_max_velocity()),m_director->player_max_velocity() > (CFG_VALUE<float>("player_max_velocity", 200.0f))});
-	m_player_stats.push_back({"Turn Speed:", std::format("{:.2f}", m_director->player_input_rotation_mult()),m_director->player_input_rotation_mult() > (CFG_VALUE<float>("player_input_rotation_mult", 200.0f))});
-	m_player_stats.push_back({"Fire Rate:", std::format("{:.2f}s", m_director->player_current_fire_rate()),m_director->player_current_fire_rate() < CFG_VALUE<float>("player_current_fire_rate", 0.5f)});
-	m_player_stats.push_back({"Projectile Speed:", std::format("{:.2f}", m_director->player_current_projectile_speed()),m_director->player_current_projectile_speed() > CFG_VALUE<float>("player_current_projectile_speed", 300.0f)});
-	m_player_stats.push_back({"Fire Range:", std::format("{:.2f}", m_director->player_current_fire_range()),m_director->player_current_fire_range() > CFG_VALUE<float>("player_current_fire_range", 100.0f)});
-	m_player_stats.push_back({"Piercing Chance:", std::format("{:.2f}%", m_director->player_piercing_chance()),m_director->player_piercing_chance() > CFG_VALUE<float>("player_current_piercing_chance", 5.0f)});
-	m_player_stats.push_back({"Luck:", std::format("{:.2f}%", m_director->player_luck() * 100), m_director->player_luck() > CFG_VALUE<float>("player_current_luck", 0.1f)});
+	m_player_stats.push_back(
+			{"Speed:", std::format("{:.2f}", m_director->player_max_velocity()),
+			 m_director->player_max_velocity() > (CFG_VALUE<float>("player_max_velocity", 200.0f))}
+	);
+	m_player_stats.push_back(
+			{"Turn Speed:", std::format("{:.2f}", m_director->player_input_rotation_mult()),
+			 m_director->player_input_rotation_mult() > (CFG_VALUE<float>("player_input_rotation_mult", 200.0f))}
+	);
+	m_player_stats.push_back(
+			{"Fire Rate:", std::format("{:.2f}s", m_director->player_current_fire_rate()),
+			 m_director->player_current_fire_rate() < CFG_VALUE<float>("player_current_fire_rate", 0.5f)}
+	);
+	m_player_stats.push_back(
+			{"Projectile Speed:", std::format("{:.2f}", m_director->player_current_projectile_speed()),
+			 m_director->player_current_projectile_speed() > CFG_VALUE<float>("player_current_projectile_speed", 300.0f)}
+	);
+	m_player_stats.push_back(
+			{"Fire Range:", std::format("{:.2f}", m_director->player_current_fire_range()),
+			 m_director->player_current_fire_range() > CFG_VALUE<float>("player_current_fire_range", 100.0f)}
+	);
+	m_player_stats.push_back(
+			{"Piercing Chance:", std::format("{:.2f}%", m_director->player_piercing_chance()),
+			 m_director->player_piercing_chance() > CFG_VALUE<float>("player_current_piercing_chance", 5.0f)}
+	);
+	m_player_stats.push_back(
+			{"Luck:", std::format("{:.2f}%", m_director->player_luck() * 100),
+			 m_director->player_luck() > CFG_VALUE<float>("player_current_luck", 0.1f)}
+	);
 
 	if ( m_director->player_projectile_amount() > 1 ) {
 		m_player_stats.push_back({"Multi Shot:", std::format("{}", m_director->player_projectile_amount()), true});
