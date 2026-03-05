@@ -744,7 +744,7 @@ std::string UpgradeLayer::get_tooltip_text(int upgrade_index)
 		case 9:
 			return "Each cannon shoots another \nbullet.";
 		case 10:
-			return "Explosive barrels spawn behind \nthe ship";
+			return "Explosive barrels spawn \nbehind the ship.";
 		default:
 			return "";
 	}
