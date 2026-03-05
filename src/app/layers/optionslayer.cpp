@@ -100,7 +100,7 @@ OptionsLayer::OptionsLayer()
 		m_settings->fullscreen		= std::get<bool>(settings->value("fullscreen").value_or(true));
 		m_settings->vsync			= std::get<bool>(settings->value("vsync").value_or(false));
 		m_settings->msaa4x			= std::get<bool>(settings->value("msaa4x").value_or(false));
-		m_settings->fps_index		= std::get<int>(settings->value("fps_index").value_or(1));
+		m_settings->fps_index		= std::get<int>(settings->value("fps_index").value_or(5));
 		m_settings->key_accelerate	= std::get<int>(settings->value("key_accelerate").value_or(KEY_W));
 		m_settings->key_brake		= std::get<int>(settings->value("key_brake").value_or(KEY_S));
 		m_settings->key_left_turn	= std::get<int>(settings->value("key_left_turn").value_or(KEY_A));
