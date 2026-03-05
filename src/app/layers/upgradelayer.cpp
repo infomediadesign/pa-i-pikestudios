@@ -701,12 +701,13 @@ void UpgradeLayer::draw_card_tooltip(Vector2 card_pos, float scale)
 		float label_y  = origin.y + tooltip_pos.y * s - label_h / 2.0f;
 
 		float text_padding_x = 8.0f * s;
-		float text_padding_y = 20.0f * s;
+		float text_offset_y  = 10.0f * s;
+		float text_padding_y = 4.0f * s;
 		GuiSetStyle(DEFAULT, TEXT_SIZE, 6 * s);
 		GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt({0, 0, 0, 255}));
 		GuiSetStyle(DEFAULT, TEXT_ALIGNMENT, TEXT_ALIGN_CENTER);
 		GuiLabel(
-				{label_x + text_padding_x, label_y + text_padding_y, label_w - 2 * text_padding_x, label_h - 2 * text_padding_y},
+				{label_x + text_padding_x, label_y + text_offset_y, label_w - 2 * text_padding_x, label_h - text_offset_y - text_padding_y},
 				m_current_tooltip_text.c_str()
 		);
 		GuiSetStyle(DEFAULT, TEXT_SIZE, 14 * s);
