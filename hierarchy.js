@@ -53,6 +53,8 @@ var hierarchy =
       [ "UILayer", "classUILayer.html", null ],
       [ "UpgradeLayer", "classUpgradeLayer.html", null ]
     ] ],
+    [ "LeaderboardClient", "classLeaderboardClient.html", null ],
+    [ "LeaderboardEntry", "structLeaderboardEntry.html", null ],
     [ "LootTable", "classLootTable.html", null ],
     [ "LootTableChances", "structLootTableChances.html", null ],
     [ "LootTableIndices", "structLootTableIndices.html", null ],

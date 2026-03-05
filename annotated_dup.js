@@ -57,6 +57,8 @@ var annotated_dup =
     [ "HighscoreEntries", "structHighscoreEntries.html", null ],
     [ "Hunter", "classHunter.html", null ],
     [ "HunterPriv", "classHunterPriv.html", null ],
+    [ "LeaderboardClient", "classLeaderboardClient.html", null ],
+    [ "LeaderboardEntry", "structLeaderboardEntry.html", null ],
     [ "LootChest", "classLootChest.html", null ],
     [ "LootTable", "classLootTable.html", null ],
     [ "LootTableChances", "structLootTableChances.html", null ],
