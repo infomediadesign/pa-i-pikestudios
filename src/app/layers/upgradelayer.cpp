@@ -41,6 +41,7 @@ UpgradeLayer::UpgradeLayer()
 	m_player_speed_icon		= PRELOAD_TEXTURE("player_speed_icon", "resources/icon/upgr_icon_movement_speed.png", frame_grid)->m_s_texture;
 	m_explisve_barrel_icon	= PRELOAD_TEXTURE("explosive_barrel_icon", "resources/icon/upgr_icon_explosives.png", frame_grid)->m_s_texture;
 	m_health_icon			= PRELOAD_TEXTURE("health_icon", "resources/icon/upgr_icon_health.png", frame_grid)->m_s_texture;
+	m_projectile_amount_icon = PRELOAD_TEXTURE("projectile_amount_icon", "resources/icon/upgr_icon_multishot.png", frame_grid)->m_s_texture;
 
 	m_card_1_texture_emissive =
 			PRELOAD_TEXTURE("card_emissive_1", "resources/emissive/upgrate_card_emissive_border_and_center_card_1.png", frame_grid)->m_s_texture;
@@ -663,7 +664,7 @@ void UpgradeLayer::draw_upgrade_icon(int index, Vector2 card_pos)
 			DrawTextureEx(m_luck_icon, pos, 0, scale, WHITE);
 			break;
 		case 9:
-			// DrawTextureEx(m_fire_rate_icon, pos, 0, scale, WHITE);
+			DrawTextureEx(m_projectile_amount_icon, pos, 0, scale, WHITE);
 			break;
 		case 10:
 			DrawTextureEx(m_explisve_barrel_icon, pos, 0, scale, WHITE);
@@ -686,26 +687,30 @@ void UpgradeLayer::draw_card_tooltip(Vector2 card_pos, float scale)
 	float card_half_height	  = m_card_texture_1.height / 2.0f;
 	float tooltip_half_height = m_tooltip_card_texture.height / 2.0f;
 
-	Vector2 tooltip_pos = {card_pos.x, card_pos.y - card_half_height - (tooltip_half_height + 25)};
+	Vector2 tooltip_pos = {card_pos.x, card_pos.y - card_half_height - (tooltip_half_height + 5)};
 
 	Rectangle source = {0, 0, static_cast<float>(m_tooltip_card_texture.width), static_cast<float>(m_tooltip_card_texture.height)};
 
 	if ( auto& vp = gApp()->viewport() ) {
-		vp->draw_in_viewport(m_tooltip_card_texture, source, tooltip_pos, 0, WHITE);
-
 		Vector2 origin = vp->viewport_origin();
 		float s		   = vp->viewport_scale();
-		float label_w  = source.width * s;
-		float label_h  = source.height * s;
-		float label_x  = origin.x + tooltip_pos.x * s - label_w / 2.0f;
-		float label_y  = origin.y + tooltip_pos.y * s - label_h / 2.0f;
+
+		Vector2 viewport_tooltip_pos = {tooltip_pos.x - origin.x / s, tooltip_pos.y - origin.y / s};
+
+		vp->draw_in_viewport(m_tooltip_card_texture, source, viewport_tooltip_pos, 0, WHITE);
+
+		float label_w = source.width * s;
+		float label_h = source.height * s;
+		float label_x = tooltip_pos.x * s - label_w / 2.0f;
+		float label_y = tooltip_pos.y * s - label_h / 2.0f;
 
 		float text_padding_x = 8.0f * s;
-		float text_offset_y  = 10.0f * s;
+		float text_offset_y	 = 10.0f * s;
 		float text_padding_y = 4.0f * s;
 		GuiSetStyle(DEFAULT, TEXT_SIZE, 6 * s);
 		GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt({0, 0, 0, 255}));
 		GuiSetStyle(DEFAULT, TEXT_ALIGNMENT, TEXT_ALIGN_CENTER);
+		GuiSetStyle(DEFAULT, TEXT_LINE_SPACING, 7 * s);
 		GuiLabel(
 				{label_x + text_padding_x, label_y + text_offset_y, label_w - 2 * text_padding_x, label_h - text_offset_y - text_padding_y},
 				m_current_tooltip_text.c_str()
