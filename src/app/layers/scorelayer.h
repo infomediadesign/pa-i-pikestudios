@@ -1,14 +1,15 @@
 #pragma once
 
-#include <vector>
 #include <pscore/filemanager.h>
 #include <psinterfaces/layer.h>
 #include <raylib.h>
+#include <vector>
 
 struct HighscoreEntries
 {
 	int score;
 	std::string name;
+	Vector3 sail_color;
 };
 
 class ScoreLayer : public PSInterfaces::Layer
@@ -31,10 +32,10 @@ public:
 	void update_typing();
 	enum liststate { VIEWING, AWAITING_INPUT, TYPING_NAME, INPUT_MADE };
 	liststate list_state = VIEWING;
-	void set_highscore(std::string& name, int score);
+	void set_highscore(std::string& name, int score, const Vector3& sail_color);
 	void draw_score_board();
 	std::string score_filename() const;
-    Vector2 anchor02 = { 0, 0 };
+	Vector2 anchor02 = {0, 0};
 	void set_layer_is_visible(bool visible);
 	void set_retry_button_visible(bool visible);
 	void draw_score_board_buttons();
@@ -43,13 +44,18 @@ public:
 
 	Filemanager m_filemanager;
 
-	private:
+private:
 	static inline const std::string m_score_filename = "fortunascore.txt";
-	float m_time_since_lase_input				 = 0.0f;
-	bool m_layer_is_visible						= true;
-	bool m_retry_button_visible					= false;
+	float m_time_since_lase_input					 = 0.0f;
+	bool m_layer_is_visible							 = true;
+	bool m_retry_button_visible						 = false;
 	Texture2D m_scoreboard_background;
 	Texture2D m_button;
 	Texture2D m_mark_texture;
 
+	Shader m_small_ship_shader	   = LoadShader(NULL, "resources/shader/emissive_color.fs");
+	Texture2D player_emissive	   = LoadTexture("resources/emissive/player_emissive.png");
+	Texture2D m_small_ship_texture = LoadTexture("resources/ui/small_ship.png");
+	int texture_color_pos;
+	int texture_emissive_pos;
 };
