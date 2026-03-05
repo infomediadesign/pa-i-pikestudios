@@ -16,7 +16,7 @@ namespace PSUtils {
 	int gen_rand(const int min, const int max);
 	float gen_rand_float(const float min, const float max);
 
-	std::string generate_uid();
+	uint64_t generate_uid();
 
 	std::string time_to_string(float time);
 

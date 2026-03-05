@@ -96,7 +96,7 @@ namespace PSInterfaces {
 			return ident_;
 		}
 
-		const std::string uid() const
+		const uint64_t uid() const
 		{
 			return uid_;
 		}
@@ -104,7 +104,7 @@ namespace PSInterfaces {
 	protected:
 		std::vector<const Events::IEventManager*> event_managers_;
 		const std::string ident_;
-		const std::string uid_ = PSUtils::generate_uid();
+		const uint64_t uid_ = PSUtils::generate_uid();
 
 		bool is_active_		  = true;
 		bool is_dead_hitable_ = false;
