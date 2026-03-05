@@ -142,13 +142,6 @@ void UpgradeLayer::on_update(float dt)
 			m_hovered_card_index = -1;
 			m_card_hovered		 = false;
 		}
-
-		float first_card_anim_t = (m_card_anim_duration > 0.0f) ? (m_card_anim_timers[0] / m_card_anim_duration) : 1.0f;
-		float first_card_y = (screen_middel.y + m_card_anim_start_offset_y * (1.0f - easeOutElastic(first_card_anim_t))
-		                      + m_card_hover_lift * m_card_hover_progress[0]) * scale;
-		float first_card_top = first_card_y - (m_card_texture_1.height / 2.0f * scale);
-		float spacebetween_top_screen_boarder_and_cards = first_card_top - origin.y;
-		PS_LOG(LOG_INFO, std::format("Space top-screen to card-top: {:.2f}px", spacebetween_top_screen_boarder_and_cards));
 	}
 
 	if ( m_reroll_anim_playing ) {
@@ -724,27 +717,27 @@ std::string UpgradeLayer::get_tooltip_text(int upgrade_index)
 {
 	switch ( upgrade_index ) {
 		case 0:
-			return "Increase the amount of \ncannons on each side.";
+			return "Obtain one more canon for \neach side of your ship.";
 		case 1:
-			return "Improves the maximum \nvelocity of the bullets.";
+			return "Increases the speed of \nprojectiles you shoot.";
 		case 2:
-			return "Improves shooting distance.";
+			return "Increases the maximum \ndistance your projectiles can \ntravel.";
 		case 3:
-			return "Improves shooting frequency.";
+			return "Upgrades your shooting \nfrequency.";
 		case 4:
-			return "Gain 1 life.";
+			return "Gain one more health.";
 		case 5:
-			return "Improves the maximum \nship velocity.";
+			return "Increases the maximum \nship speed.";
 		case 6:
-			return "Improves the ships maximum \nturn velocity.";
+			return "Increases your ship`s \nmaximum turn speed.";
 		case 7:
-			return "Bullets have the given chance \nto fly through enemies.";
+			return "Bullets get an increased \nchance of piercing through \nenemies.";
 		case 8:
-			return "Increases the chance of \nhigher rarities.";
+			return "Increases the chance for \nrolling higher rarities when \nobtaining upgrades.";
 		case 9:
-			return "Each cannon shoots another \nbullet.";
+			return "Each cannon shoots one more \nbullet.";
 		case 10:
-			return "Explosive barrels spawn \nbehind the ship.";
+			return "Periodically drop explosive \nbarrels behind you that deal \nAoE damage when detonating.";
 		default:
 			return "";
 	}
