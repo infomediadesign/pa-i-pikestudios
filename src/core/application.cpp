@@ -131,7 +131,7 @@ void PSCore::Application::init(const AppSpec& spec)
 	InitAudioDevice();
 
 	if ( m_ui_sounds.empty() ) {
-		m_ui_sounds.push_back({LoadSound("resources/sfx/button_pressed.mp3"), 1, 1});
+		m_ui_sounds.push_back({LoadSound("resources/sfx/button_pressed.mp3"), 1, 0.5});
 		m_ui_sounds.push_back({LoadSound("resources/sfx/button_hovered.mp3"), 1, 1});
 		m_ui_sounds.push_back({LoadSound("resources/sfx/upgrade_picked.mp3"), 1, 1});
 		m_ui_sounds.push_back({LoadSound("resources/sfx/mythic_upgrade_picked.mp3"), 1, 1});

@@ -114,7 +114,7 @@ class PlayerPriv
 
 	float m_global_sfx_volume = 0;
 	float m_hurt_volume = 1;
-	float m_hurt_pitch = 1;
+	float m_hurt_pitch = 0.2;
 	float m_death_volume = 1;
 	float m_death_pitch = 1;
 
