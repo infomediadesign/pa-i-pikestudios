@@ -13,13 +13,14 @@ file(GLOB_RECURSE SOURCE_FILES
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES} ${app_icon})
 
 target_link_libraries(${PROJECT_NAME} PUBLIC
- imgui
- raylib
- raygui
- rlimgui
- OpenGL::GL
-
-	PSCore
+ 	imgui
+ 	raylib
+ 	raygui
+ 	rlimgui
+ 	OpenGL::GL
+ 	nlohmann_json::nlohmann_json
+  httplib::httplib
+  	PSCore
 	CMathExtension
 )
 

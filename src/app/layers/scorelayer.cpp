@@ -4,10 +4,12 @@
 #include <filesystem>
 #include <fstream>
 #include <layers/mainmenulayer.h>
+#include <misc/leaderboardclient.h>
+#include <pscore/utils.h>
 #include <pscore/viewport.h>
 #include <raygui.h>
 #include <raylib.h>
-#include "pscore/utils.h"
+#include <thread>
 
 ScoreLayer::ScoreLayer() : m_filemanager(m_score_filename)
 {
@@ -113,16 +115,21 @@ void ScoreLayer::save_new_highscore(int score)
 			list_state = AWAITING_INPUT;
 			return;
 		} else if ( list_state == INPUT_MADE ) {
-			const Vector3 current_sail_clr = PSUtils::color_to_vector3(
-					std::get<int>(PSCore::SettingsManager::inst()->settings["user_preferences"]->value("player_color").value_or(0))
-			);
+			const int current_sail_clr =
+					std::get<int>(PSCore::SettingsManager::inst()->settings["user_preferences"]->value("player_color").value_or(0));
 			if ( highscore.size() >= 10 ) {
 				highscore.back().score		= score;
 				highscore.back().name		= player_name_input;
-				highscore.back().sail_color = current_sail_clr;
+				highscore.back().sail_color = PSUtils::color_to_vector3(current_sail_clr);
 			} else {
-				set_highscore(player_name_input, score, current_sail_clr);
+				set_highscore(player_name_input, score, PSUtils::color_to_vector3(current_sail_clr));
 			}
+
+			std::thread save_thread([this, score, current_sail_clr]() {
+				LeaderboardClient client("http://87.106.28.241:18080");
+				client.postScore(player_name_input, score, current_sail_clr);
+			});
+			save_thread.detach();
 		}
 		std::sort(highscore.begin(), highscore.end(), [](const HighscoreEntries& a, const HighscoreEntries& b) -> bool { return a.score > b.score; });
 	}
@@ -202,8 +209,8 @@ void ScoreLayer::draw_score_board()
 		float ship_texture_margins = 11 * scale;
 		DrawTexturePro(
 				m_small_ship_texture, {0, 0, static_cast<float>(m_small_ship_texture.width), static_cast<float>(m_small_ship_texture.height)},
-				{right_color_rect.x - (ship_texture_margins / 2), right_color_rect.y - (ship_texture_margins / 2), right_color_rect.width + ship_texture_margins,
-				 right_color_rect.height + ship_texture_margins},
+				{right_color_rect.x - (ship_texture_margins / 2), right_color_rect.y - (ship_texture_margins / 2),
+				 right_color_rect.width + ship_texture_margins, right_color_rect.height + ship_texture_margins},
 				{0, 0}, 0, WHITE
 		);
 
