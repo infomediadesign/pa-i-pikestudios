@@ -62,7 +62,7 @@ void PauseLayer::on_render()
 				upgrade_layer->m_layer_is_visible = true;
 			}
 		});
-		HideCursor();
+		gApp()->hide_custom_cursor();
 		gApp()->play_ui_sound(0);
 	}
 
@@ -75,7 +75,7 @@ void PauseLayer::on_render()
 			gApp()->switch_layer<PauseLayer, AppLayer>();
 			gApp()->game_director_ref().reset(new FortunaDirector());
 		});
-		HideCursor();
+		gApp()->hide_custom_cursor();
 		gApp()->play_ui_sound(0);
 	}
 
@@ -130,7 +130,7 @@ void PauseLayer::on_update(float dt)
 				upgrade_layer->m_layer_is_visible = true;
 			}
 		});
-		HideCursor();
+		gApp()->hide_custom_cursor();
 	}
 }
 

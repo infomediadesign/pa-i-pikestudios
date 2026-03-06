@@ -225,7 +225,7 @@ void MainMenuLayer::on_render()
 			}
 		});
 		gApp()->call_later([]() { gApp()->switch_layer<MainMenuLayer, AppLayer>(); });
-		HideCursor();
+		gApp()->hide_custom_cursor();
 		gApp()->play_ui_sound(0);
 	}
 

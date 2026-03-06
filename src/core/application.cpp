@@ -8,10 +8,10 @@
 #include <stdexcept>
 
 #include <pscore/application.h>
+#include <pscore/settings.h>
 #include <pscore/time.h>
 #include <psinterfaces/entity.h>
 #include <raylib.h>
-#include <pscore/settings.h>
 
 using PSCore::Application;
 static Application* g_app = nullptr;
@@ -20,6 +20,9 @@ class PSCore::ApplicationPriv
 {
 	friend class Application;
 	bool m_running = false;
+	Texture2D m_custom_cursor_texture;
+	Vector2 m_mouse_pos;
+	bool m_custom_cursor_visible;
 
 	void toggle_fullscreen()
 	{
@@ -162,7 +165,7 @@ Application::~Application()
 void Application::run()
 {
 	_p->m_running = true;
-
+	init_custom_cursor();
 	// main event loop
 	while ( _p->m_running ) {
 		PollInputEvents();
@@ -203,7 +206,7 @@ void Application::run()
 			layer->on_render();
 
 		_p->m_viewport->render();
-
+		render_custom_cursor();
 		EndDrawing();
 		SwapScreenBuffer();
 
@@ -297,4 +300,39 @@ void Application::play_ui_sound(int index)
 	SetSoundPitch(element.sound, element.pitch + static_cast<float>(random_pitch) / 100);
 
 	PlaySound(element.sound);
+}
+
+void Application::init_custom_cursor()
+{
+	HideCursor();
+	_p->m_custom_cursor_texture = LoadTexture("resources/ui/custom_cursor.png");
+	_p->m_mouse_pos				= GetMousePosition();
+	_p->m_custom_cursor_visible = true;
+}
+
+void Application::render_custom_cursor()
+{
+	if ( _p->m_custom_cursor_visible && IsCursorOnScreen() ) {
+		_p->m_mouse_pos			= GetMousePosition();
+		bool cursor_in_viewport = _p->m_mouse_pos.x >= _p->m_viewport->viewport_origin().x &&
+								  _p->m_mouse_pos.y >= _p->m_viewport->viewport_origin().y &&
+								  _p->m_mouse_pos.x < _p->m_viewport->position_viewport_to_global(_p->m_viewport->viewport_base_size()).x &&
+								  _p->m_mouse_pos.y < _p->m_viewport->position_viewport_to_global(_p->m_viewport->viewport_base_size()).y;
+
+		if ( cursor_in_viewport ) {
+			DrawTextureEx(_p->m_custom_cursor_texture, _p->m_mouse_pos, 0, _p->m_viewport->viewport_scale(), WHITE);
+		}
+	}
+}
+
+void Application::hide_custom_cursor()
+{
+	_p->m_custom_cursor_visible = false;
+	HideCursor();
+}
+
+void Application::show_custom_cursor()
+{
+	_p->m_custom_cursor_visible = true;
+	HideCursor();
 }

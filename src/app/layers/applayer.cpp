@@ -127,7 +127,7 @@ void AppLayer::on_update(const float dt)
 						}
 						app_layer->suspend();
 						director->set_is_active(false);
-						ShowCursor();
+						gApp()->show_custom_cursor();
 					}
 				});
 			}
