@@ -6,6 +6,7 @@
 #include "pscore/sprite.h"
 #include "pscore/viewport.h"
 #include "raygui.h"
+#include "layers/pauselayer.h"
 
 float easeInElastic(float x)
 {
@@ -147,8 +148,24 @@ void UpgradeLayer::on_update(float dt)
 	if ( m_reroll_anim_playing ) {
 		play_reroll_gem_animation(dt);
 	}
-	
+
+				if ( IsKeyPressed(KEY_ESCAPE) ) {
+		gApp()->call_later([]() {
+			auto& director = gApp()->game_director_ref();
+
+			PSCore::Application::get()->push_layer<PauseLayer>();
+			if ( auto app_layer = PSCore::Application::get()->get_layer<AppLayer>() ) {
+				if ( auto upgrade_layer = gApp()->get_layer<UpgradeLayer>() ) {
+					upgrade_layer->m_layer_is_visible = false;
+				}
+				app_layer->suspend();
+				director->set_is_active(false);
+				gApp()->show_custom_cursor();
+			}
+		});
+	}
 }
+	
 
 void UpgradeLayer::on_render()
 {
