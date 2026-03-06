@@ -45,6 +45,9 @@ class PlayerPriv
 	float m_max_velocity	 = 200;
 	float m_rotation		 = 0;
 
+	float m_movement_calculation_timer = 0;
+	bool m_movement_calculation_flag   = false;
+
 	// Interpolation Values for the Movement Calculation
 	float m_target_velocity				= 0;
 	float m_target_rotation				= 0;
@@ -113,10 +116,10 @@ class PlayerPriv
 	Sound m_death_sound = LoadSound("resources/sfx/death.mp3");
 
 	float m_global_sfx_volume = 0;
-	float m_hurt_volume	 = 0.3;
-	float m_hurt_pitch = 0.5;
-	float m_death_volume = 1;
-	float m_death_pitch	 = 1;
+	float m_hurt_volume		  = 0.3;
+	float m_hurt_pitch		  = 0.5;
+	float m_death_volume	  = 1;
+	float m_death_pitch		  = 1;
 
 	Vector2 m_volume_boundary = {-15, 15};
 	Vector2 m_pitch_boundary  = {-15, 15};
@@ -154,6 +157,11 @@ Player::Player() : PSInterfaces::IEntity("player")
 	set_max_velocity(direcor_vals->player_max_velocity);
 	_p->m_rotation		  = 0;
 	_p->m_rotation_offset = 90;
+
+	_p->m_repel_velocity	   = {0, 0};
+
+	_p->m_movement_calculation_timer = 0;
+	_p->m_movement_calculation_flag  = false;
 
 	_p->m_sails = std::make_shared<Sails>(this);
 
@@ -201,7 +209,9 @@ void Player::update(const float dt)
 		if ( director->player_health() > 0 ) {
 			fire_cannons(dt);
 
-			calculate_movement(dt);
+			if ( _p->m_movement_calculation_flag ) {
+				calculate_movement(dt);
+			}
 
 			_p->m_rotation_velocity = calculate_rotation_velocity(0.01, dt);
 
@@ -272,6 +282,14 @@ void Player::update(const float dt)
 
 		_p->m_explosive_barrel_spawner->update(dt);
 	}
+
+	if ( !_p->m_movement_calculation_flag ) {
+		_p->m_movement_calculation_timer += dt;
+		if ( _p->m_movement_calculation_timer >= 0.1 ) {
+			_p->m_movement_calculation_flag  = true;
+			_p->m_movement_calculation_timer = 0;
+		}
+	}
 }
 
 void Player::on_hit()
@@ -282,8 +300,7 @@ void Player::on_hit()
 			director->set_player_health(director->player_health() - 1);
 			if ( director->player_health() <= 0 ) {
 				on_death();
-			}
-			else {
+			} else {
 				play_sound(_p->m_hurt_sound, _p->m_hurt_volume, _p->m_hurt_pitch);
 			}
 		}
@@ -611,7 +628,7 @@ void Player::initialize_cannon()
 
 	float x_offset = 0;
 	if ( !_p->m_cannon_container.empty() ) {
-		cannon_width = static_cast<float>((float)_p->m_cannon_container[0]->texture().width / 7);
+		cannon_width = static_cast<float>((float) _p->m_cannon_container[0]->texture().width / 7);
 	}
 	x_offset = -(((cannon_width / 4)) * _p->m_cannon_container.size()) / 2;
 
@@ -620,7 +637,7 @@ void Player::initialize_cannon()
 		_p->m_cannon_container.push_back(new_cannon);
 		new_cannon->set_parent(_p->m_shared_ptr_this);
 		new_cannon->set_parent_position_x_offset(x_offset);
-		new_cannon->set_parent_position_y_offset((float)new_cannon->texture().height / 3);
+		new_cannon->set_parent_position_y_offset((float) new_cannon->texture().height / 3);
 		new_cannon->set_shared_ptr_this(new_cannon);
 		if ( i == 0 ) {
 			new_cannon->set_positioning(Cannon::CannonPositioning::Left);
