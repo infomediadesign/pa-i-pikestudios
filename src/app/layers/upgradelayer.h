@@ -37,8 +37,10 @@ public:
 	std::string rarity_to_string(int rarity);
 	std::string upgrade_type_to_string(int index);
 	std::string value_to_string(int index, int rarity);
-	void draw_upgrade_icon(int index, Vector2 pos);
+	void draw_upgrade_icon(int index, int rarity, Vector2 pos);
 	void play_reroll_gem_animation(float dt);
+	void play_mythic_anim(float dt);
+	PSCore::sprites::SpriteSheetAnimation& get_mythic_controller(int upgrade_index);
 
 	float common_pull_chance	= CFG_VALUE<float>("upgrade_common_chance", 50);
 	float uncommon_pull_chance	= CFG_VALUE<float>("upgrade_uncommon_chance", 30);
@@ -134,4 +136,21 @@ public:
 	Texture2D m_gem_socket_texture;
 
 	bool m_can_play_mythic_sound = true;
+
+	//Mythic Anims
+	PSCore::sprites::SpriteSheetAnimation m_cannon_amount_controller;
+	std::shared_ptr<PSCore::sprites::Sprite> m_cannon_amount_sprite;
+	Texture2D m_cannon_amount_texture;
+	bool m_cannon_amount_anim_playing = false;
+
+	PSCore::sprites::SpriteSheetAnimation m_projectile_amount_controller;
+	std::shared_ptr<PSCore::sprites::Sprite> m_projectile_amount_sprite;
+	Texture2D m_projectile_amount_texture;
+	bool m_projectile_amount_anim_playing = false;
+
+	PSCore::sprites::SpriteSheetAnimation m_explosive_barrel_controller;
+	std::shared_ptr<PSCore::sprites::Sprite> m_explosive_barrel_sprite;
+	Texture2D m_explosive_barrel_texture;
+	bool m_explosive_barrel_anim_playing = false;
+
 };

@@ -70,6 +70,7 @@ UpgradeLayer::UpgradeLayer()
 	m_loot_table.add_loot_table(9, director->drop_chances.projectile_amount, m_only_mythic_chance); // Projectile Amount
 	m_loot_table.add_loot_table(10, director->drop_chances.explosive_barrels, m_only_mythic_chance); // Explosive Barrels
 
+	//Gem anim
 	m_gem_sprite		  = PRELOAD_TEXTURE("gem_sprite", "resources/icon/gem_icon.png", frame_grid);
 	m_gem_texture		  = m_gem_sprite->m_s_texture;
 	m_gem_anim_controller = PSCore::sprites::SpriteSheetAnimation(
@@ -78,6 +79,31 @@ UpgradeLayer::UpgradeLayer()
 						   }
 	);
 	m_gem_anim_controller.add_animation_at_index(0, m_z_index);
+	
+	//Mythic
+	m_cannon_amount_texture	   = PRELOAD_TEXTURE("cannon_amount_mythic_texture", "resources/icon/upgr_icon_cannon_amount.png", frame_grid)->m_s_texture;
+	m_cannon_amount_controller = PSCore::sprites::SpriteSheetAnimation(
+			m_cannon_amount_texture, {
+										  {4, 0.1, PSCore::sprites::Forward, m_z_index},
+								  }
+	);
+	m_cannon_amount_controller.add_animation_at_index(0, m_z_index);
+
+	m_projectile_amount_texture   = PRELOAD_TEXTURE("projectile_amount_mythic_texture", "resources/icon/upgr_icon_multishot.png", frame_grid)->m_s_texture;
+	m_projectile_amount_controller = PSCore::sprites::SpriteSheetAnimation(
+			m_projectile_amount_texture, {
+											  {4, 0.1, PSCore::sprites::Forward, m_z_index},
+									  }
+	);
+	m_projectile_amount_controller.add_animation_at_index(0, m_z_index);
+
+	m_explosive_barrel_texture	  = PRELOAD_TEXTURE("explosive_barrel_mythic_texture", "resources/icon/upgr_icon_explosives.png", frame_grid)->m_s_texture;
+	m_explosive_barrel_controller = PSCore::sprites::SpriteSheetAnimation(
+			m_explosive_barrel_texture, {
+											 {4, 0.1, PSCore::sprites::Forward, m_z_index},
+									 }
+	);
+	m_explosive_barrel_controller.add_animation_at_index(0, m_z_index);
 }
 
 UpgradeLayer::~UpgradeLayer()
@@ -148,6 +174,8 @@ void UpgradeLayer::on_update(float dt)
 	if ( m_reroll_anim_playing ) {
 		play_reroll_gem_animation(dt);
 	}
+
+	play_mythic_anim(dt);
 
 				if ( IsKeyPressed(KEY_ESCAPE) ) {
 		gApp()->call_later([]() {
@@ -237,7 +265,7 @@ void UpgradeLayer::draw_upgrade_cards()
 		EndShaderMode();
 
 		Vector2 scaled_pos = {card_pos.x * scale, card_pos.y * scale};
-		draw_upgrade_icon(m_current_loot_table_values[i].index, scaled_pos);
+		draw_upgrade_icon(m_current_loot_table_values[i].index, m_current_loot_table_values[i].rarity, scaled_pos);
 		draw_card_text(scaled_pos, m_current_loot_table_values[i]);
 		m_current_tooltip_text = get_tooltip_text(m_current_loot_table_values[i].index);
 		if ( m_hovered_card_index == i ) {
@@ -639,12 +667,28 @@ void UpgradeLayer::draw_reroll_button()
 	}
 }
 
-void UpgradeLayer::draw_upgrade_icon(int index, Vector2 card_pos)
+void UpgradeLayer::draw_upgrade_icon(int index, int rarity, Vector2 card_pos)
 {
 	auto& vp	= gApp()->viewport();
 	float scale = vp->viewport_scale();
 	Vector2 pos = {card_pos.x - (m_fire_rate_icon.width * scale) / 2.0f, card_pos.y - 49 * scale};
 
+	// Mythic-Upgrades: animiertes Sprite zeichnen
+	bool is_mythic_upgrade = (index == 0 || index == 9 || index == 10);
+	if ( is_mythic_upgrade && rarity == 5 ) {
+		auto& controller = get_mythic_controller(index);
+		Rectangle source = controller.get_source_rectangle(m_z_index).value_or(Rectangle{0});
+		Texture2D& tex   = (index == 0) ? m_cannon_amount_texture
+						 : (index == 9) ? m_projectile_amount_texture
+										: m_explosive_barrel_texture;
+
+		Rectangle dest = {card_pos.x, card_pos.y - 49 * scale, source.width * scale, source.height * scale};
+		Vector2 origin = {dest.width / 2.0f, 0.0f};
+		DrawTexturePro(tex, source, dest, origin, 0, WHITE);
+		return;
+	}
+
+	// Alle anderen: statisches Icon
 	switch ( index ) {
 		case 0:
 			DrawTextureEx(m_add_cannon_icon, pos, 0, scale, WHITE);
@@ -757,5 +801,37 @@ std::string UpgradeLayer::get_tooltip_text(int upgrade_index)
 			return "Periodically drop explosive \nbarrels behind you that deal \nAoE damage when detonating.";
 		default:
 			return "";
+	}
+}
+
+void UpgradeLayer::play_mythic_anim(float dt)
+{
+	m_cannon_amount_controller.update_animation(dt);
+	if ( m_cannon_amount_controller.get_sprite_sheet_frame_index(m_z_index).value_or(-1) == 3 ) {
+		m_cannon_amount_controller.set_animation_at_index(0, 0, m_z_index);
+	}
+
+	m_projectile_amount_controller.update_animation(dt);
+	if ( m_projectile_amount_controller.get_sprite_sheet_frame_index(m_z_index).value_or(-1) == 3 ) {
+		m_projectile_amount_controller.set_animation_at_index(0, 0, m_z_index);
+	}
+
+	m_explosive_barrel_controller.update_animation(dt);
+	if ( m_explosive_barrel_controller.get_sprite_sheet_frame_index(m_z_index).value_or(-1) == 3 ) {
+		m_explosive_barrel_controller.set_animation_at_index(0, 0, m_z_index);
+	}
+}
+
+PSCore::sprites::SpriteSheetAnimation& UpgradeLayer::get_mythic_controller(int upgrade_index)
+{
+	switch ( upgrade_index ) {
+		case 0:
+			return m_cannon_amount_controller;
+		case 9:
+			return m_projectile_amount_controller;
+		case 10:
+			return m_explosive_barrel_controller;
+		default:
+			return m_cannon_amount_controller;
 	}
 }
