@@ -244,32 +244,38 @@ $(document).ready(function(){initNavTree('application_8h_source.html',''); initR
 <div class="line"><a id="l00154" name="l00154"></a><span class="lineno">  154</span> </div>
 <div class="line"><a id="l00155" name="l00155"></a><span class="lineno">  155</span>        <span class="keywordtype">void</span> play_ui_sound(<span class="keywordtype">int</span> index);</div>
 <div class="line"><a id="l00156" name="l00156"></a><span class="lineno">  156</span> </div>
-<div class="line"><a id="l00157" name="l00157"></a><span class="lineno">  157</span>    <span class="keyword">private</span>:</div>
-<div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span>        std::unique_ptr&lt;ApplicationPriv&gt; _p;</div>
-<div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span>        std::vector&lt;std::unique_ptr&lt;PSInterfaces::Layer&gt;&gt; m_layer_stack;</div>
-<div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span>        std::unique_ptr&lt;PSInterfaces::IEntity&gt; m_game_director;</div>
-<div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span>        std::deque&lt;std::function&lt;void()&gt;&gt; m_call_stack;</div>
-<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span>        std::string m_current_player_name;</div>
-<div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span> </div>
-<div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span>        std::vector&lt;float&gt; m_global_sound_volume;</div>
-<div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span> </div>
-<div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span>        std::vector&lt;ui_sound&gt; m_ui_sounds;</div>
-<div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span>        Vector2 m_volume_boundary = {-15,15};</div>
-<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span>        Vector2 m_pitch_boundary = {-15,15};</div>
-<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span>    };</div>
+<div class="line"><a id="l00157" name="l00157"></a><span class="lineno">  157</span>        <span class="keywordtype">void</span> init_custom_cursor();</div>
+<div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span>        <span class="keywordtype">void</span> render_custom_cursor();</div>
+<div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span>        <span class="keywordtype">void</span> hide_custom_cursor();</div>
+<div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span>        <span class="keywordtype">void</span> show_custom_cursor();</div>
+<div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span> </div>
+<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span>    <span class="keyword">private</span>:</div>
+<div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span>        std::unique_ptr&lt;ApplicationPriv&gt; _p;</div>
+<div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span>        std::vector&lt;std::unique_ptr&lt;PSInterfaces::Layer&gt;&gt; m_layer_stack;</div>
+<div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span>        std::unique_ptr&lt;PSInterfaces::IEntity&gt; m_game_director;</div>
+<div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span>        std::deque&lt;std::function&lt;void()&gt;&gt; m_call_stack;</div>
+<div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span>        std::string m_current_player_name;</div>
+<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span> </div>
+<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span>        std::vector&lt;float&gt; m_global_sound_volume;</div>
+<div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span> </div>
+<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span>        std::vector&lt;ui_sound&gt; m_ui_sounds;</div>
+<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span>        Vector2 m_volume_boundary = {-15,15};</div>
+<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span>        Vector2 m_pitch_boundary = {-15,15};</div>
+<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span> </div>
+<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span>    };</div>
 </div>
-<div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span>} <span class="comment">// namespace PSCore</span></div>
-<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span> </div>
-<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span><span class="keyword">constexpr</span> <span class="keyword">auto</span> gApp = PSCore::Application::get;</div>
-<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span> </div>
-<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span><span class="preprocessor">#define PS_LOG(log_level, msg)                                                                                                                       \</span></div>
-<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span><span class="preprocessor">    gApp()-&gt;log(log_level, std::string(std::string(__FILE__) + &quot; LINE: &quot; + std::to_string(__LINE__) + &quot; MSG: &quot; + msg).data());</span></div>
+<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span>} <span class="comment">// namespace PSCore</span></div>
+<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span> </div>
+<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span><span class="keyword">constexpr</span> <span class="keyword">auto</span> gApp = PSCore::Application::get;</div>
+<div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span> </div>
+<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span><span class="preprocessor">#define PS_LOG(log_level, msg)                                                                                                                       \</span></div>
+<div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span><span class="preprocessor">    gApp()-&gt;log(log_level, std::string(std::string(__FILE__) + &quot; LINE: &quot; + std::to_string(__LINE__) + &quot; MSG: &quot; + msg).data());</span></div>
 <div class="ttc" id="aclassPSCore_1_1Application_html"><div class="ttname"><a href="classPSCore_1_1Application.html">PSCore::Application</a></div><div class="ttdef"><b>Definition</b> application.h:23</div></div>
-<div class="ttc" id="aclassPSCore_1_1Application_html_a2e5dee1fbe413783d3500fe8da567ad4"><div class="ttname"><a href="classPSCore_1_1Application.html#a2e5dee1fbe413783d3500fe8da567ad4">PSCore::Application::stop</a></div><div class="ttdeci">void stop()</div><div class="ttdoc">stops the applikation</div><div class="ttdef"><b>Definition</b> application.cpp:214</div></div>
-<div class="ttc" id="aclassPSCore_1_1Application_html_a68965449404743bf1add056784d6cf81"><div class="ttname"><a href="classPSCore_1_1Application.html#a68965449404743bf1add056784d6cf81">PSCore::Application::run</a></div><div class="ttdeci">void run()</div><div class="ttdoc">starts the update/render loop</div><div class="ttdef"><b>Definition</b> application.cpp:162</div></div>
+<div class="ttc" id="aclassPSCore_1_1Application_html_a2e5dee1fbe413783d3500fe8da567ad4"><div class="ttname"><a href="classPSCore_1_1Application.html#a2e5dee1fbe413783d3500fe8da567ad4">PSCore::Application::stop</a></div><div class="ttdeci">void stop()</div><div class="ttdoc">stops the applikation</div><div class="ttdef"><b>Definition</b> application.cpp:217</div></div>
+<div class="ttc" id="aclassPSCore_1_1Application_html_a68965449404743bf1add056784d6cf81"><div class="ttname"><a href="classPSCore_1_1Application.html#a68965449404743bf1add056784d6cf81">PSCore::Application::run</a></div><div class="ttdeci">void run()</div><div class="ttdoc">starts the update/render loop</div><div class="ttdef"><b>Definition</b> application.cpp:165</div></div>
 <div class="ttc" id="aclassPSCore_1_1Application_html_a96dd5207a3997a0ea518e1365802d170"><div class="ttname"><a href="classPSCore_1_1Application.html#a96dd5207a3997a0ea518e1365802d170">PSCore::Application::pop_layer</a></div><div class="ttdeci">void pop_layer()</div><div class="ttdoc">removes every occourence of type T from the layer stack</div><div class="ttdef"><b>Definition</b> application.h:79</div></div>
 <div class="ttc" id="aclassPSCore_1_1Application_html_aac5407db21de1f55fe73848447917fe9"><div class="ttname"><a href="classPSCore_1_1Application.html#aac5407db21de1f55fe73848447917fe9">PSCore::Application::get_layer</a></div><div class="ttdeci">TL * get_layer()</div><div class="ttdoc">returns an instance to a layer of type T or a nullptr</div><div class="ttdef"><b>Definition</b> application.h:66</div></div>
-<div class="ttc" id="aclassPSCore_1_1Application_html_acd8087b11723daecdbd8248f4fee9f69"><div class="ttname"><a href="classPSCore_1_1Application.html#acd8087b11723daecdbd8248f4fee9f69">PSCore::Application::log</a></div><div class="ttdeci">void log(TraceLogLevel type, const char *text) const</div><div class="ttdoc">prints a log message, use the PS_LOG macro instead</div><div class="ttdef"><b>Definition</b> application.cpp:224</div></div>
+<div class="ttc" id="aclassPSCore_1_1Application_html_acd8087b11723daecdbd8248f4fee9f69"><div class="ttname"><a href="classPSCore_1_1Application.html#acd8087b11723daecdbd8248f4fee9f69">PSCore::Application::log</a></div><div class="ttdeci">void log(TraceLogLevel type, const char *text) const</div><div class="ttdoc">prints a log message, use the PS_LOG macro instead</div><div class="ttdef"><b>Definition</b> application.cpp:227</div></div>
 <div class="ttc" id="aclassPSCore_1_1Application_html_acefb0c8b30b648078075383ce0aa056d"><div class="ttname"><a href="classPSCore_1_1Application.html#acefb0c8b30b648078075383ce0aa056d">PSCore::Application::push_layer</a></div><div class="ttdeci">TL * push_layer()</div><div class="ttdoc">pushes a Layer of type T to the layer stack</div><div class="ttdef"><b>Definition</b> application.h:44</div></div>
 <div class="ttc" id="aclassPSInterfaces_1_1IEntity_html"><div class="ttname"><a href="classPSInterfaces_1_1IEntity.html">PSInterfaces::IEntity</a></div><div class="ttdef"><b>Definition</b> entity.h:18</div></div>
 <div class="ttc" id="aconceptPSCore_1_1ILayerDerived_html"><div class="ttname"><a href="conceptPSCore_1_1ILayerDerived.html">PSCore::ILayerDerived</a></div><div class="ttdef"><b>Definition</b> application.h:19</div></div>
