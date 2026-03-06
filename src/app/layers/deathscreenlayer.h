@@ -34,4 +34,5 @@ class DeathScreenLayer : public PSInterfaces::Layer
 		FortunaDirector* m_director = nullptr;
 		std::vector<std::string> m_kill_stat_lines;
 		float m_time_played;
+		float m_text_blinker_timer;
 };

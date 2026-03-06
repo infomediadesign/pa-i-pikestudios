@@ -19,19 +19,19 @@ DeathScreenLayer::DeathScreenLayer()
 		m_director = director;
 		init_stat_strings();
 	}
+
+	m_text_blinker_timer = 0;
 }
 
 void DeathScreenLayer::on_update(float dt)
 {
-	
-	
-	
 	if ( m_score_layer_instance ) {
 		if ( IsKeyPressed(KEY_ENTER) && m_score_layer_instance->player_name_input.size() > 0 ) {
 			gApp()->set_current_player_name(m_score_layer_instance->player_name_input);
 			m_name_entered = true;
 		}
 	}
+	m_text_blinker_timer += dt;
 }
 
 void DeathScreenLayer::on_render()
@@ -86,6 +86,12 @@ void DeathScreenLayer::on_render()
 		}
 		if ( m_score_layer_instance ) {
 			GuiLabel(input_field_rect, (m_score_layer_instance->player_name_input).c_str());
+		}
+		if ( m_score_layer_instance->player_name_input.length() == 0 && m_text_blinker_timer < 0.4 ) {
+			GuiLabel(input_field_rect, "|");
+		}
+		if ( m_text_blinker_timer > 0.8 ) {
+			m_text_blinker_timer = 0;
 		}
 
 	} else {
