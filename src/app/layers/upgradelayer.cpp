@@ -673,7 +673,6 @@ void UpgradeLayer::draw_upgrade_icon(int index, int rarity, Vector2 card_pos)
 	float scale = vp->viewport_scale();
 	Vector2 pos = {card_pos.x - (m_fire_rate_icon.width * scale) / 2.0f, card_pos.y - 49 * scale};
 
-	// Mythic-Upgrades: animiertes Sprite zeichnen
 	bool is_mythic_upgrade = (index == 0 || index == 9 || index == 10);
 	if ( is_mythic_upgrade && rarity == 5 ) {
 		auto& controller = get_mythic_controller(index);
@@ -688,7 +687,6 @@ void UpgradeLayer::draw_upgrade_icon(int index, int rarity, Vector2 card_pos)
 		return;
 	}
 
-	// Alle anderen: statisches Icon
 	switch ( index ) {
 		case 0:
 			DrawTextureEx(m_add_cannon_icon, pos, 0, scale, WHITE);
