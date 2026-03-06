@@ -86,7 +86,7 @@ UpgradeLayer::~UpgradeLayer()
 
 void UpgradeLayer::on_update(float dt)
 {
-	ShowCursor();
+	gApp()->show_custom_cursor();
 	m_time_since_opened += dt;
 	if ( m_time_since_opened > 0.5f ) {
 		m_can_receive_input = true;
@@ -214,7 +214,7 @@ void UpgradeLayer::draw_upgrade_cards()
 				auto app_layer = gApp()->get_layer<AppLayer>();
 				if ( app_layer )
 					app_layer->resume();
-				HideCursor();
+				gApp()->hide_custom_cursor();
 			});
 		}
 		EndShaderMode();

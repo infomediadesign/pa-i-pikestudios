@@ -76,7 +76,7 @@ void LootChest::on_hit()
 			auto app_layer = gApp()->get_layer<AppLayer>();
 			if ( app_layer )
 				app_layer->suspend();
-			ShowCursor();
+			gApp()->show_custom_cursor();
 		});
 	} else {
 		gApp()->call_later([]() { gApp()->push_layer<UpgradeLayer>(); });
@@ -89,7 +89,7 @@ void LootChest::on_hit()
 			auto app_layer = gApp()->get_layer<AppLayer>();
 			if ( app_layer )
 				app_layer->suspend();
-			ShowCursor();
+			gApp()->show_custom_cursor();
 		});
 	}
 	set_is_active(false);

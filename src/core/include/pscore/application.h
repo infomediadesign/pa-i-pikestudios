@@ -154,6 +154,11 @@ namespace PSCore {
 
 		void play_ui_sound(int index);
 
+		void init_custom_cursor();
+		void render_custom_cursor();
+		void hide_custom_cursor();
+		void show_custom_cursor();
+
 	private:
 		std::unique_ptr<ApplicationPriv> _p;
 		std::vector<std::unique_ptr<PSInterfaces::Layer>> m_layer_stack;
@@ -166,6 +171,7 @@ namespace PSCore {
 		std::vector<ui_sound> m_ui_sounds;
 		Vector2 m_volume_boundary = {-15,15};
 		Vector2 m_pitch_boundary = {-15,15};
+
 	};
 } // namespace PSCore
 

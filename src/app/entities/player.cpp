@@ -347,7 +347,7 @@ void Player::on_death()
 				score_layer->check_for_new_highscore(dynamic_cast<FortunaDirector*>(gApp()->game_director())->m_b_bounty.bounty())
 		);
 	}
-	ShowCursor();
+	gApp()->show_custom_cursor();
 }
 
 void Player::set_is_invincible(bool invincible)
